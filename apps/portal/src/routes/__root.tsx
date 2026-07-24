@@ -16,7 +16,7 @@ import {
   Key,
   X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Toaster } from "sonner";
 
 import { ProjectSwitcher } from "@/components/project-switcher";
@@ -36,6 +36,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useProjects } from "@/hooks/use-projects";
 import {
   type SupportedLocale,
   localeNames,
@@ -292,15 +293,8 @@ const AuthenticatedLayout = () => {
     }
   });
 
-  const user = useAuthStore((s) => s.user);
-  const subscribe = useProjectStore((s) => s.subscribe);
-
-  // Subscribe to projects when authenticated
-  useEffect(() => {
-    if (!user) return;
-    const unsubscribe = subscribe(user.uid);
-    return unsubscribe;
-  }, [user, subscribe]);
+  // React Query handles project fetching via useProjects() in child components
+  useProjects();
 
   const toggleSidebar = () => {
     const next = !sidebarCollapsed;

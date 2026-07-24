@@ -1,6 +1,5 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
-import { addDoc, collection } from "firebase/firestore";
 import { Check, ChevronsUpDown, FolderPlus, Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -21,42 +20,35 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { db } from "@/lib/firebase";
+import { useProjects, useCreateProject } from "@/hooks/use-projects";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
 
 export const ProjectSwitcher = () => {
-  const user = useAuthStore((s) => s.user);
-  const { projects, selectedProjectId, setSelectedProjectId } =
-    useProjectStore();
-  const selectedProject = useProjectStore((s) => s.selectedProject());
+  const { data: projects = [] } = useProjects();
+  const createProject = useCreateProject();
+  const { selectedProjectId, setSelectedProjectId } = useProjectStore();
+
+  const selectedProject = projects.find((p) => p.id === selectedProjectId);
+
   const [open, setOpen] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState("");
-  const [creating, setCreating] = useState(false);
 
   const handleCreate = async () => {
-    if (!newName.trim() || !user) return;
-    setCreating(true);
-    try {
-      const docRef = await addDoc(collection(db, "projects"), {
-        name: newName.trim(),
-        ownerId: user.uid,
-        authorizedUsers: [user.uid],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
-      setSelectedProjectId(docRef.id);
-      setNewName("");
-      setShowCreate(false);
-      setOpen(false);
-      toast.success(t`Project created`);
-    } catch {
-      toast.error(t`Failed to create project`);
-    } finally {
-      setCreating(false);
-    }
+    if (!newName.trim()) return;
+    createProject.mutate(newName, {
+      onSuccess: (newId) => {
+        setSelectedProjectId(newId);
+        setNewName("");
+        setShowCreate(false);
+        setOpen(false);
+        toast.success(t`Project created`);
+      },
+      onError: () => {
+        toast.error(t`Failed to create project`);
+      },
+    });
   };
 
   return (
@@ -120,7 +112,7 @@ export const ProjectSwitcher = () => {
                   size="sm"
                   className="h-8 shrink-0 rounded-full"
                   onClick={handleCreate}
-                  disabled={creating || !newName.trim()}
+                  disabled={createProject.isPending || !newName.trim()}
                 >
                   <Plus className="h-3.5 w-3.5" />
                 </Button>

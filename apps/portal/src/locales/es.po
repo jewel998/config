@@ -6,261 +6,488 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: es\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
 #: src/routes/__root.tsx:245
-msgid "✓ Environment-specific overrides"
-msgstr ""
+#~ msgid "✓ Environment-specific overrides"
+#~ msgstr ""
 
 #: src/routes/__root.tsx:251
-msgid "✓ Firebase-powered real-time sync"
-msgstr ""
+#~ msgid "✓ Firebase-powered real-time sync"
+#~ msgstr ""
 
 #: src/routes/__root.tsx:242
-msgid "✓ Multi-tenant & multi-project scoping"
-msgstr ""
+#~ msgid "✓ Multi-tenant & multi-project scoping"
+#~ msgstr ""
 
 #: src/routes/__root.tsx:248
-msgid "✓ Versioned config publishing"
-msgstr ""
+#~ msgid "✓ Versioned config publishing"
+#~ msgstr ""
 
-#: src/routes/__root.tsx:199
+#: src/routes/__root.tsx:345
 msgid "Access Denied"
 msgstr ""
 
 #: src/routes/__root.tsx:303
-msgid "Access is by request only."
+#~ msgid "Access is by request only."
+#~ msgstr ""
+
+#: src/routes/__root.tsx:475
+msgid "Access is by request only. Rights of Admission Reserved."
 msgstr ""
 
 #: src/routes/index.tsx:78
-msgid "Active clientIds"
-msgstr ""
+#~ msgid "Active clientIds"
+#~ msgstr ""
 
 #: src/routes/index.tsx:66
-msgid "Active projects"
+#~ msgid "Active projects"
+#~ msgstr ""
+
+#: src/routes/index.tsx:97
+msgid "Activity feed coming soon."
+msgstr ""
+
+#: src/components/onboarding-stepper.tsx:79
+msgid "Add an environment"
 msgstr ""
 
 #: src/routes/index.tsx:170
-msgid "Add an Environment"
-msgstr ""
+#~ msgid "Add an Environment"
+#~ msgstr ""
 
-#: src/routes/environments.tsx:232
+#: src/routes/environments.tsx:172
 msgid "Add environments like production, staging, or development."
 msgstr ""
 
-#: src/routes/environments.tsx:267
-msgid "Allowed domains:"
+#: src/routes/environments.tsx:207
+msgid "Allowed domains"
 msgstr ""
 
-#: src/routes/environments.tsx:193
-#: src/routes/projects.tsx:121
+#: src/routes/environments.tsx:126
+msgid "Allowed domains (comma-separated, e.g. example.com, app.example.com)"
+msgstr ""
+
+#: src/routes/environments.tsx:267
+#~ msgid "Allowed domains:"
+#~ msgstr ""
+
+#: src/routes/environments.tsx:152
 msgid "Cancel"
 msgstr ""
 
 #: src/routes/index.tsx:76
-msgid "Client Keys"
+#~ msgid "Client Keys"
+#~ msgstr ""
+
+#: src/routes/__root.tsx:195
+msgid "Config"
 msgstr ""
 
-#: src/routes/__root.tsx:96
-#: src/routes/__root.tsx:175
-#: src/routes/__root.tsx:232
+#: src/routes/__root.tsx:390
 msgid "Config Portal"
 msgstr ""
 
-#: src/routes/environments.tsx:184
-#: src/routes/projects.tsx:112
+#: src/routes/__root.tsx:423
+msgid "Config publishing"
+msgstr ""
+
+#: src/routes/index.tsx:40
+msgid "Configs"
+msgstr ""
+
+#: src/components/onboarding-stepper.tsx:184
+#: src/components/onboarding-stepper.tsx:214
+#: src/routes/environments.tsx:140
 msgid "Create"
 msgstr ""
 
 #: src/routes/index.tsx:157
-msgid "Create a Project"
-msgstr ""
+#~ msgid "Create a Project"
+#~ msgstr ""
 
 #: src/routes/environments.tsx:212
-msgid "Create a project first, then add environments."
-msgstr ""
+#~ msgid "Create a project first, then add environments."
+#~ msgstr ""
 
-#: src/routes/environments.tsx:243
+#: src/routes/environments.tsx:183
 msgid "Create Environment"
 msgstr ""
 
+#: src/components/project-switcher.tsx:128
+msgid "Create new project"
+msgstr ""
+
 #: src/routes/projects.tsx:152
-msgid "Create Project"
+#~ msgid "Create Project"
+#~ msgstr ""
+
+#: src/components/onboarding-stepper.tsx:73
+msgid "Create your first project"
 msgstr ""
 
 #: src/routes/projects.tsx:140
-msgid "Create your first project to start managing feature flags and configs."
-msgstr ""
+#~ msgid "Create your first project to start managing feature flags and configs."
+#~ msgstr ""
 
 #. placeholder {0}: new Date(env.createdAt).toLocaleDateString()
-#. placeholder {0}: new Date(project.createdAt).toLocaleDateString()
-#: src/routes/environments.tsx:288
-#: src/routes/projects.tsx:174
+#: src/routes/environments.tsx:228
 msgid "Created {0}"
 msgstr ""
 
-#: src/routes/environments.tsx:184
-#: src/routes/projects.tsx:112
+#: src/components/onboarding-stepper.tsx:182
+#: src/components/onboarding-stepper.tsx:212
+#: src/routes/environments.tsx:138
 msgid "Creating..."
 msgstr ""
 
-#: src/routes/__root.tsx:28
-#: src/routes/index.tsx:94
+#: src/routes/__root.tsx:51
+#: src/routes/index.tsx:51
 msgid "Dashboard"
 msgstr ""
 
 #: src/routes/index.tsx:173
-msgid "Define deployment targets for your app."
-msgstr ""
+#~ msgid "Define deployment targets for your app."
+#~ msgstr ""
 
-#: src/routes/index.tsx:72
+#: src/routes/index.tsx:30
 msgid "Deployment targets"
 msgstr ""
 
-#: src/routes/environments.tsx:173
+#: src/components/onboarding-stepper.tsx:199
+msgid "e.g. production, staging"
+msgstr ""
+
+#: src/routes/index.tsx:36
+msgid "Encrypted values"
+msgstr ""
+
+#: src/routes/environments.tsx:44
+msgid "Environment created"
+msgstr ""
+
+#: src/components/onboarding-stepper.tsx:56
+msgid "Environment created!"
+msgstr ""
+
+#: src/routes/environments.tsx:59
+msgid "Environment deleted"
+msgstr ""
+
+#: src/routes/environments.tsx:119
 msgid "Environment name (e.g. production, staging)"
 msgstr ""
 
-#: src/routes/__root.tsx:30
-#: src/routes/environments.tsx:128
-#: src/routes/index.tsx:70
+#: src/routes/__root.tsx:54
+#: src/routes/__root.tsx:412
+#: src/routes/environments.tsx:99
+#: src/routes/index.tsx:28
 msgid "Environments"
 msgstr ""
 
+#: src/components/onboarding-stepper.tsx:81
+msgid "Environments define deployment targets like production or staging."
+msgstr ""
+
+#: src/components/onboarding-stepper.tsx:59
+#: src/routes/environments.tsx:47
+msgid "Failed to create environment"
+msgstr ""
+
+#: src/components/onboarding-stepper.tsx:43
+#: src/components/project-switcher.tsx:49
+msgid "Failed to create project"
+msgstr ""
+
+#: src/routes/environments.tsx:62
+msgid "Failed to delete environment"
+msgstr ""
+
+#: src/routes/__root.tsx:431
+msgid "Firebase sync"
+msgstr ""
+
+#: src/routes/settings.tsx:40
+msgid "General"
+msgstr ""
+
+#: src/components/onboarding-stepper.tsx:229
+msgid "Go to Environments"
+msgstr ""
+
 #: src/routes/index.tsx:130
-msgid "Latest changes across your configuration."
+#~ msgid "Latest changes across your configuration."
+#~ msgstr ""
+
+#: src/routes/index.tsx:92
+msgid "Latest changes in this project."
+msgstr ""
+
+#: src/components/onboarding-stepper.tsx:103
+msgid "Let's get you set up in a few quick steps."
 msgstr ""
 
 #: src/routes/index.tsx:84
-msgid "Live configurations"
-msgstr ""
+#~ msgid "Live configurations"
+#~ msgstr ""
 
 #: src/routes/__root.tsx:327
-msgid "Loading..."
+#~ msgid "Loading..."
+#~ msgstr ""
+
+#: src/routes/environments.tsx:102
+msgid "Manage deployment targets and allowed domains."
 msgstr ""
 
 #: src/routes/environments.tsx:131
-msgid "Manage deployment targets, allowed domains, and client keys."
-msgstr ""
+#~ msgid "Manage deployment targets, allowed domains, and client keys."
+#~ msgstr ""
 
 #: src/routes/__root.tsx:235
-msgid "Manage multi-tenant configuration with versioned publish flows, offline-ready cache, and real-time remote sync."
+#~ msgid "Manage multi-tenant configuration with versioned publish flows, offline-ready cache, and real-time remote sync."
+#~ msgstr ""
+
+#: src/routes/settings.tsx:33
+msgid "Manage project configuration and team access."
 msgstr ""
 
 #: src/routes/projects.tsx:86
-msgid "Manage your projects, environments, and config keys."
+#~ msgid "Manage your projects, environments, and config keys."
+#~ msgstr ""
+
+#: src/routes/__root.tsx:407
+msgid "Multi-project scoping"
 msgstr ""
 
-#: src/routes/environments.tsx:142
+#: src/routes/environments.tsx:110
 msgid "New Environment"
 msgstr ""
 
 #: src/routes/projects.tsx:91
-msgid "New Project"
-msgstr ""
+#~ msgid "New Project"
+#~ msgstr ""
 
 #: src/routes/index.tsx:135
-msgid "No activity yet. Create a project to get started."
-msgstr ""
+#~ msgid "No activity yet. Create a project to get started."
+#~ msgstr ""
 
-#: src/routes/environments.tsx:229
+#: src/routes/environments.tsx:169
 msgid "No environments yet"
 msgstr ""
 
 #: src/routes/environments.tsx:209
-msgid "No project selected"
-msgstr ""
+#~ msgid "No project selected"
+#~ msgstr ""
 
 #: src/routes/environments.tsx:157
-msgid "No projects available"
+#~ msgid "No projects available"
+#~ msgstr ""
+
+#: src/components/project-switcher.tsx:74
+msgid "No projects found."
 msgstr ""
 
 #: src/routes/projects.tsx:137
-msgid "No projects yet"
-msgstr ""
+#~ msgid "No projects yet"
+#~ msgstr ""
 
-#: src/routes/environments.tsx:284
+#: src/routes/environments.tsx:224
 msgid "None configured"
 msgstr ""
 
 #: src/routes/__root.tsx:295
-msgid "Only authorized team members can access this portal."
+#~ msgid "Only authorized team members can access this portal."
+#~ msgstr ""
+
+#: src/routes/index.tsx:54
+msgid "Overview for"
 msgstr ""
 
 #: src/routes/index.tsx:97
-msgid "Overview of your configuration platform."
+#~ msgid "Overview of your configuration platform."
+#~ msgstr ""
+
+#: src/routes/__root.tsx:415
+msgid "Per-env overrides"
 msgstr ""
 
-#: src/routes/projects.tsx:101
+#: src/routes/secrets.tsx:31
+msgid "Per-environment encrypted key-value pairs."
+msgstr ""
+
+#: src/components/project-switcher.tsx:46
+msgid "Project created"
+msgstr ""
+
+#: src/components/onboarding-stepper.tsx:40
+msgid "Project created successfully!"
+msgstr ""
+
+#: src/routes/settings.tsx:58
+msgid "Project ID"
+msgstr ""
+
+#: src/components/onboarding-stepper.tsx:169
+#: src/components/project-switcher.tsx:107
 msgid "Project name"
 msgstr ""
 
-#: src/routes/environments.tsx:149
-msgid "Project:"
+#: src/routes/settings.tsx:47
+msgid "Project Name"
 msgstr ""
 
-#: src/routes/__root.tsx:29
-#: src/routes/index.tsx:64
-#: src/routes/projects.tsx:83
+#: src/routes/settings.tsx:30
+msgid "Project Settings"
+msgstr ""
+
+#: src/routes/environments.tsx:149
+#~ msgid "Project:"
+#~ msgstr ""
+
+#: src/routes/__root.tsx:404
 msgid "Projects"
 msgstr ""
 
-#: src/routes/__root.tsx:293
+#: src/components/onboarding-stepper.tsx:75
+msgid "Projects group environments and configurations together."
+msgstr ""
+
+#: src/routes/__root.tsx:464
 msgid "Protected by Firebase Authentication."
 msgstr ""
 
 #: src/routes/index.tsx:183
-msgid "Publish a Version"
-msgstr ""
+#~ msgid "Publish a Version"
+#~ msgstr ""
 
 #: src/routes/index.tsx:82
-msgid "Published Configs"
+#~ msgid "Published Configs"
+#~ msgstr ""
+
+#: src/routes/index.tsx:42
+msgid "Published versions"
 msgstr ""
 
 #: src/routes/index.tsx:186
-msgid "Push config values to your environments."
-msgstr ""
+#~ msgid "Push config values to your environments."
+#~ msgstr ""
 
 #: src/routes/index.tsx:144
-msgid "Quick Start"
+#~ msgid "Quick Start"
+#~ msgstr ""
+
+#: src/routes/__root.tsx:428
+msgid "Real-time"
 msgstr ""
 
-#: src/routes/index.tsx:127
+#: src/routes/index.tsx:89
 msgid "Recent Activity"
 msgstr ""
 
 #: src/routes/__root.tsx:306
-msgid "Rights of Admission Reserved. Contact the project owner to request access."
+#~ msgid "Rights of Admission Reserved. Contact the project owner to request access."
+#~ msgstr ""
+
+#: src/components/project-switcher.tsx:71
+msgid "Search projects..."
+msgstr ""
+
+#: src/routes/__root.tsx:57
+#: src/routes/index.tsx:34
+#: src/routes/secrets.tsx:28
+msgid "Secrets"
+msgstr ""
+
+#: src/routes/secrets.tsx:43
+msgid "Secrets management coming soon"
+msgstr ""
+
+#: src/routes/secrets.tsx:18
+msgid "Select a project to manage secrets."
+msgstr ""
+
+#: src/routes/environments.tsx:75
+msgid "Select a project to view environments."
+msgstr ""
+
+#: src/routes/settings.tsx:20
+msgid "Select a project to view settings."
+msgstr ""
+
+#: src/routes/__root.tsx:277
+msgid "Select or create a project to get started."
+msgstr ""
+
+#: src/components/project-switcher.tsx:64
+msgid "Select project"
 msgstr ""
 
 #: src/routes/index.tsx:147
-msgid "Set up your platform in 3 steps."
-msgstr ""
+#~ msgid "Set up your platform in 3 steps."
+#~ msgstr ""
 
 #: src/routes/index.tsx:160
-msgid "Set up your project to scope configs."
+#~ msgid "Set up your project to scope configs."
+#~ msgstr ""
+
+#: src/routes/__root.tsx:60
+msgid "Settings"
 msgstr ""
 
-#: src/routes/__root.tsx:266
+#: src/routes/__root.tsx:393
 msgid "Sign in to manage your configuration platform."
 msgstr ""
 
-#: src/routes/__root.tsx:289
+#: src/routes/__root.tsx:460
 msgid "Sign in with Google"
 msgstr ""
 
-#: src/routes/__root.tsx:150
-#: src/routes/__root.tsx:214
+#: src/routes/__root.tsx:152
+#: src/routes/__root.tsx:364
 msgid "Sign out"
 msgstr ""
 
-#: src/routes/__root.tsx:210
+#: src/components/onboarding-stepper.tsx:89
+msgid "Start configuring your environments with secrets and settings."
+msgstr ""
+
+#: src/routes/settings.tsx:77
+msgid "Team management coming soon."
+msgstr ""
+
+#: src/routes/settings.tsx:72
+msgid "Team Members"
+msgstr ""
+
+#: src/routes/__root.tsx:356
 msgid "Try a different account"
 msgstr ""
 
-#: src/routes/__root.tsx:263
-msgid "Welcome back"
+#: src/routes/__root.tsx:420
+msgid "Versioned"
 msgstr ""
 
-#: src/routes/__root.tsx:202
+#: src/routes/__root.tsx:263
+#~ msgid "Welcome back"
+#~ msgstr ""
+
+#: src/components/onboarding-stepper.tsx:100
+msgid "Welcome to Config Portal"
+msgstr ""
+
+#: src/routes/secrets.tsx:46
+msgid "You'll be able to store encrypted environment variables and API keys per environment, with version history and access control."
+msgstr ""
+
+#: src/components/onboarding-stepper.tsx:87
+msgid "You're all set!"
+msgstr ""
+
+#: src/routes/__root.tsx:348
 msgid "Your account is not authorized to access this portal. Contact the project owner to request access."
 msgstr ""

@@ -1,16 +1,15 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { useNavigate } from "@tanstack/react-router";
-import { addDoc, collection } from "firebase/firestore";
 import { Check, CircleDot, Rocket } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { db } from "@/lib/firebase";
+import { useCreateEnvironment } from "@/hooks/use-environments";
+import { useCreateProject } from "@/hooks/use-projects";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
 
 interface StepState {
@@ -19,8 +18,9 @@ interface StepState {
 }
 
 export const OnboardingStepper = () => {
-  const user = useAuthStore((s) => s.user);
   const { selectedProjectId, setSelectedProjectId } = useProjectStore();
+  const createProject = useCreateProject();
+  const createEnvironment = useCreateEnvironment();
   const navigate = useNavigate();
 
   const [stepState, setStepState] = useState<StepState>({
@@ -29,56 +29,37 @@ export const OnboardingStepper = () => {
   });
   const [projectName, setProjectName] = useState("");
   const [envName, setEnvName] = useState("");
-  const [creatingProject, setCreatingProject] = useState(false);
-  const [creatingEnv, setCreatingEnv] = useState(false);
 
-  const handleCreateProject = async () => {
-    if (!projectName.trim() || !user) return;
-    setCreatingProject(true);
-    try {
-      const docRef = await addDoc(collection(db, "projects"), {
-        name: projectName.trim(),
-        ownerId: user.uid,
-        authorizedUsers: [user.uid],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
-      setSelectedProjectId(docRef.id);
-      setStepState((prev) => ({ ...prev, projectCreated: true }));
-      setProjectName("");
-      toast.success(t`Project created successfully!`);
-    } catch {
-      toast.error(t`Failed to create project`);
-    } finally {
-      setCreatingProject(false);
-    }
+  const handleCreateProject = () => {
+    if (!projectName.trim()) return;
+    createProject.mutate(projectName, {
+      onSuccess: (newId) => {
+        setSelectedProjectId(newId);
+        setStepState((prev) => ({ ...prev, projectCreated: true }));
+        setProjectName("");
+        toast.success(t`Project created successfully!`);
+      },
+      onError: () => {
+        toast.error(t`Failed to create project`);
+      },
+    });
   };
 
-  const handleCreateEnv = async () => {
+  const handleCreateEnv = () => {
     if (!envName.trim() || !selectedProjectId) return;
-    setCreatingEnv(true);
-    try {
-      const envCollection = collection(
-        db,
-        "projects",
-        selectedProjectId,
-        "environments",
-      );
-      await addDoc(envCollection, {
-        name: envName.trim(),
-        projectId: selectedProjectId,
-        allowedDomains: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
-      setStepState((prev) => ({ ...prev, environmentCreated: true }));
-      setEnvName("");
-      toast.success(t`Environment created!`);
-    } catch {
-      toast.error(t`Failed to create environment`);
-    } finally {
-      setCreatingEnv(false);
-    }
+    createEnvironment.mutate(
+      { projectId: selectedProjectId, name: envName, allowedDomains: [] },
+      {
+        onSuccess: () => {
+          setStepState((prev) => ({ ...prev, environmentCreated: true }));
+          setEnvName("");
+          toast.success(t`Environment created!`);
+        },
+        onError: () => {
+          toast.error(t`Failed to create environment`);
+        },
+      },
+    );
   };
 
   const currentStep = !stepState.projectCreated
@@ -193,9 +174,9 @@ export const OnboardingStepper = () => {
                       size="sm"
                       className="h-9 shrink-0 rounded-full"
                       onClick={handleCreateProject}
-                      disabled={creatingProject || !projectName.trim()}
+                      disabled={createProject.isPending || !projectName.trim()}
                     >
-                      {creatingProject ? (
+                      {createProject.isPending ? (
                         <Trans>Creating...</Trans>
                       ) : (
                         <Trans>Create</Trans>
@@ -219,9 +200,9 @@ export const OnboardingStepper = () => {
                       size="sm"
                       className="h-9 shrink-0 rounded-full"
                       onClick={handleCreateEnv}
-                      disabled={creatingEnv || !envName.trim()}
+                      disabled={createEnvironment.isPending || !envName.trim()}
                     >
-                      {creatingEnv ? (
+                      {createEnvironment.isPending ? (
                         <Trans>Creating...</Trans>
                       ) : (
                         <Trans>Create</Trans>

@@ -1,8 +1,6 @@
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
-import { collection, onSnapshot } from "firebase/firestore";
 import { Key, Layers, Server } from "lucide-react";
-import { useEffect, useState } from "react";
 
 import { OnboardingStepper } from "@/components/onboarding-stepper";
 import {
@@ -13,37 +11,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { db } from "@/lib/firebase";
+import { useEnvironments } from "@/hooks/use-environments";
+import { useProjects } from "@/hooks/use-projects";
 import { useProjectStore } from "@/stores/project-store";
 
 const DashboardContent = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
-  const selectedProject = useProjectStore((s) => s.selectedProject());
-  const [envCount, setEnvCount] = useState<number | null>(null);
+  const { data: projects } = useProjects();
+  const { data: environments, isLoading: envsLoading } =
+    useEnvironments(selectedProjectId);
 
-  useEffect(() => {
-    if (!selectedProjectId) {
-      setEnvCount(null);
-      return;
-    }
-
-    const envCollection = collection(
-      db,
-      "projects",
-      selectedProjectId,
-      "environments",
-    );
-    const unsubscribe = onSnapshot(envCollection, (snapshot) => {
-      setEnvCount(snapshot.size);
-    });
-
-    return unsubscribe;
-  }, [selectedProjectId]);
+  const selectedProject = projects?.find((p) => p.id === selectedProjectId);
 
   const stats = [
     {
       title: <Trans>Environments</Trans>,
-      value: envCount !== null ? String(envCount) : null,
+      value: envsLoading ? null : String(environments?.length ?? 0),
       description: <Trans>Deployment targets</Trans>,
       icon: Server,
     },
@@ -121,9 +104,9 @@ const DashboardContent = () => {
 
 const DashboardPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
-  const loading = useProjectStore((s) => s.loading);
+  const { data: projects, isLoading } = useProjects();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="space-y-4 p-8">
         <Skeleton className="h-8 w-48" />
@@ -136,7 +119,7 @@ const DashboardPage = () => {
     );
   }
 
-  if (!selectedProjectId) {
+  if (!selectedProjectId || projects?.length === 0) {
     return <OnboardingStepper />;
   }
 

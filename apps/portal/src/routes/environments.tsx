@@ -1,15 +1,8 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-} from "firebase/firestore";
 import { Globe, Plus, Server, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -17,95 +10,59 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { db } from "@/lib/firebase";
+import {
+  useEnvironments,
+  useCreateEnvironment,
+  useDeleteEnvironment,
+} from "@/hooks/use-environments";
 import { useProjectStore } from "@/stores/project-store";
-
-interface Environment {
-  id: string;
-  name: string;
-  projectId: string;
-  allowedDomains: string[];
-  createdAt: string;
-  updatedAt: string;
-}
 
 const EnvironmentsPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
-  const [environments, setEnvironments] = useState<Environment[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: environments = [], isLoading } =
+    useEnvironments(selectedProjectId);
+  const createEnvironment = useCreateEnvironment();
+  const deleteEnvironment = useDeleteEnvironment();
+
   const [showForm, setShowForm] = useState(false);
   const [newName, setNewName] = useState("");
   const [newDomains, setNewDomains] = useState("");
-  const [creating, setCreating] = useState(false);
-
-  useEffect(() => {
-    if (!selectedProjectId) {
-      setEnvironments([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    const envCollection = collection(
-      db,
-      "projects",
-      selectedProjectId,
-      "environments",
-    );
-    const unsubscribe = onSnapshot(envCollection, (snapshot) => {
-      const items: Environment[] = snapshot.docs.map((d) => ({
-        id: d.id,
-        ...(d.data() as Omit<Environment, "id">),
-      }));
-      setEnvironments(items);
-      setLoading(false);
-    });
-
-    return unsubscribe;
-  }, [selectedProjectId]);
 
   const handleCreate = async () => {
     if (!newName.trim() || !selectedProjectId) return;
-    setCreating(true);
-    try {
-      const envCollection = collection(
-        db,
-        "projects",
-        selectedProjectId,
-        "environments",
-      );
-      const domains = newDomains
-        .split(",")
-        .map((d) => d.trim())
-        .filter(Boolean);
-      await addDoc(envCollection, {
-        name: newName.trim(),
-        projectId: selectedProjectId,
-        allowedDomains: domains,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
-      setNewName("");
-      setNewDomains("");
-      setShowForm(false);
-      toast.success(t`Environment created`);
-    } catch {
-      toast.error(t`Failed to create environment`);
-    } finally {
-      setCreating(false);
-    }
+    const domains = newDomains
+      .split(",")
+      .map((d) => d.trim())
+      .filter(Boolean);
+    createEnvironment.mutate(
+      { projectId: selectedProjectId, name: newName, allowedDomains: domains },
+      {
+        onSuccess: () => {
+          setNewName("");
+          setNewDomains("");
+          setShowForm(false);
+          toast.success(t`Environment created`);
+        },
+        onError: () => {
+          toast.error(t`Failed to create environment`);
+        },
+      },
+    );
   };
 
-  const handleDelete = async (envId: string) => {
+  const handleDelete = (envId: string) => {
     if (!selectedProjectId) return;
-    try {
-      await deleteDoc(
-        doc(db, "projects", selectedProjectId, "environments", envId),
-      );
-      toast.success(t`Environment deleted`);
-    } catch {
-      toast.error(t`Failed to delete environment`);
-    }
+    deleteEnvironment.mutate(
+      { projectId: selectedProjectId, envId },
+      {
+        onSuccess: () => {
+          toast.success(t`Environment deleted`);
+        },
+        onError: () => {
+          toast.error(t`Failed to delete environment`);
+        },
+      },
+    );
   };
 
   if (!selectedProjectId) {
@@ -121,7 +78,7 @@ const EnvironmentsPage = () => {
     );
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="space-y-4">
         <Skeleton className="h-8 w-48" />
@@ -175,9 +132,13 @@ const EnvironmentsPage = () => {
               <Button
                 className="rounded-full"
                 onClick={handleCreate}
-                disabled={creating || !newName.trim()}
+                disabled={createEnvironment.isPending || !newName.trim()}
               >
-                {creating ? <Trans>Creating...</Trans> : <Trans>Create</Trans>}
+                {createEnvironment.isPending ? (
+                  <Trans>Creating...</Trans>
+                ) : (
+                  <Trans>Create</Trans>
+                )}
               </Button>
               <Button
                 variant="ghost"
