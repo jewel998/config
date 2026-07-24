@@ -33,7 +33,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/lib/auth";
 import {
   type SupportedLocale,
@@ -173,8 +172,6 @@ const TopBar = ({ onMenuClick }: { onMenuClick: () => void }) => {
           Beta
         </Badge>
       </div>
-
-      <Separator orientation="vertical" className="mx-1 h-6" />
 
       {/* Project switcher */}
       <ProjectSwitcher />

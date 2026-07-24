@@ -1,5 +1,8 @@
 import { i18n } from "@lingui/core";
 
+// Activate with empty messages immediately so I18nProvider doesn't throw before catalog loads
+i18n.loadAndActivate({ locale: "en", messages: {} });
+
 export type SupportedLocale = "en" | "es" | "fr" | "ar" | "zh" | "hi";
 
 export const localeNames: Record<SupportedLocale, string> = {
@@ -37,7 +40,7 @@ export const storeLocale = (locale: SupportedLocale): void => {
 };
 
 export async function loadCatalog(locale: SupportedLocale): Promise<void> {
-  const { messages } = await import(`../locales/${locale}.po`);
+  const { messages } = await import(`../locales/${locale}.js`);
   i18n.loadAndActivate({ locale, messages });
   document.documentElement.dir = isRtl(locale) ? "rtl" : "ltr";
 }
