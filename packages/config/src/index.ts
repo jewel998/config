@@ -23,6 +23,9 @@ export type { ConfigScope, ConfigSourceMode } from "./types";
 export type { CacheStorage } from "./cache/storage";
 export type { RemoteConfigProvider } from "./remote/provider";
 export { createExampleClient } from "./example";
+export { createConfigManager } from "./management/index";
+export type { ConfigManager, ConfigManagerOptions } from "./management/index";
+export type { ConfigManagerBackend } from "./management/manager";
 
 export interface ConfigClient {
   getValue<T>(

@@ -1,27 +1,52 @@
 # Config Platform Monorepo
 
-This repository is the starting point for a lightweight, standards-first configuration platform.
+A lightweight, standards-first configuration platform supporting multi-tenant and multi-project configuration with offline-first and remote-first patterns.
 
 ## Goals
 
-- publish a public npm package: `@jewel998/config`
-- support multi-tenant and multi-project configuration
-- keep the base package lightweight and tree-shake friendly
-- use Firebase for live configuration and admin workflows
-- use GitHub Pages for documentation/demo hosting
+- Publish a public npm package: `@jewel998/config`
+- Support multi-tenant and multi-project configuration
+- Keep the base package lightweight and tree-shake friendly
+- Use Firebase for live configuration and admin workflows
+- Use GitHub Pages for documentation hosting (VitePress)
 
-## Monorepo structure
+## Monorepo Structure
 
-- `apps/portal` — React-based admin portal
-- `apps/docs` — GitHub Pages-friendly documentation/demo app
-- `packages/config` — public npm package
-- `functions` — Firebase function layer
-- `firebase` — Firebase config and rules
+```
+apps/
+  portal/    — React-based admin portal (Vite + React Router)
+  docs/      — VitePress documentation site
+packages/
+  config/    — Public npm package (@jewel998/config)
+functions/   — Firebase Cloud Functions (admin CRUD)
+firebase/    — Firebase config and Firestore rules
+```
 
-## Engineering standards
+## Getting Started
 
-- TypeScript-first implementation
-- ESLint + Prettier for consistent formatting
-- modular package boundaries
-- adapter-based runtime design
-- testable behavior with explicit verification
+```bash
+# Install dependencies
+pnpm install
+
+# Build the config package
+pnpm run build
+
+# Run tests
+pnpm run test
+
+# Start the portal dev server
+pnpm --filter @jewel998/config-portal run dev
+
+# Start the docs dev server
+pnpm --filter @jewel998/config-docs run dev
+```
+
+## Engineering Standards
+
+- TypeScript-first (strict mode, `verbatimModuleSyntax`)
+- pnpm workspaces with `packageManager` field
+- OxLint + Prettier for formatting and linting
+- Husky + lint-staged + commitlint for commit quality
+- Adapter-based runtime design
+- Modular sub-path exports (`/storage`, `/remote`, `/management`)
+- Vitest for testing

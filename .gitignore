@@ -11,6 +11,8 @@ coverage
 dist
 .vite
 .turbo
+.vitepress/dist
+.vitepress/cache
 
 # Environment files
 .env

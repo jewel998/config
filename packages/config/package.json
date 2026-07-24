@@ -21,6 +21,10 @@
     "./remote/firebase": {
       "types": "./dist/remote/firebase-adapter.d.ts",
       "import": "./dist/remote/firebase-adapter.js"
+    },
+    "./management": {
+      "types": "./dist/management/index.d.ts",
+      "import": "./dist/management/index.js"
     }
   },
   "files": [

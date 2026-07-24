@@ -11,8 +11,11 @@
   "license": "ISC",
   "scripts": {
     "build": "pnpm --filter @jewel998/config run build",
+    "build:functions": "pnpm --filter @jewel998/config-functions run build",
+    "build:docs": "pnpm --filter @jewel998/config-docs run build",
+    "build:portal": "pnpm --filter @jewel998/config-portal run build",
     "test": "pnpm --filter @jewel998/config run test",
-    "lint": "oxlint packages/config/src apps/portal/src apps/docs/src",
+    "lint": "oxlint packages/config/src apps/portal/src functions/src",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,html}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,html}\"",
     "prepare": "husky",
