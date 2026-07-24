@@ -1,7 +1,11 @@
 import { i18n } from "@lingui/core";
 
-// Activate with empty messages immediately so I18nProvider doesn't throw before catalog loads
-i18n.loadAndActivate({ locale: "en", messages: {} });
+import { messages as arMessages } from "../locales/ar.po";
+import { messages as enMessages } from "../locales/en.po";
+import { messages as esMessages } from "../locales/es.po";
+import { messages as frMessages } from "../locales/fr.po";
+import { messages as hiMessages } from "../locales/hi.po";
+import { messages as zhMessages } from "../locales/zh.po";
 
 export type SupportedLocale = "en" | "es" | "fr" | "ar" | "zh" | "hi";
 
@@ -21,6 +25,15 @@ export const isRtl = (locale: SupportedLocale): boolean =>
 
 const STORAGE_KEY = "locale";
 
+const catalogs: Record<SupportedLocale, Record<string, string>> = {
+  en: enMessages as Record<string, string>,
+  es: esMessages as Record<string, string>,
+  fr: frMessages as Record<string, string>,
+  ar: arMessages as Record<string, string>,
+  zh: zhMessages as Record<string, string>,
+  hi: hiMessages as Record<string, string>,
+};
+
 export const getStoredLocale = (): SupportedLocale => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -39,10 +52,12 @@ export const storeLocale = (locale: SupportedLocale): void => {
   }
 };
 
-export async function loadCatalog(locale: SupportedLocale): Promise<void> {
-  const { messages } = await import(`../locales/${locale}.js`);
-  i18n.loadAndActivate({ locale, messages });
+export function loadCatalog(locale: SupportedLocale): void {
+  i18n.loadAndActivate({ locale, messages: catalogs[locale] });
   document.documentElement.dir = isRtl(locale) ? "rtl" : "ltr";
 }
+
+// Initialize immediately with stored locale
+loadCatalog(getStoredLocale());
 
 export { i18n };

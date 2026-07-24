@@ -83,9 +83,9 @@ const LanguageSwitcher = () => {
   const currentLocale = i18n.locale as SupportedLocale;
   const [open, setOpen] = useState(false);
 
-  const handleChange = async (locale: SupportedLocale) => {
+  const handleChange = (locale: SupportedLocale) => {
     storeLocale(locale);
-    await loadCatalog(locale);
+    loadCatalog(locale);
     setOpen(false);
   };
 

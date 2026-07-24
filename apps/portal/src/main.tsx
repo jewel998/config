@@ -3,7 +3,7 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import { i18n, getStoredLocale, loadCatalog } from "./lib/i18n";
+import { i18n } from "./lib/i18n";
 import { ThemeProvider } from "./lib/theme";
 import { routeTree } from "./routeTree.gen";
 import { useAuthStore } from "./stores/auth-store";
@@ -22,11 +22,6 @@ declare module "@tanstack/react-router" {
 
 // Initialize auth listener (runs once)
 useAuthStore.getState()._initialize();
-
-// Load locale catalog (non-blocking)
-loadCatalog(getStoredLocale()).catch(() => {
-  i18n.loadAndActivate({ locale: "en", messages: {} });
-});
 
 const root = document.getElementById("root");
 
