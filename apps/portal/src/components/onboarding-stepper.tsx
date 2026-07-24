@@ -142,17 +142,17 @@ export const OnboardingStepper = () => {
               )}
 
               {/* Step circle */}
-              <div className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center">
+              <div className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center bg-background">
                 {isCompleted ? (
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-white">
                     <Check className="h-4 w-4" />
                   </div>
                 ) : isCurrent ? (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#5683da] bg-[#5683da]/10">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#5683da] bg-background">
                     <CircleDot className="h-4 w-4 text-[#5683da]" />
                   </div>
                 ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-dashed border-muted-foreground/30">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-dashed border-muted-foreground/30 bg-background">
                     <span className="text-xs text-muted-foreground">
                       {idx + 1}
                     </span>

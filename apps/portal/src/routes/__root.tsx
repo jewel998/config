@@ -366,94 +366,109 @@ const LoginPage = () => {
   const { signIn } = useAuth();
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left side - branding */}
-      <div className="hidden flex-1 items-center justify-center bg-[#5683da] lg:flex">
-        <div className="max-w-md space-y-4 px-8 text-white">
-          <Settings className="h-12 w-12" />
-          <h1 className="text-3xl font-bold">
-            <Trans>Config Portal</Trans>
-          </h1>
-          <p className="text-lg opacity-90">
-            <Trans>
-              Manage multi-tenant configuration with versioned publish flows,
-              offline-ready cache, and real-time remote sync.
-            </Trans>
-          </p>
-          <ul className="space-y-2 pt-4 text-sm opacity-80">
-            <li className="flex items-center gap-2">
-              <Trans>✓ Multi-tenant & multi-project scoping</Trans>
-            </li>
-            <li className="flex items-center gap-2">
-              <Trans>✓ Environment-specific overrides</Trans>
-            </li>
-            <li className="flex items-center gap-2">
-              <Trans>✓ Versioned config publishing</Trans>
-            </li>
-            <li className="flex items-center gap-2">
-              <Trans>✓ Firebase-powered real-time sync</Trans>
-            </li>
-          </ul>
-        </div>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4">
+      {/* Background gradient decoration */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-1/2 left-1/2 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-[#5683da]/5 blur-3xl" />
+        <div className="absolute -bottom-1/2 right-0 h-[600px] w-[600px] rounded-full bg-[#ff8964]/5 blur-3xl" />
       </div>
 
-      {/* Right side - sign in */}
-      <div className="flex flex-1 flex-col items-center justify-center px-6">
-        <div className="w-full max-w-sm space-y-8">
-          <div className="space-y-2 text-center">
-            <Settings className="mx-auto h-10 w-10 text-[#5683da] lg:hidden" />
-            <h1 className="text-2xl font-bold tracking-tight">
-              <Trans>Welcome back</Trans>
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              <Trans>Sign in to manage your configuration platform.</Trans>
-            </p>
+      <div className="relative z-10 w-full max-w-md space-y-8">
+        {/* Logo + heading */}
+        <div className="text-center">
+          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#5683da]/10">
+            <Settings className="h-7 w-7 text-[#5683da]" />
           </div>
-
-          <Button
-            onClick={signIn}
-            size="lg"
-            className="w-full gap-2 rounded-full"
-          >
-            <svg className="h-5 w-5" viewBox="0 0 24 24">
-              <path
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                fill="#4285F4"
-              />
-              <path
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                fill="#34A853"
-              />
-              <path
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                fill="#FBBC05"
-              />
-              <path
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                fill="#EA4335"
-              />
-            </svg>
-            <Trans>Sign in with Google</Trans>
-          </Button>
-
-          <p className="text-center text-xs text-muted-foreground">
-            <Trans>Protected by Firebase Authentication.</Trans>
-            <br />
-            <Trans>Only authorized team members can access this portal.</Trans>
+          <h1 className="text-3xl font-bold tracking-tight">
+            <Trans>Config Portal</Trans>
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            <Trans>Sign in to manage your configuration platform.</Trans>
           </p>
+        </div>
 
-          <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-3 dark:border-amber-900/50 dark:bg-amber-950/20">
-            <p className="text-center text-xs text-amber-800 dark:text-amber-200">
-              <strong>
-                <Trans>Access is by request only.</Trans>
-              </strong>
-              <br />
-              <Trans>
-                Rights of Admission Reserved. Contact the project owner to
-                request access.
-              </Trans>
+        {/* Sign in card */}
+        <div className="rounded-2xl border bg-card p-8">
+          <div className="space-y-6">
+            {/* Features */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-lg bg-muted/50 p-3">
+                <p className="text-xs font-medium">
+                  <Trans>Projects</Trans>
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  <Trans>Multi-project scoping</Trans>
+                </p>
+              </div>
+              <div className="rounded-lg bg-muted/50 p-3">
+                <p className="text-xs font-medium">
+                  <Trans>Environments</Trans>
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  <Trans>Per-env overrides</Trans>
+                </p>
+              </div>
+              <div className="rounded-lg bg-muted/50 p-3">
+                <p className="text-xs font-medium">
+                  <Trans>Versioned</Trans>
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  <Trans>Config publishing</Trans>
+                </p>
+              </div>
+              <div className="rounded-lg bg-muted/50 p-3">
+                <p className="text-xs font-medium">
+                  <Trans>Real-time</Trans>
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  <Trans>Firebase sync</Trans>
+                </p>
+              </div>
+            </div>
+
+            {/* Sign in button */}
+            <Button
+              onClick={signIn}
+              size="lg"
+              className="w-full gap-2 rounded-full"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 24 24">
+                <path
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  fill="#4285F4"
+                />
+                <path
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  fill="#34A853"
+                />
+                <path
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  fill="#FBBC05"
+                />
+                <path
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  fill="#EA4335"
+                />
+              </svg>
+              <Trans>Sign in with Google</Trans>
+            </Button>
+
+            <p className="text-center text-xs text-muted-foreground">
+              <Trans>Protected by Firebase Authentication.</Trans>
             </p>
           </div>
+        </div>
+
+        {/* Beta notice */}
+        <div className="text-center">
+          <Badge className="rounded-full bg-[#ff8964]/12 text-[10px] font-semibold uppercase tracking-wider text-[#ff8964] hover:bg-[#ff8964]/12">
+            Beta
+          </Badge>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            <Trans>
+              Access is by request only. Rights of Admission Reserved.
+            </Trans>
+          </p>
         </div>
       </div>
     </div>
