@@ -1,3 +1,6 @@
+// Auth blocking functions (access control)
+export { beforeCreate, beforeSignIn } from "./auth";
+
 // SDK endpoint
 export { getConfig } from "./getConfig";
 

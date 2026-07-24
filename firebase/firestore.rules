@@ -44,6 +44,12 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Allowed users — only accessible via Admin SDK (Cloud Functions)
+    // To grant portal access, add a doc: /allowedUsers/{email}
+    match /allowedUsers/{email} {
+      allow read, write: if false;
+    }
+
     // Helper functions
     function isProjectOwner(projectId) {
       return get(/databases/$(database)/documents/projects/$(projectId))
