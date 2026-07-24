@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 export interface CacheStorage {
   get<T>(key: string): Promise<T | undefined> | T | undefined;
   set<T>(key: string, value: T): Promise<void> | void;

@@ -1,5 +1,43 @@
-import { resolveConfigValue } from "./core/resolver";
 import type { CacheStorage } from "./cache/storage";
+import { resolveConfigValue } from "./core/resolver";
+import type { RemoteConfigProvider } from "./remote/provider";
+import type {
+  ConfigDefinition,
+  ConfigResolveContext,
+  ConfigVersionRecord,
+  EnvironmentRecord,
+  ProjectRecord,
+  TenantRecord,
+} from "./types";
+
+export type {
+  ConfigDefinition,
+  ConfigResolveContext,
+  ConfigVersionRecord,
+  EnvironmentRecord,
+  ProjectRecord,
+  TenantRecord,
+} from "./types";
+
+export type { ConfigScope, ConfigSourceMode } from "./types";
+export type { CacheStorage } from "./cache/storage";
+export type { RemoteConfigProvider } from "./remote/provider";
+export { createExampleClient } from "./example";
+
+export interface ConfigClient {
+  getValue<T>(
+    key: string,
+    context?: ConfigResolveContext,
+  ): Promise<T | undefined>;
+  getFlag(key: string, context?: ConfigResolveContext): Promise<boolean>;
+  refresh(): Promise<void>;
+}
+
+export interface ConfigClientOptions {
+  definitions: ConfigDefinition[];
+  storage?: CacheStorage;
+  remoteProvider?: RemoteConfigProvider;
+}
 
 const buildScopedKey = (
   key: string,
@@ -63,49 +101,11 @@ const resolveCachedValue = async <T>(
 
   return undefined;
 };
-import type { RemoteConfigProvider } from "./remote/provider";
-import type {
-  ConfigDefinition,
-  ConfigResolveContext,
-  ConfigVersionRecord,
-  EnvironmentRecord,
-  ProjectRecord,
-  TenantRecord,
-} from "./types";
-
-export type {
-  ConfigDefinition,
-  ConfigResolveContext,
-  ConfigVersionRecord,
-  EnvironmentRecord,
-  ProjectRecord,
-  TenantRecord,
-} from "./types";
-
-export type { ConfigScope, ConfigSourceMode } from "./types";
-export { createExampleClient } from "./example";
-
-export interface ConfigClient {
-  getValue<T>(
-    key: string,
-    context?: ConfigResolveContext,
-  ): Promise<T | undefined>;
-  getFlag(key: string, context?: ConfigResolveContext): Promise<boolean>;
-  refresh(): Promise<void>;
-}
-
-export interface ConfigClientOptions {
-  definitions: ConfigDefinition[];
-  storage?: CacheStorage;
-  remoteProvider?: RemoteConfigProvider;
-}
 
 export const createConfigClient = (
   options: ConfigClientOptions,
 ): ConfigClient => {
-  const storage = options.storage;
-  const remoteProvider = options.remoteProvider;
-  const definitions = options.definitions;
+  const { storage, remoteProvider, definitions } = options;
 
   const getValue = async <T>(
     key: string,

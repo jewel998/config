@@ -1,4 +1,4 @@
-import type { ConfigDefinition, ConfigResolveContext } from "../index";
+import type { ConfigDefinition, ConfigResolveContext } from "../types";
 
 export interface ConfigResolverOptions {
   definitions: ConfigDefinition[];

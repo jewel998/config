@@ -9,12 +9,33 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./storage": {
+      "types": "./dist/cache/storage.d.ts",
+      "import": "./dist/cache/storage.js"
+    },
+    "./remote": {
+      "types": "./dist/remote/provider.d.ts",
+      "import": "./dist/remote/provider.js"
+    },
+    "./remote/firebase": {
+      "types": "./dist/remote/firebase-adapter.d.ts",
+      "import": "./dist/remote/firebase-adapter.js"
     }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
     "test": "vitest run",
-    "lint": "oxlint src"
+    "lint": "oxlint src",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

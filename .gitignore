@@ -8,9 +8,9 @@ coverage
 *.log
 
 # Build outputs
-/dist
-/.vite
-/.turbo
+dist
+.vite
+.turbo
 
 # Environment files
 .env
