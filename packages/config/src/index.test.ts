@@ -3,9 +3,9 @@ import { describe, expect, it } from "vitest";
 import type { CacheStorage } from "./cache/storage";
 import type { RemoteConfigProvider } from "./remote/provider";
 
-import { createConfigClient, createExampleClient } from "./index";
+import { createConfigClient } from "./index";
 
-describe("createConfigClient", () => {
+describe("createConfigClient (legacy)", () => {
   it("returns cached values for offline-first keys", async () => {
     const storage: CacheStorage = {
       get: async <T>(key: string) => {
@@ -104,11 +104,5 @@ describe("createConfigClient", () => {
     await expect(
       client.getValue<boolean>("feature.beta", { projectId: "proj-123" }),
     ).resolves.toBe(true);
-  });
-
-  it("exposes the example client factory from the package entrypoint", async () => {
-    const client = createExampleClient();
-
-    await expect(client.getValue<boolean>("feature.beta")).resolves.toBe(true);
   });
 });

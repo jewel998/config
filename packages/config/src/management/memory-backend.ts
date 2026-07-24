@@ -2,7 +2,6 @@ import type {
   ConfigVersionRecord,
   EnvironmentRecord,
   ProjectRecord,
-  TenantRecord,
 } from "../types";
 
 import type { ConfigManagerBackend } from "./manager";
@@ -11,7 +10,6 @@ import type { ConfigManagerBackend } from "./manager";
  * In-memory backend for testing and local development.
  */
 export const createMemoryBackend = (): ConfigManagerBackend => {
-  const tenants: TenantRecord[] = [];
   const projects: ProjectRecord[] = [];
   const environments: EnvironmentRecord[] = [];
   const versions: ConfigVersionRecord[] = [];
@@ -23,54 +21,39 @@ export const createMemoryBackend = (): ConfigManagerBackend => {
   };
 
   return {
-    createTenant: async (name, ownerId) => {
-      const tenant: TenantRecord = {
+    createProject: async (name, ownerId) => {
+      const project: ProjectRecord = {
         id: nextId(),
         name,
         ownerId,
+        authorizedUsers: [ownerId],
         createdAt: new Date().toISOString(),
-      };
-      tenants.push(tenant);
-      return tenant;
-    },
-
-    deleteTenant: async (tenantId) => {
-      const index = tenants.findIndex((t) => t.id === tenantId);
-      if (index >= 0) {
-        tenants.splice(index, 1);
-      }
-    },
-
-    listTenants: async (ownerId) =>
-      tenants.filter((t) => t.ownerId === ownerId),
-
-    createProject: async (tenantId, name) => {
-      const project: ProjectRecord = {
-        id: nextId(),
-        tenantId,
-        name,
-        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
       projects.push(project);
       return project;
     },
 
-    deleteProject: async (_tenantId, projectId) => {
+    deleteProject: async (projectId) => {
       const index = projects.findIndex((p) => p.id === projectId);
       if (index >= 0) {
         projects.splice(index, 1);
       }
     },
 
-    listProjects: async (tenantId) =>
-      projects.filter((p) => p.tenantId === tenantId),
+    listProjects: async (ownerId) =>
+      projects.filter(
+        (p) => p.ownerId === ownerId || p.authorizedUsers.includes(ownerId),
+      ),
 
     createEnvironment: async (projectId, name) => {
       const environment: EnvironmentRecord = {
         id: nextId(),
         projectId,
         name,
+        allowedDomains: [],
         createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
       environments.push(environment);
       return environment;

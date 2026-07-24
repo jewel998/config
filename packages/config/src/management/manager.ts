@@ -2,17 +2,12 @@ import type {
   ConfigVersionRecord,
   EnvironmentRecord,
   ProjectRecord,
-  TenantRecord,
 } from "../types";
 
 export interface ConfigManagerBackend {
-  createTenant(name: string, ownerId: string): Promise<TenantRecord>;
-  deleteTenant(tenantId: string): Promise<void>;
-  listTenants(ownerId: string): Promise<TenantRecord[]>;
-
-  createProject(tenantId: string, name: string): Promise<ProjectRecord>;
-  deleteProject(tenantId: string, projectId: string): Promise<void>;
-  listProjects(tenantId: string): Promise<ProjectRecord[]>;
+  createProject(name: string, ownerId: string): Promise<ProjectRecord>;
+  deleteProject(projectId: string): Promise<void>;
+  listProjects(ownerId: string): Promise<ProjectRecord[]>;
 
   createEnvironment(
     projectId: string,
@@ -39,15 +34,10 @@ export interface ConfigManagerOptions {
 }
 
 export interface ConfigManager {
-  tenants: {
-    create(name: string, ownerId: string): Promise<TenantRecord>;
-    delete(tenantId: string): Promise<void>;
-    list(ownerId: string): Promise<TenantRecord[]>;
-  };
   projects: {
-    create(tenantId: string, name: string): Promise<ProjectRecord>;
-    delete(tenantId: string, projectId: string): Promise<void>;
-    list(tenantId: string): Promise<ProjectRecord[]>;
+    create(name: string, ownerId: string): Promise<ProjectRecord>;
+    delete(projectId: string): Promise<void>;
+    list(ownerId: string): Promise<ProjectRecord[]>;
   };
   environments: {
     create(projectId: string, name: string): Promise<EnvironmentRecord>;
@@ -72,16 +62,10 @@ export const createConfigManager = (
   const { backend } = options;
 
   return {
-    tenants: {
-      create: (name, ownerId) => backend.createTenant(name, ownerId),
-      delete: (tenantId) => backend.deleteTenant(tenantId),
-      list: (ownerId) => backend.listTenants(ownerId),
-    },
     projects: {
-      create: (tenantId, name) => backend.createProject(tenantId, name),
-      delete: (tenantId, projectId) =>
-        backend.deleteProject(tenantId, projectId),
-      list: (tenantId) => backend.listProjects(tenantId),
+      create: (name, ownerId) => backend.createProject(name, ownerId),
+      delete: (projectId) => backend.deleteProject(projectId),
+      list: (ownerId) => backend.listProjects(ownerId),
     },
     environments: {
       create: (projectId, name) => backend.createEnvironment(projectId, name),

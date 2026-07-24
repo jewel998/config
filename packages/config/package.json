@@ -11,16 +11,8 @@
       "import": "./dist/index.js"
     },
     "./storage": {
-      "types": "./dist/cache/storage.d.ts",
-      "import": "./dist/cache/storage.js"
-    },
-    "./remote": {
-      "types": "./dist/remote/provider.d.ts",
-      "import": "./dist/remote/provider.js"
-    },
-    "./remote/firebase": {
-      "types": "./dist/remote/firebase-adapter.d.ts",
-      "import": "./dist/remote/firebase-adapter.js"
+      "types": "./dist/cache/memoryStorage.d.ts",
+      "import": "./dist/cache/memoryStorage.js"
     },
     "./management": {
       "types": "./dist/management/index.d.ts",

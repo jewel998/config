@@ -1,4 +1,18 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "clientIds",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "token", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "configs",
+      "queryScope": "COLLECTION",
+      "fields": [{ "fieldPath": "updatedAt", "order": "DESCENDING" }]
+    }
+  ],
   "fieldOverrides": []
 }

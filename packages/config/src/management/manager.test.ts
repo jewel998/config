@@ -10,54 +10,28 @@ describe("createConfigManager", () => {
     return { manager };
   };
 
-  describe("tenants", () => {
-    it("creates and lists tenants", async () => {
-      const { manager } = setup();
-
-      const tenant = await manager.tenants.create("Acme Corp", "user-1");
-
-      expect(tenant.name).toBe("Acme Corp");
-      expect(tenant.ownerId).toBe("user-1");
-      expect(tenant.id).toBeDefined();
-
-      const list = await manager.tenants.list("user-1");
-      expect(list).toHaveLength(1);
-      expect(list[0]?.id).toBe(tenant.id);
-    });
-
-    it("deletes a tenant", async () => {
-      const { manager } = setup();
-
-      const tenant = await manager.tenants.create("Acme Corp", "user-1");
-      await manager.tenants.delete(tenant.id);
-
-      const list = await manager.tenants.list("user-1");
-      expect(list).toHaveLength(0);
-    });
-  });
-
   describe("projects", () => {
-    it("creates and lists projects within a tenant", async () => {
+    it("creates and lists projects", async () => {
       const { manager } = setup();
 
-      const tenant = await manager.tenants.create("Acme Corp", "user-1");
-      const project = await manager.projects.create(tenant.id, "Dashboard");
+      const project = await manager.projects.create("Dashboard", "user-1");
 
       expect(project.name).toBe("Dashboard");
-      expect(project.tenantId).toBe(tenant.id);
+      expect(project.ownerId).toBe("user-1");
+      expect(project.id).toBeDefined();
 
-      const list = await manager.projects.list(tenant.id);
+      const list = await manager.projects.list("user-1");
       expect(list).toHaveLength(1);
+      expect(list[0]?.id).toBe(project.id);
     });
 
     it("deletes a project", async () => {
       const { manager } = setup();
 
-      const tenant = await manager.tenants.create("Acme Corp", "user-1");
-      const project = await manager.projects.create(tenant.id, "Dashboard");
-      await manager.projects.delete(tenant.id, project.id);
+      const project = await manager.projects.create("Dashboard", "user-1");
+      await manager.projects.delete(project.id);
 
-      const list = await manager.projects.list(tenant.id);
+      const list = await manager.projects.list("user-1");
       expect(list).toHaveLength(0);
     });
   });
@@ -66,8 +40,7 @@ describe("createConfigManager", () => {
     it("creates and lists environments within a project", async () => {
       const { manager } = setup();
 
-      const tenant = await manager.tenants.create("Acme Corp", "user-1");
-      const project = await manager.projects.create(tenant.id, "Dashboard");
+      const project = await manager.projects.create("Dashboard", "user-1");
       const env = await manager.environments.create(project.id, "staging");
 
       expect(env.name).toBe("staging");
@@ -80,8 +53,7 @@ describe("createConfigManager", () => {
     it("deletes an environment", async () => {
       const { manager } = setup();
 
-      const tenant = await manager.tenants.create("Acme Corp", "user-1");
-      const project = await manager.projects.create(tenant.id, "Dashboard");
+      const project = await manager.projects.create("Dashboard", "user-1");
       const env = await manager.environments.create(project.id, "staging");
       await manager.environments.delete(project.id, env.id);
 
@@ -94,8 +66,7 @@ describe("createConfigManager", () => {
     it("creates a draft version", async () => {
       const { manager } = setup();
 
-      const tenant = await manager.tenants.create("Acme Corp", "user-1");
-      const project = await manager.projects.create(tenant.id, "Dashboard");
+      const project = await manager.projects.create("Dashboard", "user-1");
 
       const version = await manager.versions.create(project.id, "1.0.0", {
         "feature.beta": true,
@@ -109,8 +80,7 @@ describe("createConfigManager", () => {
     it("publishes a version", async () => {
       const { manager } = setup();
 
-      const tenant = await manager.tenants.create("Acme Corp", "user-1");
-      const project = await manager.projects.create(tenant.id, "Dashboard");
+      const project = await manager.projects.create("Dashboard", "user-1");
       const version = await manager.versions.create(project.id, "1.0.0", {
         "feature.beta": true,
       });
@@ -123,8 +93,7 @@ describe("createConfigManager", () => {
     it("rejects publishing an already-published version", async () => {
       const { manager } = setup();
 
-      const tenant = await manager.tenants.create("Acme Corp", "user-1");
-      const project = await manager.projects.create(tenant.id, "Dashboard");
+      const project = await manager.projects.create("Dashboard", "user-1");
       const version = await manager.versions.create(project.id, "1.0.0", {
         "feature.beta": true,
       });
@@ -139,8 +108,7 @@ describe("createConfigManager", () => {
     it("lists versions for a project", async () => {
       const { manager } = setup();
 
-      const tenant = await manager.tenants.create("Acme Corp", "user-1");
-      const project = await manager.projects.create(tenant.id, "Dashboard");
+      const project = await manager.projects.create("Dashboard", "user-1");
 
       await manager.versions.create(project.id, "1.0.0", { a: 1 });
       await manager.versions.create(project.id, "1.1.0", { a: 2 });

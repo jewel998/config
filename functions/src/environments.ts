@@ -1,22 +1,19 @@
 import { getFirestore } from "firebase-admin/firestore";
-import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { HttpsError, onCall } from "firebase-functions/v2/https";
 
 export const createEnvironment = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
 
-  const { tenantId, projectId, name } = request.data as {
-    tenantId: string;
+  const { projectId, name, allowedDomains } = request.data as {
     projectId: string;
     name: string;
+    allowedDomains?: string[];
   };
 
-  if (!tenantId || !projectId) {
-    throw new HttpsError(
-      "invalid-argument",
-      "Tenant ID and Project ID are required.",
-    );
+  if (!projectId) {
+    throw new HttpsError("invalid-argument", "Project ID is required.");
   }
 
   if (!name || typeof name !== "string" || name.trim().length === 0) {
@@ -24,12 +21,7 @@ export const createEnvironment = onCall(async (request) => {
   }
 
   const db = getFirestore();
-  const projectRef = db
-    .collection("tenants")
-    .doc(tenantId)
-    .collection("projects")
-    .doc(projectId);
-
+  const projectRef = db.collection("projects").doc(projectId);
   const projectDoc = await projectRef.get();
 
   if (!projectDoc.exists) {
@@ -42,7 +34,9 @@ export const createEnvironment = onCall(async (request) => {
     id: envRef.id,
     projectId,
     name: name.trim(),
+    allowedDomains: allowedDomains ?? [],
     createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   await envRef.set(environment);
@@ -55,23 +49,20 @@ export const deleteEnvironment = onCall(async (request) => {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
 
-  const { tenantId, projectId, environmentId } = request.data as {
-    tenantId: string;
+  const { projectId, environmentId } = request.data as {
     projectId: string;
     environmentId: string;
   };
 
-  if (!tenantId || !projectId || !environmentId) {
+  if (!projectId || !environmentId) {
     throw new HttpsError(
       "invalid-argument",
-      "Tenant ID, Project ID, and Environment ID are required.",
+      "Project ID and Environment ID are required.",
     );
   }
 
   const db = getFirestore();
   const envRef = db
-    .collection("tenants")
-    .doc(tenantId)
     .collection("projects")
     .doc(projectId)
     .collection("environments")
@@ -84,6 +75,60 @@ export const deleteEnvironment = onCall(async (request) => {
   }
 
   await envRef.delete();
+
+  return { success: true };
+});
+
+export const updateEnvironmentDomains = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required.");
+  }
+
+  const { projectId, environmentId, allowedDomains } = request.data as {
+    projectId: string;
+    environmentId: string;
+    allowedDomains: string[];
+  };
+
+  if (!projectId || !environmentId) {
+    throw new HttpsError(
+      "invalid-argument",
+      "Project ID and Environment ID are required.",
+    );
+  }
+
+  if (!Array.isArray(allowedDomains)) {
+    throw new HttpsError(
+      "invalid-argument",
+      "allowedDomains must be an array.",
+    );
+  }
+
+  const db = getFirestore();
+
+  // Verify project ownership
+  const projectDoc = await db.collection("projects").doc(projectId).get();
+  if (!projectDoc.exists) {
+    throw new HttpsError("not-found", "Project not found.");
+  }
+  const projectData = projectDoc.data();
+  if (projectData?.ownerId !== request.auth.uid) {
+    throw new HttpsError(
+      "permission-denied",
+      "Only the project owner can update domains.",
+    );
+  }
+
+  const envRef = db
+    .collection("projects")
+    .doc(projectId)
+    .collection("environments")
+    .doc(environmentId);
+
+  await envRef.update({
+    allowedDomains,
+    updatedAt: new Date().toISOString(),
+  });
 
   return { success: true };
 });
