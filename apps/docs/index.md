@@ -10,6 +10,9 @@ hero:
     - theme: alt
       text: API Reference
       link: /api/
+    - theme: alt
+      text: Sign In
+      link: /portal/
 features:
   - title: Multi-tenant & Multi-project
     details: Scope configuration to tenants, projects, and environments with a single client.
