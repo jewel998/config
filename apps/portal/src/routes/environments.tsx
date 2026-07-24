@@ -1,3 +1,5 @@
+import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   addDoc,
@@ -122,9 +124,13 @@ const EnvironmentsPage = () => {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Environments</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            <Trans>Environments</Trans>
+          </h1>
           <p className="text-sm text-[var(--muted-foreground)]">
-            Manage deployment targets, allowed domains, and client keys.
+            <Trans>
+              Manage deployment targets, allowed domains, and client keys.
+            </Trans>
           </p>
         </div>
         <Button
@@ -133,20 +139,22 @@ const EnvironmentsPage = () => {
           disabled={!selectedProjectId}
         >
           <Plus className="h-4 w-4" />
-          New Environment
+          <Trans>New Environment</Trans>
         </Button>
       </div>
 
       {/* Project selector */}
       <div className="flex items-center gap-3">
-        <label className="text-sm font-medium">Project:</label>
+        <label className="text-sm font-medium">
+          <Trans>Project:</Trans>
+        </label>
         <select
           value={selectedProjectId}
           onChange={(e) => setSelectedProjectId(e.target.value)}
           className="rounded-md border bg-[var(--background)] px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[var(--ring)]"
         >
           {projects.length === 0 && (
-            <option value="">No projects available</option>
+            <option value="">{t`No projects available`}</option>
           )}
           {projects.map((p) => (
             <option key={p.id} value={p.id}>
@@ -162,7 +170,7 @@ const EnvironmentsPage = () => {
           <CardContent className="flex items-center gap-3 pt-6">
             <input
               type="text"
-              placeholder="Environment name (e.g. production, staging)"
+              placeholder={t`Environment name (e.g. production, staging)`}
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleCreate()}
@@ -173,7 +181,7 @@ const EnvironmentsPage = () => {
               onClick={handleCreate}
               disabled={creating || !newName.trim()}
             >
-              {creating ? "Creating..." : "Create"}
+              {creating ? <Trans>Creating...</Trans> : <Trans>Create</Trans>}
             </Button>
             <Button
               variant="ghost"
@@ -182,7 +190,7 @@ const EnvironmentsPage = () => {
                 setNewName("");
               }}
             >
-              Cancel
+              <Trans>Cancel</Trans>
             </Button>
           </CardContent>
         </Card>
@@ -197,9 +205,11 @@ const EnvironmentsPage = () => {
                 <Server className="h-8 w-8 text-[var(--muted-foreground)]" />
               </div>
               <div className="text-center">
-                <p className="font-medium">No project selected</p>
+                <p className="font-medium">
+                  <Trans>No project selected</Trans>
+                </p>
                 <p className="text-sm text-[var(--muted-foreground)]">
-                  Create a project first, then add environments.
+                  <Trans>Create a project first, then add environments.</Trans>
                 </p>
               </div>
             </div>
@@ -213,9 +223,13 @@ const EnvironmentsPage = () => {
                 <Server className="h-8 w-8 text-[var(--muted-foreground)]" />
               </div>
               <div className="text-center">
-                <p className="font-medium">No environments yet</p>
+                <p className="font-medium">
+                  <Trans>No environments yet</Trans>
+                </p>
                 <p className="text-sm text-[var(--muted-foreground)]">
-                  Add environments like production, staging, or development.
+                  <Trans>
+                    Add environments like production, staging, or development.
+                  </Trans>
                 </p>
               </div>
               <Button
@@ -224,7 +238,7 @@ const EnvironmentsPage = () => {
                 onClick={() => setShowForm(true)}
               >
                 <Plus className="h-4 w-4" />
-                Create Environment
+                <Trans>Create Environment</Trans>
               </Button>
             </div>
           </CardContent>
@@ -248,7 +262,7 @@ const EnvironmentsPage = () => {
                 <div className="flex items-center gap-2">
                   <Globe className="h-3.5 w-3.5 text-[var(--muted-foreground)]" />
                   <span className="text-xs text-[var(--muted-foreground)]">
-                    Allowed domains:
+                    <Trans>Allowed domains:</Trans>
                   </span>
                 </div>
                 {env.allowedDomains.length > 0 ? (
@@ -265,11 +279,13 @@ const EnvironmentsPage = () => {
                   </div>
                 ) : (
                   <p className="text-xs text-[var(--muted-foreground)] italic">
-                    None configured
+                    <Trans>None configured</Trans>
                   </p>
                 )}
                 <p className="text-xs text-[var(--muted-foreground)]">
-                  Created {new Date(env.createdAt).toLocaleDateString()}
+                  <Trans>
+                    Created {new Date(env.createdAt).toLocaleDateString()}
+                  </Trans>
                 </p>
               </CardContent>
             </Card>

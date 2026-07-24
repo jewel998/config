@@ -1,3 +1,5 @@
+import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   addDoc,
@@ -77,14 +79,16 @@ const ProjectsPage = () => {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Projects</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            <Trans>Projects</Trans>
+          </h1>
           <p className="text-sm text-[var(--muted-foreground)]">
-            Manage your projects, environments, and config keys.
+            <Trans>Manage your projects, environments, and config keys.</Trans>
           </p>
         </div>
         <Button className="gap-2" onClick={() => setShowForm(true)}>
           <Plus className="h-4 w-4" />
-          New Project
+          <Trans>New Project</Trans>
         </Button>
       </div>
 
@@ -94,7 +98,7 @@ const ProjectsPage = () => {
           <CardContent className="flex items-center gap-3 pt-6">
             <input
               type="text"
-              placeholder="Project name"
+              placeholder={t`Project name`}
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleCreate()}
@@ -105,7 +109,7 @@ const ProjectsPage = () => {
               onClick={handleCreate}
               disabled={creating || !newName.trim()}
             >
-              {creating ? "Creating..." : "Create"}
+              {creating ? <Trans>Creating...</Trans> : <Trans>Create</Trans>}
             </Button>
             <Button
               variant="ghost"
@@ -114,7 +118,7 @@ const ProjectsPage = () => {
                 setNewName("");
               }}
             >
-              Cancel
+              <Trans>Cancel</Trans>
             </Button>
           </CardContent>
         </Card>
@@ -129,10 +133,14 @@ const ProjectsPage = () => {
                 <FolderKanban className="h-8 w-8 text-[var(--muted-foreground)]" />
               </div>
               <div className="text-center">
-                <p className="font-medium">No projects yet</p>
+                <p className="font-medium">
+                  <Trans>No projects yet</Trans>
+                </p>
                 <p className="text-sm text-[var(--muted-foreground)]">
-                  Create your first project to start managing feature flags and
-                  configs.
+                  <Trans>
+                    Create your first project to start managing feature flags
+                    and configs.
+                  </Trans>
                 </p>
               </div>
               <Button
@@ -141,7 +149,7 @@ const ProjectsPage = () => {
                 onClick={() => setShowForm(true)}
               >
                 <Plus className="h-4 w-4" />
-                Create Project
+                <Trans>Create Project</Trans>
               </Button>
             </div>
           </CardContent>
@@ -163,7 +171,9 @@ const ProjectsPage = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-[var(--muted-foreground)]">
-                  Created {new Date(project.createdAt).toLocaleDateString()}
+                  <Trans>
+                    Created {new Date(project.createdAt).toLocaleDateString()}
+                  </Trans>
                 </p>
               </CardContent>
             </Card>

@@ -1,0 +1,266 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-07-24 19:09+0530\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: ar\n"
+
+#: src/routes/__root.tsx:245
+msgid "✓ Environment-specific overrides"
+msgstr ""
+
+#: src/routes/__root.tsx:251
+msgid "✓ Firebase-powered real-time sync"
+msgstr ""
+
+#: src/routes/__root.tsx:242
+msgid "✓ Multi-tenant & multi-project scoping"
+msgstr ""
+
+#: src/routes/__root.tsx:248
+msgid "✓ Versioned config publishing"
+msgstr ""
+
+#: src/routes/__root.tsx:199
+msgid "Access Denied"
+msgstr ""
+
+#: src/routes/__root.tsx:303
+msgid "Access is by request only."
+msgstr ""
+
+#: src/routes/index.tsx:78
+msgid "Active clientIds"
+msgstr ""
+
+#: src/routes/index.tsx:66
+msgid "Active projects"
+msgstr ""
+
+#: src/routes/index.tsx:170
+msgid "Add an Environment"
+msgstr ""
+
+#: src/routes/environments.tsx:232
+msgid "Add environments like production, staging, or development."
+msgstr ""
+
+#: src/routes/environments.tsx:267
+msgid "Allowed domains:"
+msgstr ""
+
+#: src/routes/environments.tsx:193
+#: src/routes/projects.tsx:121
+msgid "Cancel"
+msgstr ""
+
+#: src/routes/index.tsx:76
+msgid "Client Keys"
+msgstr ""
+
+#: src/routes/__root.tsx:96
+#: src/routes/__root.tsx:175
+#: src/routes/__root.tsx:232
+msgid "Config Portal"
+msgstr ""
+
+#: src/routes/environments.tsx:184
+#: src/routes/projects.tsx:112
+msgid "Create"
+msgstr ""
+
+#: src/routes/index.tsx:157
+msgid "Create a Project"
+msgstr ""
+
+#: src/routes/environments.tsx:212
+msgid "Create a project first, then add environments."
+msgstr ""
+
+#: src/routes/environments.tsx:243
+msgid "Create Environment"
+msgstr ""
+
+#: src/routes/projects.tsx:152
+msgid "Create Project"
+msgstr ""
+
+#: src/routes/projects.tsx:140
+msgid "Create your first project to start managing feature flags and configs."
+msgstr ""
+
+#. placeholder {0}: new Date(env.createdAt).toLocaleDateString()
+#. placeholder {0}: new Date(project.createdAt).toLocaleDateString()
+#: src/routes/environments.tsx:288
+#: src/routes/projects.tsx:174
+msgid "Created {0}"
+msgstr ""
+
+#: src/routes/environments.tsx:184
+#: src/routes/projects.tsx:112
+msgid "Creating..."
+msgstr ""
+
+#: src/routes/__root.tsx:28
+#: src/routes/index.tsx:94
+msgid "Dashboard"
+msgstr ""
+
+#: src/routes/index.tsx:173
+msgid "Define deployment targets for your app."
+msgstr ""
+
+#: src/routes/index.tsx:72
+msgid "Deployment targets"
+msgstr ""
+
+#: src/routes/environments.tsx:173
+msgid "Environment name (e.g. production, staging)"
+msgstr ""
+
+#: src/routes/__root.tsx:30
+#: src/routes/environments.tsx:128
+#: src/routes/index.tsx:70
+msgid "Environments"
+msgstr ""
+
+#: src/routes/index.tsx:130
+msgid "Latest changes across your configuration."
+msgstr ""
+
+#: src/routes/index.tsx:84
+msgid "Live configurations"
+msgstr ""
+
+#: src/routes/__root.tsx:327
+msgid "Loading..."
+msgstr ""
+
+#: src/routes/environments.tsx:131
+msgid "Manage deployment targets, allowed domains, and client keys."
+msgstr ""
+
+#: src/routes/__root.tsx:235
+msgid "Manage multi-tenant configuration with versioned publish flows, offline-ready cache, and real-time remote sync."
+msgstr ""
+
+#: src/routes/projects.tsx:86
+msgid "Manage your projects, environments, and config keys."
+msgstr ""
+
+#: src/routes/environments.tsx:142
+msgid "New Environment"
+msgstr ""
+
+#: src/routes/projects.tsx:91
+msgid "New Project"
+msgstr ""
+
+#: src/routes/index.tsx:135
+msgid "No activity yet. Create a project to get started."
+msgstr ""
+
+#: src/routes/environments.tsx:229
+msgid "No environments yet"
+msgstr ""
+
+#: src/routes/environments.tsx:209
+msgid "No project selected"
+msgstr ""
+
+#: src/routes/environments.tsx:157
+msgid "No projects available"
+msgstr ""
+
+#: src/routes/projects.tsx:137
+msgid "No projects yet"
+msgstr ""
+
+#: src/routes/environments.tsx:284
+msgid "None configured"
+msgstr ""
+
+#: src/routes/__root.tsx:295
+msgid "Only authorized team members can access this portal."
+msgstr ""
+
+#: src/routes/index.tsx:97
+msgid "Overview of your configuration platform."
+msgstr ""
+
+#: src/routes/projects.tsx:101
+msgid "Project name"
+msgstr ""
+
+#: src/routes/environments.tsx:149
+msgid "Project:"
+msgstr ""
+
+#: src/routes/__root.tsx:29
+#: src/routes/index.tsx:64
+#: src/routes/projects.tsx:83
+msgid "Projects"
+msgstr ""
+
+#: src/routes/__root.tsx:293
+msgid "Protected by Firebase Authentication."
+msgstr ""
+
+#: src/routes/index.tsx:183
+msgid "Publish a Version"
+msgstr ""
+
+#: src/routes/index.tsx:82
+msgid "Published Configs"
+msgstr ""
+
+#: src/routes/index.tsx:186
+msgid "Push config values to your environments."
+msgstr ""
+
+#: src/routes/index.tsx:144
+msgid "Quick Start"
+msgstr ""
+
+#: src/routes/index.tsx:127
+msgid "Recent Activity"
+msgstr ""
+
+#: src/routes/__root.tsx:306
+msgid "Rights of Admission Reserved. Contact the project owner to request access."
+msgstr ""
+
+#: src/routes/index.tsx:147
+msgid "Set up your platform in 3 steps."
+msgstr ""
+
+#: src/routes/index.tsx:160
+msgid "Set up your project to scope configs."
+msgstr ""
+
+#: src/routes/__root.tsx:266
+msgid "Sign in to manage your configuration platform."
+msgstr ""
+
+#: src/routes/__root.tsx:289
+msgid "Sign in with Google"
+msgstr ""
+
+#: src/routes/__root.tsx:150
+#: src/routes/__root.tsx:214
+msgid "Sign out"
+msgstr ""
+
+#: src/routes/__root.tsx:210
+msgid "Try a different account"
+msgstr ""
+
+#: src/routes/__root.tsx:263
+msgid "Welcome back"
+msgstr ""
+
+#: src/routes/__root.tsx:202
+msgid "Your account is not authorized to access this portal. Contact the project owner to request access."
+msgstr ""

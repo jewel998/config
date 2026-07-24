@@ -1,6 +1,9 @@
+import { useLingui } from "@lingui/react";
+import { Trans } from "@lingui/react/macro";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import {
   FolderKanban,
+  Globe,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -14,12 +17,56 @@ import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
+import {
+  type SupportedLocale,
+  localeNames,
+  loadCatalog,
+  storeLocale,
+} from "@/lib/i18n";
 
 const navItems = [
-  { to: "/" as const, label: "Dashboard", icon: LayoutDashboard },
-  { to: "/projects" as const, label: "Projects", icon: FolderKanban },
-  { to: "/environments" as const, label: "Environments", icon: Server },
+  { to: "/" as const, label: <Trans>Dashboard</Trans>, icon: LayoutDashboard },
+  {
+    to: "/projects" as const,
+    label: <Trans>Projects</Trans>,
+    icon: FolderKanban,
+  },
+  {
+    to: "/environments" as const,
+    label: <Trans>Environments</Trans>,
+    icon: Server,
+  },
 ];
+
+const LanguageSwitcher = () => {
+  const { i18n } = useLingui();
+  const currentLocale = i18n.locale as SupportedLocale;
+
+  const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const locale = e.target.value as SupportedLocale;
+    storeLocale(locale);
+    await loadCatalog(locale);
+  };
+
+  return (
+    <div className="flex items-center gap-2 rounded-lg px-3 py-2">
+      <Globe className="h-4 w-4 text-[var(--muted-foreground)]" />
+      <select
+        value={currentLocale}
+        onChange={handleChange}
+        className="flex-1 rounded-md border bg-[var(--background)] px-2 py-1 text-xs outline-none focus:ring-1 focus:ring-[var(--ring)]"
+      >
+        {(Object.entries(localeNames) as [SupportedLocale, string][]).map(
+          ([code, name]) => (
+            <option key={code} value={code}>
+              {name}
+            </option>
+          ),
+        )}
+      </select>
+    </div>
+  );
+};
 
 const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const { user, logOut } = useAuth();
@@ -53,7 +100,9 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
         <div className="flex h-14 items-center justify-between border-b px-4">
           <div className="flex items-center gap-2">
             <Settings className="h-5 w-5 text-[var(--sidebar-primary)]" />
-            <span className="text-sm font-semibold">Config Portal</span>
+            <span className="text-sm font-semibold">
+              <Trans>Config Portal</Trans>
+            </span>
           </div>
           <button
             className="rounded-md p-1 hover:bg-[var(--sidebar-accent)] lg:hidden"
@@ -82,9 +131,10 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
           ))}
         </nav>
 
-        {/* User section */}
+        {/* Language switcher + User section */}
         <div className="border-t p-3">
-          <div className="flex items-center gap-3 rounded-lg px-3 py-2">
+          <LanguageSwitcher />
+          <div className="mt-2 flex items-center gap-3 rounded-lg px-3 py-2">
             <Avatar className="h-8 w-8">
               {user?.photoURL && <AvatarImage src={user.photoURL} alt="" />}
               <AvatarFallback>{initials}</AvatarFallback>
@@ -105,7 +155,7 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
             onClick={logOut}
           >
             <LogOut className="h-4 w-4" />
-            Sign out
+            <Trans>Sign out</Trans>
           </Button>
         </div>
       </aside>
@@ -129,7 +179,9 @@ const AuthenticatedLayout = () => {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="text-sm font-semibold">Config Portal</span>
+          <span className="text-sm font-semibold">
+            <Trans>Config Portal</Trans>
+          </span>
         </header>
 
         {/* Page content */}
@@ -151,19 +203,23 @@ const AccessDeniedPage = () => {
           <ShieldX className="h-8 w-8 text-red-500" />
         </div>
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight">Access Denied</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            <Trans>Access Denied</Trans>
+          </h1>
           <p className="text-sm text-[var(--muted-foreground)]">
-            Your account is not authorized to access this portal. Contact the
-            project owner to request access.
+            <Trans>
+              Your account is not authorized to access this portal. Contact the
+              project owner to request access.
+            </Trans>
           </p>
         </div>
         <div className="flex flex-col gap-2">
           <Button onClick={signIn} className="w-full">
-            Try a different account
+            <Trans>Try a different account</Trans>
           </Button>
           <Button variant="outline" onClick={logOut} className="w-full gap-2">
             <LogOut className="h-4 w-4" />
-            Sign out
+            <Trans>Sign out</Trans>
           </Button>
         </div>
       </div>
@@ -180,23 +236,27 @@ const LoginPage = () => {
       <div className="hidden flex-1 items-center justify-center bg-[var(--primary)] lg:flex">
         <div className="max-w-md space-y-4 px-8 text-[var(--primary-foreground)]">
           <Settings className="h-12 w-12" />
-          <h1 className="text-3xl font-bold">Config Portal</h1>
+          <h1 className="text-3xl font-bold">
+            <Trans>Config Portal</Trans>
+          </h1>
           <p className="text-lg opacity-90">
-            Manage multi-tenant configuration with versioned publish flows,
-            offline-ready cache, and real-time remote sync.
+            <Trans>
+              Manage multi-tenant configuration with versioned publish flows,
+              offline-ready cache, and real-time remote sync.
+            </Trans>
           </p>
           <ul className="space-y-2 pt-4 text-sm opacity-80">
             <li className="flex items-center gap-2">
-              ✓ Multi-tenant & multi-project scoping
+              <Trans>✓ Multi-tenant & multi-project scoping</Trans>
             </li>
             <li className="flex items-center gap-2">
-              ✓ Environment-specific overrides
+              <Trans>✓ Environment-specific overrides</Trans>
             </li>
             <li className="flex items-center gap-2">
-              ✓ Versioned config publishing
+              <Trans>✓ Versioned config publishing</Trans>
             </li>
             <li className="flex items-center gap-2">
-              ✓ Firebase-powered real-time sync
+              <Trans>✓ Firebase-powered real-time sync</Trans>
             </li>
           </ul>
         </div>
@@ -207,9 +267,11 @@ const LoginPage = () => {
         <div className="w-full max-w-sm space-y-8">
           <div className="space-y-2 text-center">
             <Settings className="mx-auto h-10 w-10 lg:hidden" />
-            <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
+            <h1 className="text-2xl font-bold tracking-tight">
+              <Trans>Welcome back</Trans>
+            </h1>
             <p className="text-sm text-[var(--muted-foreground)]">
-              Sign in to manage your configuration platform.
+              <Trans>Sign in to manage your configuration platform.</Trans>
             </p>
           </div>
 
@@ -232,21 +294,25 @@ const LoginPage = () => {
                 fill="#EA4335"
               />
             </svg>
-            Sign in with Google
+            <Trans>Sign in with Google</Trans>
           </Button>
 
           <p className="text-center text-xs text-[var(--muted-foreground)]">
-            Protected by Firebase Authentication.
+            <Trans>Protected by Firebase Authentication.</Trans>
             <br />
-            Only authorized team members can access this portal.
+            <Trans>Only authorized team members can access this portal.</Trans>
           </p>
 
           <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-3">
             <p className="text-center text-xs text-amber-800">
-              <strong>Access is by request only.</strong>
+              <strong>
+                <Trans>Access is by request only.</Trans>
+              </strong>
               <br />
-              Rights of Admission Reserved. Contact the project owner to request
-              access.
+              <Trans>
+                Rights of Admission Reserved. Contact the project owner to
+                request access.
+              </Trans>
             </p>
           </div>
         </div>
@@ -263,7 +329,9 @@ const RootLayout = () => {
       <div className="flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--primary)] border-t-transparent" />
-          <p className="text-sm text-[var(--muted-foreground)]">Loading...</p>
+          <p className="text-sm text-[var(--muted-foreground)]">
+            <Trans>Loading...</Trans>
+          </p>
         </div>
       </div>
     );

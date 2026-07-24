@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { Activity, FolderKanban, Key, Server } from "lucide-react";
@@ -60,27 +61,27 @@ const DashboardPage = () => {
 
   const stats = [
     {
-      title: "Projects",
+      title: <Trans>Projects</Trans>,
       value: String(projectCount),
-      description: "Active projects",
+      description: <Trans>Active projects</Trans>,
       icon: FolderKanban,
     },
     {
-      title: "Environments",
+      title: <Trans>Environments</Trans>,
       value: String(envCount),
-      description: "Deployment targets",
+      description: <Trans>Deployment targets</Trans>,
       icon: Server,
     },
     {
-      title: "Client Keys",
+      title: <Trans>Client Keys</Trans>,
       value: "0",
-      description: "Active clientIds",
+      description: <Trans>Active clientIds</Trans>,
       icon: Key,
     },
     {
-      title: "Published Configs",
+      title: <Trans>Published Configs</Trans>,
       value: "0",
-      description: "Live configurations",
+      description: <Trans>Live configurations</Trans>,
       icon: Activity,
     },
   ];
@@ -89,16 +90,18 @@ const DashboardPage = () => {
     <div className="space-y-8">
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <h1 className="text-2xl font-bold tracking-tight">
+          <Trans>Dashboard</Trans>
+        </h1>
         <p className="text-sm text-[var(--muted-foreground)]">
-          Overview of your configuration platform.
+          <Trans>Overview of your configuration platform.</Trans>
         </p>
       </div>
 
       {/* Stats grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <Card key={stat.title}>
+        {stats.map((stat, idx) => (
+          <Card key={idx}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">
                 {stat.title}
@@ -120,14 +123,16 @@ const DashboardPage = () => {
         {/* Recent activity */}
         <Card className="lg:col-span-4">
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
+            <CardTitle>
+              <Trans>Recent Activity</Trans>
+            </CardTitle>
             <CardDescription>
-              Latest changes across your configuration.
+              <Trans>Latest changes across your configuration.</Trans>
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex h-32 items-center justify-center rounded-lg border border-dashed text-sm text-[var(--muted-foreground)]">
-              No activity yet. Create a project to get started.
+              <Trans>No activity yet. Create a project to get started.</Trans>
             </div>
           </CardContent>
         </Card>
@@ -135,8 +140,12 @@ const DashboardPage = () => {
         {/* Quick actions */}
         <Card className="lg:col-span-3">
           <CardHeader>
-            <CardTitle>Quick Start</CardTitle>
-            <CardDescription>Set up your platform in 3 steps.</CardDescription>
+            <CardTitle>
+              <Trans>Quick Start</Trans>
+            </CardTitle>
+            <CardDescription>
+              <Trans>Set up your platform in 3 steps.</Trans>
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-start gap-3">
@@ -144,9 +153,11 @@ const DashboardPage = () => {
                 1
               </Badge>
               <div>
-                <p className="text-sm font-medium">Create a Project</p>
+                <p className="text-sm font-medium">
+                  <Trans>Create a Project</Trans>
+                </p>
                 <p className="text-xs text-[var(--muted-foreground)]">
-                  Set up your project to scope configs.
+                  <Trans>Set up your project to scope configs.</Trans>
                 </p>
               </div>
             </div>
@@ -155,9 +166,11 @@ const DashboardPage = () => {
                 2
               </Badge>
               <div>
-                <p className="text-sm font-medium">Add an Environment</p>
+                <p className="text-sm font-medium">
+                  <Trans>Add an Environment</Trans>
+                </p>
                 <p className="text-xs text-[var(--muted-foreground)]">
-                  Define deployment targets for your app.
+                  <Trans>Define deployment targets for your app.</Trans>
                 </p>
               </div>
             </div>
@@ -166,9 +179,11 @@ const DashboardPage = () => {
                 3
               </Badge>
               <div>
-                <p className="text-sm font-medium">Publish a Version</p>
+                <p className="text-sm font-medium">
+                  <Trans>Publish a Version</Trans>
+                </p>
                 <p className="text-xs text-[var(--muted-foreground)]">
-                  Push config values to your environments.
+                  <Trans>Push config values to your environments.</Trans>
                 </p>
               </div>
             </div>
