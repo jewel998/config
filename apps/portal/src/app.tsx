@@ -7,7 +7,7 @@ import { TenantsPage } from "./pages/tenants";
 
 export const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/config/portal">
       <div style={{ display: "flex", minHeight: "100vh" }}>
         <nav
           style={{

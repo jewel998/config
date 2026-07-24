@@ -13,6 +13,7 @@ dist
 .turbo
 .vitepress/dist
 .vitepress/cache
+_site
 
 # Environment files
 .env
