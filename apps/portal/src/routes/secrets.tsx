@@ -3,10 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Key, Lock } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { useProject } from "@/lib/project-context";
+import { useProjectStore } from "@/stores/project-store";
 
 const SecretsPage = () => {
-  const { selectedProjectId } = useProject();
+  const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
 
   if (!selectedProjectId) {
     return (

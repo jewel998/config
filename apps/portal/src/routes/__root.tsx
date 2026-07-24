@@ -16,7 +16,7 @@ import {
   Key,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 
 import { ProjectSwitcher } from "@/components/project-switcher";
@@ -35,15 +35,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useAuth } from "@/lib/auth";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   type SupportedLocale,
   localeNames,
   loadCatalog,
   storeLocale,
 } from "@/lib/i18n";
-import { ProjectProvider, useProject } from "@/lib/project-context";
 import { useTheme } from "@/lib/theme";
+import { useAuthStore } from "@/stores/auth-store";
+import { useProjectStore } from "@/stores/project-store";
 
 const navItems = [
   { to: "/" as const, label: <Trans>Dashboard</Trans>, icon: LayoutDashboard },
@@ -115,7 +116,8 @@ const LanguageSwitcher = () => {
 };
 
 const UserMenu = () => {
-  const { user, logOut } = useAuth();
+  const user = useAuthStore((s) => s.user);
+  const logOut = useAuthStore((s) => s.logOut);
 
   const initials = user?.displayName
     ? user.displayName
@@ -221,7 +223,7 @@ const Sidebar = ({
   collapsed: boolean;
   onClose: () => void;
 }) => {
-  const { selectedProjectId } = useProject();
+  const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
 
   return (
     <>
@@ -290,6 +292,16 @@ const AuthenticatedLayout = () => {
     }
   });
 
+  const user = useAuthStore((s) => s.user);
+  const subscribe = useProjectStore((s) => s.subscribe);
+
+  // Subscribe to projects when authenticated
+  useEffect(() => {
+    if (!user) return;
+    const unsubscribe = subscribe(user.uid);
+    return unsubscribe;
+  }, [user, subscribe]);
+
   const toggleSidebar = () => {
     const next = !sidebarCollapsed;
     setSidebarCollapsed(next);
@@ -301,7 +313,7 @@ const AuthenticatedLayout = () => {
   };
 
   return (
-    <ProjectProvider>
+    <>
       <div className="flex min-h-screen flex-col">
         <TopBar
           onMenuClick={() => setSidebarOpen(true)}
@@ -320,12 +332,13 @@ const AuthenticatedLayout = () => {
         </div>
       </div>
       <Toaster richColors position="bottom-right" />
-    </ProjectProvider>
+    </>
   );
 };
 
 const AccessDeniedPage = () => {
-  const { logOut, signIn } = useAuth();
+  const logOut = useAuthStore((s) => s.logOut);
+  const signIn = useAuthStore((s) => s.signIn);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-6">
@@ -363,7 +376,7 @@ const AccessDeniedPage = () => {
 };
 
 const LoginPage = () => {
-  const { signIn } = useAuth();
+  const signIn = useAuthStore((s) => s.signIn);
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4">
@@ -476,16 +489,42 @@ const LoginPage = () => {
 };
 
 const RootLayout = () => {
-  const { user, loading, accessDenied } = useAuth();
+  const user = useAuthStore((s) => s.user);
+  const loading = useAuthStore((s) => s.loading);
+  const accessDenied = useAuthStore((s) => s.accessDenied);
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#5683da] border-t-transparent" />
-          <p className="text-sm text-muted-foreground">
-            <Trans>Loading...</Trans>
-          </p>
+      <div className="flex min-h-screen flex-col">
+        {/* Skeleton top bar */}
+        <div className="flex h-14 items-center gap-4 border-b px-4">
+          <Skeleton className="h-8 w-8 rounded-lg" />
+          <Skeleton className="h-5 w-20" />
+          <Skeleton className="h-8 w-40 rounded-lg" />
+          <div className="flex-1" />
+          <Skeleton className="h-8 w-8 rounded-full" />
+          <Skeleton className="h-8 w-8 rounded-full" />
+          <Skeleton className="h-8 w-8 rounded-full" />
+        </div>
+        <div className="flex flex-1">
+          {/* Skeleton sidebar */}
+          <div className="hidden w-60 space-y-2 border-r p-4 lg:block">
+            <Skeleton className="h-8 w-full rounded-lg" />
+            <Skeleton className="h-8 w-full rounded-lg" />
+            <Skeleton className="h-8 w-full rounded-lg" />
+            <Skeleton className="h-8 w-3/4 rounded-lg" />
+          </div>
+          {/* Skeleton content */}
+          <div className="flex-1 space-y-6 p-8">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Skeleton className="h-28 rounded-xl" />
+              <Skeleton className="h-28 rounded-xl" />
+              <Skeleton className="h-28 rounded-xl" />
+            </div>
+            <Skeleton className="h-48 rounded-xl" />
+          </div>
         </div>
       </div>
     );

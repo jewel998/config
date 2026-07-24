@@ -4,10 +4,11 @@ import { Settings, Users } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useProject } from "@/lib/project-context";
+import { useProjectStore } from "@/stores/project-store";
 
 const SettingsPage = () => {
-  const { selectedProjectId, selectedProject } = useProject();
+  const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
+  const selectedProject = useProjectStore((s) => s.selectedProject());
 
   if (!selectedProjectId) {
     return (

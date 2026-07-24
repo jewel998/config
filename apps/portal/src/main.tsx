@@ -3,10 +3,10 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import { AuthProvider } from "./lib/auth";
 import { i18n, getStoredLocale, loadCatalog } from "./lib/i18n";
 import { ThemeProvider } from "./lib/theme";
 import { routeTree } from "./routeTree.gen";
+import { useAuthStore } from "./stores/auth-store";
 import "./index.css";
 
 const router = createRouter({
@@ -20,22 +20,22 @@ declare module "@tanstack/react-router" {
   }
 }
 
+// Initialize auth listener (runs once)
+useAuthStore.getState()._initialize();
+
+// Load locale catalog (non-blocking)
+loadCatalog(getStoredLocale()).catch(() => {
+  i18n.loadAndActivate({ locale: "en", messages: {} });
+});
+
 const root = document.getElementById("root");
 
 if (root) {
-  // Load catalog in background — render immediately with fallback
-  loadCatalog(getStoredLocale()).catch(() => {
-    // If catalog fails to load, activate with empty messages (shows source strings)
-    i18n.loadAndActivate({ locale: "en", messages: {} });
-  });
-
   createRoot(root).render(
     <StrictMode>
       <I18nProvider i18n={i18n}>
         <ThemeProvider>
-          <AuthProvider>
-            <RouterProvider router={router} />
-          </AuthProvider>
+          <RouterProvider router={router} />
         </ThemeProvider>
       </I18nProvider>
     </StrictMode>,

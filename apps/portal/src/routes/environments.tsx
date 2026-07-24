@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/lib/firebase";
-import { useProject } from "@/lib/project-context";
+import { useProjectStore } from "@/stores/project-store";
 
 interface Environment {
   id: string;
@@ -30,7 +30,7 @@ interface Environment {
 }
 
 const EnvironmentsPage = () => {
-  const { selectedProjectId } = useProject();
+  const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const [environments, setEnvironments] = useState<Environment[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

@@ -21,15 +21,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useAuth } from "@/lib/auth";
 import { db } from "@/lib/firebase";
-import { useProject } from "@/lib/project-context";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/stores/auth-store";
+import { useProjectStore } from "@/stores/project-store";
 
 export const ProjectSwitcher = () => {
-  const { user } = useAuth();
-  const { projects, selectedProjectId, selectedProject, setSelectedProjectId } =
-    useProject();
+  const user = useAuthStore((s) => s.user);
+  const { projects, selectedProjectId, setSelectedProjectId } =
+    useProjectStore();
+  const selectedProject = useProjectStore((s) => s.selectedProject());
   const [open, setOpen] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState("");

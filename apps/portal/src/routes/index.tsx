@@ -14,10 +14,11 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/lib/firebase";
-import { useProject } from "@/lib/project-context";
+import { useProjectStore } from "@/stores/project-store";
 
 const DashboardContent = () => {
-  const { selectedProjectId, selectedProject } = useProject();
+  const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
+  const selectedProject = useProjectStore((s) => s.selectedProject());
   const [envCount, setEnvCount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -119,7 +120,8 @@ const DashboardContent = () => {
 };
 
 const DashboardPage = () => {
-  const { selectedProjectId, loading } = useProject();
+  const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
+  const loading = useProjectStore((s) => s.loading);
 
   if (loading) {
     return (

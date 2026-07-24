@@ -8,10 +8,10 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/lib/auth";
 import { db } from "@/lib/firebase";
-import { useProject } from "@/lib/project-context";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/stores/auth-store";
+import { useProjectStore } from "@/stores/project-store";
 
 interface StepState {
   projectCreated: boolean;
@@ -19,8 +19,8 @@ interface StepState {
 }
 
 export const OnboardingStepper = () => {
-  const { user } = useAuth();
-  const { selectedProjectId, setSelectedProjectId } = useProject();
+  const user = useAuthStore((s) => s.user);
+  const { selectedProjectId, setSelectedProjectId } = useProjectStore();
   const navigate = useNavigate();
 
   const [stepState, setStepState] = useState<StepState>({
