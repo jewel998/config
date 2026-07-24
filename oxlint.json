@@ -1,0 +1,21 @@
+{
+  "$schema": "https://oxc.rs/v1/oxlint.json",
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2022": true
+  },
+  "rules": {
+    "no-console": "warn",
+    "no-debugger": "warn",
+    "no-duplicate-imports": "error",
+    "no-unused-vars": "error",
+    "no-undef": "error",
+    "eqeqeq": "error",
+    "curly": "error",
+    "default-case-last": "error",
+    "prefer-const": "warn",
+    "no-implicit-globals": "error",
+    "no-empty-function": "warn"
+  }
+}

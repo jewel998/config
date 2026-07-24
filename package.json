@@ -1,0 +1,48 @@
+{
+  "name": "config-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm -w @jewel998/config run build",
+    "test": "npm -w @jewel998/config run test",
+    "lint": "oxlint packages/config/src apps/portal/src apps/docs/src",
+    "prepare": "husky",
+    "lint-staged": "lint-staged",
+    "commitlint": "commitlint --from=HEAD~1 --to=HEAD"
+  },
+  "devDependencies": {
+    "oxlint": "^0.16.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0",
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0"
+  },
+  "overrides": {
+    "brace-expansion": "^2.0.2",
+    "cross-spawn": "^7.0.6",
+    "esbuild": "^0.25.0",
+    "postcss": "^8.4.49",
+    "rollup": "^4.48.0",
+    "vite": "^8.1.5"
+  },
+  "description": "This repository is the starting point for a lightweight, standards-first configuration platform.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,md}": [
+      "npm run lint"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@jewel998/config-portal",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "lint": "oxlint src"
+  },
+  "devDependencies": {
+    "vite": "^8.1.5"
+  }
+}

@@ -1,0 +1,21 @@
+# OS
+.DS_Store
+
+# Node / package managers
+node_modules
+.pnpm-store
+coverage
+*.log
+
+# Build outputs
+/dist
+/.vite
+/.turbo
+
+# Environment files
+.env
+.env.*
+
+# Editor / tooling
+.vscode/
+.idea/
