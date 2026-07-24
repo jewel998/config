@@ -2,20 +2,38 @@ import { useLingui } from "@lingui/react";
 import { Trans } from "@lingui/react/macro";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import {
-  FolderKanban,
   Globe,
   LayoutDashboard,
   LogOut,
   Menu,
+  Moon,
   Server,
   Settings,
   ShieldX,
+  Sun,
+  Key,
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { Toaster } from "sonner";
 
+import { ProjectSwitcher } from "@/components/project-switcher";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/lib/auth";
 import {
   type SupportedLocale,
@@ -23,52 +41,79 @@ import {
   loadCatalog,
   storeLocale,
 } from "@/lib/i18n";
+import { ProjectProvider, useProject } from "@/lib/project-context";
+import { useTheme } from "@/lib/theme";
 
 const navItems = [
   { to: "/" as const, label: <Trans>Dashboard</Trans>, icon: LayoutDashboard },
-  {
-    to: "/projects" as const,
-    label: <Trans>Projects</Trans>,
-    icon: FolderKanban,
-  },
   {
     to: "/environments" as const,
     label: <Trans>Environments</Trans>,
     icon: Server,
   },
+  { to: "/secrets" as const, label: <Trans>Secrets</Trans>, icon: Key },
+  {
+    to: "/settings" as const,
+    label: <Trans>Settings</Trans>,
+    icon: Settings,
+  },
 ];
+
+const ThemeToggle = () => {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="h-9 w-9"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      aria-label="Toggle theme"
+    >
+      <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+    </Button>
+  );
+};
 
 const LanguageSwitcher = () => {
   const { i18n } = useLingui();
   const currentLocale = i18n.locale as SupportedLocale;
+  const [open, setOpen] = useState(false);
 
-  const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const locale = e.target.value as SupportedLocale;
+  const handleChange = async (locale: SupportedLocale) => {
     storeLocale(locale);
     await loadCatalog(locale);
+    setOpen(false);
   };
 
   return (
-    <div className="flex items-center gap-2 rounded-lg px-3 py-2">
-      <Globe className="h-4 w-4 text-[var(--muted-foreground)]" />
-      <select
-        value={currentLocale}
-        onChange={handleChange}
-        className="flex-1 rounded-md border bg-[var(--background)] px-2 py-1 text-xs outline-none focus:ring-1 focus:ring-[var(--ring)]"
-      >
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="ghost" size="icon" className="h-9 w-9">
+          <Globe className="h-4 w-4" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-40 p-1" align="end">
         {(Object.entries(localeNames) as [SupportedLocale, string][]).map(
           ([code, name]) => (
-            <option key={code} value={code}>
+            <button
+              key={code}
+              onClick={() => handleChange(code)}
+              className={`flex w-full items-center rounded-md px-3 py-1.5 text-sm transition-colors hover:bg-accent ${
+                currentLocale === code ? "font-medium text-primary" : ""
+              }`}
+            >
               {name}
-            </option>
+            </button>
           ),
         )}
-      </select>
-    </div>
+      </PopoverContent>
+    </Popover>
   );
 };
 
-const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+const UserMenu = () => {
   const { user, logOut } = useAuth();
 
   const initials = user?.displayName
@@ -79,6 +124,76 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
         .slice(0, 2)
         .toUpperCase()
     : "U";
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
+          <Avatar className="h-8 w-8">
+            {user?.photoURL && <AvatarImage src={user.photoURL} alt="" />}
+            <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <div className="px-3 py-2">
+          <p className="text-sm font-medium">{user?.displayName ?? "User"}</p>
+          <p className="truncate text-xs text-muted-foreground">
+            {user?.email}
+          </p>
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={logOut} className="gap-2">
+          <LogOut className="h-4 w-4" />
+          <Trans>Sign out</Trans>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+const TopBar = ({ onMenuClick }: { onMenuClick: () => void }) => {
+  return (
+    <header className="flex h-14 items-center gap-4 border-b bg-background px-4">
+      {/* Mobile menu button */}
+      <button
+        className="rounded-md p-1.5 hover:bg-accent lg:hidden"
+        onClick={onMenuClick}
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+
+      {/* Logo */}
+      <div className="flex items-center gap-2">
+        <Settings className="h-5 w-5 text-[#5683da]" />
+        <span className="hidden text-sm font-semibold sm:inline-block">
+          <Trans>Config</Trans>
+        </span>
+        <Badge className="hidden rounded-full bg-[#ff8964]/12 text-[10px] font-semibold uppercase tracking-wider text-[#ff8964] hover:bg-[#ff8964]/12 sm:inline-flex">
+          Beta
+        </Badge>
+      </div>
+
+      <Separator orientation="vertical" className="mx-1 h-6" />
+
+      {/* Project switcher */}
+      <ProjectSwitcher />
+
+      {/* Spacer */}
+      <div className="flex-1" />
+
+      {/* Right side actions */}
+      <div className="flex items-center gap-1">
+        <LanguageSwitcher />
+        <ThemeToggle />
+        <UserMenu />
+      </div>
+    </header>
+  );
+};
+
+const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+  const { selectedProjectId } = useProject();
 
   return (
     <>
@@ -92,20 +207,14 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r bg-[var(--sidebar)] transition-transform duration-200 lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 top-14 z-50 flex w-60 flex-col border-r bg-sidebar transition-transform duration-200 lg:static lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Header */}
-        <div className="flex h-14 items-center justify-between border-b px-4">
-          <div className="flex items-center gap-2">
-            <Settings className="h-5 w-5 text-[var(--sidebar-primary)]" />
-            <span className="text-sm font-semibold">
-              <Trans>Config Portal</Trans>
-            </span>
-          </div>
+        {/* Mobile close */}
+        <div className="flex items-center justify-end p-2 lg:hidden">
           <button
-            className="rounded-md p-1 hover:bg-[var(--sidebar-accent)] lg:hidden"
+            className="rounded-md p-1 hover:bg-sidebar-accent"
             onClick={onClose}
           >
             <X className="h-4 w-4" />
@@ -113,51 +222,31 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 space-y-1 p-3">
-          {navItems.map(({ to, label, icon: Icon }) => (
-            <Link
-              key={to}
-              to={to}
-              onClick={onClose}
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-[var(--sidebar-foreground)] transition-colors hover:bg-[var(--sidebar-accent)]"
-              activeProps={{
-                className:
-                  "bg-[var(--sidebar-accent)] text-[var(--sidebar-accent-foreground)] font-medium",
-              }}
-            >
-              <Icon className="h-4 w-4" />
-              {label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Language switcher + User section */}
-        <div className="border-t p-3">
-          <LanguageSwitcher />
-          <div className="mt-2 flex items-center gap-3 rounded-lg px-3 py-2">
-            <Avatar className="h-8 w-8">
-              {user?.photoURL && <AvatarImage src={user.photoURL} alt="" />}
-              <AvatarFallback>{initials}</AvatarFallback>
-            </Avatar>
-            <div className="flex-1 truncate">
-              <p className="truncate text-sm font-medium">
-                {user?.displayName ?? "User"}
-              </p>
-              <p className="truncate text-xs text-[var(--muted-foreground)]">
-                {user?.email}
-              </p>
-            </div>
+        {selectedProjectId ? (
+          <nav className="flex-1 space-y-1 p-3">
+            {navItems.map(({ to, label, icon: Icon }) => (
+              <Link
+                key={to}
+                to={to}
+                onClick={onClose}
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors duration-150 hover:bg-sidebar-accent"
+                activeProps={{
+                  className:
+                    "bg-[#5683da]/10 text-[#5683da] font-medium hover:bg-[#5683da]/10",
+                }}
+              >
+                <Icon className="h-4 w-4" />
+                {label}
+              </Link>
+            ))}
+          </nav>
+        ) : (
+          <div className="flex flex-1 items-center justify-center p-6">
+            <p className="text-center text-xs text-muted-foreground">
+              <Trans>Select or create a project to get started.</Trans>
+            </p>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="mt-1 w-full justify-start gap-2 text-[var(--muted-foreground)]"
-            onClick={logOut}
-          >
-            <LogOut className="h-4 w-4" />
-            <Trans>Sign out</Trans>
-          </Button>
-        </div>
+        )}
       </aside>
     </>
   );
@@ -167,29 +256,18 @@ const AuthenticatedLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-      <div className="flex flex-1 flex-col">
-        {/* Top bar for mobile */}
-        <header className="flex h-14 items-center gap-4 border-b bg-[var(--background)] px-4 lg:hidden">
-          <button
-            className="rounded-md p-1.5 hover:bg-[var(--accent)]"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          <span className="text-sm font-semibold">
-            <Trans>Config Portal</Trans>
-          </span>
-        </header>
-
-        {/* Page content */}
-        <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
-          <Outlet />
-        </main>
+    <ProjectProvider>
+      <div className="flex min-h-screen flex-col">
+        <TopBar onMenuClick={() => setSidebarOpen(true)} />
+        <div className="flex flex-1">
+          <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+          <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
+            <Outlet />
+          </main>
+        </div>
       </div>
-    </div>
+      <Toaster richColors position="bottom-right" />
+    </ProjectProvider>
   );
 };
 
@@ -199,14 +277,14 @@ const AccessDeniedPage = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm space-y-6 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border bg-red-50">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border bg-red-50 dark:bg-red-950/20">
           <ShieldX className="h-8 w-8 text-red-500" />
         </div>
         <div className="space-y-2">
           <h1 className="text-2xl font-bold tracking-tight">
             <Trans>Access Denied</Trans>
           </h1>
-          <p className="text-sm text-[var(--muted-foreground)]">
+          <p className="text-sm text-muted-foreground">
             <Trans>
               Your account is not authorized to access this portal. Contact the
               project owner to request access.
@@ -214,10 +292,14 @@ const AccessDeniedPage = () => {
           </p>
         </div>
         <div className="flex flex-col gap-2">
-          <Button onClick={signIn} className="w-full">
+          <Button onClick={signIn} className="w-full rounded-full">
             <Trans>Try a different account</Trans>
           </Button>
-          <Button variant="outline" onClick={logOut} className="w-full gap-2">
+          <Button
+            variant="outline"
+            onClick={logOut}
+            className="w-full gap-2 rounded-full"
+          >
             <LogOut className="h-4 w-4" />
             <Trans>Sign out</Trans>
           </Button>
@@ -233,8 +315,8 @@ const LoginPage = () => {
   return (
     <div className="flex min-h-screen">
       {/* Left side - branding */}
-      <div className="hidden flex-1 items-center justify-center bg-[var(--primary)] lg:flex">
-        <div className="max-w-md space-y-4 px-8 text-[var(--primary-foreground)]">
+      <div className="hidden flex-1 items-center justify-center bg-[#5683da] lg:flex">
+        <div className="max-w-md space-y-4 px-8 text-white">
           <Settings className="h-12 w-12" />
           <h1 className="text-3xl font-bold">
             <Trans>Config Portal</Trans>
@@ -266,16 +348,20 @@ const LoginPage = () => {
       <div className="flex flex-1 flex-col items-center justify-center px-6">
         <div className="w-full max-w-sm space-y-8">
           <div className="space-y-2 text-center">
-            <Settings className="mx-auto h-10 w-10 lg:hidden" />
+            <Settings className="mx-auto h-10 w-10 text-[#5683da] lg:hidden" />
             <h1 className="text-2xl font-bold tracking-tight">
               <Trans>Welcome back</Trans>
             </h1>
-            <p className="text-sm text-[var(--muted-foreground)]">
+            <p className="text-sm text-muted-foreground">
               <Trans>Sign in to manage your configuration platform.</Trans>
             </p>
           </div>
 
-          <Button onClick={signIn} size="lg" className="w-full gap-2">
+          <Button
+            onClick={signIn}
+            size="lg"
+            className="w-full gap-2 rounded-full"
+          >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -297,14 +383,14 @@ const LoginPage = () => {
             <Trans>Sign in with Google</Trans>
           </Button>
 
-          <p className="text-center text-xs text-[var(--muted-foreground)]">
+          <p className="text-center text-xs text-muted-foreground">
             <Trans>Protected by Firebase Authentication.</Trans>
             <br />
             <Trans>Only authorized team members can access this portal.</Trans>
           </p>
 
-          <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-3">
-            <p className="text-center text-xs text-amber-800">
+          <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-3 dark:border-amber-900/50 dark:bg-amber-950/20">
+            <p className="text-center text-xs text-amber-800 dark:text-amber-200">
               <strong>
                 <Trans>Access is by request only.</Trans>
               </strong>
@@ -328,8 +414,8 @@ const RootLayout = () => {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--primary)] border-t-transparent" />
-          <p className="text-sm text-[var(--muted-foreground)]">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#5683da] border-t-transparent" />
+          <p className="text-sm text-muted-foreground">
             <Trans>Loading...</Trans>
           </p>
         </div>

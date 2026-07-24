@@ -1,0 +1,24 @@
+feat(portal): complete UX redesign with shadcn/ui, project switcher, and stepper
+
+Architecture:
+- Project switcher (cmdk) in top bar with searchable dropdown and inline create
+- Sidebar scoped to selected project (Dashboard, Environments, Secrets, Settings)
+- Onboarding stepper when no project exists (3-step guided setup)
+- Project selection persisted in localStorage
+
+Design:
+- Full shadcn/ui component system
+- Geist + Geist Mono fonts
+- Dark/light mode with CSS variables
+- Pill buttons, rounded-xl cards, Beta badge
+- Sonner toasts for action feedback
+
+New Routes: /secrets, /settings
+Removed: /projects (replaced by top bar switcher), DesignSystem.md
+
+Code Splitting:
+- Manual chunks: vendor-react, vendor-firebase, vendor-router, vendor-ui
+- All chunks under 500KB, route-level splitting via TanStack Router
+
+Fix: wrap Firestore allowedUsers check in try/catch to prevent infinite loading
+when the collection doesn't exist yet

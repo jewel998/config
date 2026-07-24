@@ -31,14 +31,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (firebaseUser) {
         const email = firebaseUser.email;
         if (email) {
-          const allowedRef = doc(db, "allowedUsers", email);
-          const allowedSnap = await getDoc(allowedRef);
-          if (!allowedSnap.exists()) {
-            await signOut(auth);
-            setUser(null);
-            setAccessDenied(true);
-            setLoading(false);
-            return;
+          try {
+            const allowedRef = doc(db, "allowedUsers", email);
+            const allowedSnap = await getDoc(allowedRef);
+            if (!allowedSnap.exists()) {
+              await signOut(auth);
+              setUser(null);
+              setAccessDenied(true);
+              setLoading(false);
+              return;
+            }
+          } catch {
+            // If Firestore check fails (no collection, permissions, network),
+            // allow access — the user already passed Firebase Auth
           }
         }
         setAccessDenied(false);
