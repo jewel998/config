@@ -15,9 +15,13 @@ dist
 .vitepress/cache
 _site
 
+# Generated
+routeTree.gen.ts
+
 # Environment files
 .env
-.env.*
+.env.local
+.env.*.local
 
 # Editor / tooling
 .vscode/
