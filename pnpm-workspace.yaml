@@ -1,3 +1,8 @@
 packages:
   - "apps/*"
   - "packages/*"
+allowBuilds:
+  '@firebase/util': false
+  esbuild: false
+  protobufjs: false
+  unrs-resolver: false
