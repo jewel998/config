@@ -11,8 +11,8 @@ hero:
       text: API Reference
       link: /api/
     - theme: alt
-      text: Sign In
-      link: /portal/
+      text: Sign In to Portal
+      link: https://jewel998.github.io/config/portal/
 features:
   - title: Multi-tenant & Multi-project
     details: Scope configuration to tenants, projects, and environments with a single client.

@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID as string,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET as string,
-  messagingSenderId: import.meta.env
-    .VITE_FIREBASE_MESSAGING_SENDER_ID as string,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID as string,
+  apiKey: "AIzaSyC-6lmMSwZ-Y51FufvI0I5ikxDbQTGJCNs",
+  authDomain: "jewel998-config.firebaseapp.com",
+  projectId: "jewel998-config",
+  storageBucket: "jewel998-config.firebasestorage.app",
+  messagingSenderId: "851865994921",
+  appId: "1:851865994921:web:8c0283c5de7f8d62cecbb8",
+  measurementId: "G-ND8MZ24EP0",
 };
 
 export const app = initializeApp(firebaseConfig);
