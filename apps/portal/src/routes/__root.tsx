@@ -7,6 +7,8 @@ import {
   LogOut,
   Menu,
   Moon,
+  PanelLeftClose,
+  PanelLeftOpen,
   Server,
   Settings,
   ShieldX,
@@ -151,7 +153,15 @@ const UserMenu = () => {
   );
 };
 
-const TopBar = ({ onMenuClick }: { onMenuClick: () => void }) => {
+const TopBar = ({
+  onMenuClick,
+  onToggleSidebar,
+  sidebarCollapsed,
+}: {
+  onMenuClick: () => void;
+  onToggleSidebar: () => void;
+  sidebarCollapsed: boolean;
+}) => {
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-background px-4">
       {/* Mobile menu button */}
@@ -160,6 +170,19 @@ const TopBar = ({ onMenuClick }: { onMenuClick: () => void }) => {
         onClick={onMenuClick}
       >
         <Menu className="h-5 w-5" />
+      </button>
+
+      {/* Desktop sidebar toggle */}
+      <button
+        className="hidden rounded-md p-1.5 hover:bg-accent lg:inline-flex"
+        onClick={onToggleSidebar}
+        aria-label="Toggle sidebar"
+      >
+        {sidebarCollapsed ? (
+          <PanelLeftOpen className="h-4 w-4" />
+        ) : (
+          <PanelLeftClose className="h-4 w-4" />
+        )}
       </button>
 
       {/* Logo */}
@@ -189,7 +212,15 @@ const TopBar = ({ onMenuClick }: { onMenuClick: () => void }) => {
   );
 };
 
-const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+const Sidebar = ({
+  open,
+  collapsed,
+  onClose,
+}: {
+  open: boolean;
+  collapsed: boolean;
+  onClose: () => void;
+}) => {
   const { selectedProjectId } = useProject();
 
   return (
@@ -204,9 +235,9 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 top-14 z-50 flex w-60 flex-col border-r bg-sidebar transition-transform duration-200 lg:static lg:translate-x-0 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 top-14 z-50 flex flex-col border-r bg-sidebar transition-all duration-200 lg:static ${
+          collapsed ? "lg:w-0 lg:overflow-hidden lg:border-r-0" : "lg:w-60"
+        } ${open ? "w-60 translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         {/* Mobile close */}
         <div className="flex items-center justify-end p-2 lg:hidden">
@@ -251,13 +282,38 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
 
 const AuthenticatedLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem("sidebar-collapsed") === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleSidebar = () => {
+    const next = !sidebarCollapsed;
+    setSidebarCollapsed(next);
+    try {
+      localStorage.setItem("sidebar-collapsed", String(next));
+    } catch {
+      // ignore
+    }
+  };
 
   return (
     <ProjectProvider>
       <div className="flex min-h-screen flex-col">
-        <TopBar onMenuClick={() => setSidebarOpen(true)} />
+        <TopBar
+          onMenuClick={() => setSidebarOpen(true)}
+          onToggleSidebar={toggleSidebar}
+          sidebarCollapsed={sidebarCollapsed}
+        />
         <div className="flex flex-1">
-          <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+          <Sidebar
+            open={sidebarOpen}
+            collapsed={sidebarCollapsed}
+            onClose={() => setSidebarOpen(false)}
+          />
           <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
             <Outlet />
           </main>
