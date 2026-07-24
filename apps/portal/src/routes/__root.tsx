@@ -6,7 +6,6 @@ import {
   Menu,
   Server,
   Settings,
-  Users,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -17,7 +16,6 @@ import { useAuth } from "@/lib/auth";
 
 const navItems = [
   { to: "/" as const, label: "Dashboard", icon: LayoutDashboard },
-  { to: "/tenants" as const, label: "Tenants", icon: Users },
   { to: "/projects" as const, label: "Projects", icon: FolderKanban },
   { to: "/environments" as const, label: "Environments", icon: Server },
 ];

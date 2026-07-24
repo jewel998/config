@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Activity, FolderKanban, Server, Users } from "lucide-react";
+import { Activity, FolderKanban, Key, Server } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,16 +12,9 @@ import {
 
 const stats = [
   {
-    title: "Tenants",
-    value: "0",
-    description: "Active organizations",
-    icon: Users,
-    trend: "No data yet",
-  },
-  {
     title: "Projects",
     value: "0",
-    description: "Configured projects",
+    description: "Active projects",
     icon: FolderKanban,
     trend: "No data yet",
   },
@@ -33,7 +26,14 @@ const stats = [
     trend: "No data yet",
   },
   {
-    title: "Published Versions",
+    title: "Client Keys",
+    value: "0",
+    description: "Active clientIds",
+    icon: Key,
+    trend: "No data yet",
+  },
+  {
+    title: "Published Configs",
     value: "0",
     description: "Live configurations",
     icon: Activity,
