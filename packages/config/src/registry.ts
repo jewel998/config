@@ -7,14 +7,18 @@ export interface ConfigRegistry {
   remove(key: string): void;
 }
 
-export const createConfigRegistry = (definitions: ConfigDefinition[] = []): ConfigRegistry => {
+export const createConfigRegistry = (
+  definitions: ConfigDefinition[] = [],
+): ConfigRegistry => {
   const items = [...definitions];
 
   return {
     definitions: items,
     get: (key: string) => items.find((definition) => definition.key === key),
     add: (definition: ConfigDefinition) => {
-      const existingIndex = items.findIndex((entry) => entry.key === definition.key);
+      const existingIndex = items.findIndex(
+        (entry) => entry.key === definition.key,
+      );
       if (existingIndex >= 0) {
         items[existingIndex] = definition;
         return;

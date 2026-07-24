@@ -10,12 +10,15 @@
     "build": "npm -w @jewel998/config run build",
     "test": "npm -w @jewel998/config run test",
     "lint": "oxlint packages/config/src apps/portal/src apps/docs/src",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,html}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,html}\"",
     "prepare": "husky",
     "lint-staged": "lint-staged",
     "commitlint": "commitlint --from=HEAD~1 --to=HEAD"
   },
   "devDependencies": {
     "oxlint": "^0.16.0",
+    "prettier": "^3.5.2",
     "husky": "^9.0.0",
     "lint-staged": "^15.0.0",
     "@commitlint/cli": "^21.2.1",
@@ -36,7 +39,8 @@
   "license": "ISC",
   "type": "commonjs",
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json,md}": [
+    "*.{ts,tsx,js,jsx,json,md,html}": [
+      "prettier --write",
       "npm run lint"
     ]
   },

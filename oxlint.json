@@ -16,6 +16,15 @@
     "default-case-last": "error",
     "prefer-const": "warn",
     "no-implicit-globals": "error",
-    "no-empty-function": "warn"
+    "no-empty-function": "warn",
+    "no-constant-binary-expression": "warn",
+    "no-const-assign": "error",
+    "no-shadow-restricted-names": "error",
+    "no-useless-rename": "warn",
+    "no-unsafe-finally": "error",
+    "no-var": "error",
+    "prefer-arrow-functions": "warn",
+    "camelcase": "warn",
+    "typescript/no-unused-vars": "error"
   }
 }

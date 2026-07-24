@@ -12,6 +12,8 @@ describe("createFirebaseRemoteConfigProvider", () => {
       },
     });
 
-    await expect(provider.getValue<boolean>("feature.beta")).resolves.toBe(true);
+    await expect(provider.getValue<boolean>("feature.beta")).resolves.toBe(
+      true,
+    );
   });
 });

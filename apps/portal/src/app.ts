@@ -1,5 +1,5 @@
 export const renderPortal = () => {
-  const app = document.querySelector<HTMLDivElement>('#app');
+  const app = document.querySelector<HTMLDivElement>("#app");
 
   if (!app) {
     return;

@@ -38,8 +38,11 @@ export const createDriverStorage = (
   },
 });
 
-export const browserStorage = (storageKey = "@jewel998/config"): CacheStorage => {
-  const isBrowser = typeof window !== "undefined" && typeof window.localStorage !== "undefined";
+export const browserStorage = (
+  storageKey = "@jewel998/config",
+): CacheStorage => {
+  const isBrowser =
+    typeof window !== "undefined" && typeof window.localStorage !== "undefined";
 
   if (!isBrowser) {
     return memoryStorage();

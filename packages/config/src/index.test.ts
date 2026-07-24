@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createConfigClient } from "./index";
+import { createConfigClient, createExampleClient } from "./index";
 import type { CacheStorage } from "./cache/storage";
 import type { RemoteConfigProvider } from "./remote/provider";
 
@@ -32,7 +32,9 @@ describe("createConfigClient", () => {
       },
     });
 
-    await expect(client.getValue<boolean>("feature.enabled")).resolves.toBe(true);
+    await expect(client.getValue<boolean>("feature.enabled")).resolves.toBe(
+      true,
+    );
   });
 
   it("refreshes remote values into storage for remote-first keys", async () => {
@@ -97,6 +99,14 @@ describe("createConfigClient", () => {
 
     await storage.set("feature.beta:proj-123", true);
 
-    await expect(client.getValue<boolean>("feature.beta", { projectId: "proj-123" })).resolves.toBe(true);
+    await expect(
+      client.getValue<boolean>("feature.beta", { projectId: "proj-123" }),
+    ).resolves.toBe(true);
+  });
+
+  it("exposes the example client factory from the package entrypoint", async () => {
+    const client = createExampleClient();
+
+    await expect(client.getValue<boolean>("feature.beta")).resolves.toBe(true);
   });
 });

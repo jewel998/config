@@ -1,4 +1,4 @@
 export const createRemoteConfigProvider = () => ({
-    getValue: async () => undefined,
-    refresh: async () => { },
+  getValue: async () => undefined,
+  refresh: async () => {},
 });

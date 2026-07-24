@@ -12,8 +12,7 @@ export const resolveConfigValue = <T>(
   _context?: ConfigResolveContext,
 ): T | undefined => {
   const definition = options.definitions.find((entry) => entry.key === key) as
-    | ConfigDefinition<T>
-    | undefined;
+    ConfigDefinition<T> | undefined;
 
   if (!definition) {
     return undefined;
@@ -27,8 +26,18 @@ export const resolveConfigValue = <T>(
   }
 
   if (definition.sourceMode === "remote") {
-    return remoteValue ?? cachedValue ?? definition.defaultValue ?? definition.fallbackValue;
+    return (
+      remoteValue ??
+      cachedValue ??
+      definition.defaultValue ??
+      definition.fallbackValue
+    );
   }
 
-  return cachedValue ?? remoteValue ?? definition.defaultValue ?? definition.fallbackValue;
+  return (
+    cachedValue ??
+    remoteValue ??
+    definition.defaultValue ??
+    definition.fallbackValue
+  );
 };

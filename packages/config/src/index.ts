@@ -1,7 +1,10 @@
 import { resolveConfigValue } from "./core/resolver";
 import type { CacheStorage } from "./cache/storage";
 
-const buildScopedKey = (key: string, context?: ConfigResolveContext): string => {
+const buildScopedKey = (
+  key: string,
+  context?: ConfigResolveContext,
+): string => {
   if (!context) {
     return key;
   }
@@ -80,9 +83,13 @@ export type {
 } from "./types";
 
 export type { ConfigScope, ConfigSourceMode } from "./types";
+export { createExampleClient } from "./example";
 
 export interface ConfigClient {
-  getValue<T>(key: string, context?: ConfigResolveContext): Promise<T | undefined>;
+  getValue<T>(
+    key: string,
+    context?: ConfigResolveContext,
+  ): Promise<T | undefined>;
   getFlag(key: string, context?: ConfigResolveContext): Promise<boolean>;
   refresh(): Promise<void>;
 }
@@ -93,7 +100,9 @@ export interface ConfigClientOptions {
   remoteProvider?: RemoteConfigProvider;
 }
 
-export const createConfigClient = (options: ConfigClientOptions): ConfigClient => {
+export const createConfigClient = (
+  options: ConfigClientOptions,
+): ConfigClient => {
   const storage = options.storage;
   const remoteProvider = options.remoteProvider;
   const definitions = options.definitions;
@@ -107,7 +116,9 @@ export const createConfigClient = (options: ConfigClientOptions): ConfigClient =
     }
 
     const cachedValue = await resolveCachedValue<T>(storage, key, context);
-    const remoteValue = remoteProvider ? await remoteProvider.getValue<T>(key) : undefined;
+    const remoteValue = remoteProvider
+      ? await remoteProvider.getValue<T>(key)
+      : undefined;
 
     return resolveConfigValue<T>(key, {
       definitions,
