@@ -1,6 +1,6 @@
-import { createConfigClient } from "./index";
-import { createFirebaseRemoteConfigProvider } from "./remote/firebase-adapter";
 import { browserStorage } from "./cache/storage";
+import { createConfigClient } from "./client";
+import { createFirebaseRemoteConfigProvider } from "./remote/firebase-adapter";
 
 export const createExampleClient = () =>
   createConfigClient({

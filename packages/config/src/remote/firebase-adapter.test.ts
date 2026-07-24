@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { createFirebaseRemoteConfigProvider } from "./firebase-adapter";
 
 describe("createFirebaseRemoteConfigProvider", () => {

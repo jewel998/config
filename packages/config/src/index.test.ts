@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { createConfigClient, createExampleClient } from "./index";
 import type { CacheStorage } from "./cache/storage";
 import type { RemoteConfigProvider } from "./remote/provider";
+
+import { createConfigClient, createExampleClient } from "./index";
 
 describe("createConfigClient", () => {
   it("returns cached values for offline-first keys", async () => {

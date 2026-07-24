@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { createConfigRegistry } from "./registry";
 
 describe("createConfigRegistry", () => {

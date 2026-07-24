@@ -4,6 +4,7 @@ import type {
   ProjectRecord,
   TenantRecord,
 } from "../types";
+
 import type { ConfigManagerBackend } from "./manager";
 
 /**

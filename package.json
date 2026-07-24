@@ -15,7 +15,7 @@
     "build:docs": "pnpm --filter @jewel998/config-docs run build",
     "build:portal": "pnpm --filter @jewel998/config-portal run build",
     "test": "pnpm --filter @jewel998/config run test",
-    "lint": "oxlint packages/config/src apps/portal/src functions/src",
+    "lint": "oxlint packages/config/src apps/portal/src functions/src && eslint --no-warn-ignored",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,html}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,html}\"",
     "prepare": "husky",
@@ -24,10 +24,14 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.1",
     "@commitlint/config-conventional": "^21.2.0",
+    "eslint": "^9.27.0",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-import-x": "^4.12.0",
     "husky": "^9.0.0",
     "lint-staged": "^15.0.0",
     "oxlint": "^0.16.0",
-    "prettier": "^3.5.2"
+    "prettier": "^3.5.2",
+    "typescript-eslint": "^8.32.0"
   },
   "pnpm": {
     "overrides": {
@@ -42,7 +46,8 @@
       "prettier --write"
     ],
     "*.{ts,tsx}": [
-      "oxlint"
+      "oxlint",
+      "eslint --no-warn-ignored"
     ]
   },
   "commitlint": {

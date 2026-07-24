@@ -1,5 +1,3 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import type { ReactNode } from "react";
 import {
   onAuthStateChanged,
   signInWithPopup,
@@ -7,6 +5,8 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import type { User } from "firebase/auth";
+import { createContext, useContext, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 
 import { auth } from "./firebase";
 
