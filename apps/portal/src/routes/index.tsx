@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { Activity, FolderKanban, Key, Server } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,39 +11,80 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-const stats = [
-  {
-    title: "Projects",
-    value: "0",
-    description: "Active projects",
-    icon: FolderKanban,
-    trend: "No data yet",
-  },
-  {
-    title: "Environments",
-    value: "0",
-    description: "Deployment targets",
-    icon: Server,
-    trend: "No data yet",
-  },
-  {
-    title: "Client Keys",
-    value: "0",
-    description: "Active clientIds",
-    icon: Key,
-    trend: "No data yet",
-  },
-  {
-    title: "Published Configs",
-    value: "0",
-    description: "Live configurations",
-    icon: Activity,
-    trend: "No data yet",
-  },
-];
+import { useAuth } from "@/lib/auth";
+import { db } from "@/lib/firebase";
 
 const DashboardPage = () => {
+  const { user } = useAuth();
+  const [projectCount, setProjectCount] = useState(0);
+  const [envCount, setEnvCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const q = query(
+      collection(db, "projects"),
+      where("authorizedUsers", "array-contains", user.uid),
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setProjectCount(snapshot.size);
+      // Count environments across all projects
+      let totalEnvs = 0;
+      let pending = snapshot.docs.length;
+
+      if (pending === 0) {
+        setEnvCount(0);
+        return;
+      }
+
+      snapshot.docs.forEach((projectDoc) => {
+        const envCollection = collection(
+          db,
+          "projects",
+          projectDoc.id,
+          "environments",
+        );
+        onSnapshot(envCollection, (envSnap) => {
+          totalEnvs += envSnap.size;
+          pending--;
+          if (pending === 0) {
+            setEnvCount(totalEnvs);
+          }
+        });
+      });
+    });
+
+    return unsubscribe;
+  }, [user]);
+
+  const stats = [
+    {
+      title: "Projects",
+      value: String(projectCount),
+      description: "Active projects",
+      icon: FolderKanban,
+    },
+    {
+      title: "Environments",
+      value: String(envCount),
+      description: "Deployment targets",
+      icon: Server,
+    },
+    {
+      title: "Client Keys",
+      value: "0",
+      description: "Active clientIds",
+      icon: Key,
+    },
+    {
+      title: "Published Configs",
+      value: "0",
+      description: "Live configurations",
+      icon: Activity,
+    },
+  ];
+
   return (
     <div className="space-y-8">
       {/* Page header */}
@@ -84,7 +127,7 @@ const DashboardPage = () => {
           </CardHeader>
           <CardContent>
             <div className="flex h-32 items-center justify-center rounded-lg border border-dashed text-sm text-[var(--muted-foreground)]">
-              No activity yet. Create a tenant to get started.
+              No activity yet. Create a project to get started.
             </div>
           </CardContent>
         </Card>
@@ -101,9 +144,9 @@ const DashboardPage = () => {
                 1
               </Badge>
               <div>
-                <p className="text-sm font-medium">Create a Tenant</p>
+                <p className="text-sm font-medium">Create a Project</p>
                 <p className="text-xs text-[var(--muted-foreground)]">
-                  Set up your organization to scope configs.
+                  Set up your project to scope configs.
                 </p>
               </div>
             </div>
@@ -112,9 +155,9 @@ const DashboardPage = () => {
                 2
               </Badge>
               <div>
-                <p className="text-sm font-medium">Add a Project</p>
+                <p className="text-sm font-medium">Add an Environment</p>
                 <p className="text-xs text-[var(--muted-foreground)]">
-                  Define configuration keys for your app.
+                  Define deployment targets for your app.
                 </p>
               </div>
             </div>

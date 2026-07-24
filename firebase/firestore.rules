@@ -44,10 +44,12 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Allowed users — only accessible via Admin SDK (Cloud Functions)
+    // Allowed users — authenticated users can read their own entry
     // To grant portal access, add a doc: /allowedUsers/{email}
     match /allowedUsers/{email} {
-      allow read, write: if false;
+      allow read: if request.auth != null
+        && request.auth.token.email == email;
+      allow write: if false;
     }
 
     // Helper functions

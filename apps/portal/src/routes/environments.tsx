@@ -1,17 +1,123 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AlertTriangle, Globe, Key, Plus, Server } from "lucide-react";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
+import { Globe, Plus, Server, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth } from "@/lib/auth";
+import { db } from "@/lib/firebase";
+
+interface Project {
+  id: string;
+  name: string;
+}
+
+interface Environment {
+  id: string;
+  name: string;
+  projectId: string;
+  allowedDomains: string[];
+  createdAt: string;
+  updatedAt: string;
+}
 
 const EnvironmentsPage = () => {
+  const { user } = useAuth();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedProjectId, setSelectedProjectId] = useState<string>("");
+  const [environments, setEnvironments] = useState<Environment[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [creating, setCreating] = useState(false);
+
+  // Load projects for the selector
+  useEffect(() => {
+    if (!user) return;
+
+    const q = query(
+      collection(db, "projects"),
+      where("authorizedUsers", "array-contains", user.uid),
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const items: Project[] = snapshot.docs.map((d) => ({
+        id: d.id,
+        name: d.data().name as string,
+      }));
+      setProjects(items);
+      if (items.length > 0 && !selectedProjectId) {
+        setSelectedProjectId(items[0].id);
+      }
+    });
+
+    return unsubscribe;
+  }, [user]);
+
+  // Load environments for the selected project
+  useEffect(() => {
+    if (!selectedProjectId) {
+      setEnvironments([]);
+      return;
+    }
+
+    const envCollection = collection(
+      db,
+      "projects",
+      selectedProjectId,
+      "environments",
+    );
+    const unsubscribe = onSnapshot(envCollection, (snapshot) => {
+      const items: Environment[] = snapshot.docs.map((d) => ({
+        id: d.id,
+        ...(d.data() as Omit<Environment, "id">),
+      }));
+      setEnvironments(items);
+    });
+
+    return unsubscribe;
+  }, [selectedProjectId]);
+
+  const handleCreate = async () => {
+    if (!newName.trim() || !selectedProjectId) return;
+    setCreating(true);
+    try {
+      const envCollection = collection(
+        db,
+        "projects",
+        selectedProjectId,
+        "environments",
+      );
+      await addDoc(envCollection, {
+        name: newName.trim(),
+        projectId: selectedProjectId,
+        allowedDomains: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+      setNewName("");
+      setShowForm(false);
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const handleDelete = async (envId: string) => {
+    if (!selectedProjectId) return;
+    await deleteDoc(
+      doc(db, "projects", selectedProjectId, "environments", envId),
+    );
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -21,97 +127,155 @@ const EnvironmentsPage = () => {
             Manage deployment targets, allowed domains, and client keys.
           </p>
         </div>
-        <Button className="gap-2">
+        <Button
+          className="gap-2"
+          onClick={() => setShowForm(true)}
+          disabled={!selectedProjectId}
+        >
           <Plus className="h-4 w-4" />
           New Environment
         </Button>
       </div>
 
-      {/* Info cards */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Globe className="h-4 w-4 text-[var(--muted-foreground)]" />
-              <CardTitle className="text-sm">Domain Allowlisting</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-[var(--muted-foreground)]">
-              Each environment has a list of allowed domains. Only requests from
-              these domains can access config via the SDK. Firebase CORS
-              enforcement prevents unauthorized browser access.
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Key className="h-4 w-4 text-[var(--muted-foreground)]" />
-              <CardTitle className="text-sm">Client Keys (clientId)</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-[var(--muted-foreground)]">
-              Generate a clientId per environment to initialize the SDK. The
-              clientId is public (like a Firebase API key) and scoped to one
-              project + environment.
-            </p>
-          </CardContent>
-        </Card>
+      {/* Project selector */}
+      <div className="flex items-center gap-3">
+        <label className="text-sm font-medium">Project:</label>
+        <select
+          value={selectedProjectId}
+          onChange={(e) => setSelectedProjectId(e.target.value)}
+          className="rounded-md border bg-[var(--background)] px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[var(--ring)]"
+        >
+          {projects.length === 0 && (
+            <option value="">No projects available</option>
+          )}
+          {projects.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* Localhost warning */}
-      <Card className="border-amber-200 bg-amber-50/50">
-        <CardContent className="flex items-start gap-3 pt-6">
-          <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600" />
-          <div>
-            <p className="text-sm font-medium text-amber-900">
-              Localhost domains reduce security
-            </p>
-            <p className="text-xs text-amber-700">
-              Adding <code>localhost</code> to allowed domains should only be
-              done for development environments. Anyone with the clientId can
-              access config from their local machine.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Empty state */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>All Environments</CardTitle>
-              <CardDescription>
-                Environments allow different config values per deployment target
-                (development, staging, production).
-              </CardDescription>
-            </div>
-            <Badge variant="secondary">Alpha</Badge>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col items-center justify-center gap-4 py-12">
-            <div className="rounded-full bg-[var(--muted)] p-4">
-              <Server className="h-8 w-8 text-[var(--muted-foreground)]" />
-            </div>
-            <div className="text-center">
-              <p className="font-medium">No environments yet</p>
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Create a project first, then add environments with allowed
-                domains and generate clientIds.
-              </p>
-            </div>
-            <Button variant="outline" className="gap-2">
-              <Plus className="h-4 w-4" />
-              Create Environment
+      {/* Inline create form */}
+      {showForm && (
+        <Card>
+          <CardContent className="flex items-center gap-3 pt-6">
+            <input
+              type="text"
+              placeholder="Environment name (e.g. production, staging)"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+              className="flex-1 rounded-md border bg-[var(--background)] px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[var(--ring)]"
+              autoFocus
+            />
+            <Button
+              onClick={handleCreate}
+              disabled={creating || !newName.trim()}
+            >
+              {creating ? "Creating..." : "Create"}
             </Button>
-          </div>
-        </CardContent>
-      </Card>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setShowForm(false);
+                setNewName("");
+              }}
+            >
+              Cancel
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Environments list */}
+      {!selectedProjectId ? (
+        <Card>
+          <CardContent>
+            <div className="flex flex-col items-center justify-center gap-4 py-12">
+              <div className="rounded-full bg-[var(--muted)] p-4">
+                <Server className="h-8 w-8 text-[var(--muted-foreground)]" />
+              </div>
+              <div className="text-center">
+                <p className="font-medium">No project selected</p>
+                <p className="text-sm text-[var(--muted-foreground)]">
+                  Create a project first, then add environments.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ) : environments.length === 0 && !showForm ? (
+        <Card>
+          <CardContent>
+            <div className="flex flex-col items-center justify-center gap-4 py-12">
+              <div className="rounded-full bg-[var(--muted)] p-4">
+                <Server className="h-8 w-8 text-[var(--muted-foreground)]" />
+              </div>
+              <div className="text-center">
+                <p className="font-medium">No environments yet</p>
+                <p className="text-sm text-[var(--muted-foreground)]">
+                  Add environments like production, staging, or development.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={() => setShowForm(true)}
+              >
+                <Plus className="h-4 w-4" />
+                Create Environment
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {environments.map((env) => (
+            <Card key={env.id}>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-base">{env.name}</CardTitle>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-[var(--muted-foreground)] hover:text-[var(--destructive)]"
+                  onClick={() => handleDelete(env.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Globe className="h-3.5 w-3.5 text-[var(--muted-foreground)]" />
+                  <span className="text-xs text-[var(--muted-foreground)]">
+                    Allowed domains:
+                  </span>
+                </div>
+                {env.allowedDomains.length > 0 ? (
+                  <div className="flex flex-wrap gap-1">
+                    {env.allowedDomains.map((domain) => (
+                      <Badge
+                        key={domain}
+                        variant="secondary"
+                        className="text-xs"
+                      >
+                        {domain}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-[var(--muted-foreground)] italic">
+                    None configured
+                  </p>
+                )}
+                <p className="text-xs text-[var(--muted-foreground)]">
+                  Created {new Date(env.createdAt).toLocaleDateString()}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

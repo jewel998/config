@@ -6,6 +6,7 @@ import {
   Menu,
   Server,
   Settings,
+  ShieldX,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -140,6 +141,36 @@ const AuthenticatedLayout = () => {
   );
 };
 
+const AccessDeniedPage = () => {
+  const { logOut, signIn } = useAuth();
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center px-6">
+      <div className="w-full max-w-sm space-y-6 text-center">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border bg-red-50">
+          <ShieldX className="h-8 w-8 text-red-500" />
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold tracking-tight">Access Denied</h1>
+          <p className="text-sm text-[var(--muted-foreground)]">
+            Your account is not authorized to access this portal. Contact the
+            project owner to request access.
+          </p>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Button onClick={signIn} className="w-full">
+            Try a different account
+          </Button>
+          <Button variant="outline" onClick={logOut} className="w-full gap-2">
+            <LogOut className="h-4 w-4" />
+            Sign out
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const LoginPage = () => {
   const { signIn } = useAuth();
 
@@ -225,7 +256,7 @@ const LoginPage = () => {
 };
 
 const RootLayout = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, accessDenied } = useAuth();
 
   if (loading) {
     return (
@@ -236,6 +267,10 @@ const RootLayout = () => {
         </div>
       </div>
     );
+  }
+
+  if (accessDenied) {
+    return <AccessDeniedPage />;
   }
 
   if (!user) {
