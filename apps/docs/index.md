@@ -23,3 +23,7 @@ features:
   - title: Tree-shakeable
     details: Modular sub-path exports so you only bundle what you use.
 ---
+
+::: warning Access Notice
+The Config Portal is available **on request only**. Rights of Admission Reserved. If you'd like access to manage configurations, please contact the project owner.
+:::

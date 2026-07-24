@@ -209,6 +209,15 @@ const LoginPage = () => {
             <br />
             Only authorized team members can access this portal.
           </p>
+
+          <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-3">
+            <p className="text-center text-xs text-amber-800">
+              <strong>Access is by request only.</strong>
+              <br />
+              Rights of Admission Reserved. Contact the project owner to request
+              access.
+            </p>
+          </div>
         </div>
       </div>
     </div>
