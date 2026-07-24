@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // SPA fallback for GitHub Pages
+      // Redirects all routes to index.html so React Router handles them
+      const path = window.location.pathname;
+      const base = "/config/portal/";
+      if (path.startsWith(base)) {
+        sessionStorage.setItem("redirect", path);
+        window.location.replace(base);
+      }
+    </script>
+  </head>
+  <body></body>
+</html>
