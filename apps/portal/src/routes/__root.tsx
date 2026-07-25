@@ -12,8 +12,10 @@ import {
   Server,
   Settings,
   ShieldX,
+  SlidersHorizontal,
   Sun,
   Key,
+  User,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -54,12 +56,18 @@ const navItems = [
     label: <Trans>Environments</Trans>,
     icon: Server,
   },
-  { to: "/secrets" as const, label: <Trans>Secrets</Trans>, icon: Key },
+  { to: "/api-keys" as const, label: <Trans>API Keys</Trans>, icon: Key },
   {
     to: "/settings" as const,
     label: <Trans>Settings</Trans>,
     icon: Settings,
   },
+  {
+    to: "/preferences" as const,
+    label: <Trans>Preferences</Trans>,
+    icon: SlidersHorizontal,
+  },
+  { to: "/account" as const, label: <Trans>Account</Trans>, icon: User },
 ];
 
 const ThemeToggle = () => {

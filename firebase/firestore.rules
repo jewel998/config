@@ -60,8 +60,9 @@ service cloud.firestore {
 
     function isProjectMember(projectId) {
       let project = get(/databases/$(database)/documents/projects/$(projectId));
-      return project.data.ownerId == request.auth.uid
-        || request.auth.uid in project.data.authorizedUsers;
+      return !('deletedAt' in project.data)
+        && (project.data.ownerId == request.auth.uid
+            || request.auth.uid in project.data.authorizedUsers);
     }
   }
 }

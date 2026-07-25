@@ -10,8 +10,10 @@
 
 import { Route as rootRouteImport } from "./routes/__root";
 import { Route as IndexRouteImport } from "./routes/index";
+import { Route as AccountRouteImport } from "./routes/account";
+import { Route as ApiKeysRouteImport } from "./routes/api-keys";
 import { Route as EnvironmentsRouteImport } from "./routes/environments";
-import { Route as SecretsRouteImport } from "./routes/secrets";
+import { Route as PreferencesRouteImport } from "./routes/preferences";
 import { Route as SettingsRouteImport } from "./routes/settings";
 
 const IndexRoute = IndexRouteImport.update({
@@ -19,14 +21,24 @@ const IndexRoute = IndexRouteImport.update({
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any);
+const AccountRoute = AccountRouteImport.update({
+  id: "/account",
+  path: "/account",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const ApiKeysRoute = ApiKeysRouteImport.update({
+  id: "/api-keys",
+  path: "/api-keys",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const EnvironmentsRoute = EnvironmentsRouteImport.update({
   id: "/environments",
   path: "/environments",
   getParentRoute: () => rootRouteImport,
 } as any);
-const SecretsRoute = SecretsRouteImport.update({
-  id: "/secrets",
-  path: "/secrets",
+const PreferencesRoute = PreferencesRouteImport.update({
+  id: "/preferences",
+  path: "/preferences",
   getParentRoute: () => rootRouteImport,
 } as any);
 const SettingsRoute = SettingsRouteImport.update({
@@ -37,35 +49,62 @@ const SettingsRoute = SettingsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
+  "/account": typeof AccountRoute;
+  "/api-keys": typeof ApiKeysRoute;
   "/environments": typeof EnvironmentsRoute;
-  "/secrets": typeof SecretsRoute;
+  "/preferences": typeof PreferencesRoute;
   "/settings": typeof SettingsRoute;
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
+  "/account": typeof AccountRoute;
+  "/api-keys": typeof ApiKeysRoute;
   "/environments": typeof EnvironmentsRoute;
-  "/secrets": typeof SecretsRoute;
+  "/preferences": typeof PreferencesRoute;
   "/settings": typeof SettingsRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
+  "/account": typeof AccountRoute;
+  "/api-keys": typeof ApiKeysRoute;
   "/environments": typeof EnvironmentsRoute;
-  "/secrets": typeof SecretsRoute;
+  "/preferences": typeof PreferencesRoute;
   "/settings": typeof SettingsRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/environments" | "/secrets" | "/settings";
+  fullPaths:
+    | "/"
+    | "/account"
+    | "/api-keys"
+    | "/environments"
+    | "/preferences"
+    | "/settings";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/environments" | "/secrets" | "/settings";
-  id: "__root__" | "/" | "/environments" | "/secrets" | "/settings";
+  to:
+    | "/"
+    | "/account"
+    | "/api-keys"
+    | "/environments"
+    | "/preferences"
+    | "/settings";
+  id:
+    | "__root__"
+    | "/"
+    | "/account"
+    | "/api-keys"
+    | "/environments"
+    | "/preferences"
+    | "/settings";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
+  AccountRoute: typeof AccountRoute;
+  ApiKeysRoute: typeof ApiKeysRoute;
   EnvironmentsRoute: typeof EnvironmentsRoute;
-  SecretsRoute: typeof SecretsRoute;
+  PreferencesRoute: typeof PreferencesRoute;
   SettingsRoute: typeof SettingsRoute;
 }
 
@@ -78,6 +117,20 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    "/account": {
+      id: "/account";
+      path: "/account";
+      fullPath: "/account";
+      preLoaderRoute: typeof AccountRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api-keys": {
+      id: "/api-keys";
+      path: "/api-keys";
+      fullPath: "/api-keys";
+      preLoaderRoute: typeof ApiKeysRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     "/environments": {
       id: "/environments";
       path: "/environments";
@@ -85,11 +138,11 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof EnvironmentsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    "/secrets": {
-      id: "/secrets";
-      path: "/secrets";
-      fullPath: "/secrets";
-      preLoaderRoute: typeof SecretsRouteImport;
+    "/preferences": {
+      id: "/preferences";
+      path: "/preferences";
+      fullPath: "/preferences";
+      preLoaderRoute: typeof PreferencesRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/settings": {
@@ -104,8 +157,10 @@ declare module "@tanstack/react-router" {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
+  ApiKeysRoute: ApiKeysRoute,
   EnvironmentsRoute: EnvironmentsRoute,
-  SecretsRoute: SecretsRoute,
+  PreferencesRoute: PreferencesRoute,
   SettingsRoute: SettingsRoute,
 };
 export const routeTree = rootRouteImport

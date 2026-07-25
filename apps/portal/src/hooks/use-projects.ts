@@ -5,7 +5,7 @@ import {
   where,
   getDocs,
   addDoc,
-  deleteDoc,
+  updateDoc,
   doc,
 } from "firebase/firestore";
 
@@ -33,10 +33,12 @@ export const useProjects = () => {
         where("authorizedUsers", "array-contains", user.uid),
       );
       const snapshot = await getDocs(q);
-      return snapshot.docs.map((d) => ({
-        id: d.id,
-        ...(d.data() as Omit<Project, "id">),
-      }));
+      return snapshot.docs
+        .filter((d) => !d.data().deletedAt)
+        .map((d) => ({
+          id: d.id,
+          ...(d.data() as Omit<Project, "id">),
+        }));
     },
     enabled: !!user,
   });
@@ -69,7 +71,9 @@ export const useDeleteProject = () => {
 
   return useMutation({
     mutationFn: async (projectId: string) => {
-      await deleteDoc(doc(db, "projects", projectId));
+      await updateDoc(doc(db, "projects", projectId), {
+        deletedAt: new Date().toISOString(),
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
