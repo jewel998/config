@@ -4,6 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Globe, Plus, Server, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,31 @@ import {
   useDeleteEnvironment,
 } from "@/hooks/use-environments";
 import { useProjectStore } from "@/stores/project-store";
+
+const envSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Environment name is required")
+    .max(50, "Name must be 50 characters or less"),
+  domains: z
+    .string()
+    .transform((val) =>
+      val
+        .split(",")
+        .map((d) => d.trim())
+        .filter(Boolean),
+    )
+    .pipe(
+      z.array(
+        z
+          .string()
+          .regex(
+            /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*$/,
+            "Invalid domain format",
+          ),
+      ),
+    ),
+});
 
 const ENV_SUGGESTIONS = [
   "production",
@@ -36,15 +62,35 @@ const EnvironmentsPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [newName, setNewName] = useState("");
   const [newDomains, setNewDomains] = useState("");
+  const [errors, setErrors] = useState<{ name?: string; domains?: string }>({});
 
   const handleCreate = async () => {
-    if (!newName.trim() || !selectedProjectId) return;
-    const domains = newDomains
-      .split(",")
-      .map((d) => d.trim())
-      .filter(Boolean);
+    if (!selectedProjectId) return;
+
+    const result = envSchema.safeParse({ name: newName, domains: newDomains });
+    if (!result.success) {
+      const fieldErrors: { name?: string; domains?: string } = {};
+      for (const issue of result.error.issues) {
+        if (issue.path[0] === "name") {
+          fieldErrors.name = issue.message;
+        } else if (
+          issue.path[0] === "domains" ||
+          issue.path.includes("domains")
+        ) {
+          fieldErrors.domains = issue.message;
+        }
+      }
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setErrors({});
     createEnvironment.mutate(
-      { projectId: selectedProjectId, name: newName, allowedDomains: domains },
+      {
+        projectId: selectedProjectId,
+        name: result.data.name,
+        allowedDomains: result.data.domains,
+      },
       {
         onSuccess: () => {
           setNewName("");
@@ -139,16 +185,28 @@ const EnvironmentsPage = () => {
             <Input
               placeholder={t`Environment name (e.g. production, staging)`}
               value={newName}
-              onChange={(e) => setNewName(e.target.value)}
+              onChange={(e) => {
+                setNewName(e.target.value);
+                setErrors((prev) => ({ ...prev, name: undefined }));
+              }}
               onKeyDown={(e) => e.key === "Enter" && handleCreate()}
               autoFocus
             />
+            {errors.name && (
+              <p className="text-xs text-destructive">{errors.name}</p>
+            )}
             <Input
               placeholder={t`Allowed domains (comma-separated, e.g. example.com, app.example.com)`}
               value={newDomains}
-              onChange={(e) => setNewDomains(e.target.value)}
+              onChange={(e) => {
+                setNewDomains(e.target.value);
+                setErrors((prev) => ({ ...prev, domains: undefined }));
+              }}
               onKeyDown={(e) => e.key === "Enter" && handleCreate()}
             />
+            {errors.domains && (
+              <p className="text-xs text-destructive">{errors.domains}</p>
+            )}
             <div className="flex items-center gap-2">
               <Button
                 className="w-20 rounded-full"
@@ -168,6 +226,7 @@ const EnvironmentsPage = () => {
                   setShowForm(false);
                   setNewName("");
                   setNewDomains("");
+                  setErrors({});
                 }}
               >
                 <Trans>Cancel</Trans>

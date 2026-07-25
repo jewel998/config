@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from "./routes/__root";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as ApiKeysRouteImport } from "./routes/api-keys";
+import { Route as ConfigsRouteImport } from "./routes/configs";
 import { Route as EnvironmentsRouteImport } from "./routes/environments";
 import { Route as PreferencesRouteImport } from "./routes/preferences";
 import { Route as SettingsRouteImport } from "./routes/settings";
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const ApiKeysRoute = ApiKeysRouteImport.update({
   id: "/api-keys",
   path: "/api-keys",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const ConfigsRoute = ConfigsRouteImport.update({
+  id: "/configs",
+  path: "/configs",
   getParentRoute: () => rootRouteImport,
 } as any);
 const EnvironmentsRoute = EnvironmentsRouteImport.update({
@@ -44,6 +50,7 @@ const SettingsRoute = SettingsRouteImport.update({
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
   "/api-keys": typeof ApiKeysRoute;
+  "/configs": typeof ConfigsRoute;
   "/environments": typeof EnvironmentsRoute;
   "/preferences": typeof PreferencesRoute;
   "/settings": typeof SettingsRoute;
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
   "/api-keys": typeof ApiKeysRoute;
+  "/configs": typeof ConfigsRoute;
   "/environments": typeof EnvironmentsRoute;
   "/preferences": typeof PreferencesRoute;
   "/settings": typeof SettingsRoute;
@@ -59,19 +67,33 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
   "/api-keys": typeof ApiKeysRoute;
+  "/configs": typeof ConfigsRoute;
   "/environments": typeof EnvironmentsRoute;
   "/preferences": typeof PreferencesRoute;
   "/settings": typeof SettingsRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/api-keys" | "/environments" | "/preferences" | "/settings";
+  fullPaths:
+    | "/"
+    | "/api-keys"
+    | "/configs"
+    | "/environments"
+    | "/preferences"
+    | "/settings";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/api-keys" | "/environments" | "/preferences" | "/settings";
+  to:
+    | "/"
+    | "/api-keys"
+    | "/configs"
+    | "/environments"
+    | "/preferences"
+    | "/settings";
   id:
     | "__root__"
     | "/"
     | "/api-keys"
+    | "/configs"
     | "/environments"
     | "/preferences"
     | "/settings";
@@ -80,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   ApiKeysRoute: typeof ApiKeysRoute;
+  ConfigsRoute: typeof ConfigsRoute;
   EnvironmentsRoute: typeof EnvironmentsRoute;
   PreferencesRoute: typeof PreferencesRoute;
   SettingsRoute: typeof SettingsRoute;
@@ -99,6 +122,13 @@ declare module "@tanstack/react-router" {
       path: "/api-keys";
       fullPath: "/api-keys";
       preLoaderRoute: typeof ApiKeysRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/configs": {
+      id: "/configs";
+      path: "/configs";
+      fullPath: "/configs";
+      preLoaderRoute: typeof ConfigsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/environments": {
@@ -128,6 +158,7 @@ declare module "@tanstack/react-router" {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiKeysRoute: ApiKeysRoute,
+  ConfigsRoute: ConfigsRoute,
   EnvironmentsRoute: EnvironmentsRoute,
   PreferencesRoute: PreferencesRoute,
   SettingsRoute: SettingsRoute,

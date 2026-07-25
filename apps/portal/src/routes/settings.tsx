@@ -4,6 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Settings } from "lucide-react";
 import { toast } from "sonner";
 
+import { CopyButton } from "@/components/copy-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -101,9 +102,12 @@ const SettingsPage = () => {
             <p className="text-sm font-medium">
               <Trans>Project ID</Trans>
             </p>
-            <p className="font-mono text-xs text-muted-foreground">
-              {selectedProjectId}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="font-mono text-xs text-muted-foreground">
+                {selectedProjectId}
+              </p>
+              <CopyButton value={selectedProjectId} />
+            </div>
           </div>
           <Separator />
           <div>
@@ -121,11 +125,16 @@ const SettingsPage = () => {
             <p className="text-sm font-medium">
               <Trans>Owner</Trans>
             </p>
-            <p className="font-mono text-xs text-muted-foreground">
-              {selectedProject.ownerId === user?.uid
-                ? user?.email
-                : selectedProject.ownerId}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="font-mono text-xs text-muted-foreground">
+                {selectedProject.ownerId === user?.uid
+                  ? user?.email
+                  : selectedProject.ownerId}
+              </p>
+              {selectedProject.ownerId !== user?.uid && (
+                <CopyButton value={selectedProject.ownerId} />
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>

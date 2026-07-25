@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   collection,
+  deleteDoc,
   doc,
   getDocs,
   setDoc,
@@ -120,6 +121,38 @@ export const useRevokeApiKey = () => {
         status: "revoked",
         revokedAt: new Date().toISOString(),
       });
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["apiKeys", variables.projectId, variables.environmentId],
+      });
+    },
+  });
+};
+
+export const useDeleteApiKey = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      projectId,
+      environmentId,
+      token,
+    }: {
+      projectId: string;
+      environmentId: string;
+      token: string;
+    }) => {
+      const docRef = doc(
+        db,
+        "projects",
+        projectId,
+        "environments",
+        environmentId,
+        "clientIds",
+        token,
+      );
+      await deleteDoc(docRef);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({

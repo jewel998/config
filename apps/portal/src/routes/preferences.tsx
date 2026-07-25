@@ -197,75 +197,82 @@ const PreferencesPage = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Language */}
-              <div className="space-y-2">
-                <p className="text-sm font-medium">
-                  <Trans>Language</Trans>
-                </p>
-                <Select value={locale} onValueChange={handleLocaleChange}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(
-                      Object.entries(localeNames) as [SupportedLocale, string][]
-                    ).map(([code, name]) => (
-                      <SelectItem key={code} value={code}>
-                        {name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <div className="grid gap-6 sm:grid-cols-2">
+                {/* Language */}
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">
+                    <Trans>Language</Trans>
+                  </p>
+                  <Select value={locale} onValueChange={handleLocaleChange}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(
+                        Object.entries(localeNames) as [
+                          SupportedLocale,
+                          string,
+                        ][]
+                      ).map(([code, name]) => (
+                        <SelectItem key={code} value={code}>
+                          {name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              {/* Timezone */}
-              <div className="space-y-2">
-                <p className="text-sm font-medium">
-                  <Trans>Timezone</Trans>
-                </p>
-                <Popover open={tzOpen} onOpenChange={setTzOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={tzOpen}
-                      className="w-72 justify-between rounded-lg text-sm font-normal"
-                    >
-                      <span className="truncate">{timezone}</span>
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-72 p-0" align="start">
-                    <Command>
-                      <CommandInput placeholder="Search timezones..." />
-                      <CommandList>
-                        <CommandEmpty>
-                          <Trans>No timezone found.</Trans>
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {allTimezones.map((tz) => (
-                            <CommandItem
-                              key={tz}
-                              value={tz}
-                              onSelect={() => handleTimezoneChange(tz)}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  timezone === tz ? "opacity-100" : "opacity-0",
-                                )}
-                              />
-                              <span className="truncate">{tz}</span>
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Trans>Current time:</Trans>
-                  <span className="font-mono">{currentTime}</span>
+                {/* Timezone */}
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">
+                    <Trans>Timezone</Trans>
+                  </p>
+                  <Popover open={tzOpen} onOpenChange={setTzOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={tzOpen}
+                        className="w-72 justify-between rounded-lg text-sm font-normal"
+                      >
+                        <span className="truncate">{timezone}</span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-72 p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Search timezones..." />
+                        <CommandList>
+                          <CommandEmpty>
+                            <Trans>No timezone found.</Trans>
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {allTimezones.map((tz) => (
+                              <CommandItem
+                                key={tz}
+                                value={tz}
+                                onSelect={() => handleTimezoneChange(tz)}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    timezone === tz
+                                      ? "opacity-100"
+                                      : "opacity-0",
+                                  )}
+                                />
+                                <span className="truncate">{tz}</span>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Trans>Current time:</Trans>
+                    <span className="font-mono">{currentTime}</span>
+                  </div>
                 </div>
               </div>
             </CardContent>

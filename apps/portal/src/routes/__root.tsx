@@ -3,6 +3,8 @@ import { Trans } from "@lingui/react/macro";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import {
   Globe,
+  Key,
+  Layers,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -14,8 +16,6 @@ import {
   ShieldX,
   SlidersHorizontal,
   Sun,
-  Key,
-  User,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -56,6 +56,7 @@ const navItems = [
     label: <Trans>Environments</Trans>,
     icon: Server,
   },
+  { to: "/configs" as const, label: <Trans>Configs</Trans>, icon: Layers },
   { to: "/api-keys" as const, label: <Trans>API Keys</Trans>, icon: Key },
   {
     to: "/settings" as const,

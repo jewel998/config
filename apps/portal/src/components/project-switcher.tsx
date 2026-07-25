@@ -59,7 +59,7 @@ export const ProjectSwitcher = () => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between rounded-lg text-sm font-medium"
+          className="w-[140px] justify-between rounded-lg text-sm font-medium sm:w-[200px]"
         >
           <span className="truncate">
             {selectedProject ? selectedProject.name : t`Select project`}

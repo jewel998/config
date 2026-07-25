@@ -59,7 +59,7 @@ const DashboardContent = () => {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat, idx) => (
           <Card key={idx} className="rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -110,7 +110,7 @@ const DashboardPage = () => {
     return (
       <div className="space-y-4 p-8">
         <Skeleton className="h-8 w-48" />
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <Skeleton className="h-28" />
           <Skeleton className="h-28" />
           <Skeleton className="h-28" />

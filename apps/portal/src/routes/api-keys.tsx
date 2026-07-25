@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import {
   useApiKeys,
+  useDeleteApiKey,
   useGenerateApiKey,
   useRevokeApiKey,
 } from "@/hooks/use-api-keys";
@@ -69,6 +70,7 @@ const EnvironmentKeys = ({
   const { data: keys = [], isLoading } = useApiKeys(projectId, environmentId);
   const generateKey = useGenerateApiKey();
   const revokeKey = useRevokeApiKey();
+  const deleteKey = useDeleteApiKey();
   const user = useAuthStore((s) => s.user);
   const [showLabelInput, setShowLabelInput] = useState(false);
   const [label, setLabel] = useState("");
@@ -242,11 +244,28 @@ const EnvironmentKeys = ({
                       size="sm"
                       className="min-w-20 gap-1.5 rounded-full text-destructive hover:text-destructive"
                       onClick={() => {
-                        toast.success(t`Key deleted permanently`);
+                        deleteKey.mutate(
+                          { projectId, environmentId, token: key.token },
+                          {
+                            onSuccess: () => {
+                              toast.success(t`Key deleted permanently`);
+                            },
+                            onError: () => {
+                              toast.error(t`Failed to delete key`);
+                            },
+                          },
+                        );
                       }}
+                      disabled={deleteKey.isPending}
                     >
-                      <Trash2 className="h-3.5 w-3.5" />
-                      <Trans>Delete</Trans>
+                      {deleteKey.isPending ? (
+                        <Spinner />
+                      ) : (
+                        <>
+                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trans>Delete</Trans>
+                        </>
+                      )}
                     </Button>
                   )}
                 </div>
