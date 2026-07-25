@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 import {
   useEnvironments,
   useCreateEnvironment,
@@ -130,12 +131,12 @@ const EnvironmentsPage = () => {
             />
             <div className="flex items-center gap-2">
               <Button
-                className="rounded-full"
+                className="w-20 rounded-full"
                 onClick={handleCreate}
                 disabled={createEnvironment.isPending || !newName.trim()}
               >
                 {createEnvironment.isPending ? (
-                  <Trans>Creating...</Trans>
+                  <Spinner />
                 ) : (
                   <Trans>Create</Trans>
                 )}

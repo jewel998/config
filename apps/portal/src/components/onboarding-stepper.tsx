@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { useCreateEnvironment } from "@/hooks/use-environments";
 import { useCreateProject } from "@/hooks/use-projects";
 import { cn } from "@/lib/utils";
@@ -172,12 +173,12 @@ export const OnboardingStepper = () => {
                     />
                     <Button
                       size="sm"
-                      className="h-9 shrink-0 rounded-full"
+                      className="h-9 w-20 shrink-0 rounded-full"
                       onClick={handleCreateProject}
                       disabled={createProject.isPending || !projectName.trim()}
                     >
                       {createProject.isPending ? (
-                        <Trans>Creating...</Trans>
+                        <Spinner />
                       ) : (
                         <Trans>Create</Trans>
                       )}
@@ -198,12 +199,12 @@ export const OnboardingStepper = () => {
                     />
                     <Button
                       size="sm"
-                      className="h-9 shrink-0 rounded-full"
+                      className="h-9 w-20 shrink-0 rounded-full"
                       onClick={handleCreateEnv}
                       disabled={createEnvironment.isPending || !envName.trim()}
                     >
                       {createEnvironment.isPending ? (
-                        <Trans>Creating...</Trans>
+                        <Spinner />
                       ) : (
                         <Trans>Create</Trans>
                       )}
