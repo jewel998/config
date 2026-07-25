@@ -10,11 +10,13 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { useDeleteProject, useProjects } from "@/hooks/use-projects";
+import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
 
 const SettingsPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const setSelectedProjectId = useProjectStore((s) => s.setSelectedProjectId);
+  const user = useAuthStore((s) => s.user);
   const { data: projects, isLoading } = useProjects();
   const deleteProject = useDeleteProject();
 
@@ -120,7 +122,9 @@ const SettingsPage = () => {
               <Trans>Owner</Trans>
             </p>
             <p className="font-mono text-xs text-muted-foreground">
-              {selectedProject.ownerId}
+              {selectedProject.ownerId === user?.uid
+                ? user?.email
+                : selectedProject.ownerId}
             </p>
           </div>
         </CardContent>

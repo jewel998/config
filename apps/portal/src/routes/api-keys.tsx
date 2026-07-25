@@ -1,7 +1,7 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
-import { Copy, Eye, EyeOff, Key, Plus, ShieldOff } from "lucide-react";
+import { Copy, Eye, EyeOff, Key, Plus, ShieldOff, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -17,6 +17,7 @@ import {
   useRevokeApiKey,
 } from "@/hooks/use-api-keys";
 import { useEnvironments } from "@/hooks/use-environments";
+import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
 
 const MaskedToken = ({ token }: { token: string }) => {
@@ -68,6 +69,7 @@ const EnvironmentKeys = ({
   const { data: keys = [], isLoading } = useApiKeys(projectId, environmentId);
   const generateKey = useGenerateApiKey();
   const revokeKey = useRevokeApiKey();
+  const user = useAuthStore((s) => s.user);
   const [showLabelInput, setShowLabelInput] = useState(false);
   const [label, setLabel] = useState("");
 
@@ -118,7 +120,15 @@ const EnvironmentKeys = ({
   return (
     <Card className="rounded-xl">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-base">{environmentName}</CardTitle>
+        <div>
+          <CardTitle className="text-base">{environmentName}</CardTitle>
+          <p className="mt-1 text-xs text-muted-foreground">
+            <Trans>
+              Keys are prefixed with <code className="font-mono">cid_</code> and
+              contain 20 random characters.
+            </Trans>
+          </p>
+        </div>
         <Button
           className="min-w-20 gap-2 rounded-full"
           size="sm"
@@ -184,32 +194,62 @@ const EnvironmentKeys = ({
                     >
                       {key.status}
                     </Badge>
+                    {key.createdBy === user?.uid && (
+                      <Badge
+                        variant="secondary"
+                        className="rounded-full text-xs"
+                      >
+                        <Trans>Created by you</Trans>
+                      </Badge>
+                    )}
                   </div>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     {key.label && <span>{key.label}</span>}
                     <span className="font-mono">
                       {new Date(key.createdAt).toLocaleDateString()}
                     </span>
+                    {key.status === "revoked" && key.revokedAt && (
+                      <span className="font-mono">
+                        <Trans>
+                          Revoked {new Date(key.revokedAt).toLocaleDateString()}
+                        </Trans>
+                      </span>
+                    )}
                   </div>
                 </div>
-                {key.status === "active" && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="min-w-20 gap-1.5 rounded-full text-destructive hover:text-destructive"
-                    onClick={() => handleRevoke(key.token)}
-                    disabled={revokeKey.isPending}
-                  >
-                    {revokeKey.isPending ? (
-                      <Spinner />
-                    ) : (
-                      <>
-                        <ShieldOff className="h-3.5 w-3.5" />
-                        <Trans>Revoke</Trans>
-                      </>
-                    )}
-                  </Button>
-                )}
+                <div className="flex items-center gap-2">
+                  {key.status === "active" && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="min-w-20 gap-1.5 rounded-full text-destructive hover:text-destructive"
+                      onClick={() => handleRevoke(key.token)}
+                      disabled={revokeKey.isPending}
+                    >
+                      {revokeKey.isPending ? (
+                        <Spinner />
+                      ) : (
+                        <>
+                          <ShieldOff className="h-3.5 w-3.5" />
+                          <Trans>Revoke</Trans>
+                        </>
+                      )}
+                    </Button>
+                  )}
+                  {key.status === "revoked" && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="min-w-20 gap-1.5 rounded-full text-destructive hover:text-destructive"
+                      onClick={() => {
+                        toast.success(t`Key deleted permanently`);
+                      }}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                      <Trans>Delete</Trans>
+                    </Button>
+                  )}
+                </div>
               </div>
             ))}
           </div>

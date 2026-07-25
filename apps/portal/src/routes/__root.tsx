@@ -67,7 +67,6 @@ const navItems = [
     label: <Trans>Preferences</Trans>,
     icon: SlidersHorizontal,
   },
-  { to: "/account" as const, label: <Trans>Account</Trans>, icon: User },
 ];
 
 const ThemeToggle = () => {
@@ -112,7 +111,9 @@ const LanguageSwitcher = () => {
               key={code}
               onClick={() => handleChange(code)}
               className={`flex w-full items-center rounded-md px-3 py-1.5 text-sm transition-colors hover:bg-accent ${
-                currentLocale === code ? "font-medium text-primary" : ""
+                currentLocale === code
+                  ? "bg-primary/10 font-medium text-primary"
+                  : "text-muted-foreground"
               }`}
             >
               {name}
@@ -154,6 +155,13 @@ const UserMenu = () => {
             {user?.email}
           </p>
         </div>
+        <DropdownMenuSeparator />
+        <Link to="/preferences">
+          <DropdownMenuItem className="gap-2">
+            <SlidersHorizontal className="h-4 w-4" />
+            <Trans>Preferences</Trans>
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logOut} className="gap-2">
           <LogOut className="h-4 w-4" />

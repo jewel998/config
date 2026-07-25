@@ -18,6 +18,14 @@ import {
 } from "@/hooks/use-environments";
 import { useProjectStore } from "@/stores/project-store";
 
+const ENV_SUGGESTIONS = [
+  "production",
+  "staging",
+  "development",
+  "qa",
+  "pre-production",
+];
+
 const EnvironmentsPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const { data: environments = [], isLoading } =
@@ -116,6 +124,18 @@ const EnvironmentsPage = () => {
       {showForm && (
         <Card className="rounded-xl">
           <CardContent className="space-y-3 pt-6">
+            <div className="flex flex-wrap gap-2">
+              {ENV_SUGGESTIONS.map((suggestion) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  onClick={() => setNewName(suggestion)}
+                  className="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
             <Input
               placeholder={t`Environment name (e.g. production, staging)`}
               value={newName}

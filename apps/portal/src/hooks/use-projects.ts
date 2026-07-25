@@ -7,6 +7,7 @@ import {
   addDoc,
   updateDoc,
   doc,
+  limit as firestoreLimit,
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
@@ -31,6 +32,7 @@ export const useProjects = () => {
       const q = query(
         collection(db, "projects"),
         where("authorizedUsers", "array-contains", user.uid),
+        firestoreLimit(50),
       );
       const snapshot = await getDocs(q);
       return snapshot.docs
