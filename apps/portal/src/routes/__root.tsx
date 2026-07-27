@@ -184,7 +184,7 @@ const TopBar = ({
   sidebarCollapsed: boolean;
 }) => {
   return (
-    <header className="flex h-14 items-center gap-4 border-b bg-background px-4">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4">
       {/* Mobile menu button */}
       <button
         className="rounded-md p-1.5 hover:bg-accent lg:hidden"

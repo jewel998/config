@@ -4,6 +4,8 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
+import { TooltipProvider } from "@/components/ui/tooltip";
+
 import { i18n } from "./lib/i18n";
 import { ThemeProvider } from "./lib/theme";
 import { routeTree } from "./routeTree.gen";
@@ -41,7 +43,9 @@ if (root) {
       <QueryClientProvider client={queryClient}>
         <I18nProvider i18n={i18n}>
           <ThemeProvider>
-            <RouterProvider router={router} />
+            <TooltipProvider>
+              <RouterProvider router={router} />
+            </TooltipProvider>
           </ThemeProvider>
         </I18nProvider>
       </QueryClientProvider>
