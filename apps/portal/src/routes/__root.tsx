@@ -38,6 +38,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { useProjects } from "@/hooks/use-projects";
 import {
   type SupportedLocale,
@@ -324,26 +325,28 @@ const AuthenticatedLayout = () => {
   };
 
   return (
-    <>
-      <div className="flex min-h-screen flex-col">
-        <TopBar
-          onMenuClick={() => setSidebarOpen(true)}
-          onToggleSidebar={toggleSidebar}
-          sidebarCollapsed={sidebarCollapsed}
-        />
-        <div className="flex flex-1">
-          <Sidebar
-            open={sidebarOpen}
-            collapsed={sidebarCollapsed}
-            onClose={() => setSidebarOpen(false)}
+    <TooltipProvider>
+      <>
+        <div className="flex min-h-screen flex-col">
+          <TopBar
+            onMenuClick={() => setSidebarOpen(true)}
+            onToggleSidebar={toggleSidebar}
+            sidebarCollapsed={sidebarCollapsed}
           />
-          <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
-            <Outlet />
-          </main>
+          <div className="flex flex-1">
+            <Sidebar
+              open={sidebarOpen}
+              collapsed={sidebarCollapsed}
+              onClose={() => setSidebarOpen(false)}
+            />
+            <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
+              <Outlet />
+            </main>
+          </div>
         </div>
-      </div>
-      <Toaster richColors position="bottom-right" />
-    </>
+        <Toaster richColors position="bottom-right" />
+      </>
+    </TooltipProvider>
   );
 };
 

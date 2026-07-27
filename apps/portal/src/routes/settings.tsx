@@ -1,18 +1,55 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
-import { Settings } from "lucide-react";
+import { HelpCircle, Settings } from "lucide-react";
+import type { ReactNode } from "react";
 import { toast } from "sonner";
 
 import { CopyButton } from "@/components/copy-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useDeleteProject, useProjects } from "@/hooks/use-projects";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
+
+const InfoCard = ({
+  label,
+  value,
+  copyable,
+  tooltip,
+}: {
+  label: ReactNode;
+  value: string;
+  copyable?: boolean;
+  tooltip?: string;
+}) => (
+  <div className="rounded-xl border p-4">
+    <div className="flex items-center gap-1">
+      <p className="text-xs font-medium text-muted-foreground">{label}</p>
+      {tooltip && (
+        <Tooltip>
+          <TooltipTrigger>
+            <HelpCircle className="h-3 w-3 text-muted-foreground" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{tooltip}</p>
+          </TooltipContent>
+        </Tooltip>
+      )}
+    </div>
+    <div className="mt-1 flex items-center gap-2">
+      <p className="font-mono text-sm">{value}</p>
+      {copyable && <CopyButton value={value} />}
+    </div>
+  </div>
+);
 
 const SettingsPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
@@ -71,6 +108,15 @@ const SettingsPage = () => {
     });
   };
 
+  const ownerEmail =
+    selectedProject.ownerId === user?.uid
+      ? (user?.email ?? selectedProject.ownerId)
+      : selectedProject.ownerId;
+  const ownerIsNotYou = selectedProject.ownerId !== user?.uid;
+  const createdDate = selectedProject.createdAt
+    ? new Date(selectedProject.createdAt).toLocaleDateString()
+    : "—";
+
   return (
     <div className="space-y-6">
       <div>
@@ -82,62 +128,25 @@ const SettingsPage = () => {
         </p>
       </div>
 
-      <Card className="rounded-xl">
-        <CardHeader>
-          <CardTitle className="text-base">
-            <Trans>General</Trans>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <p className="text-sm font-medium">
-              <Trans>Project Name</Trans>
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {selectedProject.name}
-            </p>
-          </div>
-          <Separator />
-          <div>
-            <p className="text-sm font-medium">
-              <Trans>Project ID</Trans>
-            </p>
-            <div className="flex items-center gap-2">
-              <p className="font-mono text-xs text-muted-foreground">
-                {selectedProjectId}
-              </p>
-              <CopyButton value={selectedProjectId} />
-            </div>
-          </div>
-          <Separator />
-          <div>
-            <p className="text-sm font-medium">
-              <Trans>Created</Trans>
-            </p>
-            <p className="font-mono text-xs text-muted-foreground">
-              {selectedProject.createdAt
-                ? new Date(selectedProject.createdAt).toLocaleDateString()
-                : "—"}
-            </p>
-          </div>
-          <Separator />
-          <div>
-            <p className="text-sm font-medium">
-              <Trans>Owner</Trans>
-            </p>
-            <div className="flex items-center gap-2">
-              <p className="font-mono text-xs text-muted-foreground">
-                {selectedProject.ownerId === user?.uid
-                  ? user?.email
-                  : selectedProject.ownerId}
-              </p>
-              {selectedProject.ownerId !== user?.uid && (
-                <CopyButton value={selectedProject.ownerId} />
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <InfoCard
+          label={<Trans>Project Name</Trans>}
+          value={selectedProject.name}
+        />
+        <InfoCard
+          label={<Trans>Project ID</Trans>}
+          value={selectedProjectId}
+          copyable
+          tooltip={t`Unique identifier for API integrations`}
+        />
+        <InfoCard label={<Trans>Created</Trans>} value={createdDate} />
+        <InfoCard
+          label={<Trans>Owner</Trans>}
+          value={ownerEmail}
+          copyable={ownerIsNotYou}
+          tooltip={t`The user who created this project`}
+        />
+      </div>
 
       <Card className="rounded-xl border-destructive/30">
         <CardHeader>

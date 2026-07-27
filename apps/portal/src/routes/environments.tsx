@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { ResponsiveModal } from "@/components/responsive-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -166,78 +167,88 @@ const EnvironmentsPage = () => {
         </Button>
       </div>
 
-      {/* Inline create form */}
-      {showForm && (
-        <Card className="rounded-xl">
-          <CardContent className="space-y-3 pt-6">
-            <div className="flex flex-wrap gap-2">
-              {ENV_SUGGESTIONS.map((suggestion) => (
-                <button
-                  key={suggestion}
-                  type="button"
-                  onClick={() => setNewName(suggestion)}
-                  className="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-                >
-                  {suggestion}
-                </button>
-              ))}
-            </div>
-            <Input
-              placeholder={t`Environment name (e.g. production, staging)`}
-              value={newName}
-              onChange={(e) => {
-                setNewName(e.target.value);
-                setErrors((prev) => ({ ...prev, name: undefined }));
-              }}
-              onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-              autoFocus
-            />
-            {errors.name && (
-              <p className="text-xs text-destructive">{errors.name}</p>
-            )}
-            <Input
-              placeholder={t`Allowed domains (comma-separated, e.g. example.com, app.example.com)`}
-              value={newDomains}
-              onChange={(e) => {
-                setNewDomains(e.target.value);
-                setErrors((prev) => ({ ...prev, domains: undefined }));
-              }}
-              onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-            />
-            {errors.domains && (
-              <p className="text-xs text-destructive">{errors.domains}</p>
-            )}
-            <div className="flex items-center gap-2">
-              <Button
-                className="w-20 rounded-full"
-                onClick={handleCreate}
-                disabled={createEnvironment.isPending || !newName.trim()}
+      {/* Create form in ResponsiveModal */}
+      <ResponsiveModal
+        open={showForm}
+        onOpenChange={(open) => {
+          setShowForm(open);
+          if (!open) {
+            setNewName("");
+            setNewDomains("");
+            setErrors({});
+          }
+        }}
+        title={<Trans>New Environment</Trans>}
+        description={<Trans>Add a deployment target for your project.</Trans>}
+      >
+        <div className="space-y-3">
+          <div className="flex flex-wrap gap-2">
+            {ENV_SUGGESTIONS.map((suggestion) => (
+              <button
+                key={suggestion}
+                type="button"
+                onClick={() => setNewName(suggestion)}
+                className="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
               >
-                {createEnvironment.isPending ? (
-                  <Spinner />
-                ) : (
-                  <Trans>Create</Trans>
-                )}
-              </Button>
-              <Button
-                variant="ghost"
-                className="rounded-full"
-                onClick={() => {
-                  setShowForm(false);
-                  setNewName("");
-                  setNewDomains("");
-                  setErrors({});
-                }}
-              >
-                <Trans>Cancel</Trans>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+                {suggestion}
+              </button>
+            ))}
+          </div>
+          <Input
+            placeholder={t`Environment name (e.g. production, staging)`}
+            value={newName}
+            onChange={(e) => {
+              setNewName(e.target.value);
+              setErrors((prev) => ({ ...prev, name: undefined }));
+            }}
+            onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+            autoFocus
+          />
+          {errors.name && (
+            <p className="text-xs text-destructive">{errors.name}</p>
+          )}
+          <Input
+            placeholder={t`Allowed domains (comma-separated, e.g. example.com, app.example.com)`}
+            value={newDomains}
+            onChange={(e) => {
+              setNewDomains(e.target.value);
+              setErrors((prev) => ({ ...prev, domains: undefined }));
+            }}
+            onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+          />
+          {errors.domains && (
+            <p className="text-xs text-destructive">{errors.domains}</p>
+          )}
+          <div className="flex items-center gap-2">
+            <Button
+              className="w-20 rounded-full"
+              onClick={handleCreate}
+              disabled={createEnvironment.isPending || !newName.trim()}
+            >
+              {createEnvironment.isPending ? (
+                <Spinner />
+              ) : (
+                <Trans>Create</Trans>
+              )}
+            </Button>
+            <Button
+              variant="ghost"
+              className="rounded-full"
+              onClick={() => {
+                setShowForm(false);
+                setNewName("");
+                setNewDomains("");
+                setErrors({});
+              }}
+            >
+              <Trans>Cancel</Trans>
+            </Button>
+          </div>
+        </div>
+      </ResponsiveModal>
 
       {/* Environments list */}
-      {environments.length === 0 && !showForm ? (
+      {environments.length === 0 ? (
         <Card className="rounded-xl">
           <CardContent>
             <div className="flex flex-col items-center justify-center gap-4 py-12">
