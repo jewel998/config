@@ -1,4 +1,3 @@
-import { useCallback, useRef } from "react";
 import type { ReactNode } from "react";
 
 import {
@@ -9,44 +8,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { useMediaQuery } from "@/hooks/use-media-query";
-
-const DragHandle = ({ onDismiss }: { onDismiss: () => void }) => {
-  const startY = useRef(0);
-  const currentY = useRef(0);
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    startY.current = e.touches[0]?.clientY ?? 0;
-  }, []);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    currentY.current = e.touches[0]?.clientY ?? 0;
-  }, []);
-
-  const handleTouchEnd = useCallback(() => {
-    const diff = currentY.current - startY.current;
-    if (diff > 80) {
-      onDismiss();
-    }
-  }, [onDismiss]);
-
-  return (
-    <div
-      className="flex cursor-grab justify-center pb-2 pt-3 active:cursor-grabbing"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      <div className="h-1.5 w-10 rounded-full bg-muted-foreground/20" />
-    </div>
-  );
-};
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export const ResponsiveModal = ({
   open,
@@ -61,9 +29,9 @@ export const ResponsiveModal = ({
   description?: ReactNode;
   children: ReactNode;
 }) => {
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isMobile = useIsMobile();
 
-  if (isDesktop) {
+  if (!isMobile) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-lg p-6">
@@ -80,19 +48,22 @@ export const ResponsiveModal = ({
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="bottom"
-        className="max-h-[85vh] overflow-y-auto rounded-t-2xl px-5 pb-6"
-        showCloseButton={false}
-      >
-        <DragHandle onDismiss={() => onOpenChange(false)} />
-        <SheetHeader className="px-0">
-          <SheetTitle>{title}</SheetTitle>
-          {description && <SheetDescription>{description}</SheetDescription>}
-        </SheetHeader>
-        <div className="mt-4 space-y-5">{children}</div>
-      </SheetContent>
-    </Sheet>
+    <Drawer
+      open={open}
+      onOpenChange={onOpenChange}
+      snapPoints={[0.5, 1]}
+      activeSnapPoint={1}
+      setActiveSnapPoint={() => {}}
+    >
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>{title}</DrawerTitle>
+          {description && <DrawerDescription>{description}</DrawerDescription>}
+        </DrawerHeader>
+        <div className="overflow-y-auto px-5 pb-6">
+          <div className="space-y-5">{children}</div>
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 };
