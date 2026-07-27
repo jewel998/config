@@ -255,8 +255,12 @@ const ConfigFormModal = ({
         )
       }
     >
-      <div className="space-y-4">
-        <div className="space-y-1">
+      <div className="space-y-5">
+        {/* Key field */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">
+            <Trans>Key</Trans>
+          </label>
           <Input
             placeholder={t`Config key (e.g. feature.enabled)`}
             value={key}
@@ -268,17 +272,24 @@ const ConfigFormModal = ({
             className="font-mono"
             autoFocus
           />
+          <p className="text-[11px] text-muted-foreground">
+            <Trans>Alphanumeric, dots, and underscores only.</Trans>
+          </p>
           {errors.key && (
             <p className="text-xs text-destructive">{errors.key}</p>
           )}
         </div>
 
-        <div className="space-y-1">
+        {/* Type field */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">
+            <Trans>Type</Trans>
+          </label>
           <Select
             value={valueType}
             onValueChange={(v) => handleTypeChange(v as ValueType)}
           >
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-48">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -291,7 +302,11 @@ const ConfigFormModal = ({
           </Select>
         </div>
 
-        <div className="space-y-1">
+        {/* Value field */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">
+            <Trans>Value</Trans>
+          </label>
           {valueType === "boolean" ? (
             <Select
               value={rawValue}

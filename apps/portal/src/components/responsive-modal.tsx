@@ -34,14 +34,14 @@ export const ResponsiveModal = ({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg p-8">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             {description && (
               <DialogDescription>{description}</DialogDescription>
             )}
           </DialogHeader>
-          {children}
+          <div className="mt-4 space-y-6">{children}</div>
         </DialogContent>
       </Dialog>
     );
@@ -51,13 +51,15 @@ export const ResponsiveModal = ({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="max-h-[85vh] overflow-y-auto rounded-t-2xl"
+        className="max-h-[85vh] overflow-y-auto rounded-t-2xl px-6 pb-8 pt-4"
       >
+        {/* Drag handle indicator */}
+        <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-muted" />
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
           {description && <SheetDescription>{description}</SheetDescription>}
         </SheetHeader>
-        <div className="mt-4">{children}</div>
+        <div className="mt-6 space-y-6">{children}</div>
       </SheetContent>
     </Sheet>
   );
