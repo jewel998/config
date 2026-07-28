@@ -319,8 +319,7 @@ const EnvironmentKeys = ({
 
 const ApiKeysPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
-  const { data: environments = [], isLoading } =
-    useEnvironments(selectedProjectId);
+  const selectedEnvironmentId = useProjectStore((s) => s.selectedEnvironmentId);
 
   if (!selectedProjectId) {
     return (
@@ -335,13 +334,17 @@ const ApiKeysPage = () => {
     );
   }
 
-  if (isLoading) {
+  if (!selectedEnvironmentId) {
     return (
-      <div className="space-y-4">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-4 w-64" />
-        <Skeleton className="h-40 rounded-xl" />
-        <Skeleton className="h-40 rounded-xl" />
+      <div className="flex flex-col items-center justify-center gap-4 py-24">
+        <div className="rounded-full bg-muted p-4">
+          <Key className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <p className="text-sm text-muted-foreground">
+          <Trans>
+            Select an environment from the top bar to manage API keys.
+          </Trans>
+        </p>
       </div>
     );
   }
@@ -354,35 +357,17 @@ const ApiKeysPage = () => {
         </h1>
         <p className="text-sm text-muted-foreground">
           <Trans>
-            Manage client IDs for each environment. Use these keys to
+            Manage client IDs for this environment. Use these keys to
             authenticate SDK requests.
           </Trans>
         </p>
       </div>
 
-      {environments.length === 0 ? (
-        <Card className="rounded-xl">
-          <CardContent>
-            <div className="flex flex-col items-center justify-center gap-4 py-12">
-              <div className="rounded-full bg-muted p-4">
-                <Key className="h-8 w-8 text-muted-foreground" />
-              </div>
-              <p className="text-sm text-muted-foreground">
-                <Trans>Create an environment first to generate API keys.</Trans>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        environments.map((env) => (
-          <EnvironmentKeys
-            key={env.id}
-            projectId={selectedProjectId}
-            environmentId={env.id}
-            environmentName={env.name}
-          />
-        ))
-      )}
+      <EnvironmentKeys
+        projectId={selectedProjectId}
+        environmentId={selectedEnvironmentId}
+        environmentName=""
+      />
     </div>
   );
 };

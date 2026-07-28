@@ -1,9 +1,10 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ChevronDown,
   ChevronRight,
+  GitCompare,
   Layers,
   Pencil,
   Plus,
@@ -502,17 +503,27 @@ const ConfigsPage = () => {
             <Trans>Manage feature flags and configuration values.</Trans>
           </p>
         </div>
-        <Button
-          className="gap-2 rounded-full"
-          onClick={() => {
-            setEditingConfig(null);
-            setShowForm(true);
-          }}
-          disabled={!envId}
-        >
-          <Plus className="h-4 w-4" />
-          <Trans>Add Config</Trans>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Link to="/compare">
+            <Button variant="outline" className="gap-2 rounded-full" size="sm">
+              <GitCompare className="h-4 w-4" />
+              <span className="hidden sm:inline">
+                <Trans>Compare</Trans>
+              </span>
+            </Button>
+          </Link>
+          <Button
+            className="gap-2 rounded-full"
+            onClick={() => {
+              setEditingConfig(null);
+              setShowForm(true);
+            }}
+            disabled={!envId}
+          >
+            <Plus className="h-4 w-4" />
+            <Trans>Add Config</Trans>
+          </Button>
+        </div>
       </div>
 
       {/* Toolbar: environment selector + search + type filter */}

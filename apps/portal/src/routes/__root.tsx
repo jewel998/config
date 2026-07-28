@@ -182,7 +182,6 @@ const TabNav = () => {
   const tabs = [
     { to: "/configs" as const, label: <Trans>Configs</Trans> },
     { to: "/api-keys" as const, label: <Trans>API Keys</Trans> },
-    { to: "/compare" as const, label: <Trans>Compare</Trans> },
     { to: "/environments" as const, label: <Trans>Environments</Trans> },
     { to: "/settings" as const, label: <Trans>Settings</Trans> },
   ];
@@ -194,11 +193,8 @@ const TabNav = () => {
           <Link
             key={to}
             to={to}
-            className="shrink-0 border-b-2 border-transparent px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            activeProps={{
-              className:
-                "shrink-0 border-b-2 border-primary px-4 py-3 text-sm font-medium text-foreground transition-colors hover:text-foreground",
-            }}
+            className="shrink-0 px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground [&.active]:border-b-2 [&.active]:border-primary [&.active]:text-foreground"
+            activeProps={{ className: "active" }}
           >
             {label}
           </Link>
