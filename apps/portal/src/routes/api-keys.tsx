@@ -207,9 +207,9 @@ const EnvironmentKeys = ({
             {keys.map((key) => (
               <div
                 key={key.token}
-                className="flex flex-col gap-2 rounded-lg border p-3 sm:flex-row sm:items-center sm:justify-between"
+                className="rounded-lg border p-4 space-y-3 sm:space-y-0 sm:flex sm:items-center sm:justify-between sm:gap-4"
               >
-                <div className="space-y-1">
+                <div className="min-w-0 space-y-1.5">
                   <div className="flex flex-wrap items-center gap-2">
                     <MaskedToken token={key.token} />
                     <Badge
@@ -236,7 +236,7 @@ const EnvironmentKeys = ({
                       </Tooltip>
                     )}
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                     {key.label && <span>{key.label}</span>}
                     <DateDisplay date={key.createdAt} />
                     {key.status === "revoked" && key.revokedAt && (
@@ -247,7 +247,7 @@ const EnvironmentKeys = ({
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 items-center gap-2">
                   {key.status === "active" && (
                     <Tooltip>
                       <TooltipTrigger asChild>
