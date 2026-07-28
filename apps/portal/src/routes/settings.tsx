@@ -1,15 +1,17 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
-import { HelpCircle, Settings } from "lucide-react";
+import { HelpCircle, Plus, Settings, Trash2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { CopyButton } from "@/components/copy-button";
 import { DateDisplay } from "@/components/date-display";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -17,6 +19,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  useEnvironments,
+  useCreateEnvironment,
+  useDeleteEnvironment,
+} from "@/hooks/use-environments";
 import { useDeleteProject, useProjects } from "@/hooks/use-projects";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
@@ -62,6 +69,12 @@ const SettingsPage = () => {
 
   const selectedProject = projects?.find((p) => p.id === selectedProjectId);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showEnvForm, setShowEnvForm] = useState(false);
+  const [envName, setEnvName] = useState("");
+  const [envDomains, setEnvDomains] = useState("");
+  const { data: environments = [] } = useEnvironments(selectedProjectId);
+  const createEnv = useCreateEnvironment();
+  const deleteEnv = useDeleteEnvironment();
 
   if (!selectedProjectId) {
     return (
@@ -116,6 +129,39 @@ const SettingsPage = () => {
     });
   };
 
+  const handleCreateEnv = () => {
+    if (!envName.trim() || !selectedProjectId) return;
+    const domains = envDomains
+      .split(",")
+      .map((d) => d.trim())
+      .filter(Boolean);
+    createEnv.mutate(
+      { projectId: selectedProjectId, name: envName, allowedDomains: domains },
+      {
+        onSuccess: () => {
+          setEnvName("");
+          setEnvDomains("");
+          setShowEnvForm(false);
+          toast.success(t`Environment created`);
+        },
+        onError: () => {
+          toast.error(t`Failed to create environment`);
+        },
+      },
+    );
+  };
+
+  const handleDeleteEnv = (envId: string) => {
+    if (!selectedProjectId) return;
+    deleteEnv.mutate(
+      { projectId: selectedProjectId, envId },
+      {
+        onSuccess: () => toast.success(t`Environment deleted`),
+        onError: () => toast.error(t`Failed to delete environment`),
+      },
+    );
+  };
+
   const ownerEmail =
     selectedProject.ownerId === user?.uid
       ? (user?.email ?? selectedProject.ownerId)
@@ -163,6 +209,101 @@ const SettingsPage = () => {
           tooltip={t`The user who created this project`}
         />
       </div>
+
+      <Card className="rounded-xl">
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <CardTitle className="text-base">
+            <Trans>Environments</Trans>
+          </CardTitle>
+          <Button
+            size="sm"
+            className="rounded-full gap-2"
+            onClick={() => setShowEnvForm(true)}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <Trans>Add</Trans>
+          </Button>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {showEnvForm && (
+            <div className="space-y-2 rounded-lg border p-3">
+              <Input
+                placeholder={t`Environment name`}
+                value={envName}
+                onChange={(e) => setEnvName(e.target.value)}
+              />
+              <Input
+                placeholder={t`Allowed domains (comma-separated)`}
+                value={envDomains}
+                onChange={(e) => setEnvDomains(e.target.value)}
+              />
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  className="rounded-full"
+                  onClick={handleCreateEnv}
+                  disabled={createEnv.isPending || !envName.trim()}
+                >
+                  {createEnv.isPending ? <Spinner /> : <Trans>Create</Trans>}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="rounded-full"
+                  onClick={() => {
+                    setShowEnvForm(false);
+                    setEnvName("");
+                    setEnvDomains("");
+                  }}
+                >
+                  <Trans>Cancel</Trans>
+                </Button>
+              </div>
+            </div>
+          )}
+          {environments.length === 0 && !showEnvForm && (
+            <p className="py-4 text-center text-sm text-muted-foreground">
+              <Trans>No environments yet.</Trans>
+            </p>
+          )}
+          {environments.map((env) => (
+            <div
+              key={env.id}
+              className="flex items-center justify-between rounded-lg border p-3"
+            >
+              <div className="min-w-0 space-y-1">
+                <p className="text-sm font-medium">{env.name}</p>
+                {env.allowedDomains.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {env.allowedDomains.map((d) => (
+                      <Badge
+                        key={d}
+                        variant="secondary"
+                        className="rounded-full text-xs"
+                      >
+                        {d}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={() => handleDeleteEnv(env.id)}
+                    aria-label="Delete"
+                  >
+                    <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Delete</TooltipContent>
+              </Tooltip>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
 
       <Card className="rounded-xl border-destructive/30">
         <CardHeader>

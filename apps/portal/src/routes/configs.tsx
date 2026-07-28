@@ -419,14 +419,13 @@ const ConfigsPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const { data: environments = [], isLoading: envsLoading } =
     useEnvironments(selectedProjectId);
-  const [selectedEnvId, setSelectedEnvId] = useState<string | null>(null);
+  const selectedEnvironmentId = useProjectStore((s) => s.selectedEnvironmentId);
+  const envId = selectedEnvironmentId;
   const [showForm, setShowForm] = useState(false);
   const [editingConfig, setEditingConfig] = useState<ConfigEntry | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<ValueType | "all">("all");
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
-
-  const envId = selectedEnvId ?? environments[0]?.id ?? null;
 
   const { data: configs = [], isLoading: configsLoading } = useConfigs(
     selectedProjectId,
@@ -526,25 +525,9 @@ const ConfigsPage = () => {
         </div>
       </div>
 
-      {/* Toolbar: environment selector + search + type filter */}
+      {/* Toolbar: search + type filter */}
       {environments.length > 0 && (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Select
-            value={envId ?? ""}
-            onValueChange={(v) => setSelectedEnvId(v)}
-          >
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder={t`Select environment`} />
-            </SelectTrigger>
-            <SelectContent>
-              {environments.map((env) => (
-                <SelectItem key={env.id} value={env.id}>
-                  {env.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input

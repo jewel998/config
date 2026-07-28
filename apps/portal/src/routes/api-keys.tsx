@@ -32,7 +32,6 @@ import {
   useGenerateApiKey,
   useRevokeApiKey,
 } from "@/hooks/use-api-keys";
-import { useEnvironments } from "@/hooks/use-environments";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
 
@@ -211,7 +210,7 @@ const EnvironmentKeys = ({
                 className="flex flex-col gap-2 rounded-lg border p-3 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <MaskedToken token={key.token} />
                     <Badge
                       variant={
