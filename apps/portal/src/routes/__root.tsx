@@ -2,26 +2,18 @@ import { useLingui } from "@lingui/react";
 import { Trans } from "@lingui/react/macro";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import {
-  GitCompare,
   Globe,
-  Key,
-  Layers,
-  LayoutDashboard,
   LogOut,
-  Menu,
   Moon,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Server,
   Settings,
   ShieldX,
   SlidersHorizontal,
   Sun,
-  X,
 } from "lucide-react";
 import { useState } from "react";
 import { Toaster } from "sonner";
 
+import { EnvironmentSwitcher } from "@/components/environment-switcher";
 import { ProjectSwitcher } from "@/components/project-switcher";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -49,23 +41,6 @@ import {
 import { useTheme } from "@/lib/theme";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
-
-const navItems = [
-  { to: "/" as const, label: <Trans>Dashboard</Trans>, icon: LayoutDashboard },
-  {
-    to: "/environments" as const,
-    label: <Trans>Environments</Trans>,
-    icon: Server,
-  },
-  { to: "/configs" as const, label: <Trans>Configs</Trans>, icon: Layers },
-  { to: "/compare" as const, label: <Trans>Compare</Trans>, icon: GitCompare },
-  { to: "/api-keys" as const, label: <Trans>API Keys</Trans>, icon: Key },
-  {
-    to: "/settings" as const,
-    label: <Trans>Settings</Trans>,
-    icon: Settings,
-  },
-];
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
@@ -170,39 +145,9 @@ const UserMenu = () => {
   );
 };
 
-const TopBar = ({
-  onMenuClick,
-  onToggleSidebar,
-  sidebarCollapsed,
-}: {
-  onMenuClick: () => void;
-  onToggleSidebar: () => void;
-  sidebarCollapsed: boolean;
-}) => {
+const TopBar = () => {
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4">
-      {/* Mobile menu button */}
-      <button
-        className="rounded-md p-1.5 hover:bg-accent lg:hidden"
-        onClick={onMenuClick}
-        aria-label="Open menu"
-      >
-        <Menu className="h-5 w-5" />
-      </button>
-
-      {/* Desktop sidebar toggle */}
-      <button
-        className="hidden rounded-md p-1.5 hover:bg-accent lg:inline-flex"
-        onClick={onToggleSidebar}
-        aria-label="Toggle sidebar"
-      >
-        {sidebarCollapsed ? (
-          <PanelLeftOpen className="h-4 w-4" />
-        ) : (
-          <PanelLeftClose className="h-4 w-4" />
-        )}
-      </button>
-
       {/* Logo */}
       <div className="flex items-center gap-2">
         <Settings className="h-5 w-5 text-[#5683da]" />
@@ -217,6 +162,9 @@ const TopBar = ({
       {/* Project switcher */}
       <ProjectSwitcher />
 
+      {/* Environment switcher */}
+      <EnvironmentSwitcher />
+
       {/* Spacer */}
       <div className="flex-1" />
 
@@ -230,160 +178,49 @@ const TopBar = ({
   );
 };
 
-const Sidebar = ({
-  open,
-  collapsed,
-  onClose,
-}: {
-  open: boolean;
-  collapsed: boolean;
-  onClose: () => void;
-}) => {
-  const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
-  const user = useAuthStore((s) => s.user);
-  const logOut = useAuthStore((s) => s.logOut);
-
-  const initials = user?.displayName
-    ? user.displayName
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "U";
+const TabNav = () => {
+  const tabs = [
+    { to: "/configs" as const, label: <Trans>Configs</Trans> },
+    { to: "/api-keys" as const, label: <Trans>API Keys</Trans> },
+    { to: "/compare" as const, label: <Trans>Compare</Trans> },
+    { to: "/environments" as const, label: <Trans>Environments</Trans> },
+    { to: "/settings" as const, label: <Trans>Settings</Trans> },
+  ];
 
   return (
-    <>
-      {/* Backdrop for mobile */}
-      {open && (
-        <div
-          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
-          onClick={onClose}
-          aria-hidden
-        />
-      )}
-
-      <aside
-        className={`fixed inset-y-0 left-0 top-14 z-50 flex flex-col border-r bg-sidebar transition-all duration-200 lg:static ${
-          collapsed ? "lg:w-0 lg:overflow-hidden lg:border-r-0" : "lg:w-60"
-        } ${open ? "w-60 translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
-      >
-        {/* Mobile close */}
-        <div className="flex items-center justify-end p-2 lg:hidden">
-          <button
-            className="rounded-md p-1 hover:bg-sidebar-accent"
-            onClick={onClose}
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-
-        {/* Navigation */}
-        {selectedProjectId ? (
-          <nav className="flex-1 space-y-1 p-3">
-            {navItems.map(({ to, label, icon: Icon }) => (
-              <Link
-                key={to}
-                to={to}
-                onClick={onClose}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors duration-150 hover:bg-sidebar-accent"
-                activeProps={{
-                  className:
-                    "bg-[#5683da]/10 text-[#5683da] font-medium hover:bg-[#5683da]/10",
-                }}
-              >
-                <Icon className="h-4 w-4" />
-                {label}
-              </Link>
-            ))}
-          </nav>
-        ) : (
-          <div className="flex flex-1 items-center justify-center p-6">
-            <p className="text-center text-xs text-muted-foreground">
-              <Trans>Select or create a project to get started.</Trans>
-            </p>
-          </div>
-        )}
-
-        {/* Sidebar Footer */}
-        <div className="mt-auto border-t p-3 space-y-2">
-          <div className="flex items-center gap-3 px-3 py-2">
-            <Avatar className="h-8 w-8">
-              {user?.photoURL && <AvatarImage src={user.photoURL} alt="" />}
-              <AvatarFallback className="text-xs">{initials}</AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="truncate text-sm font-medium">
-                {user?.displayName ?? "User"}
-              </p>
-              <p className="truncate text-xs text-muted-foreground">
-                {user?.email}
-              </p>
-            </div>
-          </div>
+    <nav className="border-b px-4">
+      <div className="flex gap-1 overflow-x-auto">
+        {tabs.map(({ to, label }) => (
           <Link
-            to="/preferences"
-            onClick={onClose}
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent"
+            key={to}
+            to={to}
+            className="shrink-0 border-b-2 border-transparent px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            activeProps={{
+              className:
+                "shrink-0 border-b-2 border-primary px-4 py-3 text-sm font-medium text-foreground transition-colors hover:text-foreground",
+            }}
           >
-            <SlidersHorizontal className="h-4 w-4" />
-            <Trans>Preferences</Trans>
+            {label}
           </Link>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-full justify-start gap-3 px-3 text-muted-foreground"
-            onClick={logOut}
-          >
-            <LogOut className="h-4 w-4" />
-            <Trans>Sign out</Trans>
-          </Button>
-        </div>
-      </aside>
-    </>
+        ))}
+      </div>
+    </nav>
   );
 };
 
 const AuthenticatedLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-    try {
-      return localStorage.getItem("sidebar-collapsed") === "true";
-    } catch {
-      return false;
-    }
-  });
-
-  const toggleSidebar = () => {
-    const next = !sidebarCollapsed;
-    setSidebarCollapsed(next);
-    try {
-      localStorage.setItem("sidebar-collapsed", String(next));
-    } catch {
-      // ignore
-    }
-  };
+  const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
 
   return (
     <>
       <div className="flex min-h-screen flex-col">
-        <TopBar
-          onMenuClick={() => setSidebarOpen(true)}
-          onToggleSidebar={toggleSidebar}
-          sidebarCollapsed={sidebarCollapsed}
-        />
-        <div className="flex flex-1">
-          <Sidebar
-            open={sidebarOpen}
-            collapsed={sidebarCollapsed}
-            onClose={() => setSidebarOpen(false)}
-          />
-          <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
-            <ErrorBoundary>
-              <Outlet />
-            </ErrorBoundary>
-          </main>
-        </div>
+        <TopBar />
+        {selectedProjectId && <TabNav />}
+        <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
+        </main>
       </div>
       <Toaster richColors position="bottom-right" />
     </>
@@ -555,30 +392,30 @@ const RootLayout = () => {
           <Skeleton className="h-8 w-8 rounded-lg" />
           <Skeleton className="h-5 w-20" />
           <Skeleton className="h-8 w-40 rounded-lg" />
+          <Skeleton className="h-8 w-36 rounded-lg" />
           <div className="flex-1" />
           <Skeleton className="h-8 w-8 rounded-full" />
           <Skeleton className="h-8 w-8 rounded-full" />
           <Skeleton className="h-8 w-8 rounded-full" />
         </div>
-        <div className="flex flex-1">
-          {/* Skeleton sidebar */}
-          <div className="hidden w-60 space-y-2 border-r p-4 lg:block">
-            <Skeleton className="h-8 w-full rounded-lg" />
-            <Skeleton className="h-8 w-full rounded-lg" />
-            <Skeleton className="h-8 w-full rounded-lg" />
-            <Skeleton className="h-8 w-3/4 rounded-lg" />
+        {/* Skeleton tabs */}
+        <div className="flex gap-4 border-b px-4 py-3">
+          <Skeleton className="h-5 w-16" />
+          <Skeleton className="h-5 w-16" />
+          <Skeleton className="h-5 w-16" />
+          <Skeleton className="h-5 w-24" />
+          <Skeleton className="h-5 w-16" />
+        </div>
+        {/* Skeleton content */}
+        <div className="flex-1 space-y-6 p-8">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-64" />
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Skeleton className="h-28 rounded-xl" />
+            <Skeleton className="h-28 rounded-xl" />
+            <Skeleton className="h-28 rounded-xl" />
           </div>
-          {/* Skeleton content */}
-          <div className="flex-1 space-y-6 p-8">
-            <Skeleton className="h-8 w-48" />
-            <Skeleton className="h-4 w-64" />
-            <div className="grid gap-4 sm:grid-cols-3">
-              <Skeleton className="h-28 rounded-xl" />
-              <Skeleton className="h-28 rounded-xl" />
-              <Skeleton className="h-28 rounded-xl" />
-            </div>
-            <Skeleton className="h-48 rounded-xl" />
-          </div>
+          <Skeleton className="h-48 rounded-xl" />
         </div>
       </div>
     );

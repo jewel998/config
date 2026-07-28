@@ -1,126 +1,20 @@
 import { Trans } from "@lingui/react/macro";
-import { createFileRoute } from "@tanstack/react-router";
-import { Key, Layers, Server } from "lucide-react";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 
 import { OnboardingStepper } from "@/components/onboarding-stepper";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useConfigs } from "@/hooks/use-configs";
-import { useEnvironments } from "@/hooks/use-environments";
 import { useProjects } from "@/hooks/use-projects";
 import { useProjectStore } from "@/stores/project-store";
 
-const DashboardContent = () => {
-  const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
-  const { data: projects } = useProjects();
-  const { data: environments, isLoading: envsLoading } =
-    useEnvironments(selectedProjectId);
-  const { data: configs, isLoading: configsLoading } = useConfigs(
-    selectedProjectId,
-    environments?.[0]?.id ?? null,
-  );
-
-  const selectedProject = projects?.find((p) => p.id === selectedProjectId);
-
-  const configCount = environments?.length
-    ? configsLoading
-      ? null
-      : String(configs?.length ?? 0)
-    : "—";
-
-  const stats = [
-    {
-      title: <Trans>Environments</Trans>,
-      value: envsLoading ? null : String(environments?.length ?? 0),
-      description: <Trans>Deployment targets</Trans>,
-      icon: Server,
-    },
-    {
-      title: <Trans>Secrets</Trans>,
-      value: "0",
-      description: <Trans>Encrypted values</Trans>,
-      icon: Key,
-    },
-    {
-      title: <Trans>Configs</Trans>,
-      value: configCount,
-      description: <Trans>Published versions</Trans>,
-      icon: Layers,
-    },
-  ];
-
-  return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">
-          <Trans>Dashboard</Trans>
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          <Trans>Overview for</Trans>{" "}
-          <span className="font-mono text-xs font-medium text-foreground">
-            {selectedProject?.name}
-          </span>
-        </p>
-      </div>
-
-      {/* Stats */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {stats.map((stat, idx) => (
-          <Card key={idx} className="rounded-xl">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
-                {stat.title}
-              </CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              {stat.value !== null ? (
-                <div className="font-mono text-2xl font-bold">{stat.value}</div>
-              ) : (
-                <Skeleton className="h-8 w-12" />
-              )}
-              <p className="text-xs text-muted-foreground">
-                {stat.description}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Recent Activity */}
-      <Card className="rounded-xl">
-        <CardHeader>
-          <CardTitle>
-            <Trans>Recent Activity</Trans>
-          </CardTitle>
-          <CardDescription>
-            <Trans>Latest changes in this project.</Trans>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex h-32 items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
-            <Trans>Activity feed coming soon.</Trans>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-
-const DashboardPage = () => {
+const IndexPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const { data: projects, isLoading } = useProjects();
 
   if (isLoading) {
     return (
-      <div className="space-y-4 p-8">
+      <div className="space-y-4">
         <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-4 w-64" />
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <Skeleton className="h-28" />
           <Skeleton className="h-28" />
@@ -130,13 +24,14 @@ const DashboardPage = () => {
     );
   }
 
-  if (!selectedProjectId || projects?.length === 0) {
+  if (!selectedProjectId || !projects?.length) {
     return <OnboardingStepper />;
   }
 
-  return <DashboardContent />;
+  // Redirect to /configs when a project is selected
+  return <Navigate to="/configs" replace />;
 };
 
 export const Route = createFileRoute("/")({
-  component: DashboardPage,
+  component: IndexPage,
 });
