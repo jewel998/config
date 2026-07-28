@@ -3,6 +3,8 @@ import { Trans } from "@lingui/react/macro";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import {
   Globe,
+  Key,
+  Layers,
   LogOut,
   Moon,
   Settings,
@@ -170,8 +172,10 @@ const TopBar = () => {
 
       {/* Right side actions */}
       <div className="flex items-center gap-1">
-        <LanguageSwitcher />
-        <ThemeToggle />
+        <div className="hidden sm:flex sm:items-center sm:gap-1">
+          <LanguageSwitcher />
+          <ThemeToggle />
+        </div>
         <UserMenu />
       </div>
     </header>
@@ -180,23 +184,27 @@ const TopBar = () => {
 
 const TabNav = () => {
   const tabs = [
-    { to: "/configs" as const, label: <Trans>Configs</Trans> },
-    { to: "/api-keys" as const, label: <Trans>API Keys</Trans> },
-    { to: "/environments" as const, label: <Trans>Environments</Trans> },
-    { to: "/settings" as const, label: <Trans>Settings</Trans> },
+    { to: "/configs" as const, label: <Trans>Configs</Trans>, icon: Layers },
+    { to: "/api-keys" as const, label: <Trans>API Keys</Trans>, icon: Key },
+    {
+      to: "/settings" as const,
+      label: <Trans>Settings</Trans>,
+      icon: Settings,
+    },
   ];
 
   return (
     <nav className="border-b px-4">
       <div className="flex gap-1 overflow-x-auto">
-        {tabs.map(({ to, label }) => (
+        {tabs.map(({ to, label, icon: Icon }) => (
           <Link
             key={to}
             to={to}
-            className="shrink-0 px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground [&.active]:border-b-2 [&.active]:border-primary [&.active]:text-foreground"
+            className="flex shrink-0 items-center gap-2 px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground [&.active]:border-b-2 [&.active]:border-primary [&.active]:text-foreground"
             activeProps={{ className: "active" }}
           >
-            {label}
+            <Icon className="h-4 w-4" />
+            <span className="hidden sm:inline">{label}</span>
           </Link>
         ))}
       </div>
