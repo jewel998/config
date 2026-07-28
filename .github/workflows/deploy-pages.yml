@@ -31,6 +31,14 @@ jobs:
         run: pnpm --filter @jewel998/config-docs run build
 
       - name: Build portal
+        env:
+          VITE_FIREBASE_API_KEY: AIzaSyC-6lmMSwZ-Y51FufvI0I5ikxDbQTGJCNs
+          VITE_FIREBASE_AUTH_DOMAIN: jewel998-config.firebaseapp.com
+          VITE_FIREBASE_PROJECT_ID: jewel998-config
+          VITE_FIREBASE_STORAGE_BUCKET: jewel998-config.firebasestorage.app
+          VITE_FIREBASE_MESSAGING_SENDER_ID: "851865994921"
+          VITE_FIREBASE_APP_ID: "1:851865994921:web:8c0283c5de7f8d62cecbb8"
+          VITE_FIREBASE_MEASUREMENT_ID: G-ND8MZ24EP0
         run: pnpm --filter @jewel998/config-portal run build
 
       - name: Assemble site

@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Check, ChevronsUpDown, Monitor, Moon, Sun } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+import { DateDisplay } from "@/components/date-display";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -204,7 +205,7 @@ const PreferencesPage = () => {
                     <Trans>Language</Trans>
                   </p>
                   <Select value={locale} onValueChange={handleLocaleChange}>
-                    <SelectTrigger className="w-48">
+                    <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -233,13 +234,16 @@ const PreferencesPage = () => {
                         variant="outline"
                         role="combobox"
                         aria-expanded={tzOpen}
-                        className="w-72 justify-between rounded-lg text-sm font-normal"
+                        className="w-full justify-between rounded-lg text-sm font-normal"
                       >
                         <span className="truncate">{timezone}</span>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-72 p-0" align="start">
+                    <PopoverContent
+                      className="w-full min-w-[280px] p-0"
+                      align="start"
+                    >
                       <Command>
                         <CommandInput placeholder="Search timezones..." />
                         <CommandList>
@@ -336,12 +340,12 @@ const PreferencesPage = () => {
                   <p className="text-xs font-medium text-muted-foreground">
                     <Trans>Account Created</Trans>
                   </p>
-                  <p className="mt-1 font-mono text-sm">
-                    {user.metadata.creationTime
-                      ? new Date(
-                          user.metadata.creationTime,
-                        ).toLocaleDateString()
-                      : "—"}
+                  <p className="mt-1 text-sm">
+                    {user.metadata.creationTime ? (
+                      <DateDisplay date={user.metadata.creationTime} />
+                    ) : (
+                      "—"
+                    )}
                   </p>
                 </div>
               </div>

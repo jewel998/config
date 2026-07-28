@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useConfigs } from "@/hooks/use-configs";
 import { useEnvironments } from "@/hooks/use-environments";
 import { useProjects } from "@/hooks/use-projects";
 import { useProjectStore } from "@/stores/project-store";
@@ -20,8 +21,18 @@ const DashboardContent = () => {
   const { data: projects } = useProjects();
   const { data: environments, isLoading: envsLoading } =
     useEnvironments(selectedProjectId);
+  const { data: configs, isLoading: configsLoading } = useConfigs(
+    selectedProjectId,
+    environments?.[0]?.id ?? null,
+  );
 
   const selectedProject = projects?.find((p) => p.id === selectedProjectId);
+
+  const configCount = environments?.length
+    ? configsLoading
+      ? null
+      : String(configs?.length ?? 0)
+    : "—";
 
   const stats = [
     {
@@ -38,7 +49,7 @@ const DashboardContent = () => {
     },
     {
       title: <Trans>Configs</Trans>,
-      value: "0",
+      value: configCount,
       description: <Trans>Published versions</Trans>,
       icon: Layers,
     },

@@ -42,8 +42,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               return;
             }
           } catch {
-            // If Firestore check fails (no collection, permissions, network),
-            // allow access — the user already passed Firebase Auth
+            // Fail-closed: if we can't verify access, deny it
+            await signOut(auth);
+            setUser(null);
+            setAccessDenied(true);
+            setLoading(false);
+            return;
           }
         }
         setAccessDenied(false);

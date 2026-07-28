@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { DateDisplay } from "@/components/date-display";
 import { ResponsiveModal } from "@/components/responsive-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   useEnvironments,
   useCreateEnvironment,
@@ -64,6 +70,7 @@ const EnvironmentsPage = () => {
   const [newName, setNewName] = useState("");
   const [newDomains, setNewDomains] = useState("");
   const [errors, setErrors] = useState<{ name?: string; domains?: string }>({});
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const handleCreate = async () => {
     if (!selectedProjectId) return;
@@ -108,10 +115,16 @@ const EnvironmentsPage = () => {
 
   const handleDelete = (envId: string) => {
     if (!selectedProjectId) return;
+    if (confirmDeleteId !== envId) {
+      setConfirmDeleteId(envId);
+      setTimeout(() => setConfirmDeleteId(null), 5000);
+      return;
+    }
     deleteEnvironment.mutate(
       { projectId: selectedProjectId, envId },
       {
         onSuccess: () => {
+          setConfirmDeleteId(null);
           toast.success(t`Environment deleted`);
         },
         onError: () => {
@@ -282,14 +295,26 @@ const EnvironmentsPage = () => {
             <Card key={env.id} className="rounded-xl">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-base">{env.name}</CardTitle>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                  onClick={() => handleDelete(env.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => handleDelete(env.id)}
+                      aria-label={t`Delete`}
+                    >
+                      {confirmDeleteId === env.id ? (
+                        <span className="text-xs text-destructive">
+                          <Trans>Confirm?</Trans>
+                        </span>
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{t`Delete`}</TooltipContent>
+                </Tooltip>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2">
@@ -315,11 +340,7 @@ const EnvironmentsPage = () => {
                     <Trans>None configured</Trans>
                   </p>
                 )}
-                <p className="font-mono text-xs text-muted-foreground">
-                  <Trans>
-                    Created {new Date(env.createdAt).toLocaleDateString()}
-                  </Trans>
-                </p>
+                <DateDisplay date={env.createdAt} />
               </CardContent>
             </Card>
           ))}

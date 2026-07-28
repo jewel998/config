@@ -37,6 +37,11 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   type ConfigEntry,
   configKeySchema,
   configValueSchema,
@@ -681,32 +686,42 @@ const ConfigsPage = () => {
                             className="flex items-center gap-1"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 rounded-full"
-                              onClick={() => {
-                                setEditingConfig(config);
-                                setShowForm(true);
-                              }}
-                              aria-label={t`Edit`}
-                            >
-                              <Pencil className="h-3.5 w-3.5" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 rounded-full text-destructive hover:text-destructive"
-                              onClick={() => handleDelete(config.key)}
-                              disabled={deleteConfig.isPending}
-                              aria-label={t`Delete`}
-                            >
-                              {deleteConfig.isPending ? (
-                                <Spinner />
-                              ) : (
-                                <Trash2 className="h-3.5 w-3.5" />
-                              )}
-                            </Button>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 rounded-full"
+                                  onClick={() => {
+                                    setEditingConfig(config);
+                                    setShowForm(true);
+                                  }}
+                                  aria-label={t`Edit`}
+                                >
+                                  <Pencil className="h-3.5 w-3.5" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>{t`Edit`}</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 rounded-full text-destructive hover:text-destructive"
+                                  onClick={() => handleDelete(config.key)}
+                                  disabled={deleteConfig.isPending}
+                                  aria-label={t`Delete`}
+                                >
+                                  {deleteConfig.isPending ? (
+                                    <Spinner />
+                                  ) : (
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  )}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>{t`Delete`}</TooltipContent>
+                            </Tooltip>
                           </div>
                         </TableCell>
                       </TableRow>

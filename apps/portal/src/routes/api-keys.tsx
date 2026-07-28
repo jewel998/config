@@ -1,16 +1,31 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
-import { Copy, Eye, EyeOff, Key, Plus, ShieldOff, Trash2 } from "lucide-react";
+import {
+  Copy,
+  Eye,
+  EyeOff,
+  Key,
+  Plus,
+  ShieldOff,
+  Trash2,
+  User,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { DateDisplay } from "@/components/date-display";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   useApiKeys,
   useDeleteApiKey,
@@ -29,31 +44,41 @@ const MaskedToken = ({ token }: { token: string }) => {
       <code className="font-mono text-xs">
         {visible ? token : `${token.slice(0, 8)}${"•".repeat(16)}`}
       </code>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-6 w-6"
-        onClick={() => setVisible(!visible)}
-        aria-label={visible ? "Hide token" : "Show token"}
-      >
-        {visible ? (
-          <EyeOff className="h-3.5 w-3.5" />
-        ) : (
-          <Eye className="h-3.5 w-3.5" />
-        )}
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-6 w-6"
-        onClick={() => {
-          navigator.clipboard.writeText(token);
-          toast.success(t`Copied to clipboard`);
-        }}
-        aria-label="Copy token"
-      >
-        <Copy className="h-3.5 w-3.5" />
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
+            onClick={() => setVisible(!visible)}
+            aria-label={visible ? "Hide token" : "Show token"}
+          >
+            {visible ? (
+              <EyeOff className="h-3.5 w-3.5" />
+            ) : (
+              <Eye className="h-3.5 w-3.5" />
+            )}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>{visible ? t`Hide` : t`Show`}</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
+            onClick={() => {
+              navigator.clipboard.writeText(token);
+              toast.success(t`Copied to clipboard`);
+            }}
+            aria-label="Copy token"
+          >
+            <Copy className="h-3.5 w-3.5" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>{t`Copy`}</TooltipContent>
+      </Tooltip>
     </div>
   );
 };
@@ -197,76 +222,90 @@ const EnvironmentKeys = ({
                       {key.status}
                     </Badge>
                     {key.createdBy === user?.uid && (
-                      <Badge
-                        variant="secondary"
-                        className="rounded-full text-xs"
-                      >
-                        <Trans>Created by you</Trans>
-                      </Badge>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="flex items-center gap-1 max-w-24 truncate text-xs text-muted-foreground">
+                            <User className="h-3 w-3 shrink-0" />
+                            <span className="truncate">
+                              {user?.displayName ?? "You"}
+                            </span>
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {user?.displayName ?? user?.email}
+                        </TooltipContent>
+                      </Tooltip>
                     )}
                   </div>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     {key.label && <span>{key.label}</span>}
-                    <span className="font-mono">
-                      {new Date(key.createdAt).toLocaleDateString()}
-                    </span>
+                    <DateDisplay date={key.createdAt} />
                     {key.status === "revoked" && key.revokedAt && (
-                      <span className="font-mono">
-                        <Trans>
-                          Revoked {new Date(key.revokedAt).toLocaleDateString()}
-                        </Trans>
+                      <span>
+                        <Trans>Revoked</Trans>{" "}
+                        <DateDisplay date={key.revokedAt} />
                       </span>
                     )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   {key.status === "active" && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="min-w-20 gap-1.5 rounded-full text-destructive hover:text-destructive"
-                      onClick={() => handleRevoke(key.token)}
-                      disabled={revokeKey.isPending}
-                    >
-                      {revokeKey.isPending ? (
-                        <Spinner />
-                      ) : (
-                        <>
-                          <ShieldOff className="h-3.5 w-3.5" />
-                          <Trans>Revoke</Trans>
-                        </>
-                      )}
-                    </Button>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="min-w-20 gap-1.5 rounded-full text-destructive hover:text-destructive"
+                          onClick={() => handleRevoke(key.token)}
+                          disabled={revokeKey.isPending}
+                        >
+                          {revokeKey.isPending ? (
+                            <Spinner />
+                          ) : (
+                            <>
+                              <ShieldOff className="h-3.5 w-3.5" />
+                              <Trans>Revoke</Trans>
+                            </>
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{t`Revoke key`}</TooltipContent>
+                    </Tooltip>
                   )}
                   {key.status === "revoked" && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="min-w-20 gap-1.5 rounded-full text-destructive hover:text-destructive"
-                      onClick={() => {
-                        deleteKey.mutate(
-                          { projectId, environmentId, token: key.token },
-                          {
-                            onSuccess: () => {
-                              toast.success(t`Key deleted permanently`);
-                            },
-                            onError: () => {
-                              toast.error(t`Failed to delete key`);
-                            },
-                          },
-                        );
-                      }}
-                      disabled={deleteKey.isPending}
-                    >
-                      {deleteKey.isPending ? (
-                        <Spinner />
-                      ) : (
-                        <>
-                          <Trash2 className="h-3.5 w-3.5" />
-                          <Trans>Delete</Trans>
-                        </>
-                      )}
-                    </Button>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="min-w-20 gap-1.5 rounded-full text-destructive hover:text-destructive"
+                          onClick={() => {
+                            deleteKey.mutate(
+                              { projectId, environmentId, token: key.token },
+                              {
+                                onSuccess: () => {
+                                  toast.success(t`Key deleted permanently`);
+                                },
+                                onError: () => {
+                                  toast.error(t`Failed to delete key`);
+                                },
+                              },
+                            );
+                          }}
+                          disabled={deleteKey.isPending}
+                        >
+                          {deleteKey.isPending ? (
+                            <Spinner />
+                          ) : (
+                            <>
+                              <Trash2 className="h-3.5 w-3.5" />
+                              <Trans>Delete</Trans>
+                            </>
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{t`Delete`}</TooltipContent>
+                    </Tooltip>
                   )}
                 </div>
               </div>

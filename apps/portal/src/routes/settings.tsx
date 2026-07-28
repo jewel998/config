@@ -3,9 +3,11 @@ import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
 import { HelpCircle, Settings } from "lucide-react";
 import type { ReactNode } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { CopyButton } from "@/components/copy-button";
+import { DateDisplay } from "@/components/date-display";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -59,6 +61,7 @@ const SettingsPage = () => {
   const deleteProject = useDeleteProject();
 
   const selectedProject = projects?.find((p) => p.id === selectedProjectId);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   if (!selectedProjectId) {
     return (
@@ -97,6 +100,11 @@ const SettingsPage = () => {
   }
 
   const handleDelete = () => {
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      setTimeout(() => setConfirmDelete(false), 5000);
+      return;
+    }
     deleteProject.mutate(selectedProjectId, {
       onSuccess: () => {
         setSelectedProjectId(null);
@@ -113,9 +121,6 @@ const SettingsPage = () => {
       ? (user?.email ?? selectedProject.ownerId)
       : selectedProject.ownerId;
   const ownerIsNotYou = selectedProject.ownerId !== user?.uid;
-  const createdDate = selectedProject.createdAt
-    ? new Date(selectedProject.createdAt).toLocaleDateString()
-    : "—";
 
   return (
     <div className="space-y-6">
@@ -139,7 +144,18 @@ const SettingsPage = () => {
           copyable
           tooltip={t`Unique identifier for API integrations`}
         />
-        <InfoCard label={<Trans>Created</Trans>} value={createdDate} />
+        <div className="rounded-xl border p-4">
+          <p className="text-xs font-medium text-muted-foreground">
+            <Trans>Created</Trans>
+          </p>
+          <div className="mt-1">
+            {selectedProject.createdAt ? (
+              <DateDisplay date={selectedProject.createdAt} />
+            ) : (
+              <p className="font-mono text-sm">—</p>
+            )}
+          </div>
+        </div>
         <InfoCard
           label={<Trans>Owner</Trans>}
           value={ownerEmail}
@@ -169,6 +185,8 @@ const SettingsPage = () => {
           >
             {deleteProject.isPending ? (
               <Spinner />
+            ) : confirmDelete ? (
+              <Trans>Confirm Delete?</Trans>
             ) : (
               <Trans>Delete Project</Trans>
             )}

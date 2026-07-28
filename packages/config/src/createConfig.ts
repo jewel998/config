@@ -38,11 +38,7 @@ export function createConfig(
     );
   }
 
-  // 3. Log alpha prefix
-
-  console.log("[Alpha] @jewel998/config initializing...");
-
-  // 4. Resolve defaults
+  // 3. Resolve defaults
   const strategy = options.loadingStrategy ?? "optimistic";
   const granularity = options.fetchGranularity ?? "batch";
   const storage = options.storage ?? memoryStorage();
@@ -50,7 +46,7 @@ export function createConfig(
   const timeout = options.timeout ?? DEFAULT_TIMEOUT;
   const baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
 
-  // 5. Create internal modules
+  // 4. Create internal modules
   const transport = createHttpTransport({
     baseUrl,
     clientId: options.clientId,
@@ -61,7 +57,7 @@ export function createConfig(
       ? createBatchFetcher(transport)
       : createProjectedFetcher(transport);
 
-  // 6. Create loading context
+  // 5. Create loading context
   const context: LoadingContext = {
     clientId: options.clientId,
     fetcher,
@@ -72,7 +68,7 @@ export function createConfig(
     granularity,
   };
 
-  // 7. Execute strategy
+  // 6. Execute strategy
   if (strategy === "pessimistic") {
     return executePessimistic(context).then((result) => {
       const client = buildConfigClient({

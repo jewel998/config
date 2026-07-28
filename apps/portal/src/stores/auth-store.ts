@@ -49,7 +49,10 @@ export const useAuthStore = create<AuthState>((set) => ({
               return;
             }
           } catch {
-            // If Firestore check fails, allow access
+            // Fail-closed: if we can't verify access, deny it
+            await signOut(auth);
+            set({ user: null, accessDenied: true, loading: false });
+            return;
           }
         }
         set({ accessDenied: false, user: firebaseUser, loading: false });

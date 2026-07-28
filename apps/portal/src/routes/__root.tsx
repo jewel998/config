@@ -38,8 +38,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { useProjects } from "@/hooks/use-projects";
+import { ErrorBoundary } from "@/components/error-boundary";
 import {
   type SupportedLocale,
   localeNames,
@@ -63,11 +62,6 @@ const navItems = [
     to: "/settings" as const,
     label: <Trans>Settings</Trans>,
     icon: Settings,
-  },
-  {
-    to: "/preferences" as const,
-    label: <Trans>Preferences</Trans>,
-    icon: SlidersHorizontal,
   },
 ];
 
@@ -189,6 +183,7 @@ const TopBar = ({
       <button
         className="rounded-md p-1.5 hover:bg-accent lg:hidden"
         onClick={onMenuClick}
+        aria-label="Open menu"
       >
         <Menu className="h-5 w-5" />
       </button>
@@ -243,6 +238,17 @@ const Sidebar = ({
   onClose: () => void;
 }) => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
+  const user = useAuthStore((s) => s.user);
+  const logOut = useAuthStore((s) => s.logOut);
+
+  const initials = user?.displayName
+    ? user.displayName
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "U";
 
   return (
     <>
@@ -296,6 +302,41 @@ const Sidebar = ({
             </p>
           </div>
         )}
+
+        {/* Sidebar Footer */}
+        <div className="mt-auto border-t p-3 space-y-2">
+          <div className="flex items-center gap-3 px-3 py-2">
+            <Avatar className="h-8 w-8">
+              {user?.photoURL && <AvatarImage src={user.photoURL} alt="" />}
+              <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <p className="truncate text-sm font-medium">
+                {user?.displayName ?? "User"}
+              </p>
+              <p className="truncate text-xs text-muted-foreground">
+                {user?.email}
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/preferences"
+            onClick={onClose}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent"
+          >
+            <SlidersHorizontal className="h-4 w-4" />
+            <Trans>Preferences</Trans>
+          </Link>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start gap-3 px-3 text-muted-foreground"
+            onClick={logOut}
+          >
+            <LogOut className="h-4 w-4" />
+            <Trans>Sign out</Trans>
+          </Button>
+        </div>
       </aside>
     </>
   );
@@ -311,9 +352,6 @@ const AuthenticatedLayout = () => {
     }
   });
 
-  // React Query handles project fetching via useProjects() in child components
-  useProjects();
-
   const toggleSidebar = () => {
     const next = !sidebarCollapsed;
     setSidebarCollapsed(next);
@@ -325,28 +363,28 @@ const AuthenticatedLayout = () => {
   };
 
   return (
-    <TooltipProvider>
-      <>
-        <div className="flex min-h-screen flex-col">
-          <TopBar
-            onMenuClick={() => setSidebarOpen(true)}
-            onToggleSidebar={toggleSidebar}
-            sidebarCollapsed={sidebarCollapsed}
+    <>
+      <div className="flex min-h-screen flex-col">
+        <TopBar
+          onMenuClick={() => setSidebarOpen(true)}
+          onToggleSidebar={toggleSidebar}
+          sidebarCollapsed={sidebarCollapsed}
+        />
+        <div className="flex flex-1">
+          <Sidebar
+            open={sidebarOpen}
+            collapsed={sidebarCollapsed}
+            onClose={() => setSidebarOpen(false)}
           />
-          <div className="flex flex-1">
-            <Sidebar
-              open={sidebarOpen}
-              collapsed={sidebarCollapsed}
-              onClose={() => setSidebarOpen(false)}
-            />
-            <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
+          <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
+            <ErrorBoundary>
               <Outlet />
-            </main>
-          </div>
+            </ErrorBoundary>
+          </main>
         </div>
-        <Toaster richColors position="bottom-right" />
-      </>
-    </TooltipProvider>
+      </div>
+      <Toaster richColors position="bottom-right" />
+    </>
   );
 };
 
