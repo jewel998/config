@@ -224,7 +224,7 @@ const EnvironmentKeys = ({
                     {key.createdBy === user?.uid && (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="flex items-center gap-1 max-w-24 truncate text-xs text-muted-foreground">
+                          <span className="inline-flex max-w-28 items-center gap-1 rounded-full border bg-muted/50 px-2 py-0.5 text-[11px] text-muted-foreground">
                             <User className="h-3 w-3 shrink-0" />
                             <span className="truncate">
                               {user?.displayName ?? "You"}
