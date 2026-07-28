@@ -52,17 +52,33 @@ export const DateDisplay = ({
   const displayText =
     mode === "relative" ? getRelativeDisplay() : getAbsoluteDisplay();
 
-  // Tooltip shows both local timezone and UTC
-  const localTime = dateObj.toLocaleString(undefined, {
-    timeZone: timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone,
-    dateStyle: "full",
-    timeStyle: "long",
+  // Format date and time separately for cleaner display
+  const localTz = timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const localDate = dateObj.toLocaleDateString(undefined, {
+    timeZone: localTz,
+    month: "short",
+    day: "numeric",
+    year: "numeric",
   });
-  const utcTime = dateObj.toLocaleString(undefined, {
+  const localTimeStr = dateObj.toLocaleTimeString(undefined, {
+    timeZone: localTz,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const utcDate = dateObj.toLocaleDateString(undefined, {
     timeZone: "UTC",
-    dateStyle: "full",
-    timeStyle: "long",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
   });
+  const utcTimeStr = dateObj.toLocaleTimeString(undefined, {
+    timeZone: "UTC",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  // Extract short timezone labels
+  const localTzShort = localTz.split("/").pop()?.replace(/_/g, " ") ?? localTz;
 
   return (
     <Tooltip>
@@ -76,13 +92,25 @@ export const DateDisplay = ({
           {displayText}
         </time>
       </TooltipTrigger>
-      <TooltipContent side="top" className="max-w-xs space-y-1 text-xs">
-        <p>
-          <span className="font-medium">Local:</span> {localTime}
-        </p>
-        <p>
-          <span className="font-medium">UTC:</span> {utcTime}
-        </p>
+      <TooltipContent side="top" className="p-0">
+        <div className="space-y-2 p-3">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-xs font-medium">
+              {localDate}, {localTimeStr}
+            </span>
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+              {localTzShort}
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-xs text-muted-foreground">
+              {utcDate}, {utcTimeStr}
+            </span>
+            <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+              UTC
+            </span>
+          </div>
+        </div>
       </TooltipContent>
     </Tooltip>
   );
