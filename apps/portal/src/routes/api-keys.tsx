@@ -40,16 +40,16 @@ const MaskedToken = ({ token }: { token: string }) => {
   const [visible, setVisible] = useState(false);
 
   return (
-    <div className="flex items-center gap-2">
-      <code className="font-mono text-xs">
-        {visible ? token : `${token.slice(0, 8)}${"•".repeat(16)}`}
+    <div className="flex items-center gap-1.5 min-w-0">
+      <code className="truncate font-mono text-xs">
+        {visible ? token : `${token.slice(0, 8)}${"•".repeat(12)}`}
       </code>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
             variant="ghost"
-            size="icon"
-            className="h-6 w-6"
+            size="icon-xs"
+            className="shrink-0"
             onClick={() => setVisible(!visible)}
             aria-label={visible ? "Hide token" : "Show token"}
           >
@@ -66,8 +66,8 @@ const MaskedToken = ({ token }: { token: string }) => {
         <TooltipTrigger asChild>
           <Button
             variant="ghost"
-            size="icon"
-            className="h-6 w-6"
+            size="icon-xs"
+            className="shrink-0"
             onClick={() => {
               navigator.clipboard.writeText(token);
               toast.success(t`Copied to clipboard`);
@@ -146,8 +146,8 @@ const EnvironmentKeys = ({
 
   return (
     <Card className="rounded-xl">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
+      <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <CardTitle className="text-base">{environmentName}</CardTitle>
           <p className="mt-1 text-xs text-muted-foreground">
             <Trans>
@@ -157,7 +157,7 @@ const EnvironmentKeys = ({
           </p>
         </div>
         <Button
-          className="min-w-20 gap-2 rounded-full"
+          className="min-w-20 gap-2 rounded-full shrink-0"
           size="sm"
           onClick={() => setShowLabelInput(true)}
           disabled={showLabelInput}
@@ -168,13 +168,13 @@ const EnvironmentKeys = ({
       </CardHeader>
       <CardContent className="space-y-4">
         {showLabelInput && (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <Input
               placeholder={t`Label (optional)`}
               value={label}
               onChange={(e) => setLabel(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
-              className="max-w-xs"
+              className="w-full sm:max-w-xs"
               autoFocus
             />
             <Button

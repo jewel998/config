@@ -147,11 +147,11 @@ const UserMenu = () => {
 
 const TopBar = () => {
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background px-3 sm:gap-4 sm:px-4">
       {/* Logo */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 shrink-0">
         <Settings className="h-5 w-5 text-[#5683da]" />
-        <span className="hidden text-sm font-semibold sm:inline-block">
+        <span className="hidden text-sm font-semibold md:inline-block">
           <Trans>Config</Trans>
         </span>
         <Badge className="hidden rounded-full bg-[#ff8964]/12 text-[10px] font-semibold uppercase tracking-wider text-[#ff8964] hover:bg-[#ff8964]/12 sm:inline-flex">
