@@ -166,3 +166,57 @@ export const useDeleteConfig = () => {
     },
   });
 };
+
+export const usePromoteConfigs = () => {
+  const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
+
+  return useMutation({
+    mutationFn: async ({
+      projectId,
+      targetEnvId,
+      configs,
+    }: {
+      projectId: string;
+      targetEnvId: string;
+      configs: Array<{
+        key: string;
+        value: unknown;
+        valueType: ConfigEntry["valueType"];
+      }>;
+    }) => {
+      if (!user) throw new Error("Not authenticated");
+      const batch = configs.map(async (config) => {
+        const docRef = doc(
+          db,
+          "projects",
+          projectId,
+          "environments",
+          targetEnvId,
+          "configs",
+          config.key,
+        );
+        await setDoc(
+          docRef,
+          {
+            key: config.key,
+            value: config.value,
+            valueType: config.valueType,
+            version: "1",
+            publishedAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            updatedBy: user.uid,
+          },
+          { merge: true },
+        );
+      });
+      await Promise.all(batch);
+      return configs.length;
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["configs", variables.projectId, variables.targetEnvId],
+      });
+    },
+  });
+};

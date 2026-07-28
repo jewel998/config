@@ -2,6 +2,7 @@ import { useLingui } from "@lingui/react";
 import { Trans } from "@lingui/react/macro";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import {
+  GitCompare,
   Globe,
   Key,
   Layers,
@@ -57,6 +58,7 @@ const navItems = [
     icon: Server,
   },
   { to: "/configs" as const, label: <Trans>Configs</Trans>, icon: Layers },
+  { to: "/compare" as const, label: <Trans>Compare</Trans>, icon: GitCompare },
   { to: "/api-keys" as const, label: <Trans>API Keys</Trans>, icon: Key },
   {
     to: "/settings" as const,

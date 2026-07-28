@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from "./routes/__root";
 import { Route as IndexRouteImport } from "./routes/index";
 import { Route as ApiKeysRouteImport } from "./routes/api-keys";
+import { Route as CompareRouteImport } from "./routes/compare";
 import { Route as ConfigsRouteImport } from "./routes/configs";
 import { Route as EnvironmentsRouteImport } from "./routes/environments";
 import { Route as PreferencesRouteImport } from "./routes/preferences";
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const ApiKeysRoute = ApiKeysRouteImport.update({
   id: "/api-keys",
   path: "/api-keys",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const CompareRoute = CompareRouteImport.update({
+  id: "/compare",
+  path: "/compare",
   getParentRoute: () => rootRouteImport,
 } as any);
 const ConfigsRoute = ConfigsRouteImport.update({
@@ -50,6 +56,7 @@ const SettingsRoute = SettingsRouteImport.update({
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
   "/api-keys": typeof ApiKeysRoute;
+  "/compare": typeof CompareRoute;
   "/configs": typeof ConfigsRoute;
   "/environments": typeof EnvironmentsRoute;
   "/preferences": typeof PreferencesRoute;
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
   "/api-keys": typeof ApiKeysRoute;
+  "/compare": typeof CompareRoute;
   "/configs": typeof ConfigsRoute;
   "/environments": typeof EnvironmentsRoute;
   "/preferences": typeof PreferencesRoute;
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   "/": typeof IndexRoute;
   "/api-keys": typeof ApiKeysRoute;
+  "/compare": typeof CompareRoute;
   "/configs": typeof ConfigsRoute;
   "/environments": typeof EnvironmentsRoute;
   "/preferences": typeof PreferencesRoute;
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
   fullPaths:
     | "/"
     | "/api-keys"
+    | "/compare"
     | "/configs"
     | "/environments"
     | "/preferences"
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
   to:
     | "/"
     | "/api-keys"
+    | "/compare"
     | "/configs"
     | "/environments"
     | "/preferences"
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
     | "__root__"
     | "/"
     | "/api-keys"
+    | "/compare"
     | "/configs"
     | "/environments"
     | "/preferences"
@@ -102,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   ApiKeysRoute: typeof ApiKeysRoute;
+  CompareRoute: typeof CompareRoute;
   ConfigsRoute: typeof ConfigsRoute;
   EnvironmentsRoute: typeof EnvironmentsRoute;
   PreferencesRoute: typeof PreferencesRoute;
@@ -122,6 +135,13 @@ declare module "@tanstack/react-router" {
       path: "/api-keys";
       fullPath: "/api-keys";
       preLoaderRoute: typeof ApiKeysRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/compare": {
+      id: "/compare";
+      path: "/compare";
+      fullPath: "/compare";
+      preLoaderRoute: typeof CompareRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/configs": {
@@ -158,6 +178,7 @@ declare module "@tanstack/react-router" {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiKeysRoute: ApiKeysRoute,
+  CompareRoute: CompareRoute,
   ConfigsRoute: ConfigsRoute,
   EnvironmentsRoute: EnvironmentsRoute,
   PreferencesRoute: PreferencesRoute,
