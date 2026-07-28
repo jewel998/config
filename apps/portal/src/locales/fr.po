@@ -29,7 +29,7 @@ msgstr ""
 #~ msgid "✓ Versioned config publishing"
 #~ msgstr ""
 
-#: src/routes/__root.tsx:242
+#: src/routes/__root.tsx:246
 msgid "Access Denied"
 msgstr "Accès refusé"
 
@@ -37,7 +37,7 @@ msgstr "Accès refusé"
 #~ msgid "Access is by request only."
 #~ msgstr ""
 
-#: src/routes/__root.tsx:372
+#: src/routes/__root.tsx:376
 msgid "Access is by request only. Rights of Admission Reserved."
 msgstr ""
 
@@ -53,7 +53,7 @@ msgstr "Compte créé"
 msgid "Account deletion is not yet available. Contact support if you need to delete your account."
 msgstr ""
 
-#: src/routes/configs.tsx:642
+#: src/routes/configs.tsx:636
 msgid "Actions"
 msgstr ""
 
@@ -69,11 +69,15 @@ msgstr ""
 #~ msgid "Activity feed coming soon."
 #~ msgstr ""
 
+#: src/routes/settings.tsx:224
+msgid "Add"
+msgstr ""
+
 #: src/routes/environments.tsx:195
 msgid "Add a deployment target for your project."
 msgstr ""
 
-#: src/routes/configs.tsx:259
+#: src/routes/configs.tsx:260
 msgid "Add a new configuration entry."
 msgstr ""
 
@@ -85,12 +89,12 @@ msgstr ""
 #~ msgid "Add an Environment"
 #~ msgstr ""
 
-#: src/routes/configs.tsx:253
-#: src/routes/configs.tsx:514
+#: src/routes/configs.tsx:254
+#: src/routes/configs.tsx:523
 msgid "Add Config"
 msgstr ""
 
-#: src/routes/configs.tsx:615
+#: src/routes/configs.tsx:609
 msgid "Add config values to manage feature flags and settings."
 msgstr ""
 
@@ -98,7 +102,7 @@ msgstr ""
 msgid "Add environments like production, staging, or development."
 msgstr ""
 
-#: src/routes/configs.tsx:557
+#: src/routes/configs.tsx:551
 msgid "All types"
 msgstr ""
 
@@ -110,24 +114,28 @@ msgstr ""
 msgid "Allowed domains (comma-separated, e.g. example.com, app.example.com)"
 msgstr ""
 
+#: src/routes/settings.tsx:236
+msgid "Allowed domains (comma-separated)"
+msgstr ""
+
 #: src/routes/environments.tsx:267
 #~ msgid "Allowed domains:"
 #~ msgstr ""
 
-#: src/routes/configs.tsx:281
+#: src/routes/configs.tsx:282
 msgid "Alphanumeric, dots, and underscores only."
 msgstr ""
 
-#: src/routes/api-keys.tsx:108
+#: src/routes/api-keys.tsx:107
 msgid "API key generated"
 msgstr ""
 
-#: src/routes/api-keys.tsx:124
+#: src/routes/api-keys.tsx:123
 msgid "API key revoked"
 msgstr ""
 
-#: src/routes/__root.tsx:184
-#: src/routes/api-keys.tsx:353
+#: src/routes/__root.tsx:188
+#: src/routes/api-keys.tsx:355
 msgid "API Keys"
 msgstr "Clés API"
 
@@ -136,10 +144,11 @@ msgstr "Clés API"
 msgid "Apply {0} changes"
 msgstr ""
 
-#: src/routes/api-keys.tsx:197
+#: src/routes/api-keys.tsx:196
 #: src/routes/compare.tsx:584
-#: src/routes/configs.tsx:409
+#: src/routes/configs.tsx:410
 #: src/routes/environments.tsx:257
+#: src/routes/settings.tsx:259
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -155,7 +164,7 @@ msgstr ""
 #~ msgid "Client Keys"
 #~ msgstr ""
 
-#: src/routes/__root.tsx:185
+#: src/routes/configs.tsx:510
 msgid "Compare"
 msgstr ""
 
@@ -163,11 +172,11 @@ msgstr ""
 msgid "Compare Environments"
 msgstr ""
 
-#: src/routes/__root.tsx:155
+#: src/routes/__root.tsx:157
 msgid "Config"
 msgstr "Config"
 
-#: src/routes/configs.tsx:225
+#: src/routes/configs.tsx:226
 msgid "Config created"
 msgstr ""
 
@@ -179,19 +188,19 @@ msgstr ""
 msgid "Config Differences"
 msgstr ""
 
-#: src/routes/configs.tsx:270
+#: src/routes/configs.tsx:271
 msgid "Config key (e.g. feature.enabled)"
 msgstr ""
 
-#: src/routes/__root.tsx:287
+#: src/routes/__root.tsx:291
 msgid "Config Portal"
 msgstr "Portail de configuration"
 
-#: src/routes/__root.tsx:320
+#: src/routes/__root.tsx:324
 msgid "Config publishing"
 msgstr ""
 
-#: src/routes/configs.tsx:225
+#: src/routes/configs.tsx:226
 msgid "Config updated"
 msgstr ""
 
@@ -199,12 +208,12 @@ msgstr ""
 #~ msgid "Config Values"
 #~ msgstr ""
 
-#: src/routes/__root.tsx:183
+#: src/routes/__root.tsx:187
 #: src/routes/configs.tsx:499
 msgid "Configs"
 msgstr "Configurations"
 
-#: src/routes/settings.tsx:189
+#: src/routes/settings.tsx:330
 msgid "Confirm Delete?"
 msgstr ""
 
@@ -217,7 +226,7 @@ msgid "Confirm?"
 msgstr ""
 
 #: src/components/copy-button.tsx:26
-#: src/routes/api-keys.tsx:73
+#: src/routes/api-keys.tsx:72
 msgid "Copied to clipboard"
 msgstr ""
 
@@ -226,15 +235,16 @@ msgid "Copied!"
 msgstr ""
 
 #: src/components/copy-button.tsx:50
-#: src/routes/api-keys.tsx:80
+#: src/routes/api-keys.tsx:79
 msgid "Copy"
 msgstr ""
 
 #: src/components/onboarding-stepper.tsx:183
 #: src/components/onboarding-stepper.tsx:209
-#: src/routes/api-keys.tsx:186
-#: src/routes/configs.tsx:401
+#: src/routes/api-keys.tsx:185
+#: src/routes/configs.tsx:402
 #: src/routes/environments.tsx:244
+#: src/routes/settings.tsx:247
 msgid "Create"
 msgstr "Créer"
 
@@ -247,10 +257,10 @@ msgstr "Créer"
 #~ msgstr ""
 
 #: src/routes/api-keys.tsx:371
-msgid "Create an environment first to generate API keys."
-msgstr ""
+#~ msgid "Create an environment first to generate API keys."
+#~ msgstr ""
 
-#: src/routes/configs.tsx:573
+#: src/routes/configs.tsx:567
 msgid "Create an environment first to manage configs."
 msgstr ""
 
@@ -274,7 +284,7 @@ msgstr ""
 #~ msgid "Create your first project to start managing feature flags and configs."
 #~ msgstr ""
 
-#: src/routes/settings.tsx:149
+#: src/routes/settings.tsx:195
 msgid "Created"
 msgstr "Créé"
 
@@ -302,7 +312,7 @@ msgid "Customize your portal experience."
 msgstr ""
 
 #: src/routes/preferences.tsx:358
-#: src/routes/settings.tsx:170
+#: src/routes/settings.tsx:311
 msgid "Danger Zone"
 msgstr "Zone de danger"
 
@@ -315,20 +325,20 @@ msgstr "Zone de danger"
 #~ msgid "Define deployment targets for your app."
 #~ msgstr ""
 
-#: src/routes/api-keys.tsx:302
-#: src/routes/api-keys.tsx:307
-#: src/routes/configs.tsx:714
-#: src/routes/configs.tsx:723
+#: src/routes/api-keys.tsx:301
+#: src/routes/api-keys.tsx:306
+#: src/routes/configs.tsx:708
+#: src/routes/configs.tsx:717
 #: src/routes/environments.tsx:305
 #: src/routes/environments.tsx:316
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/routes/settings.tsx:191
+#: src/routes/settings.tsx:332
 msgid "Delete Project"
 msgstr "Supprimer le projet"
 
-#: src/routes/settings.tsx:175
+#: src/routes/settings.tsx:316
 msgid "Deleting a project is irreversible. All environments, configs, and API keys will become inaccessible."
 msgstr ""
 
@@ -348,12 +358,12 @@ msgstr "Nom affiché"
 msgid "e.g. production, staging"
 msgstr ""
 
-#: src/routes/configs.tsx:699
-#: src/routes/configs.tsx:704
+#: src/routes/configs.tsx:693
+#: src/routes/configs.tsx:698
 msgid "Edit"
 msgstr ""
 
-#: src/routes/configs.tsx:253
+#: src/routes/configs.tsx:254
 msgid "Edit Config"
 msgstr ""
 
@@ -365,15 +375,16 @@ msgstr "E-mail"
 #~ msgid "Encrypted values"
 #~ msgstr ""
 
-#: src/routes/configs.tsx:336
+#: src/routes/configs.tsx:337
 msgid "Enter a JSON array"
 msgstr ""
 
-#: src/routes/configs.tsx:335
+#: src/routes/configs.tsx:336
 msgid "Enter valid JSON"
 msgstr ""
 
 #: src/routes/environments.tsx:107
+#: src/routes/settings.tsx:145
 msgid "Environment created"
 msgstr ""
 
@@ -382,16 +393,21 @@ msgid "Environment created!"
 msgstr ""
 
 #: src/routes/environments.tsx:128
+#: src/routes/settings.tsx:159
 msgid "Environment deleted"
+msgstr ""
+
+#: src/routes/settings.tsx:231
+msgid "Environment name"
 msgstr ""
 
 #: src/routes/environments.tsx:211
 msgid "Environment name (e.g. production, staging)"
 msgstr ""
 
-#: src/routes/__root.tsx:186
-#: src/routes/__root.tsx:309
+#: src/routes/__root.tsx:313
 #: src/routes/environments.tsx:168
+#: src/routes/settings.tsx:216
 msgid "Environments"
 msgstr "Environnements"
 
@@ -409,6 +425,7 @@ msgstr ""
 
 #: src/components/onboarding-stepper.tsx:60
 #: src/routes/environments.tsx:110
+#: src/routes/settings.tsx:148
 msgid "Failed to create environment"
 msgstr ""
 
@@ -422,26 +439,27 @@ msgid "Failed to delete config"
 msgstr ""
 
 #: src/routes/environments.tsx:131
+#: src/routes/settings.tsx:160
 msgid "Failed to delete environment"
 msgstr ""
 
-#: src/routes/api-keys.tsx:290
+#: src/routes/api-keys.tsx:289
 msgid "Failed to delete key"
 msgstr ""
 
-#: src/routes/settings.tsx:114
+#: src/routes/settings.tsx:127
 msgid "Failed to delete project"
 msgstr ""
 
-#: src/routes/api-keys.tsx:113
+#: src/routes/api-keys.tsx:112
 msgid "Failed to generate API key"
 msgstr ""
 
-#: src/routes/api-keys.tsx:127
+#: src/routes/api-keys.tsx:126
 msgid "Failed to revoke API key"
 msgstr ""
 
-#: src/routes/configs.tsx:229
+#: src/routes/configs.tsx:230
 msgid "Failed to save config"
 msgstr ""
 
@@ -449,7 +467,7 @@ msgstr ""
 msgid "Failed to sync configs"
 msgstr ""
 
-#: src/routes/__root.tsx:328
+#: src/routes/__root.tsx:332
 msgid "Firebase sync"
 msgstr ""
 
@@ -457,7 +475,7 @@ msgstr ""
 #~ msgid "General"
 #~ msgstr "Général"
 
-#: src/routes/api-keys.tsx:166
+#: src/routes/api-keys.tsx:165
 msgid "Generate Key"
 msgstr "Générer une clé"
 
@@ -465,7 +483,7 @@ msgstr "Générer une clé"
 msgid "Go to Environments"
 msgstr ""
 
-#: src/routes/api-keys.tsx:63
+#: src/routes/api-keys.tsx:62
 msgid "Hide"
 msgstr ""
 
@@ -473,7 +491,7 @@ msgstr ""
 msgid "Hide identical"
 msgstr ""
 
-#: src/routes/configs.tsx:378
+#: src/routes/configs.tsx:379
 msgid "Hide Preview"
 msgstr ""
 
@@ -481,24 +499,24 @@ msgstr ""
 msgid "identical"
 msgstr ""
 
-#: src/routes/configs.tsx:244
+#: src/routes/configs.tsx:245
 msgid "Invalid value"
 msgstr ""
 
-#: src/routes/configs.tsx:267
-#: src/routes/configs.tsx:630
+#: src/routes/configs.tsx:268
+#: src/routes/configs.tsx:624
 msgid "Key"
 msgstr ""
 
-#: src/routes/api-keys.tsx:287
+#: src/routes/api-keys.tsx:286
 msgid "Key deleted permanently"
 msgstr ""
 
-#: src/routes/api-keys.tsx:153
+#: src/routes/api-keys.tsx:152
 msgid "Keys are prefixed with <0>cid_</0> and contain 20 random characters."
 msgstr ""
 
-#: src/routes/api-keys.tsx:173
+#: src/routes/api-keys.tsx:172
 msgid "Label (optional)"
 msgstr ""
 
@@ -531,7 +549,11 @@ msgstr ""
 #~ msgstr ""
 
 #: src/routes/api-keys.tsx:356
-msgid "Manage client IDs for each environment. Use these keys to authenticate SDK requests."
+#~ msgid "Manage client IDs for each environment. Use these keys to authenticate SDK requests."
+#~ msgstr ""
+
+#: src/routes/api-keys.tsx:358
+msgid "Manage client IDs for this environment. Use these keys to authenticate SDK requests."
 msgstr ""
 
 #: src/routes/environments.tsx:171
@@ -550,7 +572,7 @@ msgstr ""
 #~ msgid "Manage multi-tenant configuration with versioned publish flows, offline-ready cache, and real-time remote sync."
 #~ msgstr ""
 
-#: src/routes/settings.tsx:132
+#: src/routes/settings.tsx:178
 msgid "Manage project configuration and team access."
 msgstr ""
 
@@ -558,7 +580,7 @@ msgstr ""
 #~ msgid "Manage your projects, environments, and config keys."
 #~ msgstr ""
 
-#: src/routes/__root.tsx:304
+#: src/routes/__root.tsx:308
 msgid "Multi-project scoping"
 msgstr ""
 
@@ -579,11 +601,11 @@ msgstr "Nouvel environnement"
 #~ msgid "No activity yet. Create a project to get started."
 #~ msgstr ""
 
-#: src/routes/api-keys.tsx:204
+#: src/routes/api-keys.tsx:203
 msgid "No API keys yet. Generate one to get started."
 msgstr "Pas encore de clés API. Générez-en une pour commencer."
 
-#: src/routes/configs.tsx:612
+#: src/routes/configs.tsx:606
 msgid "No configs yet"
 msgstr ""
 
@@ -598,6 +620,10 @@ msgstr ""
 #: src/routes/environments.tsx:273
 msgid "No environments yet"
 msgstr "Pas encore d'environnements"
+
+#: src/routes/settings.tsx:266
+msgid "No environments yet."
+msgstr ""
 
 #: src/routes/environments.tsx:209
 #~ msgid "No project selected"
@@ -627,7 +653,7 @@ msgstr ""
 msgid "Not set"
 msgstr "Non défini"
 
-#: src/routes/configs.tsx:348
+#: src/routes/configs.tsx:349
 msgid "Numeric value"
 msgstr ""
 
@@ -643,11 +669,11 @@ msgstr ""
 #~ msgid "Overview of your configuration platform."
 #~ msgstr ""
 
-#: src/routes/settings.tsx:160
+#: src/routes/settings.tsx:206
 msgid "Owner"
 msgstr "Propriétaire"
 
-#: src/routes/__root.tsx:312
+#: src/routes/__root.tsx:316
 msgid "Per-env overrides"
 msgstr ""
 
@@ -655,7 +681,7 @@ msgstr ""
 #~ msgid "Per-environment encrypted key-value pairs."
 #~ msgstr ""
 
-#: src/routes/__root.tsx:135
+#: src/routes/__root.tsx:137
 #: src/routes/preferences.tsx:134
 #: src/routes/preferences.tsx:152
 msgid "Preferences"
@@ -673,11 +699,11 @@ msgstr ""
 msgid "Project created successfully!"
 msgstr ""
 
-#: src/routes/settings.tsx:111
+#: src/routes/settings.tsx:124
 msgid "Project deleted"
 msgstr ""
 
-#: src/routes/settings.tsx:142
+#: src/routes/settings.tsx:188
 msgid "Project ID"
 msgstr "ID du projet"
 
@@ -686,15 +712,15 @@ msgstr "ID du projet"
 msgid "Project name"
 msgstr ""
 
-#: src/routes/settings.tsx:138
+#: src/routes/settings.tsx:184
 msgid "Project Name"
 msgstr "Nom du projet"
 
-#: src/routes/settings.tsx:96
+#: src/routes/settings.tsx:109
 msgid "Project not found."
 msgstr ""
 
-#: src/routes/settings.tsx:129
+#: src/routes/settings.tsx:175
 msgid "Project Settings"
 msgstr "Paramètres du projet"
 
@@ -702,7 +728,7 @@ msgstr "Paramètres du projet"
 #~ msgid "Project:"
 #~ msgstr ""
 
-#: src/routes/__root.tsx:301
+#: src/routes/__root.tsx:305
 msgid "Projects"
 msgstr "Projets"
 
@@ -710,7 +736,7 @@ msgstr "Projets"
 msgid "Projects group environments and configurations together."
 msgstr ""
 
-#: src/routes/__root.tsx:361
+#: src/routes/__root.tsx:365
 msgid "Protected by Firebase Authentication."
 msgstr ""
 
@@ -734,7 +760,7 @@ msgstr ""
 #~ msgid "Quick Start"
 #~ msgstr ""
 
-#: src/routes/__root.tsx:325
+#: src/routes/__root.tsx:329
 msgid "Real-time"
 msgstr "Temps réel"
 
@@ -747,15 +773,15 @@ msgstr "Temps réel"
 msgid "Review {0} changes"
 msgstr ""
 
-#: src/routes/api-keys.tsx:267
+#: src/routes/api-keys.tsx:266
 msgid "Revoke"
 msgstr "Révoquer"
 
-#: src/routes/api-keys.tsx:272
+#: src/routes/api-keys.tsx:271
 msgid "Revoke key"
 msgstr ""
 
-#: src/routes/api-keys.tsx:245
+#: src/routes/api-keys.tsx:244
 msgid "Revoked"
 msgstr ""
 
@@ -768,7 +794,7 @@ msgstr ""
 #~ msgid "Rights of Admission Reserved. Contact the project owner to request access."
 #~ msgstr ""
 
-#: src/routes/configs.tsx:540
+#: src/routes/configs.tsx:534
 msgid "Search configs..."
 msgstr ""
 
@@ -792,7 +818,7 @@ msgstr ""
 msgid "Select a project to compare environments."
 msgstr ""
 
-#: src/routes/api-keys.tsx:332
+#: src/routes/api-keys.tsx:330
 msgid "Select a project to manage API keys."
 msgstr ""
 
@@ -808,7 +834,7 @@ msgstr ""
 msgid "Select a project to view environments."
 msgstr ""
 
-#: src/routes/settings.tsx:73
+#: src/routes/settings.tsx:86
 msgid "Select a project to view settings."
 msgstr ""
 
@@ -816,13 +842,17 @@ msgstr ""
 msgid "Select a source and target environment to see the diff."
 msgstr ""
 
+#: src/routes/api-keys.tsx:343
+msgid "Select an environment from the top bar to manage API keys."
+msgstr ""
+
 #: src/components/environment-switcher.tsx:44
 msgid "Select env"
 msgstr ""
 
 #: src/routes/configs.tsx:526
-msgid "Select environment"
-msgstr ""
+#~ msgid "Select environment"
+#~ msgstr ""
 
 #: src/routes/__root.tsx:295
 #~ msgid "Select or create a project to get started."
@@ -840,11 +870,11 @@ msgstr ""
 #~ msgid "Set up your project to scope configs."
 #~ msgstr ""
 
-#: src/routes/__root.tsx:187
+#: src/routes/__root.tsx:191
 msgid "Settings"
 msgstr "Paramètres"
 
-#: src/routes/api-keys.tsx:63
+#: src/routes/api-keys.tsx:62
 msgid "Show"
 msgstr ""
 
@@ -852,20 +882,20 @@ msgstr ""
 msgid "Show identical"
 msgstr ""
 
-#: src/routes/configs.tsx:380
+#: src/routes/configs.tsx:381
 msgid "Show Preview"
 msgstr ""
 
-#: src/routes/__root.tsx:290
+#: src/routes/__root.tsx:294
 msgid "Sign in to manage your configuration platform."
 msgstr ""
 
-#: src/routes/__root.tsx:357
+#: src/routes/__root.tsx:361
 msgid "Sign in with Google"
 msgstr "Se connecter avec Google"
 
-#: src/routes/__root.tsx:141
-#: src/routes/__root.tsx:261
+#: src/routes/__root.tsx:143
+#: src/routes/__root.tsx:265
 msgid "Sign out"
 msgstr "Se déconnecter"
 
@@ -877,7 +907,7 @@ msgstr ""
 msgid "Start configuring your environments with secrets and settings."
 msgstr ""
 
-#: src/routes/configs.tsx:357
+#: src/routes/configs.tsx:358
 msgid "String value"
 msgstr ""
 
@@ -902,7 +932,7 @@ msgstr ""
 msgid "The following changes will be applied:"
 msgstr ""
 
-#: src/routes/settings.tsx:163
+#: src/routes/settings.tsx:209
 msgid "The user who created this project"
 msgstr ""
 
@@ -914,28 +944,28 @@ msgstr "Thème"
 msgid "Timezone"
 msgstr "Fuseau horaire"
 
-#: src/routes/__root.tsx:253
+#: src/routes/__root.tsx:257
 msgid "Try a different account"
 msgstr ""
 
-#: src/routes/configs.tsx:291
-#: src/routes/configs.tsx:633
+#: src/routes/configs.tsx:292
+#: src/routes/configs.tsx:627
 msgid "Type"
 msgstr ""
 
-#: src/routes/settings.tsx:145
+#: src/routes/settings.tsx:191
 msgid "Unique identifier for API integrations"
 msgstr ""
 
-#: src/routes/configs.tsx:399
+#: src/routes/configs.tsx:400
 msgid "Update"
 msgstr ""
 
-#: src/routes/configs.tsx:257
+#: src/routes/configs.tsx:258
 msgid "Update the configuration value."
 msgstr ""
 
-#: src/routes/configs.tsx:639
+#: src/routes/configs.tsx:633
 msgid "Updated"
 msgstr ""
 
@@ -943,12 +973,12 @@ msgstr ""
 msgid "User ID"
 msgstr "ID utilisateur"
 
-#: src/routes/configs.tsx:313
-#: src/routes/configs.tsx:636
+#: src/routes/configs.tsx:314
+#: src/routes/configs.tsx:630
 msgid "Value"
 msgstr ""
 
-#: src/routes/__root.tsx:317
+#: src/routes/__root.tsx:321
 msgid "Versioned"
 msgstr ""
 
@@ -968,7 +998,7 @@ msgstr ""
 msgid "You're all set!"
 msgstr ""
 
-#: src/routes/__root.tsx:245
+#: src/routes/__root.tsx:249
 msgid "Your account is not authorized to access this portal. Contact the project owner to request access."
 msgstr ""
 
