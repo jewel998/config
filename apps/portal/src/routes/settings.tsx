@@ -7,12 +7,12 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { ColorPicker } from "@/components/color-picker";
 import { CopyButton } from "@/components/copy-button";
 import { DateDisplay } from "@/components/date-display";
 import { EmptyState } from "@/components/empty-state";
 import { EnvironmentForm } from "@/components/environment-form";
 import { PageHeader } from "@/components/page-header";
+import { PageLayout } from "@/components/page-layout";
 import { SegmentedControl } from "@/components/segmented-control";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -454,7 +454,7 @@ const SettingsPage = () => {
   const ownerIsNotYou = selectedProject.ownerId !== user?.uid;
 
   return (
-    <div className="space-y-6">
+    <PageLayout>
       <PageHeader
         title={<Trans>Project Settings</Trans>}
         description={<Trans>Manage project configuration and team access.</Trans>}
@@ -499,7 +499,7 @@ const SettingsPage = () => {
       <EnvironmentsSection projectId={selectedProjectId} />
 
       <DangerZone projectId={selectedProjectId} />
-    </div>
+    </PageLayout>
   );
 };
 
