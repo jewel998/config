@@ -5,6 +5,7 @@ import {
   doc,
   getDocs,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { z } from "zod";
 
@@ -19,6 +20,7 @@ export interface ConfigEntry {
   publishedAt: string;
   updatedAt: string;
   updatedBy: string;
+  locked?: boolean;
 }
 
 export const configValueSchema = z.discriminatedUnion("valueType", [
@@ -216,6 +218,39 @@ export const usePromoteConfigs = () => {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["configs", variables.projectId, variables.targetEnvId],
+      });
+    },
+  });
+};
+
+export const useToggleConfigLock = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      projectId,
+      environmentId,
+      key,
+      locked,
+    }: {
+      projectId: string;
+      environmentId: string;
+      key: string;
+      locked: boolean;
+    }) => {
+      const docRef = doc(
+        db,
+        "projects",
+        projectId,
+        "environments",
+        environmentId,
+        "configs",
+        key,
+      );
+      await updateDoc(docRef, { locked, updatedAt: new Date().toISOString() });
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["configs", variables.projectId, variables.environmentId],
       });
     },
   });

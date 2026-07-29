@@ -40,7 +40,15 @@ export const EnvironmentSwitcher = () => {
           disabled={!selectedProjectId}
           className="w-[120px] justify-between rounded-lg text-sm font-medium sm:w-[180px]"
         >
-          <span className="truncate">
+          <span className="flex items-center truncate">
+            {selectedEnv && (
+              <span
+                className="mr-2 h-2 w-2 shrink-0 rounded-full"
+                style={{
+                  backgroundColor: selectedEnv.color || "#9ca3af",
+                }}
+              />
+            )}
             {selectedEnv ? selectedEnv.name : t`Select env`}
           </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -70,6 +78,12 @@ export const EnvironmentSwitcher = () => {
                         ? "opacity-100"
                         : "opacity-0",
                     )}
+                  />
+                  <span
+                    className="mr-2 h-2 w-2 shrink-0 rounded-full"
+                    style={{
+                      backgroundColor: env.color || "#9ca3af",
+                    }}
                   />
                   <span className="truncate">{env.name}</span>
                 </CommandItem>

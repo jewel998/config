@@ -5,6 +5,7 @@ import { HelpCircle, Plus, Settings, Trash2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { doc, updateDoc } from "firebase/firestore";
 
 import { CopyButton } from "@/components/copy-button";
 import { DateDisplay } from "@/components/date-display";
@@ -14,6 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
@@ -25,8 +27,18 @@ import {
   useDeleteEnvironment,
 } from "@/hooks/use-environments";
 import { useDeleteProject, useProjects } from "@/hooks/use-projects";
+import { db } from "@/lib/firebase";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
+
+const ENV_COLOR_PRESETS = [
+  "#ef4444",
+  "#f59e0b",
+  "#22c55e",
+  "#3b82f6",
+  "#8b5cf6",
+  "#6b7280",
+];
 
 const InfoCard = ({
   label,
@@ -72,9 +84,18 @@ const SettingsPage = () => {
   const [showEnvForm, setShowEnvForm] = useState(false);
   const [envName, setEnvName] = useState("");
   const [envDomains, setEnvDomains] = useState("");
+  const [envColor, setEnvColor] = useState(ENV_COLOR_PRESETS[5]);
+  const [envIsProduction, setEnvIsProduction] = useState(false);
   const { data: environments = [] } = useEnvironments(selectedProjectId);
   const createEnv = useCreateEnvironment();
   const deleteEnv = useDeleteEnvironment();
+
+  // Project description state
+  const [editingDesc, setEditingDesc] = useState(false);
+  const [description, setDescription] = useState(
+    selectedProject?.description || "",
+  );
+  const [savingDesc, setSavingDesc] = useState(false);
 
   if (!selectedProjectId) {
     return (
@@ -136,11 +157,19 @@ const SettingsPage = () => {
       .map((d) => d.trim())
       .filter(Boolean);
     createEnv.mutate(
-      { projectId: selectedProjectId, name: envName, allowedDomains: domains },
+      {
+        projectId: selectedProjectId,
+        name: envName,
+        allowedDomains: domains,
+        color: envColor,
+        isProduction: envIsProduction,
+      },
       {
         onSuccess: () => {
           setEnvName("");
           setEnvDomains("");
+          setEnvColor(ENV_COLOR_PRESETS[5]);
+          setEnvIsProduction(false);
           setShowEnvForm(false);
           toast.success(t`Environment created`);
         },
@@ -153,13 +182,50 @@ const SettingsPage = () => {
 
   const handleDeleteEnv = (envId: string) => {
     if (!selectedProjectId) return;
+    const env = environments.find((e) => e.id === envId);
     deleteEnv.mutate(
       { projectId: selectedProjectId, envId },
       {
-        onSuccess: () => toast.success(t`Environment deleted`),
+        onSuccess: () => {
+          toast.success(t`Environment deleted`, {
+            action: {
+              label: t`Undo`,
+              onClick: () => {
+                if (env) {
+                  createEnv.mutate({
+                    projectId: selectedProjectId!,
+                    name: env.name,
+                    allowedDomains: env.allowedDomains,
+                    color: env.color,
+                    isProduction: env.isProduction,
+                  });
+                }
+              },
+            },
+            duration: 5000,
+          });
+        },
         onError: () => toast.error(t`Failed to delete environment`),
       },
     );
+  };
+
+  const handleSaveDescription = async () => {
+    if (!selectedProjectId) return;
+    setSavingDesc(true);
+    try {
+      const projectRef = doc(db, "projects", selectedProjectId);
+      await updateDoc(projectRef, {
+        description,
+        updatedAt: new Date().toISOString(),
+      });
+      toast.success(t`Description saved`);
+      setEditingDesc(false);
+    } catch {
+      toast.error(t`Failed to save description`);
+    } finally {
+      setSavingDesc(false);
+    }
   };
 
   const ownerEmail =
@@ -210,6 +276,52 @@ const SettingsPage = () => {
         />
       </div>
 
+      {/* Project Description */}
+      <Card className="rounded-xl">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-base">
+            <Trans>Description</Trans>
+          </CardTitle>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="rounded-full"
+            onClick={() => {
+              if (!editingDesc) {
+                setDescription(selectedProject.description || "");
+              }
+              setEditingDesc(!editingDesc);
+            }}
+          >
+            {editingDesc ? <Trans>Cancel</Trans> : <Trans>Edit</Trans>}
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {editingDesc ? (
+            <div className="space-y-3">
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder={t`Project description (supports markdown)`}
+                className="min-h-24"
+              />
+              <Button
+                size="sm"
+                className="rounded-full"
+                onClick={handleSaveDescription}
+                disabled={savingDesc}
+              >
+                {savingDesc ? <Spinner /> : <Trans>Save</Trans>}
+              </Button>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+              {selectedProject.description || t`No description yet.`}
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
       <Card className="rounded-xl">
         <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <CardTitle className="text-base">
@@ -226,7 +338,7 @@ const SettingsPage = () => {
         </CardHeader>
         <CardContent className="space-y-3">
           {showEnvForm && (
-            <div className="space-y-2 rounded-lg border p-3">
+            <div className="space-y-3 rounded-lg border p-3">
               <Input
                 placeholder={t`Environment name`}
                 value={envName}
@@ -237,6 +349,38 @@ const SettingsPage = () => {
                 value={envDomains}
                 onChange={(e) => setEnvDomains(e.target.value)}
               />
+              {/* Color picker */}
+              <div className="space-y-1">
+                <p className="text-xs font-medium text-muted-foreground">
+                  <Trans>Color</Trans>
+                </p>
+                <div className="flex gap-2">
+                  {ENV_COLOR_PRESETS.map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      className={`h-6 w-6 rounded-full border-2 transition-all ${
+                        envColor === color
+                          ? "border-foreground scale-110"
+                          : "border-transparent"
+                      }`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => setEnvColor(color)}
+                      aria-label={color}
+                    />
+                  ))}
+                </div>
+              </div>
+              {/* Production toggle */}
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={envIsProduction}
+                  onChange={(e) => setEnvIsProduction(e.target.checked)}
+                  className="rounded"
+                />
+                <Trans>Production environment</Trans>
+              </label>
               <div className="flex gap-2">
                 <Button
                   size="sm"
@@ -254,6 +398,8 @@ const SettingsPage = () => {
                     setShowEnvForm(false);
                     setEnvName("");
                     setEnvDomains("");
+                    setEnvColor(ENV_COLOR_PRESETS[5]);
+                    setEnvIsProduction(false);
                   }}
                 >
                   <Trans>Cancel</Trans>
@@ -272,7 +418,18 @@ const SettingsPage = () => {
               className="flex items-center justify-between rounded-lg border p-3"
             >
               <div className="min-w-0 space-y-1">
-                <p className="text-sm font-medium">{env.name}</p>
+                <div className="flex items-center gap-2">
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full"
+                    style={{ backgroundColor: env.color || "#9ca3af" }}
+                  />
+                  <p className="text-sm font-medium">{env.name}</p>
+                  {env.isProduction && (
+                    <Badge variant="secondary" className="rounded-full text-xs">
+                      <Trans>Production</Trans>
+                    </Badge>
+                  )}
+                </div>
                 {env.allowedDomains.length > 0 && (
                   <div className="flex flex-wrap gap-1">
                     {env.allowedDomains.map((d) => (

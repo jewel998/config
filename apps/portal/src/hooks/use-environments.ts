@@ -14,6 +14,8 @@ export interface Environment {
   name: string;
   projectId: string;
   allowedDomains: string[];
+  color?: string;
+  isProduction?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -47,10 +49,14 @@ export const useCreateEnvironment = () => {
       projectId,
       name,
       allowedDomains,
+      color,
+      isProduction,
     }: {
       projectId: string;
       name: string;
       allowedDomains: string[];
+      color?: string;
+      isProduction?: boolean;
     }) => {
       const envCollection = collection(
         db,
@@ -62,6 +68,8 @@ export const useCreateEnvironment = () => {
         name: name.trim(),
         projectId,
         allowedDomains,
+        color: color || undefined,
+        isProduction: isProduction || false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
