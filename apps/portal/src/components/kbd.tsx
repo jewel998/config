@@ -18,24 +18,27 @@ interface KbdProps {
   keys: string | string[];
 }
 
-/** Renders a keyboard shortcut badge with individual key caps, hidden on mobile */
+/** Renders a keyboard shortcut as separate <kbd> elements per key, hidden on mobile */
 export const Kbd = ({ keys }: KbdProps) => {
   const parts = Array.isArray(keys) ? keys : keys.split("+");
 
   return (
-    <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border bg-muted px-1 font-mono text-[10px] font-medium text-muted-foreground">
+    <span className="hidden sm:inline-flex items-center gap-0.5">
       {parts.map((part, i) => {
         const normalized = part.trim().toLowerCase();
         const display = MOD_SYMBOLS[normalized] ?? part.trim().toUpperCase();
         return (
-          <span key={i} className="min-w-[1ch] text-center">
+          <kbd
+            key={i}
+            className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-muted px-1 font-mono text-[10px] font-medium text-muted-foreground"
+          >
             {display}
-          </span>
+          </kbd>
         );
       })}
-    </kbd>
+    </span>
   );
 };
 
-/** Returns the correct modifier key event property for the platform */
-export const useModKey = () => isMac;
+/** Returns whether the user is on macOS (for keybinding logic) */
+export const isMacPlatform = isMac;
