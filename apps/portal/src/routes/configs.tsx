@@ -6,10 +6,12 @@ import {
   ChevronRight,
   GitCompare,
   Layers,
+  Lock,
   Pencil,
   Plus,
   Search,
   Trash2,
+  Unlock,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -48,9 +50,12 @@ import {
   configValueSchema,
   useConfigs,
   useDeleteConfig,
+  usePromoteConfigs,
   useSetConfig,
+  useToggleConfigLock,
 } from "@/hooks/use-configs";
 import { useEnvironments } from "@/hooks/use-environments";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { useProjectStore } from "@/stores/project-store";
 
 type ValueType = ConfigEntry["valueType"];
@@ -71,6 +76,28 @@ const FILTER_TYPES: Array<ValueType | "all"> = [
   "json",
   "array",
 ];
+
+const TEMPLATES: Record<
+  string,
+  Array<{ key: string; value: unknown; valueType: ConfigEntry["valueType"] }>
+> = {
+  "feature-flags": [
+    { key: "feature.maintenance_mode", value: false, valueType: "boolean" },
+    { key: "feature.beta_enabled", value: false, valueType: "boolean" },
+    { key: "feature.signup_enabled", value: true, valueType: "boolean" },
+    { key: "feature.dark_mode", value: true, valueType: "boolean" },
+  ],
+  "app-settings": [
+    { key: "app.name", value: "My App", valueType: "string" },
+    { key: "app.max_upload_size_mb", value: 10, valueType: "number" },
+    {
+      key: "app.supported_locales",
+      value: '["en","es","fr"]',
+      valueType: "array",
+    },
+    { key: "app.api_timeout_ms", value: 5000, valueType: "number" },
+  ],
+};
 
 const ValuePreview = ({ config }: { config: ConfigEntry }) => {
   switch (config.valueType) {
@@ -141,12 +168,14 @@ const ConfigFormModal = ({
   projectId,
   environmentId,
   editingConfig,
+  isProductionEnv,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   projectId: string;
   environmentId: string;
   editingConfig?: ConfigEntry | null;
+  isProductionEnv?: boolean;
 }) => {
   const setConfig = useSetConfig();
   const [key, setKey] = useState(editingConfig?.key ?? "");
@@ -185,6 +214,13 @@ const ConfigFormModal = ({
   };
 
   const handleSubmit = () => {
+    if (isProductionEnv) {
+      const confirmed = window.confirm(
+        t`This is a production environment. Changes will affect live users. Continue?`,
+      );
+      if (!confirmed) return;
+    }
+
     const fieldErrors: { key?: string; value?: string } = {};
 
     const keyResult = configKeySchema.safeParse(key);
@@ -232,6 +268,8 @@ const ConfigFormModal = ({
       },
     );
   };
+
+  useKeyboardShortcuts([{ key: "s", meta: true, handler: handleSubmit }]);
 
   const getPreviewOutput = () => {
     try {
@@ -401,6 +439,9 @@ const ConfigFormModal = ({
             ) : (
               <Trans>Create</Trans>
             )}
+            <span className="hidden sm:inline ml-1 text-xs text-muted-foreground">
+              ⌘S
+            </span>
           </Button>
           <Button
             variant="ghost"
@@ -433,6 +474,12 @@ const ConfigsPage = () => {
   );
 
   const deleteConfig = useDeleteConfig();
+  const toggleLock = useToggleConfigLock();
+  const setConfigForUndo = useSetConfig();
+  const promoteConfigs = usePromoteConfigs();
+
+  const currentEnv = environments.find((e) => e.id === envId);
+  const isProductionEnv = currentEnv?.isProduction ?? false;
 
   const filteredConfigs = configs.filter((c) => {
     const matchesSearch =
@@ -443,11 +490,62 @@ const ConfigsPage = () => {
 
   const handleDelete = (key: string) => {
     if (!selectedProjectId || !envId) return;
+
+    if (isProductionEnv) {
+      const confirmed = window.confirm(
+        t`This is a production environment. Changes will affect live users. Continue?`,
+      );
+      if (!confirmed) return;
+    }
+
+    const config = configs.find((c) => c.key === key);
+
     deleteConfig.mutate(
       { projectId: selectedProjectId, environmentId: envId, key },
       {
-        onSuccess: () => toast.success(t`Config deleted`),
+        onSuccess: () => {
+          toast.success(t`Config deleted`, {
+            action: {
+              label: t`Undo`,
+              onClick: () => {
+                if (config) {
+                  setConfigForUndo.mutate({
+                    projectId: selectedProjectId!,
+                    environmentId: envId!,
+                    key: config.key,
+                    value: config.value,
+                    valueType: config.valueType,
+                  });
+                }
+              },
+            },
+            duration: 5000,
+          });
+        },
         onError: () => toast.error(t`Failed to delete config`),
+      },
+    );
+  };
+
+  const handleToggleLock = (config: ConfigEntry) => {
+    if (!selectedProjectId || !envId) return;
+    toggleLock.mutate({
+      projectId: selectedProjectId,
+      environmentId: envId,
+      key: config.key,
+      locked: !config.locked,
+    });
+  };
+
+  const applyTemplate = (templateId: string) => {
+    if (!selectedProjectId || !envId) return;
+    const template = TEMPLATES[templateId];
+    if (!template) return;
+    promoteConfigs.mutate(
+      { projectId: selectedProjectId, targetEnvId: envId, configs: template },
+      {
+        onSuccess: () => toast.success(t`Template applied`),
+        onError: () => toast.error(t`Failed to apply template`),
       },
     );
   };
@@ -466,6 +564,17 @@ const ConfigsPage = () => {
     }
     return String(config.value ?? "");
   };
+
+  useKeyboardShortcuts([
+    {
+      key: "n",
+      meta: true,
+      handler: () => {
+        setEditingConfig(null);
+        setShowForm(true);
+      },
+    },
+  ]);
 
   if (!selectedProjectId) {
     return (
@@ -511,17 +620,25 @@ const ConfigsPage = () => {
               </span>
             </Button>
           </Link>
-          <Button
-            className="gap-2 rounded-full"
-            onClick={() => {
-              setEditingConfig(null);
-              setShowForm(true);
-            }}
-            disabled={!envId}
-          >
-            <Plus className="h-4 w-4" />
-            <Trans>Add Config</Trans>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className="gap-2 rounded-full"
+                onClick={() => {
+                  setEditingConfig(null);
+                  setShowForm(true);
+                }}
+                disabled={!envId}
+              >
+                <Plus className="h-4 w-4" />
+                <Trans>Add Config</Trans>
+                <span className="hidden sm:inline ml-1 text-xs text-muted-foreground">
+                  ⌘N
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>⌘N</TooltipContent>
+          </Tooltip>
         </div>
       </div>
 
@@ -582,6 +699,7 @@ const ConfigsPage = () => {
           projectId={selectedProjectId}
           environmentId={envId}
           editingConfig={editingConfig}
+          isProductionEnv={isProductionEnv}
         />
       )}
 
@@ -597,7 +715,7 @@ const ConfigsPage = () => {
           ) : filteredConfigs.length === 0 && !showForm ? (
             <Card className="rounded-xl">
               <CardContent>
-                <div className="flex flex-col items-center justify-center gap-4 py-12">
+                <div className="flex flex-col items-center justify-center gap-6 py-12">
                   <div className="rounded-full bg-muted p-4">
                     <Layers className="h-8 w-8 text-muted-foreground" />
                   </div>
@@ -607,9 +725,35 @@ const ConfigsPage = () => {
                     </p>
                     <p className="text-sm text-muted-foreground">
                       <Trans>
-                        Add config values to manage feature flags and settings.
+                        Get started with a template or create your own.
                       </Trans>
                     </p>
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    <Button
+                      variant="outline"
+                      className="gap-2 rounded-full"
+                      onClick={() => applyTemplate("feature-flags")}
+                    >
+                      🏁 <Trans>Feature Flags</Trans>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="gap-2 rounded-full"
+                      onClick={() => applyTemplate("app-settings")}
+                    >
+                      ⚙️ <Trans>App Settings</Trans>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="gap-2 rounded-full"
+                      onClick={() => {
+                        setEditingConfig(null);
+                        setShowForm(true);
+                      }}
+                    >
+                      <Plus className="h-4 w-4" /> <Trans>Custom</Trans>
+                    </Button>
                   </div>
                 </div>
               </CardContent>
@@ -632,7 +776,7 @@ const ConfigsPage = () => {
                     <TableHead>
                       <Trans>Updated</Trans>
                     </TableHead>
-                    <TableHead className="w-20">
+                    <TableHead className="w-28">
                       <Trans>Actions</Trans>
                     </TableHead>
                   </TableRow>
@@ -686,10 +830,33 @@ const ConfigsPage = () => {
                                   variant="ghost"
                                   size="icon"
                                   className="h-8 w-8 rounded-full"
+                                  onClick={() => handleToggleLock(config)}
+                                  aria-label={
+                                    config.locked ? t`Unlock` : t`Lock`
+                                  }
+                                >
+                                  {config.locked ? (
+                                    <Lock className="h-3.5 w-3.5" />
+                                  ) : (
+                                    <Unlock className="h-3.5 w-3.5 text-muted-foreground" />
+                                  )}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                {config.locked ? t`Unlock` : t`Lock`}
+                              </TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 rounded-full"
                                   onClick={() => {
                                     setEditingConfig(config);
                                     setShowForm(true);
                                   }}
+                                  disabled={config.locked}
                                   aria-label={t`Edit`}
                                 >
                                   <Pencil className="h-3.5 w-3.5" />
@@ -704,7 +871,9 @@ const ConfigsPage = () => {
                                   size="icon"
                                   className="h-8 w-8 rounded-full text-destructive hover:text-destructive"
                                   onClick={() => handleDelete(config.key)}
-                                  disabled={deleteConfig.isPending}
+                                  disabled={
+                                    deleteConfig.isPending || config.locked
+                                  }
                                   aria-label={t`Delete`}
                                 >
                                   {deleteConfig.isPending ? (

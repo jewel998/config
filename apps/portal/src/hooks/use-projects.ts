@@ -16,6 +16,7 @@ import { useAuthStore } from "@/stores/auth-store";
 export interface Project {
   id: string;
   name: string;
+  description?: string;
   ownerId: string;
   authorizedUsers: string[];
   createdAt: string;
