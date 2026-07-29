@@ -3,14 +3,18 @@ import { Trans } from "@lingui/react/macro";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import {
   Globe,
+  History,
   Key,
   Layers,
   LogOut,
   Moon,
   Settings,
+  ShieldAlert,
   ShieldX,
   SlidersHorizontal,
   Sun,
+  Users,
+  UsersRound,
 } from "lucide-react";
 import { useState } from "react";
 import { Toaster } from "sonner";
@@ -142,6 +146,12 @@ const UserMenu = () => {
             <Trans>Preferences</Trans>
           </DropdownMenuItem>
         </Link>
+        <Link to="/gdpr">
+          <DropdownMenuItem className="gap-2">
+            <ShieldAlert className="h-4 w-4" />
+            <Trans>GDPR & Privacy</Trans>
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logOut} className="gap-2">
           <LogOut className="h-4 w-4" />
@@ -190,7 +200,10 @@ const TopBar = () => {
 const TabNav = () => {
   const tabs = [
     { to: "/configs" as const, label: <Trans>Configs</Trans>, icon: Layers },
+    { to: "/segments" as const, label: <Trans>Segments</Trans>, icon: Users },
     { to: "/api-keys" as const, label: <Trans>API Keys</Trans>, icon: Key },
+    { to: "/audit" as const, label: <Trans>Audit</Trans>, icon: History },
+    { to: "/team" as const, label: <Trans>Team</Trans>, icon: UsersRound },
     {
       to: "/settings" as const,
       label: <Trans>Settings</Trans>,
