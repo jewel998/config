@@ -79,6 +79,9 @@ export function createConfig(
         retry,
         granularity,
         isDeferred: false,
+        plugins: options.plugins,
+        context: options.context,
+        consentAware: options.consentAware,
       });
       events.emit("ready", {
         loadingStrategy: "pessimistic",
@@ -98,6 +101,9 @@ export function createConfig(
       retry,
       granularity,
       isDeferred: true,
+      plugins: options.plugins,
+      context: options.context,
+      consentAware: options.consentAware,
     });
     events.emit("ready", {
       loadingStrategy: "deferred",
@@ -116,6 +122,9 @@ export function createConfig(
     retry,
     granularity,
     isDeferred: false,
+    plugins: options.plugins,
+    context: options.context,
+    consentAware: options.consentAware,
   });
   events.emit("ready", {
     loadingStrategy: "optimistic",

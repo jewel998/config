@@ -1,4 +1,7 @@
 import { withRetry } from "../retry/RetryEngine";
+import type { EvaluationContext, EvaluationPlugin } from "../plugins/types.js";
+import type { ConfigFlagData } from "../plugins/models.js";
+import { evaluatePipeline } from "../plugins/evaluatePipeline.js";
 import type {
   CacheStorage,
   ConfigClient,
@@ -19,12 +22,18 @@ export interface ConfigClientInternals {
   retry: Required<RetryConfig>;
   granularity: FetchGranularity;
   isDeferred: boolean;
+  plugins?: EvaluationPlugin[];
+  context?: EvaluationContext;
+  consentAware?: boolean;
 }
 
 export const buildConfigClient = (
   internals: ConfigClientInternals,
 ): ConfigClient => {
   const { cache, fetcher, events, retry, granularity, isDeferred } = internals;
+  const plugins = internals.plugins ?? [];
+  let evalContext: EvaluationContext = internals.context ?? {};
+  const consentAware = internals.consentAware ?? false;
   let data = { ...internals.data };
   let batchFetchTriggered = false;
 
@@ -86,6 +95,70 @@ export const buildConfigClient = (
 
   const client: ConfigClient = {
     getValue<T = unknown>(key: string, defaultValue?: T): T | undefined {
+      // If plugins are registered, use the evaluation pipeline
+      if (plugins.length > 0) {
+        // Consent-aware mode: if enabled and consent not granted, return default immediately
+        if (consentAware && evalContext.consentGranted !== true) {
+          return defaultValue as T | undefined;
+        }
+
+        // Get raw flag data from cache/data store
+        const rawValue = data[key] ?? cache.get(key);
+
+        // If we have no data at all for this key, trigger deferred fetch and return default
+        if (rawValue === undefined) {
+          if (isDeferred) {
+            triggerDeferredFetch();
+            triggerProjectedFetch(key);
+          }
+          return defaultValue as T | undefined;
+        }
+
+        // Build a ConfigFlagData object from the raw data
+        // If the data is already a full ConfigFlagData object (has 'key' and 'value' fields), use it
+        // Otherwise, wrap the raw value as a simple flag
+        const flag: ConfigFlagData = isConfigFlagData(rawValue)
+          ? rawValue
+          : {
+              key,
+              value: rawValue,
+              valueType: inferValueType(rawValue),
+              version: "0",
+              lifecycleState: "active",
+            };
+
+        // Build pipeline helpers
+        const helpers = {
+          evaluateFlag: (flagKey: string, ctx: EvaluationContext): unknown => {
+            // Recursive evaluation for prerequisites
+            const flagData = data[flagKey] ?? cache.get(flagKey);
+            if (flagData === undefined) return undefined;
+            const innerFlag: ConfigFlagData = isConfigFlagData(flagData)
+              ? flagData
+              : {
+                  key: flagKey,
+                  value: flagData,
+                  valueType: inferValueType(flagData),
+                  version: "0",
+                  lifecycleState: "active",
+                };
+            return evaluatePipeline(plugins, innerFlag, ctx, helpers);
+          },
+          emitError: (message: string): void => {
+            events.emit("fetchError", {
+              error: new Error(message),
+              retryCount: 0,
+              willRetry: false,
+            });
+          },
+          now: (): number => Date.now(),
+        };
+
+        const result = evaluatePipeline(plugins, flag, evalContext, helpers);
+        return (result !== undefined ? result : defaultValue) as T | undefined;
+      }
+
+      // No plugins — use existing behavior (backward compat)
       // Check live data first
       if (key in data) {
         return data[key] as T;
@@ -163,7 +236,36 @@ export const buildConfigClient = (
     ): void {
       events.off(event, callback);
     },
+
+    setContext(newContext: EvaluationContext): void {
+      evalContext = { ...newContext };
+    },
   };
 
   return client;
 };
+
+// ═══════════════════════════════════════════════════════════════
+// Helpers
+// ═══════════════════════════════════════════════════════════════
+
+/** Type guard: checks if a value looks like a full ConfigFlagData object */
+function isConfigFlagData(value: unknown): value is ConfigFlagData {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "key" in value &&
+    "value" in value &&
+    "lifecycleState" in value
+  );
+}
+
+/** Infer a valueType string from a raw value */
+function inferValueType(
+  value: unknown,
+): "string" | "number" | "boolean" | "json" {
+  if (typeof value === "boolean") return "boolean";
+  if (typeof value === "number") return "number";
+  if (typeof value === "string") return "string";
+  return "json";
+}

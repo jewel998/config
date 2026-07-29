@@ -2,6 +2,8 @@
 // Core SDK Types
 // ═══════════════════════════════════════════════════════════════
 
+import type { EvaluationContext, EvaluationPlugin } from "./plugins/types.js";
+
 /** Loading strategy for SDK initialization */
 export type LoadingStrategy = "optimistic" | "pessimistic" | "deferred";
 
@@ -48,6 +50,15 @@ export interface CreateConfigOptions {
 
   /** Cloud Function base URL (override for testing/custom deployments) */
   baseUrl?: string;
+
+  /** Evaluation plugins to register (tree-shakeable pipeline steps) */
+  plugins?: EvaluationPlugin[];
+
+  /** Evaluation context for plugin pipeline (can be updated post-init via setContext) */
+  context?: EvaluationContext;
+
+  /** Enable consent-aware mode (GDPR): if true and context.consentGranted !== true, returns defaults */
+  consentAware?: boolean;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -67,6 +78,9 @@ export interface ConfigClient {
 
   /** Force refresh from remote. Updates cache and emits 'updated'. */
   refresh(): Promise<void>;
+
+  /** Update the evaluation context (used by plugins for targeting, rollout, etc.) */
+  setContext(newContext: EvaluationContext): void;
 
   /** Subscribe to a lifecycle event. */
   on<E extends ConfigEventType>(
