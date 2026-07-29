@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { DateDisplay } from "@/components/date-display";
+import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/page-header";
 import { ResponsiveModal } from "@/components/responsive-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -136,14 +138,10 @@ const EnvironmentsPage = () => {
 
   if (!selectedProjectId) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-24">
-        <div className="rounded-full bg-muted p-4">
-          <Server className="h-8 w-8 text-muted-foreground" />
-        </div>
-        <p className="text-sm text-muted-foreground">
-          <Trans>Select a project to view environments.</Trans>
-        </p>
-      </div>
+      <EmptyState
+        icon={Server}
+        message={<Trans>Select a project to view environments.</Trans>}
+      />
     );
   }
 
@@ -162,23 +160,19 @@ const EnvironmentsPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            <Trans>Environments</Trans>
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            <Trans>Manage deployment targets and allowed domains.</Trans>
-          </p>
-        </div>
-        <Button
-          className="gap-2 rounded-full"
-          onClick={() => setShowForm(true)}
-        >
-          <Plus className="h-4 w-4" />
-          <Trans>New Environment</Trans>
-        </Button>
-      </div>
+      <PageHeader
+        title={<Trans>Environments</Trans>}
+        description={<Trans>Manage deployment targets and allowed domains.</Trans>}
+        actions={
+          <Button
+            className="gap-2 rounded-full"
+            onClick={() => setShowForm(true)}
+          >
+            <Plus className="h-4 w-4" />
+            <Trans>New Environment</Trans>
+          </Button>
+        }
+      />
 
       {/* Create form in ResponsiveModal */}
       <ResponsiveModal
@@ -197,14 +191,16 @@ const EnvironmentsPage = () => {
         <div className="space-y-3">
           <div className="flex flex-wrap gap-2">
             {ENV_SUGGESTIONS.map((suggestion) => (
-              <button
+              <Button
                 key={suggestion}
                 type="button"
+                variant="outline"
+                size="sm"
+                className="rounded-full h-auto px-3 py-1 text-xs text-muted-foreground hover:border-primary hover:text-primary"
                 onClick={() => setNewName(suggestion)}
-                className="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
               >
                 {suggestion}
-              </button>
+              </Button>
             ))}
           </div>
           <Input

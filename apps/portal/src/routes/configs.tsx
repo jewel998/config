@@ -16,7 +16,10 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { ResponsiveModal } from "@/components/responsive-modal";
+import { ConfigFormModal } from "@/components/config-form-modal";
+import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/page-header";
+import { ValuePreview, getFullValue } from "@/components/value-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -38,7 +41,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
@@ -46,8 +48,6 @@ import {
 } from "@/components/ui/tooltip";
 import {
   type ConfigEntry,
-  configKeySchema,
-  configValueSchema,
   useConfigs,
   useDeleteConfig,
   usePromoteConfigs,
@@ -55,18 +55,10 @@ import {
   useToggleConfigLock,
 } from "@/hooks/use-configs";
 import { useEnvironments } from "@/hooks/use-environments";
-import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
+import { CONFIG_TEMPLATES } from "@/lib/constants";
 import { useProjectStore } from "@/stores/project-store";
 
 type ValueType = ConfigEntry["valueType"];
-
-const VALUE_TYPES: ValueType[] = [
-  "string",
-  "number",
-  "boolean",
-  "json",
-  "array",
-];
 
 const FILTER_TYPES: Array<ValueType | "all"> = [
   "all",
@@ -77,390 +69,12 @@ const FILTER_TYPES: Array<ValueType | "all"> = [
   "array",
 ];
 
-const TEMPLATES: Record<
-  string,
-  Array<{ key: string; value: unknown; valueType: ConfigEntry["valueType"] }>
-> = {
-  "feature-flags": [
-    { key: "feature.maintenance_mode", value: false, valueType: "boolean" },
-    { key: "feature.beta_enabled", value: false, valueType: "boolean" },
-    { key: "feature.signup_enabled", value: true, valueType: "boolean" },
-    { key: "feature.dark_mode", value: true, valueType: "boolean" },
-  ],
-  "app-settings": [
-    { key: "app.name", value: "My App", valueType: "string" },
-    { key: "app.max_upload_size_mb", value: 10, valueType: "number" },
-    {
-      key: "app.supported_locales",
-      value: '["en","es","fr"]',
-      valueType: "array",
-    },
-    { key: "app.api_timeout_ms", value: 5000, valueType: "number" },
-  ],
-};
-
-const ValuePreview = ({ config }: { config: ConfigEntry }) => {
-  switch (config.valueType) {
-    case "boolean":
-      return (
-        <Badge
-          className={`rounded-full text-xs ${
-            config.value === true || config.value === "true"
-              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-              : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-          }`}
-        >
-          {String(config.value)}
-        </Badge>
-      );
-    case "json": {
-      const str =
-        typeof config.value === "string"
-          ? config.value
-          : JSON.stringify(config.value);
-      let count = 0;
-      try {
-        const parsed = JSON.parse(str);
-        count = Object.keys(parsed).length;
-      } catch {
-        /* ignore */
-      }
-      return (
-        <span className="font-mono text-xs text-muted-foreground">
-          {`{...}`} <span className="text-[10px]">({count} keys)</span>
-        </span>
-      );
-    }
-    case "array": {
-      const str =
-        typeof config.value === "string"
-          ? config.value
-          : JSON.stringify(config.value);
-      let count = 0;
-      try {
-        const parsed = JSON.parse(str);
-        count = Array.isArray(parsed) ? parsed.length : 0;
-      } catch {
-        /* ignore */
-      }
-      return (
-        <span className="font-mono text-xs text-muted-foreground">
-          {`[...]`} <span className="text-[10px]">({count} items)</span>
-        </span>
-      );
-    }
-    case "number":
-      return <span className="font-mono text-xs">{String(config.value)}</span>;
-    default: {
-      const str = String(config.value ?? "");
-      return (
-        <span className="font-mono text-xs text-muted-foreground">
-          {str.length > 40 ? str.slice(0, 40) + "…" : str}
-        </span>
-      );
-    }
-  }
-};
-
-const ConfigFormModal = ({
-  open,
-  onOpenChange,
-  projectId,
-  environmentId,
-  editingConfig,
-  isProductionEnv,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  projectId: string;
-  environmentId: string;
-  editingConfig?: ConfigEntry | null;
-  isProductionEnv?: boolean;
-}) => {
-  const setConfig = useSetConfig();
-  const [key, setKey] = useState(editingConfig?.key ?? "");
-  const [valueType, setValueType] = useState<ValueType>(
-    editingConfig?.valueType ?? "string",
-  );
-  const [rawValue, setRawValue] = useState(() => {
-    if (!editingConfig) return "";
-    const v = editingConfig.value;
-    if (editingConfig.valueType === "boolean") return String(v);
-    if (
-      editingConfig.valueType === "json" ||
-      editingConfig.valueType === "array"
-    ) {
-      return typeof v === "string" ? v : JSON.stringify(v, null, 2);
-    }
-    return String(v ?? "");
-  });
-  const [errors, setErrors] = useState<{ key?: string; value?: string }>({});
-  const [showPreview, setShowPreview] = useState(false);
-
-  const handleTypeChange = (newType: ValueType) => {
-    setValueType(newType);
-    setErrors((prev) => ({ ...prev, value: undefined }));
-    if (newType === "boolean") {
-      if (rawValue !== "true" && rawValue !== "false") setRawValue("true");
-    } else if (newType === "number") {
-      if (isNaN(Number(rawValue))) setRawValue("");
-    } else if (newType === "json" || newType === "array") {
-      try {
-        JSON.parse(rawValue);
-      } catch {
-        setRawValue(newType === "array" ? "[]" : "{}");
-      }
-    }
-  };
-
-  const handleSubmit = () => {
-    if (isProductionEnv) {
-      const confirmed = window.confirm(
-        t`This is a production environment. Changes will affect live users. Continue?`,
-      );
-      if (!confirmed) return;
-    }
-
-    const fieldErrors: { key?: string; value?: string } = {};
-
-    const keyResult = configKeySchema.safeParse(key);
-    if (!keyResult.success) {
-      fieldErrors.key = keyResult.error.issues[0]?.message;
-    }
-
-    let parsedValue: unknown = rawValue;
-    if (valueType === "number") {
-      parsedValue = Number(rawValue);
-    } else if (valueType === "boolean") {
-      parsedValue = rawValue === "true";
-    }
-
-    const valueResult = configValueSchema.safeParse({
-      valueType,
-      value: parsedValue,
-    });
-    if (!valueResult.success) {
-      fieldErrors.value = valueResult.error.issues[0]?.message;
-    }
-
-    if (fieldErrors.key || fieldErrors.value) {
-      setErrors(fieldErrors);
-      return;
-    }
-
-    setErrors({});
-    setConfig.mutate(
-      {
-        projectId,
-        environmentId,
-        key: keyResult.data!,
-        value: parsedValue,
-        valueType,
-      },
-      {
-        onSuccess: () => {
-          toast.success(editingConfig ? t`Config updated` : t`Config created`);
-          onOpenChange(false);
-        },
-        onError: () => {
-          toast.error(t`Failed to save config`);
-        },
-      },
-    );
-  };
-
-  useKeyboardShortcuts([{ key: "s", meta: true, handler: handleSubmit }]);
-
-  const getPreviewOutput = () => {
-    try {
-      if (valueType === "json" || valueType === "array") {
-        return JSON.stringify(JSON.parse(rawValue), null, 2);
-      }
-      if (valueType === "number") return String(Number(rawValue));
-      if (valueType === "boolean") return rawValue;
-      return rawValue;
-    } catch {
-      return t`Invalid value`;
-    }
-  };
-
-  return (
-    <ResponsiveModal
-      open={open}
-      onOpenChange={onOpenChange}
-      title={
-        editingConfig ? <Trans>Edit Config</Trans> : <Trans>Add Config</Trans>
-      }
-      description={
-        editingConfig ? (
-          <Trans>Update the configuration value.</Trans>
-        ) : (
-          <Trans>Add a new configuration entry.</Trans>
-        )
-      }
-    >
-      <div className="space-y-5">
-        {/* Key field */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium">
-            <Trans>Key</Trans>
-          </label>
-          <Input
-            placeholder={t`Config key (e.g. feature.enabled)`}
-            value={key}
-            onChange={(e) => {
-              setKey(e.target.value);
-              setErrors((prev) => ({ ...prev, key: undefined }));
-            }}
-            disabled={!!editingConfig}
-            className="font-mono"
-            autoFocus
-          />
-          <p className="text-[11px] text-muted-foreground">
-            <Trans>Alphanumeric, dots, and underscores only.</Trans>
-          </p>
-          {errors.key && (
-            <p className="text-xs text-destructive">{errors.key}</p>
-          )}
-        </div>
-
-        {/* Type field */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium">
-            <Trans>Type</Trans>
-          </label>
-          <Select
-            value={valueType}
-            onValueChange={(v) => handleTypeChange(v as ValueType)}
-          >
-            <SelectTrigger className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {VALUE_TYPES.map((vt) => (
-                <SelectItem key={vt} value={vt}>
-                  {vt}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Value field */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium">
-            <Trans>Value</Trans>
-          </label>
-          {valueType === "boolean" ? (
-            <Select
-              value={rawValue}
-              onValueChange={(v) => {
-                setRawValue(v);
-                setErrors((prev) => ({ ...prev, value: undefined }));
-              }}
-            >
-              <SelectTrigger className="w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="true">true</SelectItem>
-                <SelectItem value="false">false</SelectItem>
-              </SelectContent>
-            </Select>
-          ) : valueType === "json" || valueType === "array" ? (
-            <Textarea
-              placeholder={
-                valueType === "json"
-                  ? t`Enter valid JSON`
-                  : t`Enter a JSON array`
-              }
-              value={rawValue}
-              onChange={(e) => {
-                setRawValue(e.target.value);
-                setErrors((prev) => ({ ...prev, value: undefined }));
-              }}
-              className="min-h-24 font-mono text-xs"
-            />
-          ) : valueType === "number" ? (
-            <Input
-              type="number"
-              placeholder={t`Numeric value`}
-              value={rawValue}
-              onChange={(e) => {
-                setRawValue(e.target.value);
-                setErrors((prev) => ({ ...prev, value: undefined }));
-              }}
-            />
-          ) : (
-            <Input
-              placeholder={t`String value`}
-              value={rawValue}
-              onChange={(e) => {
-                setRawValue(e.target.value);
-                setErrors((prev) => ({ ...prev, value: undefined }));
-              }}
-            />
-          )}
-          {errors.value && (
-            <p className="text-xs text-destructive">{errors.value}</p>
-          )}
-        </div>
-
-        {/* Preview toggle */}
-        <div>
-          <button
-            type="button"
-            className="text-xs font-medium text-primary hover:underline"
-            onClick={() => setShowPreview(!showPreview)}
-          >
-            {showPreview ? (
-              <Trans>Hide Preview</Trans>
-            ) : (
-              <Trans>Show Preview</Trans>
-            )}
-          </button>
-          {showPreview && (
-            <pre className="mt-2 max-h-40 overflow-auto rounded-xl border bg-muted p-3 font-mono text-xs">
-              {getPreviewOutput()}
-            </pre>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            className="min-w-20 rounded-full"
-            onClick={handleSubmit}
-            disabled={setConfig.isPending}
-          >
-            {setConfig.isPending ? (
-              <Spinner />
-            ) : editingConfig ? (
-              <Trans>Update</Trans>
-            ) : (
-              <Trans>Create</Trans>
-            )}
-            <span className="hidden sm:inline ml-1 text-xs text-muted-foreground">
-              ⌘S
-            </span>
-          </Button>
-          <Button
-            variant="ghost"
-            className="rounded-full"
-            onClick={() => onOpenChange(false)}
-          >
-            <Trans>Cancel</Trans>
-          </Button>
-        </div>
-      </div>
-    </ResponsiveModal>
-  );
-};
-
 const ConfigsPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
+  const selectedEnvironmentId = useProjectStore((s) => s.selectedEnvironmentId);
   const { data: environments = [], isLoading: envsLoading } =
     useEnvironments(selectedProjectId);
-  const selectedEnvironmentId = useProjectStore((s) => s.selectedEnvironmentId);
+
   const envId = selectedEnvironmentId;
   const [showForm, setShowForm] = useState(false);
   const [editingConfig, setEditingConfig] = useState<ConfigEntry | null>(null);
@@ -539,7 +153,7 @@ const ConfigsPage = () => {
 
   const applyTemplate = (templateId: string) => {
     if (!selectedProjectId || !envId) return;
-    const template = TEMPLATES[templateId];
+    const template = CONFIG_TEMPLATES[templateId];
     if (!template) return;
     promoteConfigs.mutate(
       { projectId: selectedProjectId, targetEnvId: envId, configs: template },
@@ -550,42 +164,12 @@ const ConfigsPage = () => {
     );
   };
 
-  const getFullValue = (config: ConfigEntry) => {
-    if (config.valueType === "json" || config.valueType === "array") {
-      try {
-        const str =
-          typeof config.value === "string"
-            ? config.value
-            : JSON.stringify(config.value);
-        return JSON.stringify(JSON.parse(str), null, 2);
-      } catch {
-        return String(config.value);
-      }
-    }
-    return String(config.value ?? "");
-  };
-
-  useKeyboardShortcuts([
-    {
-      key: "n",
-      meta: true,
-      handler: () => {
-        setEditingConfig(null);
-        setShowForm(true);
-      },
-    },
-  ]);
-
   if (!selectedProjectId) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-24">
-        <div className="rounded-full bg-muted p-4">
-          <Layers className="h-8 w-8 text-muted-foreground" />
-        </div>
-        <p className="text-sm text-muted-foreground">
-          <Trans>Select a project to manage configs.</Trans>
-        </p>
-      </div>
+      <EmptyState
+        icon={Layers}
+        message={<Trans>Select a project to manage configs.</Trans>}
+      />
     );
   }
 
@@ -601,46 +185,39 @@ const ConfigsPage = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            <Trans>Configs</Trans>
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            <Trans>Manage feature flags and configuration values.</Trans>
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Link to="/compare">
-            <Button variant="outline" className="gap-2 rounded-full" size="sm">
-              <GitCompare className="h-4 w-4" />
-              <span className="hidden sm:inline">
-                <Trans>Compare</Trans>
-              </span>
-            </Button>
-          </Link>
-          <Tooltip>
-            <TooltipTrigger asChild>
+      <PageHeader
+        title={<Trans>Configs</Trans>}
+        description={
+          <Trans>Manage feature flags and configuration values.</Trans>
+        }
+        actions={
+          <>
+            <Link to="/compare">
               <Button
+                variant="outline"
                 className="gap-2 rounded-full"
-                onClick={() => {
-                  setEditingConfig(null);
-                  setShowForm(true);
-                }}
-                disabled={!envId}
+                size="sm"
               >
-                <Plus className="h-4 w-4" />
-                <Trans>Add Config</Trans>
-                <span className="hidden sm:inline ml-1 text-xs text-muted-foreground">
-                  ⌘N
+                <GitCompare className="h-4 w-4" />
+                <span className="hidden sm:inline">
+                  <Trans>Compare</Trans>
                 </span>
               </Button>
-            </TooltipTrigger>
-            <TooltipContent>⌘N</TooltipContent>
-          </Tooltip>
-        </div>
-      </div>
+            </Link>
+            <Button
+              className="gap-2 rounded-full"
+              onClick={() => {
+                setEditingConfig(null);
+                setShowForm(true);
+              }}
+              disabled={!envId}
+            >
+              <Plus className="h-4 w-4" />
+              <Trans>Add Config</Trans>
+            </Button>
+          </>
+        }
+      />
 
       {/* Toolbar: search + type filter */}
       {environments.length > 0 && (
@@ -654,7 +231,6 @@ const ConfigsPage = () => {
               className="pl-9"
             />
           </div>
-
           <Select
             value={filterType}
             onValueChange={(v) => setFilterType(v as ValueType | "all")}

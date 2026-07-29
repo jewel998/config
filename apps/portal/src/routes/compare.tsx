@@ -13,6 +13,8 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/page-header";
 import { ResponsiveModal } from "@/components/responsive-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -264,14 +266,10 @@ const ComparePage = () => {
 
   if (!selectedProjectId) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-24">
-        <div className="rounded-full bg-muted p-4">
-          <GitCompare className="h-8 w-8 text-muted-foreground" />
-        </div>
-        <p className="text-sm text-muted-foreground">
-          <Trans>Select a project to compare environments.</Trans>
-        </p>
-      </div>
+      <EmptyState
+        icon={GitCompare}
+        message={<Trans>Select a project to compare environments.</Trans>}
+      />
     );
   }
 
@@ -286,14 +284,10 @@ const ComparePage = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">
-          <Trans>Compare Environments</Trans>
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          <Trans>Diff configs between environments and sync changes.</Trans>
-        </p>
-      </div>
+      <PageHeader
+        title={<Trans>Compare Environments</Trans>}
+        description={<Trans>Diff configs between environments and sync changes.</Trans>}
+      />
 
       {/* Environment selectors */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">

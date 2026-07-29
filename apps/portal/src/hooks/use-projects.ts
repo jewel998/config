@@ -11,17 +11,10 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
+import type { Project } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
 
-export interface Project {
-  id: string;
-  name: string;
-  description?: string;
-  ownerId: string;
-  authorizedUsers: string[];
-  createdAt: string;
-  updatedAt: string;
-}
+export type { Project };
 
 export const useProjects = () => {
   const user = useAuthStore((s) => s.user);

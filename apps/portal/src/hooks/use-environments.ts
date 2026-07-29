@@ -4,21 +4,14 @@ import {
   getDocs,
   addDoc,
   deleteDoc,
+  updateDoc,
   doc,
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
+import type { Environment } from "@/lib/types";
 
-export interface Environment {
-  id: string;
-  name: string;
-  projectId: string;
-  allowedDomains: string[];
-  color?: string;
-  isProduction?: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+export type { Environment };
 
 export const useEnvironments = (projectId: string | null) => {
   return useQuery({
@@ -94,6 +87,35 @@ export const useDeleteEnvironment = () => {
       envId: string;
     }) => {
       await deleteDoc(doc(db, "projects", projectId, "environments", envId));
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["environments", variables.projectId],
+      });
+    },
+  });
+};
+
+export const useUpdateEnvironment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      projectId,
+      envId,
+      data,
+    }: {
+      projectId: string;
+      envId: string;
+      data: Partial<{
+        name: string;
+        allowedDomains: string[];
+        color: string;
+        isProduction: boolean;
+      }>;
+    }) => {
+      const envRef = doc(db, "projects", projectId, "environments", envId);
+      await updateDoc(envRef, { ...data, updatedAt: new Date().toISOString() });
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
