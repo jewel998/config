@@ -3,12 +3,14 @@ import { Trans } from "@lingui/react/macro";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ChevronDown,
+  ChevronLeft,
   ChevronRight,
   Clock,
   Copy,
   GitCompare,
   Layers,
   Lock,
+  MoreHorizontal,
   Pencil,
   Pin,
   PinOff,
@@ -30,6 +32,13 @@ import { ValuePreview, getFullValue } from "@/components/value-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -64,11 +73,7 @@ import {
 import { useEnvironments } from "@/hooks/use-environments";
 import { usePinnedConfigs } from "@/hooks/use-pinned-configs";
 import { CONFIG_TEMPLATES } from "@/lib/constants";
-import {
-  getStalenessLevel,
-  getStalenessLabel,
-  getStalenessColor,
-} from "@/lib/stale-detection";
+import { getStalenessLevel, getStalenessLabel } from "@/lib/stale-detection";
 import { useProjectStore } from "@/stores/project-store";
 
 type ValueType = ConfigEntry["valueType"];
@@ -84,6 +89,8 @@ const FILTER_TYPES: Array<ValueType | "all"> = [
 
 const FILTER_STALENESS = ["all", "fresh", "aging", "stale"] as const;
 type FilterStaleness = (typeof FILTER_STALENESS)[number];
+
+const PAGE_SIZE = 20;
 
 const ConfigsPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
@@ -101,6 +108,7 @@ const ConfigsPage = () => {
   const [filterStaleness, setFilterStaleness] =
     useState<FilterStaleness>("all");
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const { data: configs = [], isLoading: configsLoading } = useConfigs(
     selectedProjectId,
@@ -139,6 +147,19 @@ const ConfigsPage = () => {
       return a.key.localeCompare(b.key);
     });
   }, [configs, searchQuery, filterType, filterStaleness, pinned]);
+
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(filteredConfigs.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages - 1);
+  const paginatedConfigs = filteredConfigs.slice(
+    safePage * PAGE_SIZE,
+    (safePage + 1) * PAGE_SIZE,
+  );
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [searchQuery, filterType, filterStaleness, envId]);
 
   const handleDelete = (key: string) => {
     if (!selectedProjectId || !envId) return;
@@ -219,12 +240,10 @@ const ConfigsPage = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // ⌘/Ctrl+N → New config (cross-platform)
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "n") {
         e.preventDefault();
         openNewConfig();
       }
-      // "/" → Focus search
       if (e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey) {
         const active = document.activeElement;
         if (active?.tagName === "INPUT" || active?.tagName === "TEXTAREA")
@@ -389,9 +408,9 @@ const ConfigsPage = () => {
         <>
           {configsLoading ? (
             <div className="space-y-3">
-              <Skeleton className="h-12 rounded-xl" />
-              <Skeleton className="h-12 rounded-xl" />
-              <Skeleton className="h-12 rounded-xl" />
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} className="h-12 rounded-xl" />
+              ))}
             </div>
           ) : filteredConfigs.length === 0 && !showForm ? (
             <Card className="rounded-xl">
@@ -441,222 +460,273 @@ const ConfigsPage = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="rounded-xl border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-8" />
-                    <TableHead>
-                      <Trans>Key</Trans>
-                    </TableHead>
-                    <TableHead>
-                      <Trans>Type</Trans>
-                    </TableHead>
-                    <TableHead>
-                      <Trans>Value</Trans>
-                    </TableHead>
-                    <TableHead>
-                      <Trans>Updated</Trans>
-                    </TableHead>
-                    <TableHead className="w-28">
-                      <Trans>Actions</Trans>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredConfigs.map((config) => (
-                    <>
-                      <TableRow
-                        key={config.key}
-                        className={`cursor-pointer ${isPinned(config.key) ? "bg-primary/5" : ""}`}
-                        onClick={() =>
-                          setExpandedKey(
-                            expandedKey === config.key ? null : config.key,
-                          )
-                        }
-                      >
-                        <TableCell>
-                          {expandedKey === config.key ? (
-                            <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                          ) : (
-                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </TableCell>
-                        <TableCell className="font-mono text-sm font-medium">
-                          <div className="flex items-center gap-2">
-                            {isPinned(config.key) && (
-                              <Pin className="h-3 w-3 text-primary" />
-                            )}
-                            {config.key}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge
-                            variant="secondary"
-                            className="rounded-full text-xs"
-                          >
-                            {config.valueType}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <ValuePreview config={config} />
-                        </TableCell>
-                        <TableCell className="text-xs text-muted-foreground">
-                          <div className="flex items-center gap-1.5">
-                            {config.updatedAt
-                              ? new Date(config.updatedAt).toLocaleDateString()
-                              : "—"}
-                            {(() => {
-                              const level = getStalenessLevel(config.updatedAt);
-                              if (level === "fresh") return null;
-                              return (
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <span>
-                                      <Clock
-                                        className={`h-3 w-3 ${
-                                          level === "stale"
-                                            ? "text-red-500"
-                                            : "text-amber-500"
-                                        }`}
-                                      />
-                                    </span>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    {getStalenessLabel(level)}
-                                  </TooltipContent>
-                                </Tooltip>
-                              );
-                            })()}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div
-                            className="flex items-center gap-1"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 rounded-full"
-                                  onClick={() => togglePin(config.key)}
-                                  aria-label={
-                                    isPinned(config.key) ? t`Unpin` : t`Pin`
-                                  }
-                                >
-                                  {isPinned(config.key) ? (
-                                    <PinOff className="h-3.5 w-3.5 text-primary" />
-                                  ) : (
-                                    <Pin className="h-3.5 w-3.5 text-muted-foreground" />
-                                  )}
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                {isPinned(config.key)
-                                  ? t`Unpin`
-                                  : t`Pin to top`}
-                              </TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 rounded-full"
-                                  onClick={() => handleToggleLock(config)}
-                                  aria-label={
-                                    config.locked ? t`Unlock` : t`Lock`
-                                  }
-                                >
-                                  {config.locked ? (
-                                    <Lock className="h-3.5 w-3.5" />
-                                  ) : (
-                                    <Unlock className="h-3.5 w-3.5 text-muted-foreground" />
-                                  )}
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                {config.locked ? t`Unlock` : t`Lock`}
-                              </TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 rounded-full"
-                                  onClick={() => handleDuplicate(config)}
-                                  aria-label={t`Duplicate`}
-                                >
-                                  <Copy className="h-3.5 w-3.5 text-muted-foreground" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>{t`Duplicate`}</TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 rounded-full"
-                                  onClick={() => {
-                                    setEditingConfig(config);
-                                    setDuplicatingConfig(null);
-                                    setShowForm(true);
-                                  }}
-                                  disabled={config.locked}
-                                  aria-label={t`Edit`}
-                                >
-                                  <Pencil className="h-3.5 w-3.5" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>{t`Edit`}</TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 rounded-full text-destructive hover:text-destructive"
-                                  onClick={() => handleDelete(config.key)}
-                                  disabled={
-                                    deleteConfig.isPending || config.locked
-                                  }
-                                  aria-label={t`Delete`}
-                                >
-                                  {deleteConfig.isPending ? (
-                                    <Spinner />
-                                  ) : (
-                                    <Trash2 className="h-3.5 w-3.5" />
-                                  )}
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>{t`Delete`}</TooltipContent>
-                            </Tooltip>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                      {expandedKey === config.key && (
-                        <TableRow key={`${config.key}-expanded`}>
-                          <TableCell colSpan={6} className="bg-muted/30 p-4">
-                            {config.valueType === "json" ||
-                            config.valueType === "array" ? (
-                              <JsonHighlight value={getFullValue(config)} />
+            <>
+              <div className="rounded-xl border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-8" />
+                      <TableHead>
+                        <Trans>Key</Trans>
+                      </TableHead>
+                      <TableHead className="w-20">
+                        <Trans>Type</Trans>
+                      </TableHead>
+                      <TableHead>
+                        <Trans>Value</Trans>
+                      </TableHead>
+                      <TableHead className="w-28">
+                        <Trans>Updated</Trans>
+                      </TableHead>
+                      <TableHead className="w-24">
+                        <Trans>Actions</Trans>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {paginatedConfigs.map((config) => (
+                      <>
+                        <TableRow
+                          key={config.key}
+                          className={`cursor-pointer ${isPinned(config.key) ? "bg-primary/5" : ""}`}
+                          onClick={() =>
+                            setExpandedKey(
+                              expandedKey === config.key ? null : config.key,
+                            )
+                          }
+                        >
+                          <TableCell className="w-8">
+                            {expandedKey === config.key ? (
+                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
                             ) : (
-                              <pre className="max-h-48 overflow-auto rounded-xl border bg-background p-4 font-mono text-xs">
-                                {getFullValue(config)}
-                              </pre>
+                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
                             )}
                           </TableCell>
+                          <TableCell className="font-mono text-sm font-medium">
+                            <div className="flex items-center gap-2">
+                              {isPinned(config.key) && (
+                                <Pin className="h-3 w-3 shrink-0 text-primary" />
+                              )}
+                              <span className="truncate">{config.key}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              variant="secondary"
+                              className="rounded-full text-xs"
+                            >
+                              {config.valueType}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <ValuePreview config={config} />
+                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground">
+                            <div className="flex items-center gap-1.5">
+                              {config.updatedAt
+                                ? new Date(
+                                    config.updatedAt,
+                                  ).toLocaleDateString()
+                                : "—"}
+                              {(() => {
+                                const level = getStalenessLevel(
+                                  config.updatedAt,
+                                );
+                                if (level === "fresh") return null;
+                                return (
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span>
+                                        <Clock
+                                          className={`h-3 w-3 ${
+                                            level === "stale"
+                                              ? "text-red-500"
+                                              : "text-amber-500"
+                                          }`}
+                                        />
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      {getStalenessLabel(level)}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                );
+                              })()}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div
+                              className="flex items-center gap-1"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {/* Primary actions: Edit + Delete */}
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 rounded-full"
+                                    onClick={() => {
+                                      setEditingConfig(config);
+                                      setDuplicatingConfig(null);
+                                      setShowForm(true);
+                                    }}
+                                    disabled={config.locked}
+                                    aria-label={t`Edit`}
+                                  >
+                                    <Pencil className="h-3.5 w-3.5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>{t`Edit`}</TooltipContent>
+                              </Tooltip>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 rounded-full text-destructive hover:text-destructive"
+                                    onClick={() => handleDelete(config.key)}
+                                    disabled={
+                                      deleteConfig.isPending || config.locked
+                                    }
+                                    aria-label={t`Delete`}
+                                  >
+                                    {deleteConfig.isPending ? (
+                                      <Spinner />
+                                    ) : (
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    )}
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>{t`Delete`}</TooltipContent>
+                              </Tooltip>
+
+                              {/* More actions dropdown */}
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 rounded-full"
+                                    aria-label={t`More actions`}
+                                  >
+                                    <MoreHorizontal className="h-3.5 w-3.5" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem
+                                    onClick={() => togglePin(config.key)}
+                                  >
+                                    {isPinned(config.key) ? (
+                                      <>
+                                        <PinOff className="h-4 w-4" />
+                                        <Trans>Unpin</Trans>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Pin className="h-4 w-4" />
+                                        <Trans>Pin to top</Trans>
+                                      </>
+                                    )}
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => handleDuplicate(config)}
+                                  >
+                                    <Copy className="h-4 w-4" />
+                                    <Trans>Duplicate</Trans>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => handleToggleLock(config)}
+                                  >
+                                    {config.locked ? (
+                                      <>
+                                        <Unlock className="h-4 w-4" />
+                                        <Trans>Unlock</Trans>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Lock className="h-4 w-4" />
+                                        <Trans>Lock</Trans>
+                                      </>
+                                    )}
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    className="text-destructive focus:text-destructive"
+                                    onClick={() => handleDelete(config.key)}
+                                    disabled={config.locked}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                    <Trans>Delete</Trans>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
+                          </TableCell>
                         </TableRow>
-                      )}
-                    </>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                        {expandedKey === config.key && (
+                          <TableRow key={`${config.key}-expanded`}>
+                            <TableCell colSpan={6} className="bg-muted/30 p-4">
+                              {config.valueType === "json" ||
+                              config.valueType === "array" ? (
+                                <JsonHighlight value={getFullValue(config)} />
+                              ) : (
+                                <pre className="max-h-48 overflow-auto rounded-xl border bg-background p-4 font-mono text-xs">
+                                  {getFullValue(config)}
+                                </pre>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Pagination */}
+              {filteredConfigs.length > PAGE_SIZE && (
+                <div className="flex items-center justify-between pt-2">
+                  <p className="text-xs text-muted-foreground">
+                    <Trans>
+                      Showing {safePage * PAGE_SIZE + 1}–
+                      {Math.min(
+                        (safePage + 1) * PAGE_SIZE,
+                        filteredConfigs.length,
+                      )}{" "}
+                      of {filteredConfigs.length}
+                    </Trans>
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 rounded-full p-0"
+                      onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                      disabled={safePage === 0}
+                      aria-label={t`Previous page`}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <span className="min-w-[4rem] text-center text-xs text-muted-foreground">
+                      {safePage + 1} / {totalPages}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 rounded-full p-0"
+                      onClick={() =>
+                        setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
+                      }
+                      disabled={safePage >= totalPages - 1}
+                      aria-label={t`Next page`}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </>
       )}

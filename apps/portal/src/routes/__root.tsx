@@ -224,7 +224,16 @@ const AuthenticatedLayout = () => {
     <>
       <div className="flex min-h-screen flex-col">
         <TopBar />
-        {selectedProjectId && <TabNav />}
+        {/* Always render TabNav container to avoid CLS when project gets selected.
+            The nav collapses to 0 height when hidden via CSS instead of unmounting. */}
+        <div
+          className={cn(
+            "overflow-hidden transition-[max-height] duration-150",
+            selectedProjectId ? "max-h-12" : "max-h-0",
+          )}
+        >
+          <TabNav />
+        </div>
         <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
           <ErrorBoundary>
             <Outlet />
