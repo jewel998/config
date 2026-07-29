@@ -3,11 +3,15 @@ import { Trans } from "@lingui/react/macro";
 import { useNavigate } from "@tanstack/react-router";
 import {
   GitCompare,
+  History,
   Key,
   Layers,
   Plus,
   Settings,
+  ShieldAlert,
   SlidersHorizontal,
+  Users,
+  UsersRound,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -117,6 +121,40 @@ export const CommandPalette = () => {
                 <SlidersHorizontal className="h-4 w-4" />
                 <span>
                   <Trans>Preferences</Trans>
+                </span>
+              </CommandItem>
+              <CommandItem
+                onSelect={() =>
+                  runAction(() => navigate({ to: "/segments" }))
+                }
+              >
+                <Users className="h-4 w-4" />
+                <span>
+                  <Trans>Segments</Trans>
+                </span>
+              </CommandItem>
+              <CommandItem
+                onSelect={() => runAction(() => navigate({ to: "/audit" }))}
+              >
+                <History className="h-4 w-4" />
+                <span>
+                  <Trans>Audit Log</Trans>
+                </span>
+              </CommandItem>
+              <CommandItem
+                onSelect={() => runAction(() => navigate({ to: "/team" }))}
+              >
+                <UsersRound className="h-4 w-4" />
+                <span>
+                  <Trans>Team & Access</Trans>
+                </span>
+              </CommandItem>
+              <CommandItem
+                onSelect={() => runAction(() => navigate({ to: "/gdpr" }))}
+              >
+                <ShieldAlert className="h-4 w-4" />
+                <span>
+                  <Trans>GDPR & Privacy</Trans>
                 </span>
               </CommandItem>
             </CommandGroup>
