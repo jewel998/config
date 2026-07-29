@@ -3,66 +3,92 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Projects — accessible by owner and authorized users
     match /projects/{projectId} {
-      allow read: if request.auth != null
-        && (resource.data.ownerId == request.auth.uid
-            || request.auth.uid in resource.data.authorizedUsers);
+      // Read: any authenticated project member
+      allow read: if request.auth != null && isProjectMember(projectId);
       allow create: if request.auth != null;
-      allow update, delete: if request.auth != null
-        && resource.data.ownerId == request.auth.uid;
+      // Update/delete: admin only
+      allow update, delete: if request.auth != null && hasRole(projectId, 'admin');
 
-      // Environments within a project
+      // Environments
       match /environments/{environmentId} {
-        allow read: if request.auth != null
-          && isProjectMember(projectId);
+        allow read: if request.auth != null && isProjectMember(projectId);
+        // Non-production: editor or admin
         allow create, update, delete: if request.auth != null
-          && isProjectOwner(projectId);
+          && (hasRole(projectId, 'admin')
+              || (hasRole(projectId, 'editor')
+                  && !resource.data.isProduction));
 
-        // ClientIds — only project members can read, owners can manage
-        match /clientIds/{clientIdToken} {
-          allow read: if request.auth != null
-            && isProjectMember(projectId);
-          allow create, update, delete: if request.auth != null
-            && isProjectOwner(projectId);
-        }
-
-        // Published configs — project members can read and write, owners can delete
+        // Configs
         match /configs/{configKey} {
-          allow read: if request.auth != null
-            && isProjectMember(projectId);
+          allow read: if request.auth != null && isProjectMember(projectId);
+          // Write: editor (non-prod) or admin (all)
           allow create, update: if request.auth != null
-            && isProjectMember(projectId);
-          allow delete: if request.auth != null
-            && isProjectOwner(projectId);
+            && (hasRole(projectId, 'admin')
+                || (hasRole(projectId, 'editor')
+                    && !getEnvironment(projectId, environmentId).data.isProduction));
+          allow delete: if request.auth != null && hasRole(projectId, 'admin');
         }
+
+        // Client IDs
+        match /clientIds/{clientIdToken} {
+          allow read: if request.auth != null && isProjectMember(projectId);
+          allow create, update, delete: if request.auth != null
+            && hasRole(projectId, 'admin');
+        }
+      }
+
+      // Segments
+      match /segments/{segmentId} {
+        allow read: if request.auth != null && isProjectMember(projectId);
+        allow create, update, delete: if request.auth != null
+          && (hasRole(projectId, 'admin')
+              || hasRole(projectId, 'editor'));
+      }
+
+      // Audit log — append-only, no modify/delete
+      match /audit_log/{entryId} {
+        allow read: if request.auth != null && isProjectMember(projectId);
+        allow create: if request.auth != null && isProjectMember(projectId);
+        allow update, delete: if false;
       }
     }
 
-    // Rate limits — only accessible via Admin SDK (Cloud Functions)
+    // Rate limits
     match /rateLimits/{clientId} {
       allow read, write: if false;
     }
 
-    // Allowed users — authenticated users can read their own entry
-    // To grant portal access, add a doc: /allowedUsers/{email}
+    // Allowed users
     match /allowedUsers/{email} {
-      allow read: if request.auth != null
-        && request.auth.token.email == email;
+      allow read: if request.auth != null && request.auth.token.email == email;
       allow write: if false;
     }
 
     // Helper functions
-    function isProjectOwner(projectId) {
-      return get(/databases/$(database)/documents/projects/$(projectId))
-        .data.ownerId == request.auth.uid;
-    }
-
     function isProjectMember(projectId) {
       let project = get(/databases/$(database)/documents/projects/$(projectId));
       return !('deletedAt' in project.data)
         && (project.data.ownerId == request.auth.uid
             || request.auth.uid in project.data.authorizedUsers);
+    }
+
+    function hasRole(projectId, role) {
+      let project = get(/databases/$(database)/documents/projects/$(projectId));
+      let roles = project.data.roles;
+      let uid = request.auth.uid;
+      // Owner always has admin
+      if (project.data.ownerId == uid) { return true; }
+      // Check roles map
+      if (!(uid in roles)) { return false; }
+      if (role == 'viewer') { return true; } // any role implies viewer
+      if (role == 'editor') { return roles[uid] == 'editor' || roles[uid] == 'admin'; }
+      if (role == 'admin') { return roles[uid] == 'admin'; }
+      return false;
+    }
+
+    function getEnvironment(projectId, envId) {
+      return get(/databases/$(database)/documents/projects/$(projectId)/environments/$(envId));
     }
   }
 }

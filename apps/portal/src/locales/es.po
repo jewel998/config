@@ -34,7 +34,7 @@ msgid "Account deletion is not yet available. Contact support if you need to del
 msgstr ""
 
 #: src/components/command-palette.tsx:180
-#: src/routes/configs.tsx:486
+#: src/routes/configs.tsx:482
 msgid "Actions"
 msgstr ""
 
@@ -55,7 +55,7 @@ msgid "Add an environment"
 msgstr ""
 
 #: src/components/config-form-modal.tsx:209
-#: src/routes/configs.tsx:322
+#: src/routes/configs.tsx:318
 msgid "Add Config"
 msgstr ""
 
@@ -63,15 +63,23 @@ msgstr ""
 msgid "Add environments like production, staging, or development."
 msgstr ""
 
-#: src/routes/configs.tsx:369
+#: src/components/rule-builder.tsx:93
+msgid "Add Rule"
+msgstr ""
+
+#: src/routes/configs.tsx:365
 msgid "Aging"
 msgstr ""
 
-#: src/routes/configs.tsx:367
+#: src/components/audit-log-viewer.tsx:55
+msgid "All actions"
+msgstr ""
+
+#: src/routes/configs.tsx:363
 msgid "All ages"
 msgstr ""
 
-#: src/routes/configs.tsx:354
+#: src/routes/configs.tsx:350
 msgid "All types"
 msgstr ""
 
@@ -109,7 +117,7 @@ msgstr ""
 msgid "API Keys"
 msgstr "Claves API"
 
-#: src/routes/configs.tsx:449
+#: src/routes/configs.tsx:445
 msgid "App Settings"
 msgstr ""
 
@@ -118,12 +126,24 @@ msgstr ""
 msgid "Apply {0} changes"
 msgstr ""
 
+#: src/components/rule-builder.tsx:113
+msgid "Attribute"
+msgstr ""
+
+#: src/components/audit-log-viewer.tsx:46
+#: src/routes/audit.tsx:22
+msgid "Audit Log"
+msgstr ""
+
 #: src/components/config-form-modal.tsx:412
 msgid "Boolean values are constrained to true/false by default."
 msgstr ""
 
 #: src/components/config-form-modal.tsx:462
 #: src/components/environment-form.tsx:95
+#: src/components/pii-warning.tsx:57
+#: src/components/schedule-ui.tsx:73
+#: src/components/segment-manager.tsx:49
 #: src/routes/api-keys.tsx:199
 #: src/routes/compare.tsx:605
 #: src/routes/environments.tsx:254
@@ -131,8 +151,20 @@ msgstr ""
 msgid "Cancel"
 msgstr "Cancelar"
 
+#: src/components/prerequisite-ui.tsx:63
+msgid "Cannot add self as prerequisite (circular dependency)."
+msgstr ""
+
 #: src/routes/compare.tsx:391
 msgid "changed"
+msgstr ""
+
+#: src/components/lifecycle-state-badge.tsx:54
+msgid "Changed"
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:90
+msgid "Click again to confirm permanent deletion."
 msgstr ""
 
 #: src/routes/settings.tsx:361
@@ -151,7 +183,7 @@ msgstr ""
 msgid "Command Palette"
 msgstr ""
 
-#: src/routes/configs.tsx:308
+#: src/routes/configs.tsx:304
 msgid "Compare"
 msgstr ""
 
@@ -168,7 +200,7 @@ msgstr "Config"
 msgid "Config created"
 msgstr ""
 
-#: src/routes/configs.tsx:184
+#: src/routes/configs.tsx:180
 msgid "Config deleted"
 msgstr ""
 
@@ -194,12 +226,16 @@ msgstr ""
 
 #: src/components/command-palette.tsx:85
 #: src/routes/__root.tsx:192
-#: src/routes/configs.tsx:294
+#: src/routes/configs.tsx:290
 msgid "Configs"
 msgstr "Configuraciones"
 
 #: src/routes/settings.tsx:210
 msgid "Configs are being copied..."
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:87
+msgid "Confirm Delete"
 msgstr ""
 
 #: src/routes/settings.tsx:449
@@ -228,9 +264,11 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
+#: src/components/audit-log-viewer.tsx:56
 #: src/components/config-form-modal.tsx:454
 #: src/components/onboarding-stepper.tsx:183
 #: src/components/onboarding-stepper.tsx:209
+#: src/components/segment-manager.tsx:48
 #: src/routes/api-keys.tsx:188
 #: src/routes/environments.tsx:241
 #: src/routes/settings.tsx:298
@@ -241,7 +279,7 @@ msgstr "Crear"
 msgid "Create a copy with a new key."
 msgstr ""
 
-#: src/routes/configs.tsx:384
+#: src/routes/configs.tsx:380
 msgid "Create an environment first to manage configs."
 msgstr ""
 
@@ -265,7 +303,7 @@ msgstr "Creado"
 msgid "Current time:"
 msgstr ""
 
-#: src/routes/configs.tsx:460
+#: src/routes/configs.tsx:456
 msgid "Custom"
 msgstr ""
 
@@ -278,11 +316,33 @@ msgstr ""
 msgid "Danger Zone"
 msgstr "Zona de peligro"
 
+#: src/components/gdpr-panel.tsx:78
+msgid "Data Deletion (GDPR Article 17)"
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:43
+msgid "Data deletion request submitted"
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:59
+msgid "Data Export (GDPR Article 20)"
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:28
+msgid "Data export completed"
+msgstr ""
+
+#: src/routes/segments.tsx:24
+msgid "Define reusable audience groups for targeting rules."
+msgstr ""
+
+#: src/components/audit-log-viewer.tsx:58
+#: src/components/gdpr-panel.tsx:87
 #: src/routes/api-keys.tsx:304
 #: src/routes/api-keys.tsx:309
-#: src/routes/configs.tsx:596
-#: src/routes/configs.tsx:605
-#: src/routes/configs.tsx:664
+#: src/routes/configs.tsx:592
+#: src/routes/configs.tsx:601
+#: src/routes/configs.tsx:660
 #: src/routes/environments.tsx:302
 #: src/routes/environments.tsx:313
 #: src/routes/settings.tsx:387
@@ -298,8 +358,20 @@ msgstr "Eliminar proyecto"
 msgid "Deleting a project is irreversible. All environments, configs, and API keys will become inaccessible."
 msgstr ""
 
+#: src/components/gdpr-panel.tsx:87
+msgid "Deleting..."
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:47
+msgid "Deletion failed"
+msgstr ""
+
 #: src/routes/settings.tsx:98
 msgid "Description"
+msgstr ""
+
+#: src/components/segment-manager.tsx:46
+msgid "Description (optional)"
 msgstr ""
 
 #: src/hooks/use-project-description.ts:27
@@ -314,7 +386,7 @@ msgstr ""
 msgid "Display Name"
 msgstr "Nombre"
 
-#: src/routes/configs.tsx:640
+#: src/routes/configs.tsx:636
 msgid "Duplicate"
 msgstr ""
 
@@ -334,8 +406,8 @@ msgstr ""
 msgid "e.g. small, medium, large"
 msgstr ""
 
-#: src/routes/configs.tsx:579
-#: src/routes/configs.tsx:584
+#: src/routes/configs.tsx:575
+#: src/routes/configs.tsx:580
 #: src/routes/settings.tsx:109
 #: src/routes/settings.tsx:374
 #: src/routes/settings.tsx:379
@@ -402,7 +474,23 @@ msgstr ""
 msgid "Environments define deployment targets like production or staging."
 msgstr ""
 
-#: src/routes/configs.tsx:231
+#: src/components/gdpr-panel.tsx:68
+msgid "Export"
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:63
+msgid "Export all personal data associated with a user ID as a JSON file."
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:31
+msgid "Export failed"
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:68
+msgid "Exporting..."
+msgstr ""
+
+#: src/routes/configs.tsx:227
 msgid "Failed to apply template"
 msgstr ""
 
@@ -425,7 +513,7 @@ msgstr ""
 msgid "Failed to create project"
 msgstr ""
 
-#: src/routes/configs.tsx:202
+#: src/routes/configs.tsx:198
 msgid "Failed to delete config"
 msgstr ""
 
@@ -444,6 +532,10 @@ msgstr ""
 
 #: src/routes/api-keys.tsx:115
 msgid "Failed to generate API key"
+msgstr ""
+
+#: src/routes/team.tsx:49
+msgid "Failed to remove member"
 msgstr ""
 
 #: src/routes/api-keys.tsx:129
@@ -466,28 +558,48 @@ msgstr ""
 msgid "Failed to update environment"
 msgstr ""
 
-#: src/routes/configs.tsx:442
+#: src/routes/team.tsx:36
+msgid "Failed to update role"
+msgstr ""
+
+#: src/routes/configs.tsx:438
 msgid "Feature Flags"
+msgstr ""
+
+#: src/components/audit-log-viewer.tsx:51
+msgid "Filter by resource..."
 msgstr ""
 
 #: src/routes/__root.tsx:347
 msgid "Firebase sync"
 msgstr ""
 
-#: src/routes/configs.tsx:368
+#: src/components/prerequisite-ui.tsx:50
+msgid "Flag key"
+msgstr ""
+
+#: src/routes/configs.tsx:364
 msgid "Fresh"
+msgstr ""
+
+#: src/routes/gdpr.tsx:37
+msgid "GDPR Compliance"
 msgstr ""
 
 #: src/routes/api-keys.tsx:168
 msgid "Generate Key"
 msgstr "Generar clave"
 
-#: src/routes/configs.tsx:431
+#: src/routes/configs.tsx:427
 msgid "Get started with a template or create your own."
 msgstr ""
 
 #: src/components/onboarding-stepper.tsx:224
 msgid "Go to Environments"
+msgstr ""
+
+#: src/components/rule-builder.tsx:125
+msgid "Group"
 msgstr ""
 
 #: src/routes/api-keys.tsx:65
@@ -500,6 +612,10 @@ msgstr ""
 
 #: src/components/config-form-modal.tsx:431
 msgid "Hide Preview"
+msgstr ""
+
+#: src/components/pii-warning.tsx:49
+msgid "I understand, save anyway"
 msgstr ""
 
 #: src/routes/compare.tsx:395
@@ -519,7 +635,7 @@ msgid "JSON and array values are validated for correct syntax automatically."
 msgstr ""
 
 #: src/components/config-form-modal.tsx:226
-#: src/routes/configs.tsx:474
+#: src/routes/configs.tsx:470
 msgid "Key"
 msgstr ""
 
@@ -547,7 +663,11 @@ msgstr "Idioma y región"
 msgid "Let's get you set up in a few quick steps."
 msgstr ""
 
-#: src/routes/configs.tsx:653
+#: src/components/audit-log-viewer.tsx:64
+msgid "Loading..."
+msgstr ""
+
+#: src/routes/configs.tsx:649
 msgid "Lock"
 msgstr ""
 
@@ -555,11 +675,15 @@ msgstr ""
 msgid "Manage client IDs for this environment. Use these keys to authenticate SDK requests."
 msgstr ""
 
+#: src/routes/gdpr.tsx:37
+msgid "Manage data export and deletion requests for compliance."
+msgstr ""
+
 #: src/routes/environments.tsx:166
 msgid "Manage deployment targets and allowed domains."
 msgstr ""
 
-#: src/routes/configs.tsx:296
+#: src/routes/configs.tsx:292
 msgid "Manage feature flags and configuration values."
 msgstr ""
 
@@ -567,15 +691,23 @@ msgstr ""
 msgid "Manage project configuration and team access."
 msgstr ""
 
+#: src/routes/team.tsx:55
+msgid "Manage project members and their roles."
+msgstr ""
+
 #: src/components/config-form-modal.tsx:364
 msgid "Max value"
+msgstr ""
+
+#: src/routes/team.tsx:47
+msgid "Member removed"
 msgstr ""
 
 #: src/components/config-form-modal.tsx:352
 msgid "Min value"
 msgstr ""
 
-#: src/routes/configs.tsx:615
+#: src/routes/configs.tsx:611
 msgid "More actions"
 msgstr ""
 
@@ -591,6 +723,10 @@ msgstr ""
 msgid "new"
 msgstr ""
 
+#: src/components/segment-manager.tsx:40
+msgid "New"
+msgstr ""
+
 #: src/components/command-palette.tsx:192
 msgid "New Config"
 msgstr ""
@@ -600,7 +736,7 @@ msgstr ""
 msgid "New Environment"
 msgstr "Nuevo entorno"
 
-#: src/routes/configs.tsx:726
+#: src/routes/configs.tsx:722
 msgid "Next page"
 msgstr ""
 
@@ -608,7 +744,11 @@ msgstr ""
 msgid "No API keys yet. Generate one to get started."
 msgstr "Aún no hay claves API. Genera una para comenzar."
 
-#: src/routes/configs.tsx:428
+#: src/components/audit-log-viewer.tsx:66
+msgid "No audit entries found."
+msgstr ""
+
+#: src/routes/configs.tsx:424
 msgid "No configs yet"
 msgstr ""
 
@@ -640,12 +780,32 @@ msgstr ""
 msgid "No minimum"
 msgstr ""
 
+#: src/components/override-manager.tsx:53
+msgid "No overrides configured."
+msgstr ""
+
+#: src/components/prerequisite-ui.tsx:67
+msgid "No prerequisites configured."
+msgstr ""
+
 #: src/components/project-switcher.tsx:75
 msgid "No projects found."
 msgstr "No se encontraron proyectos."
 
 #: src/components/command-palette.tsx:75
 msgid "No results found."
+msgstr ""
+
+#: src/components/schedule-ui.tsx:86
+msgid "No scheduled changes."
+msgstr ""
+
+#: src/components/segment-manager.tsx:53
+msgid "No segments defined."
+msgstr ""
+
+#: src/components/rule-builder.tsx:97
+msgid "No targeting rules. All users receive the default value."
 msgstr ""
 
 #: src/routes/preferences.tsx:208
@@ -668,6 +828,7 @@ msgstr ""
 msgid "optional"
 msgstr ""
 
+#: src/components/rbac-manager.tsx:61
 #: src/routes/settings.tsx:532
 msgid "Owner"
 msgstr "Propietario"
@@ -676,8 +837,20 @@ msgstr "Propietario"
 msgid "Per-env overrides"
 msgstr ""
 
-#: src/routes/configs.tsx:632
+#: src/components/override-manager.tsx:39
+msgid "Per-User Overrides"
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:82
+msgid "Permanently remove all personal data for a user ID. This action cannot be undone."
+msgstr ""
+
+#: src/routes/configs.tsx:628
 msgid "Pin to top"
+msgstr ""
+
+#: src/components/pii-warning.tsx:23
+msgid "Potential PII detected in config value"
 msgstr ""
 
 #: src/components/command-palette.tsx:119
@@ -687,12 +860,20 @@ msgstr ""
 msgid "Preferences"
 msgstr "Preferencias"
 
+#: src/components/prerequisite-ui.tsx:44
+msgid "Prerequisites"
+msgstr ""
+
 #: src/routes/settings.tsx:120
 msgid "Preview"
 msgstr ""
 
-#: src/routes/configs.tsx:711
+#: src/routes/configs.tsx:707
 msgid "Previous page"
+msgstr ""
+
+#: src/components/rule-builder.tsx:101
+msgid "Priority"
 msgstr ""
 
 #: src/routes/settings.tsx:336
@@ -765,6 +946,18 @@ msgstr "Tiempo real"
 msgid "Regex pattern"
 msgstr ""
 
+#: src/components/schedule-ui.tsx:73
+msgid "Remove"
+msgstr ""
+
+#: src/components/prerequisite-ui.tsx:54
+msgid "Required value"
+msgstr ""
+
+#: src/components/rule-builder.tsx:102
+msgid "Return value"
+msgstr ""
+
 #. placeholder {0}: actions.size
 #: src/routes/compare.tsx:527
 msgid "Review {0} changes"
@@ -782,16 +975,28 @@ msgstr ""
 msgid "Revoked"
 msgstr ""
 
+#: src/routes/team.tsx:34
+msgid "Role updated"
+msgstr ""
+
 #: src/components/environment-form.tsx:87
 #: src/routes/settings.tsx:145
 msgid "Save"
+msgstr ""
+
+#: src/components/schedule-ui.tsx:82
+msgid "Schedule"
+msgstr ""
+
+#: src/components/schedule-ui.tsx:49
+msgid "Scheduled Change"
 msgstr ""
 
 #: src/components/command-palette.tsx:71
 msgid "Search commands, projects, environments..."
 msgstr ""
 
-#: src/routes/configs.tsx:335
+#: src/routes/configs.tsx:331
 msgid "Search configs..."
 msgstr ""
 
@@ -803,6 +1008,15 @@ msgstr ""
 msgid "Search projects..."
 msgstr ""
 
+#: src/components/segment-manager.tsx:45
+msgid "Segment name"
+msgstr ""
+
+#: src/components/segment-manager.tsx:38
+#: src/routes/segments.tsx:24
+msgid "Segments"
+msgstr ""
+
 #: src/routes/compare.tsx:272
 msgid "Select a project to compare environments."
 msgstr ""
@@ -811,8 +1025,24 @@ msgstr ""
 msgid "Select a project to manage API keys."
 msgstr ""
 
-#: src/routes/configs.tsx:276
+#: src/routes/configs.tsx:272
 msgid "Select a project to manage configs."
+msgstr ""
+
+#: src/routes/gdpr.tsx:15
+msgid "Select a project to manage GDPR compliance."
+msgstr ""
+
+#: src/routes/segments.tsx:19
+msgid "Select a project to manage segments."
+msgstr ""
+
+#: src/routes/team.tsx:25
+msgid "Select a project to manage team access."
+msgstr ""
+
+#: src/routes/audit.tsx:17
+msgid "Select a project to view audit log."
 msgstr ""
 
 #: src/routes/environments.tsx:144
@@ -858,7 +1088,7 @@ msgstr ""
 #. placeholder {0}: safePage * PAGE_SIZE + 1
 #. placeholder {1}: Math.min( (safePage + 1) * PAGE_SIZE, filteredConfigs.length, )
 #. placeholder {2}: filteredConfigs.length
-#: src/routes/configs.tsx:695
+#: src/routes/configs.tsx:691
 msgid "Showing {0}–{1} of {2}"
 msgstr ""
 
@@ -879,12 +1109,20 @@ msgstr "Cerrar sesión"
 msgid "Source"
 msgstr ""
 
-#: src/routes/configs.tsx:370
+#: src/routes/configs.tsx:366
 msgid "Stale"
 msgstr ""
 
 #: src/components/onboarding-stepper.tsx:90
 msgid "Start configuring your environments with secrets and settings."
+msgstr ""
+
+#: src/components/audit-log-viewer.tsx:59
+msgid "State change"
+msgstr ""
+
+#: src/components/pii-warning.tsx:37
+msgid "Storing personal data in config values may violate GDPR. Acknowledge to proceed."
 msgstr ""
 
 #: src/components/config-form-modal.tsx:316
@@ -912,7 +1150,23 @@ msgstr ""
 msgid "Target"
 msgstr ""
 
-#: src/routes/configs.tsx:230
+#: src/components/schedule-ui.tsx:79
+msgid "Target value"
+msgstr ""
+
+#: src/components/rule-builder.tsx:90
+msgid "Targeting Rules"
+msgstr ""
+
+#: src/routes/team.tsx:55
+msgid "Team & Access"
+msgstr ""
+
+#: src/components/rbac-manager.tsx:44
+msgid "Team Members"
+msgstr ""
+
+#: src/routes/configs.tsx:226
 msgid "Template applied"
 msgstr ""
 
@@ -929,7 +1183,7 @@ msgid "Theme"
 msgstr "Tema"
 
 #: src/components/config-form-modal.tsx:100
-#: src/routes/configs.tsx:173
+#: src/routes/configs.tsx:169
 msgid "This is a production environment. Changes will affect live users. Continue?"
 msgstr ""
 
@@ -937,16 +1191,20 @@ msgstr ""
 msgid "Timezone"
 msgstr "Zona horaria"
 
+#: src/routes/audit.tsx:22
+msgid "Track all configuration changes for SOC2 compliance."
+msgstr ""
+
 #: src/routes/__root.tsx:272
 msgid "Try a different account"
 msgstr ""
 
 #: src/components/config-form-modal.tsx:250
-#: src/routes/configs.tsx:477
+#: src/routes/configs.tsx:473
 msgid "Type"
 msgstr ""
 
-#: src/routes/configs.tsx:186
+#: src/routes/configs.tsx:182
 #: src/routes/settings.tsx:256
 msgid "Undo"
 msgstr ""
@@ -955,14 +1213,15 @@ msgstr ""
 msgid "Unique identifier for API integrations"
 msgstr ""
 
-#: src/routes/configs.tsx:648
+#: src/routes/configs.tsx:644
 msgid "Unlock"
 msgstr ""
 
-#: src/routes/configs.tsx:627
+#: src/routes/configs.tsx:623
 msgid "Unpin"
 msgstr ""
 
+#: src/components/audit-log-viewer.tsx:57
 #: src/components/config-form-modal.tsx:452
 msgid "Update"
 msgstr ""
@@ -971,7 +1230,7 @@ msgstr ""
 msgid "Update the configuration value."
 msgstr ""
 
-#: src/routes/configs.tsx:483
+#: src/routes/configs.tsx:479
 msgid "Updated"
 msgstr ""
 
@@ -980,16 +1239,27 @@ msgstr ""
 msgid "Use \"Compare Environments\" to sync configs from \"{0}\" to the new environment."
 msgstr ""
 
+#: src/components/override-manager.tsx:45
 #: src/routes/preferences.tsx:299
 msgid "User ID"
 msgstr "ID de usuario"
+
+#: src/components/gdpr-panel.tsx:84
+msgid "User ID to delete"
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:65
+msgid "User ID to export"
+msgstr ""
 
 #: src/components/config-form-modal.tsx:341
 msgid "Validation Rules"
 msgstr ""
 
 #: src/components/config-form-modal.tsx:272
-#: src/routes/configs.tsx:480
+#: src/components/override-manager.tsx:46
+#: src/components/rule-builder.tsx:118
+#: src/routes/configs.tsx:476
 msgid "Value"
 msgstr ""
 

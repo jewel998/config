@@ -11,11 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiKeysRouteImport } from './routes/api-keys'
+import { Route as AuditRouteImport } from './routes/audit'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as ConfigsRouteImport } from './routes/configs'
 import { Route as EnvironmentsRouteImport } from './routes/environments'
+import { Route as GdprRouteImport } from './routes/gdpr'
 import { Route as PreferencesRouteImport } from './routes/preferences'
+import { Route as SegmentsRouteImport } from './routes/segments'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as TeamRouteImport } from './routes/team'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -25,6 +29,11 @@ const IndexRoute = IndexRouteImport.update({
 const ApiKeysRoute = ApiKeysRouteImport.update({
   id: '/api-keys',
   path: '/api-keys',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuditRoute = AuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompareRoute = CompareRouteImport.update({
@@ -42,9 +51,19 @@ const EnvironmentsRoute = EnvironmentsRouteImport.update({
   path: '/environments',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GdprRoute = GdprRouteImport.update({
+  id: '/gdpr',
+  path: '/gdpr',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PreferencesRoute = PreferencesRouteImport.update({
   id: '/preferences',
   path: '/preferences',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SegmentsRoute = SegmentsRouteImport.update({
+  id: '/segments',
+  path: '/segments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -52,73 +71,106 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api-keys': typeof ApiKeysRoute
+  '/audit': typeof AuditRoute
   '/compare': typeof CompareRoute
   '/configs': typeof ConfigsRoute
   '/environments': typeof EnvironmentsRoute
+  '/gdpr': typeof GdprRoute
   '/preferences': typeof PreferencesRoute
+  '/segments': typeof SegmentsRoute
   '/settings': typeof SettingsRoute
+  '/team': typeof TeamRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api-keys': typeof ApiKeysRoute
+  '/audit': typeof AuditRoute
   '/compare': typeof CompareRoute
   '/configs': typeof ConfigsRoute
   '/environments': typeof EnvironmentsRoute
+  '/gdpr': typeof GdprRoute
   '/preferences': typeof PreferencesRoute
+  '/segments': typeof SegmentsRoute
   '/settings': typeof SettingsRoute
+  '/team': typeof TeamRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api-keys': typeof ApiKeysRoute
+  '/audit': typeof AuditRoute
   '/compare': typeof CompareRoute
   '/configs': typeof ConfigsRoute
   '/environments': typeof EnvironmentsRoute
+  '/gdpr': typeof GdprRoute
   '/preferences': typeof PreferencesRoute
+  '/segments': typeof SegmentsRoute
   '/settings': typeof SettingsRoute
+  '/team': typeof TeamRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/api-keys'
+    | '/audit'
     | '/compare'
     | '/configs'
     | '/environments'
+    | '/gdpr'
     | '/preferences'
+    | '/segments'
     | '/settings'
+    | '/team'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/api-keys'
+    | '/audit'
     | '/compare'
     | '/configs'
     | '/environments'
+    | '/gdpr'
     | '/preferences'
+    | '/segments'
     | '/settings'
+    | '/team'
   id:
     | '__root__'
     | '/'
     | '/api-keys'
+    | '/audit'
     | '/compare'
     | '/configs'
     | '/environments'
+    | '/gdpr'
     | '/preferences'
+    | '/segments'
     | '/settings'
+    | '/team'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiKeysRoute: typeof ApiKeysRoute
+  AuditRoute: typeof AuditRoute
   CompareRoute: typeof CompareRoute
   ConfigsRoute: typeof ConfigsRoute
   EnvironmentsRoute: typeof EnvironmentsRoute
+  GdprRoute: typeof GdprRoute
   PreferencesRoute: typeof PreferencesRoute
+  SegmentsRoute: typeof SegmentsRoute
   SettingsRoute: typeof SettingsRoute
+  TeamRoute: typeof TeamRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -135,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/api-keys'
       fullPath: '/api-keys'
       preLoaderRoute: typeof ApiKeysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audit': {
+      id: '/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuditRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/compare': {
@@ -158,11 +217,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnvironmentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gdpr': {
+      id: '/gdpr'
+      path: '/gdpr'
+      fullPath: '/gdpr'
+      preLoaderRoute: typeof GdprRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/preferences': {
       id: '/preferences'
       path: '/preferences'
       fullPath: '/preferences'
       preLoaderRoute: typeof PreferencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/segments': {
+      id: '/segments'
+      path: '/segments'
+      fullPath: '/segments'
+      preLoaderRoute: typeof SegmentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -172,17 +245,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/team': {
+      id: '/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiKeysRoute: ApiKeysRoute,
+  AuditRoute: AuditRoute,
   CompareRoute: CompareRoute,
   ConfigsRoute: ConfigsRoute,
   EnvironmentsRoute: EnvironmentsRoute,
+  GdprRoute: GdprRoute,
   PreferencesRoute: PreferencesRoute,
+  SegmentsRoute: SegmentsRoute,
   SettingsRoute: SettingsRoute,
+  TeamRoute: TeamRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

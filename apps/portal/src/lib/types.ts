@@ -87,3 +87,82 @@ export interface Project {
   updatedAt: string;
   deletedAt?: string;
 }
+
+// ═══════════════════════════════════════════════════════════════
+// Advanced Feature Management Types
+// ═══════════════════════════════════════════════════════════════
+
+/** Extended config entry with advanced feature management fields */
+export interface ConfigFlagExtended extends ConfigEntry {
+  lifecycleState: "draft" | "active" | "stale" | "archived";
+  stateChangedAt: string;
+  targetingRules?: TargetingRule[];
+  rolloutPercentage?: number;
+  rolloutValue?: unknown;
+  overrides?: Record<string, unknown>;
+  schedule?: {
+    targetValue: unknown;
+    activateAt: string;
+  };
+  prerequisites?: Array<{
+    flagKey: string;
+    requiredValue: unknown;
+  }>;
+}
+
+/** Targeting rule for the portal */
+export interface TargetingRule {
+  id: string;
+  priority: number;
+  value: unknown;
+  conditions: PredicateGroup[];
+}
+
+export interface PredicateGroup {
+  predicates: Predicate[];
+}
+
+export interface Predicate {
+  attribute: string;
+  operator: PredicateOperator;
+  value: string | number | boolean | string[];
+}
+
+export type PredicateOperator =
+  | "equals" | "not_equals" | "contains" | "starts_with" | "ends_with"
+  | "in_list" | "not_in_list" | "greater_than" | "less_than"
+  | "regex_match" | "in_segment" | "not_in_segment";
+
+export type LifecycleState = "draft" | "active" | "stale" | "archived";
+
+/** Segment stored in projects/{projectId}/segments/{segmentId} */
+export interface Segment {
+  id: string;
+  name: string;
+  description: string;
+  conditions: PredicateGroup[];
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+}
+
+/** Audit log entry stored in projects/{projectId}/audit_log/{entryId} */
+export interface AuditEntry {
+  id: string;
+  actorId: string;
+  timestamp: string;
+  action: "create" | "update" | "delete" | "state_change" | "data_deletion";
+  resourcePath: string;
+  oldValue?: string;
+  newValue?: string;
+  metadata?: Record<string, string>;
+}
+
+/** Project with RBAC roles map */
+export interface ProjectWithRBAC extends Project {
+  roles: Record<string, "viewer" | "editor" | "admin">;
+  staleDurationDays?: number;
+  auditRetentionDays?: number;
+}
+
+export type RBACRole = "viewer" | "editor" | "admin";

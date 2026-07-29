@@ -22,6 +22,17 @@ export type {
   RetryConfig,
 } from "./types";
 
+// Plugin types (re-exported for consumer convenience)
+export type {
+  EvaluationContext,
+  EvaluationPlugin,
+  PipelineStepId,
+  PipelineStepResult,
+  PipelineHelpers,
+} from "./plugins/types.js";
+
+export { PIPELINE_ORDER } from "./plugins/types.js";
+
 // Cache adapters
 export { memoryStorage } from "./cache/memoryStorage";
 export { browserStorage } from "./cache/browserStorage";
