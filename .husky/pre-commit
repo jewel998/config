@@ -1,1 +1,33 @@
+# Extract and sync lingui translations
+cd apps/portal && npx lingui extract --clean 2>/dev/null && cd ../..
+
+# Fill empty English msgstr values
+python3 -c "
+with open('apps/portal/src/locales/en.po', 'r') as f:
+    content = f.read()
+lines = content.split('\n')
+result = []
+i = 0
+while i < len(lines):
+    result.append(lines[i])
+    if lines[i].startswith('msgid \"') and not lines[i].startswith('msgid \"\"'):
+        msgid = lines[i][7:-1]
+        j = i + 1
+        while j < len(lines) and lines[j].startswith('\"'):
+            msgid += lines[j][1:-1]
+            result.append(lines[j])
+            j += 1
+        if j < len(lines) and lines[j] == 'msgstr \"\"':
+            result.append('msgstr \"' + msgid + '\"')
+            i = j + 1
+            continue
+    i += 1
+with open('apps/portal/src/locales/en.po', 'w') as f:
+    f.write('\n'.join(result))
+" 2>/dev/null
+
+# Stage updated locale files
+git add apps/portal/src/locales/*.po 2>/dev/null
+
+# Run lint-staged
 pnpm exec lint-staged
