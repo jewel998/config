@@ -1,5 +1,6 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -38,6 +39,7 @@ interface ConfigFormModalProps {
   projectId: string;
   environmentId: string;
   editingConfig?: ConfigEntry | null;
+  duplicateFrom?: ConfigEntry | null;
   isProductionEnv?: boolean;
 }
 
@@ -47,20 +49,22 @@ export const ConfigFormModal = ({
   projectId,
   environmentId,
   editingConfig,
+  duplicateFrom,
   isProductionEnv,
 }: ConfigFormModalProps) => {
   const setConfig = useSetConfig();
+  const sourceConfig = editingConfig ?? duplicateFrom;
   const [key, setKey] = useState(editingConfig?.key ?? "");
   const [valueType, setValueType] = useState<ValueType>(
-    editingConfig?.valueType ?? "string",
+    sourceConfig?.valueType ?? "string",
   );
   const [rawValue, setRawValue] = useState(() => {
-    if (!editingConfig) return "";
-    const v = editingConfig.value;
-    if (editingConfig.valueType === "boolean") return String(v);
+    if (!sourceConfig) return "";
+    const v = sourceConfig.value;
+    if (sourceConfig.valueType === "boolean") return String(v);
     if (
-      editingConfig.valueType === "json" ||
-      editingConfig.valueType === "array"
+      sourceConfig.valueType === "json" ||
+      sourceConfig.valueType === "array"
     ) {
       return typeof v === "string" ? v : JSON.stringify(v, null, 2);
     }
@@ -68,6 +72,11 @@ export const ConfigFormModal = ({
   });
   const [errors, setErrors] = useState<{ key?: string; value?: string }>({});
   const [showPreview, setShowPreview] = useState(false);
+  const [showValidation, setShowValidation] = useState(false);
+  const [validationMin, setValidationMin] = useState("");
+  const [validationMax, setValidationMax] = useState("");
+  const [validationRegex, setValidationRegex] = useState("");
+  const [validationEnum, setValidationEnum] = useState("");
 
   const handleTypeChange = (newType: ValueType) => {
     setValueType(newType);
@@ -115,6 +124,39 @@ export const ConfigFormModal = ({
       fieldErrors.value = valueResult.error.issues[0]?.message;
     }
 
+    // Custom validation rules
+    if (!fieldErrors.value) {
+      if (valueType === "number" && typeof parsedValue === "number") {
+        if (validationMin && parsedValue < Number(validationMin)) {
+          fieldErrors.value = t`Value must be at least ${validationMin}`;
+        }
+        if (validationMax && parsedValue > Number(validationMax)) {
+          fieldErrors.value = t`Value must be at most ${validationMax}`;
+        }
+      }
+      if (valueType === "string" && typeof parsedValue === "string") {
+        if (validationRegex) {
+          try {
+            const regex = new RegExp(validationRegex);
+            if (!regex.test(parsedValue)) {
+              fieldErrors.value = t`Value does not match pattern: ${validationRegex}`;
+            }
+          } catch {
+            fieldErrors.value = t`Invalid regex pattern`;
+          }
+        }
+        if (validationEnum) {
+          const allowed = validationEnum
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
+          if (allowed.length > 0 && !allowed.includes(parsedValue)) {
+            fieldErrors.value = t`Value must be one of: ${allowed.join(", ")}`;
+          }
+        }
+      }
+    }
+
     if (fieldErrors.key || fieldErrors.value) {
       setErrors(fieldErrors);
       return;
@@ -159,11 +201,19 @@ export const ConfigFormModal = ({
       open={open}
       onOpenChange={onOpenChange}
       title={
-        editingConfig ? <Trans>Edit Config</Trans> : <Trans>Add Config</Trans>
+        editingConfig ? (
+          <Trans>Edit Config</Trans>
+        ) : duplicateFrom ? (
+          <Trans>Duplicate Config</Trans>
+        ) : (
+          <Trans>Add Config</Trans>
+        )
       }
       description={
         editingConfig ? (
           <Trans>Update the configuration value.</Trans>
+        ) : duplicateFrom ? (
+          <Trans>Create a copy with a new key.</Trans>
         ) : (
           <Trans>Add a new configuration entry.</Trans>
         )
@@ -273,6 +323,98 @@ export const ConfigFormModal = ({
           )}
           {errors.value && (
             <p className="text-xs text-destructive">{errors.value}</p>
+          )}
+        </div>
+
+        {/* Validation Rules (collapsible) */}
+        <div className="space-y-2">
+          <button
+            type="button"
+            className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            onClick={() => setShowValidation(!showValidation)}
+          >
+            {showValidation ? (
+              <ChevronDown className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronRight className="h-3.5 w-3.5" />
+            )}
+            <Trans>Validation Rules</Trans>
+            <span className="text-[10px] text-muted-foreground/60">
+              ({t`optional`})
+            </span>
+          </button>
+          {showValidation && (
+            <div className="space-y-3 rounded-lg border p-3">
+              {valueType === "number" && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground">
+                      <Trans>Min value</Trans>
+                    </label>
+                    <Input
+                      type="number"
+                      placeholder={t`No minimum`}
+                      value={validationMin}
+                      onChange={(e) => setValidationMin(e.target.value)}
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground">
+                      <Trans>Max value</Trans>
+                    </label>
+                    <Input
+                      type="number"
+                      placeholder={t`No maximum`}
+                      value={validationMax}
+                      onChange={(e) => setValidationMax(e.target.value)}
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                </div>
+              )}
+              {valueType === "string" && (
+                <>
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground">
+                      <Trans>Regex pattern</Trans>
+                    </label>
+                    <Input
+                      placeholder={t`e.g. ^https?://`}
+                      value={validationRegex}
+                      onChange={(e) => setValidationRegex(e.target.value)}
+                      className="h-8 font-mono text-xs"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground">
+                      <Trans>Allowed values (comma-separated)</Trans>
+                    </label>
+                    <Input
+                      placeholder={t`e.g. small, medium, large`}
+                      value={validationEnum}
+                      onChange={(e) => setValidationEnum(e.target.value)}
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                </>
+              )}
+              {(valueType === "json" || valueType === "array") && (
+                <p className="text-xs text-muted-foreground">
+                  <Trans>
+                    JSON and array values are validated for correct syntax
+                    automatically.
+                  </Trans>
+                </p>
+              )}
+              {valueType === "boolean" && (
+                <p className="text-xs text-muted-foreground">
+                  <Trans>
+                    Boolean values are constrained to true/false by default.
+                  </Trans>
+                </p>
+              )}
+            </div>
           )}
         </div>
 

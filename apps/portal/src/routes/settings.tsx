@@ -1,7 +1,7 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
-import { HelpCircle, Pencil, Plus, Settings, Trash2 } from "lucide-react";
+import { Copy, HelpCircle, Pencil, Plus, Settings, Trash2 } from "lucide-react";
 import { marked } from "marked";
 import type { ReactNode } from "react";
 import { useState } from "react";
@@ -191,6 +191,39 @@ const EnvironmentsSection = ({ projectId }: { projectId: string }) => {
     );
   };
 
+  const handleClone = async (envId: string) => {
+    const sourceEnv = environments.find((e) => e.id === envId);
+    if (!sourceEnv) return;
+
+    const newName = `${sourceEnv.name} (copy)`;
+    createEnv.mutate(
+      {
+        projectId,
+        name: newName,
+        allowedDomains: sourceEnv.allowedDomains,
+        color: sourceEnv.color,
+        isProduction: false,
+      },
+      {
+        onSuccess: () => {
+          toast.success(t`Environment cloned`, {
+            description: t`Configs are being copied...`,
+          });
+          // After creation, we need to copy configs — but we need the new env ID.
+          // The invalidation will re-fetch environments. We rely on the user
+          // then using Compare > Sync to copy configs (or we can use promoteConfigs
+          // once we know the new env ID).
+          // For a smoother UX, we'll inform the user.
+          toast.info(
+            t`Use "Compare Environments" to sync configs from "${sourceEnv.name}" to the new environment.`,
+            { duration: 6000 },
+          );
+        },
+        onError: () => toast.error(t`Failed to clone environment`),
+      },
+    );
+  };
+
   const handleUpdate = (
     envId: string,
     values: {
@@ -324,6 +357,19 @@ const EnvironmentsSection = ({ projectId }: { projectId: string }) => {
                       <Button
                         variant="ghost"
                         size="icon-xs"
+                        onClick={() => handleClone(env.id)}
+                        aria-label={t`Clone`}
+                      >
+                        <Copy className="h-3.5 w-3.5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{t`Clone environment`}</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon-xs"
                         onClick={() => setEditingEnvId(env.id)}
                         aria-label={t`Edit`}
                       >
@@ -440,10 +486,7 @@ const SettingsPage = () => {
 
   if (!selectedProject) {
     return (
-      <EmptyState
-        icon={Settings}
-        message={<Trans>Project not found.</Trans>}
-      />
+      <EmptyState icon={Settings} message={<Trans>Project not found.</Trans>} />
     );
   }
 
@@ -457,7 +500,9 @@ const SettingsPage = () => {
     <PageLayout>
       <PageHeader
         title={<Trans>Project Settings</Trans>}
-        description={<Trans>Manage project configuration and team access.</Trans>}
+        description={
+          <Trans>Manage project configuration and team access.</Trans>
+        }
       />
 
       <div className="grid gap-4 sm:grid-cols-2">

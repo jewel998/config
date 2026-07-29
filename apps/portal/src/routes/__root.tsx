@@ -16,6 +16,7 @@ import { useState } from "react";
 import { Toaster } from "sonner";
 
 import { EnvironmentSwitcher } from "@/components/environment-switcher";
+import { CommandPalette } from "@/components/command-palette";
 import { ProjectSwitcher } from "@/components/project-switcher";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -230,6 +231,7 @@ const AuthenticatedLayout = () => {
           </ErrorBoundary>
         </main>
       </div>
+      <CommandPalette />
       <Toaster richColors position="bottom-right" />
     </>
   );
