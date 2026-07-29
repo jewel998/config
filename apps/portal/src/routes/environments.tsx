@@ -9,6 +9,7 @@ import { z } from "zod";
 import { DateDisplay } from "@/components/date-display";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
+import { PageLayout } from "@/components/page-layout";
 import { ResponsiveModal } from "@/components/responsive-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -159,7 +160,7 @@ const EnvironmentsPage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <PageLayout>
       <PageHeader
         title={<Trans>Environments</Trans>}
         description={<Trans>Manage deployment targets and allowed domains.</Trans>}
@@ -342,7 +343,7 @@ const EnvironmentsPage = () => {
           ))}
         </div>
       )}
-    </div>
+    </PageLayout>
   );
 };
 

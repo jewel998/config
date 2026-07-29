@@ -15,6 +15,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { DateDisplay } from "@/components/date-display";
+import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/page-header";
+import { PageLayout } from "@/components/page-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -322,52 +325,44 @@ const ApiKeysPage = () => {
 
   if (!selectedProjectId) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-24">
-        <div className="rounded-full bg-muted p-4">
-          <Key className="h-8 w-8 text-muted-foreground" />
-        </div>
-        <p className="text-sm text-muted-foreground">
-          <Trans>Select a project to manage API keys.</Trans>
-        </p>
-      </div>
+      <EmptyState
+        icon={Key}
+        message={<Trans>Select a project to manage API keys.</Trans>}
+      />
     );
   }
 
   if (!selectedEnvironmentId) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-24">
-        <div className="rounded-full bg-muted p-4">
-          <Key className="h-8 w-8 text-muted-foreground" />
-        </div>
-        <p className="text-sm text-muted-foreground">
+      <EmptyState
+        icon={Key}
+        message={
           <Trans>
             Select an environment from the top bar to manage API keys.
           </Trans>
-        </p>
-      </div>
+        }
+      />
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">
-          <Trans>API Keys</Trans>
-        </h1>
-        <p className="text-sm text-muted-foreground">
+    <PageLayout>
+      <PageHeader
+        title={<Trans>API Keys</Trans>}
+        description={
           <Trans>
             Manage client IDs for this environment. Use these keys to
             authenticate SDK requests.
           </Trans>
-        </p>
-      </div>
+        }
+      />
 
       <EnvironmentKeys
         projectId={selectedProjectId}
         environmentId={selectedEnvironmentId}
         environmentName=""
       />
-    </div>
+    </PageLayout>
   );
 };
 

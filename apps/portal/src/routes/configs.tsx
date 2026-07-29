@@ -13,12 +13,14 @@ import {
   Trash2,
   Unlock,
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { ConfigFormModal } from "@/components/config-form-modal";
 import { EmptyState } from "@/components/empty-state";
+import { Kbd } from "@/components/kbd";
 import { PageHeader } from "@/components/page-header";
+import { PageLayout } from "@/components/page-layout";
 import { ValuePreview, getFullValue } from "@/components/value-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -164,6 +166,34 @@ const ConfigsPage = () => {
     );
   };
 
+  // Keyboard shortcuts
+  const openNewConfig = useCallback(() => {
+    if (envId) {
+      setEditingConfig(null);
+      setShowForm(true);
+    }
+  }, [envId]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Alt+N → New config
+      if (e.altKey && e.key.toLowerCase() === "n") {
+        e.preventDefault();
+        openNewConfig();
+      }
+      // "/" → Focus search
+      if (e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        const active = document.activeElement;
+        if (active?.tagName === "INPUT" || active?.tagName === "TEXTAREA") return;
+        e.preventDefault();
+        const searchInput = document.querySelector<HTMLInputElement>('input[placeholder]');
+        searchInput?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [openNewConfig]);
+
   if (!selectedProjectId) {
     return (
       <EmptyState
@@ -184,7 +214,7 @@ const ConfigsPage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <PageLayout maxWidth="5xl">
       <PageHeader
         title={<Trans>Configs</Trans>}
         description={
@@ -214,6 +244,7 @@ const ConfigsPage = () => {
             >
               <Plus className="h-4 w-4" />
               <Trans>Add Config</Trans>
+              <Kbd keys="Alt+N" />
             </Button>
           </>
         }
@@ -228,8 +259,11 @@ const ConfigsPage = () => {
               placeholder={t`Search configs...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="pl-9 pr-12"
             />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              <Kbd keys="/" />
+            </div>
           </div>
           <Select
             value={filterType}
@@ -481,7 +515,7 @@ const ConfigsPage = () => {
           )}
         </>
       )}
-    </div>
+    </PageLayout>
   );
 };
 

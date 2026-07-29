@@ -15,6 +15,7 @@ import { toast } from "sonner";
 
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
+import { PageLayout } from "@/components/page-layout";
 import { ResponsiveModal } from "@/components/responsive-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -283,7 +284,7 @@ const ComparePage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <PageLayout maxWidth="5xl">
       <PageHeader
         title={<Trans>Compare Environments</Trans>}
         description={<Trans>Diff configs between environments and sync changes.</Trans>}
@@ -616,7 +617,7 @@ const ComparePage = () => {
           </Button>
         </div>
       </ResponsiveModal>
-    </div>
+    </PageLayout>
   );
 };
 

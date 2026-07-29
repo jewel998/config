@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { DateDisplay } from "@/components/date-display";
 import { PageHeader } from "@/components/page-header";
+import { PageLayout } from "@/components/page-layout";
 import { SegmentedControl } from "@/components/segmented-control";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -342,7 +343,7 @@ const PreferencesPage = () => {
   const [tab, setTab] = useState<"preferences" | "account">("preferences");
 
   return (
-    <div className="space-y-6">
+    <PageLayout>
       <PageHeader
         title={<Trans>Preferences</Trans>}
         description={<Trans>Customize your portal experience.</Trans>}
@@ -365,7 +366,7 @@ const PreferencesPage = () => {
       )}
 
       {tab === "account" && <AccountCard />}
-    </div>
+    </PageLayout>
   );
 };
 
