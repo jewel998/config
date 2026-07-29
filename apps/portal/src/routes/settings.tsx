@@ -1,18 +1,22 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
-import { HelpCircle, Plus, Settings, Trash2 } from "lucide-react";
+import { HelpCircle, Pencil, Plus, Settings, Trash2 } from "lucide-react";
+import { marked } from "marked";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { doc, updateDoc } from "firebase/firestore";
 
+import { ColorPicker } from "@/components/color-picker";
 import { CopyButton } from "@/components/copy-button";
 import { DateDisplay } from "@/components/date-display";
+import { EmptyState } from "@/components/empty-state";
+import { EnvironmentForm } from "@/components/environment-form";
+import { PageHeader } from "@/components/page-header";
+import { SegmentedControl } from "@/components/segmented-control";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,20 +29,14 @@ import {
   useEnvironments,
   useCreateEnvironment,
   useDeleteEnvironment,
+  useUpdateEnvironment,
 } from "@/hooks/use-environments";
+import { useUpdateProjectDescription } from "@/hooks/use-project-description";
 import { useDeleteProject, useProjects } from "@/hooks/use-projects";
-import { db } from "@/lib/firebase";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
 
-const ENV_COLOR_PRESETS = [
-  "#ef4444",
-  "#f59e0b",
-  "#22c55e",
-  "#3b82f6",
-  "#8b5cf6",
-  "#6b7280",
-];
+// --- Sub-components ---
 
 const InfoCard = ({
   label,
@@ -72,119 +70,152 @@ const InfoCard = ({
   </div>
 );
 
-const SettingsPage = () => {
-  const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
-  const setSelectedProjectId = useProjectStore((s) => s.setSelectedProjectId);
-  const user = useAuthStore((s) => s.user);
-  const { data: projects, isLoading } = useProjects();
-  const deleteProject = useDeleteProject();
+// --- Description Section ---
 
-  const selectedProject = projects?.find((p) => p.id === selectedProjectId);
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [showEnvForm, setShowEnvForm] = useState(false);
-  const [envName, setEnvName] = useState("");
-  const [envDomains, setEnvDomains] = useState("");
-  const [envColor, setEnvColor] = useState(ENV_COLOR_PRESETS[5]);
-  const [envIsProduction, setEnvIsProduction] = useState(false);
-  const { data: environments = [] } = useEnvironments(selectedProjectId);
+const DescriptionSection = ({
+  projectId,
+  currentDescription,
+}: {
+  projectId: string;
+  currentDescription: string;
+}) => {
+  const [editing, setEditing] = useState(false);
+  const [description, setDescription] = useState(currentDescription);
+  const [descTab, setDescTab] = useState<"write" | "preview">("write");
+  const updateDescription = useUpdateProjectDescription();
+
+  const handleSave = () => {
+    updateDescription.mutate(
+      { projectId, description },
+      { onSuccess: () => setEditing(false) },
+    );
+  };
+
+  return (
+    <Card className="rounded-xl">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle className="text-base">
+          <Trans>Description</Trans>
+        </CardTitle>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="rounded-full"
+          onClick={() => {
+            if (!editing) setDescription(currentDescription);
+            setEditing(!editing);
+          }}
+        >
+          {editing ? <Trans>Cancel</Trans> : <Trans>Edit</Trans>}
+        </Button>
+      </CardHeader>
+      <CardContent>
+        {editing ? (
+          <div className="space-y-3">
+            <SegmentedControl
+              value={descTab}
+              onChange={setDescTab}
+              options={[
+                { value: "write", label: <Trans>Write</Trans> },
+                { value: "preview", label: <Trans>Preview</Trans> },
+              ]}
+              size="sm"
+            />
+            {descTab === "write" ? (
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder={t`Project description (markdown supported)`}
+                className="min-h-32 font-mono text-sm"
+              />
+            ) : (
+              <div
+                className="prose prose-sm dark:prose-invert min-h-32 rounded-lg border p-4"
+                dangerouslySetInnerHTML={{
+                  __html: marked(description || "") as string,
+                }}
+              />
+            )}
+            <Button
+              size="sm"
+              className="rounded-full"
+              onClick={handleSave}
+              disabled={updateDescription.isPending}
+            >
+              {updateDescription.isPending ? <Spinner /> : <Trans>Save</Trans>}
+            </Button>
+          </div>
+        ) : currentDescription ? (
+          <div
+            className="prose prose-sm dark:prose-invert"
+            dangerouslySetInnerHTML={{
+              __html: marked(currentDescription) as string,
+            }}
+          />
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            {t`No description yet.`}
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+// --- Environments Section ---
+
+const EnvironmentsSection = ({ projectId }: { projectId: string }) => {
+  const { data: environments = [] } = useEnvironments(projectId);
   const createEnv = useCreateEnvironment();
   const deleteEnv = useDeleteEnvironment();
+  const updateEnv = useUpdateEnvironment();
 
-  // Project description state
-  const [editingDesc, setEditingDesc] = useState(false);
-  const [description, setDescription] = useState(
-    selectedProject?.description || "",
-  );
-  const [savingDesc, setSavingDesc] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [editingEnvId, setEditingEnvId] = useState<string | null>(null);
 
-  if (!selectedProjectId) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-4 py-24">
-        <div className="rounded-full bg-muted p-4">
-          <Settings className="h-8 w-8 text-muted-foreground" />
-        </div>
-        <p className="text-sm text-muted-foreground">
-          <Trans>Select a project to view settings.</Trans>
-        </p>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-4 w-64" />
-        <Skeleton className="h-48 rounded-xl" />
-      </div>
-    );
-  }
-
-  if (!selectedProject) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-4 py-24">
-        <div className="rounded-full bg-muted p-4">
-          <Settings className="h-8 w-8 text-muted-foreground" />
-        </div>
-        <p className="text-sm text-muted-foreground">
-          <Trans>Project not found.</Trans>
-        </p>
-      </div>
-    );
-  }
-
-  const handleDelete = () => {
-    if (!confirmDelete) {
-      setConfirmDelete(true);
-      setTimeout(() => setConfirmDelete(false), 5000);
-      return;
-    }
-    deleteProject.mutate(selectedProjectId, {
-      onSuccess: () => {
-        setSelectedProjectId(null);
-        toast.success(t`Project deleted`);
-      },
-      onError: () => {
-        toast.error(t`Failed to delete project`);
-      },
-    });
-  };
-
-  const handleCreateEnv = () => {
-    if (!envName.trim() || !selectedProjectId) return;
-    const domains = envDomains
-      .split(",")
-      .map((d) => d.trim())
-      .filter(Boolean);
+  const handleCreate = (values: {
+    name: string;
+    allowedDomains: string[];
+    color: string;
+    isProduction: boolean;
+  }) => {
     createEnv.mutate(
-      {
-        projectId: selectedProjectId,
-        name: envName,
-        allowedDomains: domains,
-        color: envColor,
-        isProduction: envIsProduction,
-      },
+      { projectId, ...values },
       {
         onSuccess: () => {
-          setEnvName("");
-          setEnvDomains("");
-          setEnvColor(ENV_COLOR_PRESETS[5]);
-          setEnvIsProduction(false);
-          setShowEnvForm(false);
+          setShowForm(false);
           toast.success(t`Environment created`);
         },
-        onError: () => {
-          toast.error(t`Failed to create environment`);
-        },
+        onError: () => toast.error(t`Failed to create environment`),
       },
     );
   };
 
-  const handleDeleteEnv = (envId: string) => {
-    if (!selectedProjectId) return;
+  const handleUpdate = (
+    envId: string,
+    values: {
+      name: string;
+      allowedDomains: string[];
+      color: string;
+      isProduction: boolean;
+    },
+  ) => {
+    updateEnv.mutate(
+      { projectId, envId, data: values },
+      {
+        onSuccess: () => {
+          setEditingEnvId(null);
+          toast.success(t`Environment updated`);
+        },
+        onError: () => toast.error(t`Failed to update environment`),
+      },
+    );
+  };
+
+  const handleDelete = (envId: string) => {
     const env = environments.find((e) => e.id === envId);
     deleteEnv.mutate(
-      { projectId: selectedProjectId, envId },
+      { projectId, envId },
       {
         onSuccess: () => {
           toast.success(t`Environment deleted`, {
@@ -193,7 +224,7 @@ const SettingsPage = () => {
               onClick: () => {
                 if (env) {
                   createEnv.mutate({
-                    projectId: selectedProjectId!,
+                    projectId,
                     name: env.name,
                     allowedDomains: env.allowedDomains,
                     color: env.color,
@@ -210,23 +241,211 @@ const SettingsPage = () => {
     );
   };
 
-  const handleSaveDescription = async () => {
-    if (!selectedProjectId) return;
-    setSavingDesc(true);
-    try {
-      const projectRef = doc(db, "projects", selectedProjectId);
-      await updateDoc(projectRef, {
-        description,
-        updatedAt: new Date().toISOString(),
-      });
-      toast.success(t`Description saved`);
-      setEditingDesc(false);
-    } catch {
-      toast.error(t`Failed to save description`);
-    } finally {
-      setSavingDesc(false);
+  return (
+    <Card className="rounded-xl">
+      <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <CardTitle className="text-base">
+          <Trans>Environments</Trans>
+        </CardTitle>
+        <Button
+          size="sm"
+          className="rounded-full gap-2"
+          onClick={() => setShowForm(true)}
+        >
+          <Plus className="h-3.5 w-3.5" />
+          <Trans>Add</Trans>
+        </Button>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {showForm && (
+          <EnvironmentForm
+            onSubmit={handleCreate}
+            onCancel={() => setShowForm(false)}
+            isPending={createEnv.isPending}
+            submitLabel={<Trans>Create</Trans>}
+          />
+        )}
+
+        {environments.length === 0 && !showForm && (
+          <p className="py-4 text-center text-sm text-muted-foreground">
+            <Trans>No environments yet.</Trans>
+          </p>
+        )}
+
+        {environments.map((env) => (
+          <div key={env.id}>
+            {editingEnvId === env.id ? (
+              <EnvironmentForm
+                initialValues={{
+                  name: env.name,
+                  allowedDomains: env.allowedDomains,
+                  color: env.color,
+                  isProduction: env.isProduction,
+                }}
+                onSubmit={(values) => handleUpdate(env.id, values)}
+                onCancel={() => setEditingEnvId(null)}
+                isPending={updateEnv.isPending}
+              />
+            ) : (
+              <div className="flex items-center justify-between rounded-lg border p-3">
+                <div className="min-w-0 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="h-2 w-2 shrink-0 rounded-full"
+                      style={{ backgroundColor: env.color || "#9ca3af" }}
+                    />
+                    <p className="text-sm font-medium">{env.name}</p>
+                    {env.isProduction && (
+                      <Badge
+                        variant="secondary"
+                        className="rounded-full text-xs"
+                      >
+                        <Trans>Production</Trans>
+                      </Badge>
+                    )}
+                  </div>
+                  {env.allowedDomains.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {env.allowedDomains.map((d) => (
+                        <Badge
+                          key={d}
+                          variant="secondary"
+                          className="rounded-full text-xs"
+                        >
+                          {d}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-1">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon-xs"
+                        onClick={() => setEditingEnvId(env.id)}
+                        aria-label={t`Edit`}
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{t`Edit`}</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon-xs"
+                        onClick={() => handleDelete(env.id)}
+                        aria-label={t`Delete`}
+                      >
+                        <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{t`Delete`}</TooltipContent>
+                  </Tooltip>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+};
+
+// --- Danger Zone ---
+
+const DangerZone = ({ projectId }: { projectId: string }) => {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const deleteProject = useDeleteProject();
+  const setSelectedProjectId = useProjectStore((s) => s.setSelectedProjectId);
+
+  const handleDelete = () => {
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      setTimeout(() => setConfirmDelete(false), 5000);
+      return;
     }
+    deleteProject.mutate(projectId, {
+      onSuccess: () => {
+        setSelectedProjectId(null);
+        toast.success(t`Project deleted`);
+      },
+      onError: () => toast.error(t`Failed to delete project`),
+    });
   };
+
+  return (
+    <Card className="rounded-xl border-destructive/30">
+      <CardHeader>
+        <CardTitle className="text-base text-destructive">
+          <Trans>Danger Zone</Trans>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-sm text-muted-foreground">
+          <Trans>
+            Deleting a project is irreversible. All environments, configs, and
+            API keys will become inaccessible.
+          </Trans>
+        </p>
+        <Button
+          variant="destructive"
+          className="min-w-28 rounded-full"
+          onClick={handleDelete}
+          disabled={deleteProject.isPending}
+        >
+          {deleteProject.isPending ? (
+            <Spinner />
+          ) : confirmDelete ? (
+            <Trans>Confirm Delete?</Trans>
+          ) : (
+            <Trans>Delete Project</Trans>
+          )}
+        </Button>
+      </CardContent>
+    </Card>
+  );
+};
+
+// --- Main Page ---
+
+const SettingsPage = () => {
+  const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
+  const user = useAuthStore((s) => s.user);
+  const { data: projects, isLoading } = useProjects();
+
+  const selectedProject = projects?.find((p) => p.id === selectedProjectId);
+
+  if (!selectedProjectId) {
+    return (
+      <EmptyState
+        icon={Settings}
+        message={<Trans>Select a project to view settings.</Trans>}
+      />
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-4 w-64" />
+        <Skeleton className="h-48 rounded-xl" />
+      </div>
+    );
+  }
+
+  if (!selectedProject) {
+    return (
+      <EmptyState
+        icon={Settings}
+        message={<Trans>Project not found.</Trans>}
+      />
+    );
+  }
 
   const ownerEmail =
     selectedProject.ownerId === user?.uid
@@ -236,14 +455,10 @@ const SettingsPage = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">
-          <Trans>Project Settings</Trans>
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          <Trans>Manage project configuration and team access.</Trans>
-        </p>
-      </div>
+      <PageHeader
+        title={<Trans>Project Settings</Trans>}
+        description={<Trans>Manage project configuration and team access.</Trans>}
+      />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <InfoCard
@@ -276,221 +491,14 @@ const SettingsPage = () => {
         />
       </div>
 
-      {/* Project Description */}
-      <Card className="rounded-xl">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-base">
-            <Trans>Description</Trans>
-          </CardTitle>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="rounded-full"
-            onClick={() => {
-              if (!editingDesc) {
-                setDescription(selectedProject.description || "");
-              }
-              setEditingDesc(!editingDesc);
-            }}
-          >
-            {editingDesc ? <Trans>Cancel</Trans> : <Trans>Edit</Trans>}
-          </Button>
-        </CardHeader>
-        <CardContent>
-          {editingDesc ? (
-            <div className="space-y-3">
-              <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder={t`Project description (supports markdown)`}
-                className="min-h-24"
-              />
-              <Button
-                size="sm"
-                className="rounded-full"
-                onClick={handleSaveDescription}
-                disabled={savingDesc}
-              >
-                {savingDesc ? <Spinner /> : <Trans>Save</Trans>}
-              </Button>
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-              {selectedProject.description || t`No description yet.`}
-            </p>
-          )}
-        </CardContent>
-      </Card>
+      <DescriptionSection
+        projectId={selectedProjectId}
+        currentDescription={selectedProject.description || ""}
+      />
 
-      <Card className="rounded-xl">
-        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle className="text-base">
-            <Trans>Environments</Trans>
-          </CardTitle>
-          <Button
-            size="sm"
-            className="rounded-full gap-2"
-            onClick={() => setShowEnvForm(true)}
-          >
-            <Plus className="h-3.5 w-3.5" />
-            <Trans>Add</Trans>
-          </Button>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {showEnvForm && (
-            <div className="space-y-3 rounded-lg border p-3">
-              <Input
-                placeholder={t`Environment name`}
-                value={envName}
-                onChange={(e) => setEnvName(e.target.value)}
-              />
-              <Input
-                placeholder={t`Allowed domains (comma-separated)`}
-                value={envDomains}
-                onChange={(e) => setEnvDomains(e.target.value)}
-              />
-              {/* Color picker */}
-              <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground">
-                  <Trans>Color</Trans>
-                </p>
-                <div className="flex gap-2">
-                  {ENV_COLOR_PRESETS.map((color) => (
-                    <button
-                      key={color}
-                      type="button"
-                      className={`h-6 w-6 rounded-full border-2 transition-all ${
-                        envColor === color
-                          ? "border-foreground scale-110"
-                          : "border-transparent"
-                      }`}
-                      style={{ backgroundColor: color }}
-                      onClick={() => setEnvColor(color)}
-                      aria-label={color}
-                    />
-                  ))}
-                </div>
-              </div>
-              {/* Production toggle */}
-              <label className="flex items-center gap-2 text-sm cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={envIsProduction}
-                  onChange={(e) => setEnvIsProduction(e.target.checked)}
-                  className="rounded"
-                />
-                <Trans>Production environment</Trans>
-              </label>
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  className="rounded-full"
-                  onClick={handleCreateEnv}
-                  disabled={createEnv.isPending || !envName.trim()}
-                >
-                  {createEnv.isPending ? <Spinner /> : <Trans>Create</Trans>}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="rounded-full"
-                  onClick={() => {
-                    setShowEnvForm(false);
-                    setEnvName("");
-                    setEnvDomains("");
-                    setEnvColor(ENV_COLOR_PRESETS[5]);
-                    setEnvIsProduction(false);
-                  }}
-                >
-                  <Trans>Cancel</Trans>
-                </Button>
-              </div>
-            </div>
-          )}
-          {environments.length === 0 && !showEnvForm && (
-            <p className="py-4 text-center text-sm text-muted-foreground">
-              <Trans>No environments yet.</Trans>
-            </p>
-          )}
-          {environments.map((env) => (
-            <div
-              key={env.id}
-              className="flex items-center justify-between rounded-lg border p-3"
-            >
-              <div className="min-w-0 space-y-1">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="h-2 w-2 shrink-0 rounded-full"
-                    style={{ backgroundColor: env.color || "#9ca3af" }}
-                  />
-                  <p className="text-sm font-medium">{env.name}</p>
-                  {env.isProduction && (
-                    <Badge variant="secondary" className="rounded-full text-xs">
-                      <Trans>Production</Trans>
-                    </Badge>
-                  )}
-                </div>
-                {env.allowedDomains.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {env.allowedDomains.map((d) => (
-                      <Badge
-                        key={d}
-                        variant="secondary"
-                        className="rounded-full text-xs"
-                      >
-                        {d}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    onClick={() => handleDeleteEnv(env.id)}
-                    aria-label="Delete"
-                  >
-                    <Trash2 className="h-3.5 w-3.5 text-destructive" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Delete</TooltipContent>
-              </Tooltip>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      <EnvironmentsSection projectId={selectedProjectId} />
 
-      <Card className="rounded-xl border-destructive/30">
-        <CardHeader>
-          <CardTitle className="text-base text-destructive">
-            <Trans>Danger Zone</Trans>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            <Trans>
-              Deleting a project is irreversible. All environments, configs, and
-              API keys will become inaccessible.
-            </Trans>
-          </p>
-          <Button
-            variant="destructive"
-            className="min-w-28 rounded-full"
-            onClick={handleDelete}
-            disabled={deleteProject.isPending}
-          >
-            {deleteProject.isPending ? (
-              <Spinner />
-            ) : confirmDelete ? (
-              <Trans>Confirm Delete?</Trans>
-            ) : (
-              <Trans>Delete Project</Trans>
-            )}
-          </Button>
-        </CardContent>
-      </Card>
+      <DangerZone projectId={selectedProjectId} />
     </div>
   );
 };

@@ -8,170 +8,170 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as ApiKeysRouteImport } from "./routes/api-keys";
-import { Route as CompareRouteImport } from "./routes/compare";
-import { Route as ConfigsRouteImport } from "./routes/configs";
-import { Route as EnvironmentsRouteImport } from "./routes/environments";
-import { Route as PreferencesRouteImport } from "./routes/preferences";
-import { Route as SettingsRouteImport } from "./routes/settings";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiKeysRouteImport } from './routes/api-keys'
+import { Route as CompareRouteImport } from './routes/compare'
+import { Route as ConfigsRouteImport } from './routes/configs'
+import { Route as EnvironmentsRouteImport } from './routes/environments'
+import { Route as PreferencesRouteImport } from './routes/preferences'
+import { Route as SettingsRouteImport } from './routes/settings'
 
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiKeysRoute = ApiKeysRouteImport.update({
-  id: "/api-keys",
-  path: "/api-keys",
+  id: '/api-keys',
+  path: '/api-keys',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const CompareRoute = CompareRouteImport.update({
-  id: "/compare",
-  path: "/compare",
+  id: '/compare',
+  path: '/compare',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ConfigsRoute = ConfigsRouteImport.update({
-  id: "/configs",
-  path: "/configs",
+  id: '/configs',
+  path: '/configs',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const EnvironmentsRoute = EnvironmentsRouteImport.update({
-  id: "/environments",
-  path: "/environments",
+  id: '/environments',
+  path: '/environments',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const PreferencesRoute = PreferencesRouteImport.update({
-  id: "/preferences",
-  path: "/preferences",
+  id: '/preferences',
+  path: '/preferences',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
-  id: "/settings",
-  path: "/settings",
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/api-keys": typeof ApiKeysRoute;
-  "/compare": typeof CompareRoute;
-  "/configs": typeof ConfigsRoute;
-  "/environments": typeof EnvironmentsRoute;
-  "/preferences": typeof PreferencesRoute;
-  "/settings": typeof SettingsRoute;
+  '/': typeof IndexRoute
+  '/api-keys': typeof ApiKeysRoute
+  '/compare': typeof CompareRoute
+  '/configs': typeof ConfigsRoute
+  '/environments': typeof EnvironmentsRoute
+  '/preferences': typeof PreferencesRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/api-keys": typeof ApiKeysRoute;
-  "/compare": typeof CompareRoute;
-  "/configs": typeof ConfigsRoute;
-  "/environments": typeof EnvironmentsRoute;
-  "/preferences": typeof PreferencesRoute;
-  "/settings": typeof SettingsRoute;
+  '/': typeof IndexRoute
+  '/api-keys': typeof ApiKeysRoute
+  '/compare': typeof CompareRoute
+  '/configs': typeof ConfigsRoute
+  '/environments': typeof EnvironmentsRoute
+  '/preferences': typeof PreferencesRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/api-keys": typeof ApiKeysRoute;
-  "/compare": typeof CompareRoute;
-  "/configs": typeof ConfigsRoute;
-  "/environments": typeof EnvironmentsRoute;
-  "/preferences": typeof PreferencesRoute;
-  "/settings": typeof SettingsRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/api-keys': typeof ApiKeysRoute
+  '/compare': typeof CompareRoute
+  '/configs': typeof ConfigsRoute
+  '/environments': typeof EnvironmentsRoute
+  '/preferences': typeof PreferencesRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | "/"
-    | "/api-keys"
-    | "/compare"
-    | "/configs"
-    | "/environments"
-    | "/preferences"
-    | "/settings";
-  fileRoutesByTo: FileRoutesByTo;
+    | '/'
+    | '/api-keys'
+    | '/compare'
+    | '/configs'
+    | '/environments'
+    | '/preferences'
+    | '/settings'
+  fileRoutesByTo: FileRoutesByTo
   to:
-    | "/"
-    | "/api-keys"
-    | "/compare"
-    | "/configs"
-    | "/environments"
-    | "/preferences"
-    | "/settings";
+    | '/'
+    | '/api-keys'
+    | '/compare'
+    | '/configs'
+    | '/environments'
+    | '/preferences'
+    | '/settings'
   id:
-    | "__root__"
-    | "/"
-    | "/api-keys"
-    | "/compare"
-    | "/configs"
-    | "/environments"
-    | "/preferences"
-    | "/settings";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/'
+    | '/api-keys'
+    | '/compare'
+    | '/configs'
+    | '/environments'
+    | '/preferences'
+    | '/settings'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  ApiKeysRoute: typeof ApiKeysRoute;
-  CompareRoute: typeof CompareRoute;
-  ConfigsRoute: typeof ConfigsRoute;
-  EnvironmentsRoute: typeof EnvironmentsRoute;
-  PreferencesRoute: typeof PreferencesRoute;
-  SettingsRoute: typeof SettingsRoute;
+  IndexRoute: typeof IndexRoute
+  ApiKeysRoute: typeof ApiKeysRoute
+  CompareRoute: typeof CompareRoute
+  ConfigsRoute: typeof ConfigsRoute
+  EnvironmentsRoute: typeof EnvironmentsRoute
+  PreferencesRoute: typeof PreferencesRoute
+  SettingsRoute: typeof SettingsRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api-keys": {
-      id: "/api-keys";
-      path: "/api-keys";
-      fullPath: "/api-keys";
-      preLoaderRoute: typeof ApiKeysRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/compare": {
-      id: "/compare";
-      path: "/compare";
-      fullPath: "/compare";
-      preLoaderRoute: typeof CompareRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/configs": {
-      id: "/configs";
-      path: "/configs";
-      fullPath: "/configs";
-      preLoaderRoute: typeof ConfigsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/environments": {
-      id: "/environments";
-      path: "/environments";
-      fullPath: "/environments";
-      preLoaderRoute: typeof EnvironmentsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/preferences": {
-      id: "/preferences";
-      path: "/preferences";
-      fullPath: "/preferences";
-      preLoaderRoute: typeof PreferencesRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/settings": {
-      id: "/settings";
-      path: "/settings";
-      fullPath: "/settings";
-      preLoaderRoute: typeof SettingsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api-keys': {
+      id: '/api-keys'
+      path: '/api-keys'
+      fullPath: '/api-keys'
+      preLoaderRoute: typeof ApiKeysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compare': {
+      id: '/compare'
+      path: '/compare'
+      fullPath: '/compare'
+      preLoaderRoute: typeof CompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/configs': {
+      id: '/configs'
+      path: '/configs'
+      fullPath: '/configs'
+      preLoaderRoute: typeof ConfigsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/environments': {
+      id: '/environments'
+      path: '/environments'
+      fullPath: '/environments'
+      preLoaderRoute: typeof EnvironmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preferences': {
+      id: '/preferences'
+      path: '/preferences'
+      fullPath: '/preferences'
+      preLoaderRoute: typeof PreferencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,7 +183,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnvironmentsRoute: EnvironmentsRoute,
   PreferencesRoute: PreferencesRoute,
   SettingsRoute: SettingsRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()

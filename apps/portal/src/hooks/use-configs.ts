@@ -7,58 +7,17 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { z } from "zod";
 
 import { db } from "@/lib/firebase";
+import {
+  type ConfigEntry,
+  configKeySchema,
+  configValueSchema,
+} from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
 
-export interface ConfigEntry {
-  key: string;
-  value: unknown;
-  valueType: "string" | "number" | "boolean" | "json" | "array";
-  version: string;
-  publishedAt: string;
-  updatedAt: string;
-  updatedBy: string;
-  locked?: boolean;
-}
-
-export const configValueSchema = z.discriminatedUnion("valueType", [
-  z.object({ valueType: z.literal("string"), value: z.string() }),
-  z.object({ valueType: z.literal("number"), value: z.number() }),
-  z.object({ valueType: z.literal("boolean"), value: z.boolean() }),
-  z.object({
-    valueType: z.literal("json"),
-    value: z.string().refine((v) => {
-      try {
-        JSON.parse(v);
-        return true;
-      } catch {
-        return false;
-      }
-    }, "Invalid JSON"),
-  }),
-  z.object({
-    valueType: z.literal("array"),
-    value: z.string().refine((v) => {
-      try {
-        const p = JSON.parse(v);
-        return Array.isArray(p);
-      } catch {
-        return false;
-      }
-    }, "Must be a valid JSON array"),
-  }),
-]);
-
-export const configKeySchema = z
-  .string()
-  .min(1, "Key is required")
-  .max(100, "Key must be 100 characters or less")
-  .regex(
-    /^[a-zA-Z0-9._]+$/,
-    "Only alphanumeric, dots, and underscores allowed",
-  );
+export type { ConfigEntry };
+export { configKeySchema, configValueSchema };
 
 export const useConfigs = (
   projectId: string | null,

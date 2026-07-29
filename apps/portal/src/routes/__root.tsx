@@ -43,6 +43,7 @@ import {
 import { useTheme } from "@/lib/theme";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
+import { cn } from "@/lib/utils";
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
@@ -82,17 +83,20 @@ const LanguageSwitcher = () => {
       <PopoverContent className="w-40 p-1" align="end">
         {(Object.entries(localeNames) as [SupportedLocale, string][]).map(
           ([code, name]) => (
-            <button
+            <Button
               key={code}
+              variant="ghost"
+              size="sm"
               onClick={() => handleChange(code)}
-              className={`flex w-full items-center rounded-md px-3 py-1.5 text-sm transition-colors hover:bg-accent ${
+              className={cn(
+                "w-full justify-start rounded-md px-3 py-1.5 text-sm h-auto",
                 currentLocale === code
                   ? "bg-primary/10 font-medium text-primary"
-                  : "text-muted-foreground"
-              }`}
+                  : "text-muted-foreground",
+              )}
             >
               {name}
-            </button>
+            </Button>
           ),
         )}
       </PopoverContent>

@@ -9,16 +9,10 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
+import type { ApiKey } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
 
-export interface ApiKey {
-  token: string;
-  status: "active" | "revoked";
-  label: string;
-  createdAt: string;
-  revokedAt: string | null;
-  createdBy: string;
-}
+export type { ApiKey };
 
 const generateToken = (): string => {
   const chars =
