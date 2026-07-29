@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "lingui compile && vite build",
+    "build": "lingui extract && lingui compile && vite build",
     "preview": "vite preview",
     "lint": "oxlint src"
   },
