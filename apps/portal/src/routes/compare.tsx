@@ -4,12 +4,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
+  ArrowLeftRight,
   Check,
   GitCompare,
   Minus,
   Plus,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { ResponsiveModal } from "@/components/responsive-modal";
@@ -74,6 +75,7 @@ const formatValue = (value: unknown): string => {
 
 const ComparePage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
+  const selectedEnvironmentId = useProjectStore((s) => s.selectedEnvironmentId);
   const { data: environments = [], isLoading: envsLoading } =
     useEnvironments(selectedProjectId);
   const promoteConfigs = usePromoteConfigs();
@@ -83,6 +85,19 @@ const ComparePage = () => {
   const [actions, setActions] = useState<Map<string, SyncDirection>>(new Map());
   const [showIdentical, setShowIdentical] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+
+  // Default the source (from) environment to the currently selected environment
+  useEffect(() => {
+    if (selectedEnvironmentId && !sourceEnvId) {
+      setSourceEnvId(selectedEnvironmentId);
+    }
+  }, [selectedEnvironmentId, sourceEnvId]);
+
+  const swapEnvironments = () => {
+    setSourceEnvId(targetEnvId);
+    setTargetEnvId(sourceEnvId);
+    setActions(new Map());
+  };
 
   const { data: sourceConfigs = [], isLoading: sourceLoading } = useConfigs(
     selectedProjectId,
@@ -306,6 +321,17 @@ const ComparePage = () => {
         </Select>
 
         <ArrowRight className="mx-2 hidden h-4 w-4 text-muted-foreground sm:block" />
+
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 rounded-full p-0"
+          onClick={swapEnvironments}
+          disabled={!sourceEnvId && !targetEnvId}
+          aria-label={t`Swap environments`}
+        >
+          <ArrowLeftRight className="h-4 w-4" />
+        </Button>
 
         <Select
           value={targetEnvId}
