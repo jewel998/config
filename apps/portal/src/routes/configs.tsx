@@ -4,20 +4,25 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ChevronDown,
   ChevronRight,
+  Clock,
+  Copy,
   GitCompare,
   Layers,
   Lock,
   Pencil,
+  Pin,
+  PinOff,
   Plus,
   Search,
   Trash2,
   Unlock,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { ConfigFormModal } from "@/components/config-form-modal";
 import { EmptyState } from "@/components/empty-state";
+import { JsonHighlight } from "@/components/json-highlight";
 import { Kbd } from "@/components/kbd";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
@@ -57,7 +62,13 @@ import {
   useToggleConfigLock,
 } from "@/hooks/use-configs";
 import { useEnvironments } from "@/hooks/use-environments";
+import { usePinnedConfigs } from "@/hooks/use-pinned-configs";
 import { CONFIG_TEMPLATES } from "@/lib/constants";
+import {
+  getStalenessLevel,
+  getStalenessLabel,
+  getStalenessColor,
+} from "@/lib/stale-detection";
 import { useProjectStore } from "@/stores/project-store";
 
 type ValueType = ConfigEntry["valueType"];
@@ -71,6 +82,9 @@ const FILTER_TYPES: Array<ValueType | "all"> = [
   "array",
 ];
 
+const FILTER_STALENESS = ["all", "fresh", "aging", "stale"] as const;
+type FilterStaleness = (typeof FILTER_STALENESS)[number];
+
 const ConfigsPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const selectedEnvironmentId = useProjectStore((s) => s.selectedEnvironmentId);
@@ -80,8 +94,12 @@ const ConfigsPage = () => {
   const envId = selectedEnvironmentId;
   const [showForm, setShowForm] = useState(false);
   const [editingConfig, setEditingConfig] = useState<ConfigEntry | null>(null);
+  const [duplicatingConfig, setDuplicatingConfig] =
+    useState<ConfigEntry | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<ValueType | "all">("all");
+  const [filterStaleness, setFilterStaleness] =
+    useState<FilterStaleness>("all");
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
 
   const { data: configs = [], isLoading: configsLoading } = useConfigs(
@@ -94,15 +112,33 @@ const ConfigsPage = () => {
   const setConfigForUndo = useSetConfig();
   const promoteConfigs = usePromoteConfigs();
 
+  const { pinned, isPinned, togglePin } = usePinnedConfigs(
+    selectedProjectId,
+    envId,
+  );
+
   const currentEnv = environments.find((e) => e.id === envId);
   const isProductionEnv = currentEnv?.isProduction ?? false;
 
-  const filteredConfigs = configs.filter((c) => {
-    const matchesSearch =
-      !searchQuery || c.key.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = filterType === "all" || c.valueType === filterType;
-    return matchesSearch && matchesType;
-  });
+  const filteredConfigs = useMemo(() => {
+    const filtered = configs.filter((c) => {
+      const matchesSearch =
+        !searchQuery || c.key.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesType = filterType === "all" || c.valueType === filterType;
+      const staleness = getStalenessLevel(c.updatedAt);
+      const matchesStaleness =
+        filterStaleness === "all" || staleness === filterStaleness;
+      return matchesSearch && matchesType && matchesStaleness;
+    });
+
+    // Sort: pinned first, then alphabetical
+    return filtered.sort((a, b) => {
+      const aPinned = pinned.includes(a.key) ? 0 : 1;
+      const bPinned = pinned.includes(b.key) ? 0 : 1;
+      if (aPinned !== bPinned) return aPinned - bPinned;
+      return a.key.localeCompare(b.key);
+    });
+  }, [configs, searchQuery, filterType, filterStaleness, pinned]);
 
   const handleDelete = (key: string) => {
     if (!selectedProjectId || !envId) return;
@@ -153,6 +189,12 @@ const ConfigsPage = () => {
     });
   };
 
+  const handleDuplicate = (config: ConfigEntry) => {
+    setDuplicatingConfig(config);
+    setEditingConfig(null);
+    setShowForm(true);
+  };
+
   const applyTemplate = (templateId: string) => {
     if (!selectedProjectId || !envId) return;
     const template = CONFIG_TEMPLATES[templateId];
@@ -166,32 +208,42 @@ const ConfigsPage = () => {
     );
   };
 
-  // Keyboard shortcuts
+  // Keyboard shortcuts — use ⌘+N on Mac, Ctrl+N on Windows/Linux
   const openNewConfig = useCallback(() => {
     if (envId) {
       setEditingConfig(null);
+      setDuplicatingConfig(null);
       setShowForm(true);
     }
   }, [envId]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Alt+N → New config
-      if (e.altKey && e.key.toLowerCase() === "n") {
+      // ⌘/Ctrl+N → New config (cross-platform)
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "n") {
         e.preventDefault();
         openNewConfig();
       }
       // "/" → Focus search
       if (e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey) {
         const active = document.activeElement;
-        if (active?.tagName === "INPUT" || active?.tagName === "TEXTAREA") return;
+        if (active?.tagName === "INPUT" || active?.tagName === "TEXTAREA")
+          return;
         e.preventDefault();
-        const searchInput = document.querySelector<HTMLInputElement>('input[placeholder]');
+        const searchInput =
+          document.querySelector<HTMLInputElement>("input[placeholder]");
         searchInput?.focus();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [openNewConfig]);
+
+  // Listen for command palette "open-new-config" event
+  useEffect(() => {
+    const handler = () => openNewConfig();
+    window.addEventListener("open-new-config", handler);
+    return () => window.removeEventListener("open-new-config", handler);
   }, [openNewConfig]);
 
   if (!selectedProjectId) {
@@ -238,19 +290,20 @@ const ConfigsPage = () => {
               className="gap-2 rounded-full"
               onClick={() => {
                 setEditingConfig(null);
+                setDuplicatingConfig(null);
                 setShowForm(true);
               }}
               disabled={!envId}
             >
               <Plus className="h-4 w-4" />
               <Trans>Add Config</Trans>
-              <Kbd keys="Alt+N" />
+              <Kbd keys="meta+n" />
             </Button>
           </>
         }
       />
 
-      {/* Toolbar: search + type filter */}
+      {/* Toolbar: search + type filter + staleness filter */}
       {environments.length > 0 && (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
@@ -280,6 +333,20 @@ const ConfigsPage = () => {
               ))}
             </SelectContent>
           </Select>
+          <Select
+            value={filterStaleness}
+            onValueChange={(v) => setFilterStaleness(v as FilterStaleness)}
+          >
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t`All ages`}</SelectItem>
+              <SelectItem value="fresh">{t`Fresh`}</SelectItem>
+              <SelectItem value="aging">{t`Aging`}</SelectItem>
+              <SelectItem value="stale">{t`Stale`}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       )}
 
@@ -304,11 +371,15 @@ const ConfigsPage = () => {
           open={showForm}
           onOpenChange={(open) => {
             setShowForm(open);
-            if (!open) setEditingConfig(null);
+            if (!open) {
+              setEditingConfig(null);
+              setDuplicatingConfig(null);
+            }
           }}
           projectId={selectedProjectId}
           environmentId={envId}
           editingConfig={editingConfig}
+          duplicateFrom={duplicatingConfig}
           isProductionEnv={isProductionEnv}
         />
       )}
@@ -359,6 +430,7 @@ const ConfigsPage = () => {
                       className="gap-2 rounded-full"
                       onClick={() => {
                         setEditingConfig(null);
+                        setDuplicatingConfig(null);
                         setShowForm(true);
                       }}
                     >
@@ -396,7 +468,7 @@ const ConfigsPage = () => {
                     <>
                       <TableRow
                         key={config.key}
-                        className="cursor-pointer"
+                        className={`cursor-pointer ${isPinned(config.key) ? "bg-primary/5" : ""}`}
                         onClick={() =>
                           setExpandedKey(
                             expandedKey === config.key ? null : config.key,
@@ -411,7 +483,12 @@ const ConfigsPage = () => {
                           )}
                         </TableCell>
                         <TableCell className="font-mono text-sm font-medium">
-                          {config.key}
+                          <div className="flex items-center gap-2">
+                            {isPinned(config.key) && (
+                              <Pin className="h-3 w-3 text-primary" />
+                            )}
+                            {config.key}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <Badge
@@ -425,15 +502,63 @@ const ConfigsPage = () => {
                           <ValuePreview config={config} />
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">
-                          {config.updatedAt
-                            ? new Date(config.updatedAt).toLocaleDateString()
-                            : "—"}
+                          <div className="flex items-center gap-1.5">
+                            {config.updatedAt
+                              ? new Date(config.updatedAt).toLocaleDateString()
+                              : "—"}
+                            {(() => {
+                              const level = getStalenessLevel(config.updatedAt);
+                              if (level === "fresh") return null;
+                              return (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span>
+                                      <Clock
+                                        className={`h-3 w-3 ${
+                                          level === "stale"
+                                            ? "text-red-500"
+                                            : "text-amber-500"
+                                        }`}
+                                      />
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    {getStalenessLabel(level)}
+                                  </TooltipContent>
+                                </Tooltip>
+                              );
+                            })()}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <div
                             className="flex items-center gap-1"
                             onClick={(e) => e.stopPropagation()}
                           >
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 rounded-full"
+                                  onClick={() => togglePin(config.key)}
+                                  aria-label={
+                                    isPinned(config.key) ? t`Unpin` : t`Pin`
+                                  }
+                                >
+                                  {isPinned(config.key) ? (
+                                    <PinOff className="h-3.5 w-3.5 text-primary" />
+                                  ) : (
+                                    <Pin className="h-3.5 w-3.5 text-muted-foreground" />
+                                  )}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                {isPinned(config.key)
+                                  ? t`Unpin`
+                                  : t`Pin to top`}
+                              </TooltipContent>
+                            </Tooltip>
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <Button
@@ -462,8 +587,23 @@ const ConfigsPage = () => {
                                   variant="ghost"
                                   size="icon"
                                   className="h-8 w-8 rounded-full"
+                                  onClick={() => handleDuplicate(config)}
+                                  aria-label={t`Duplicate`}
+                                >
+                                  <Copy className="h-3.5 w-3.5 text-muted-foreground" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>{t`Duplicate`}</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 rounded-full"
                                   onClick={() => {
                                     setEditingConfig(config);
+                                    setDuplicatingConfig(null);
                                     setShowForm(true);
                                   }}
                                   disabled={config.locked}
@@ -501,9 +641,14 @@ const ConfigsPage = () => {
                       {expandedKey === config.key && (
                         <TableRow key={`${config.key}-expanded`}>
                           <TableCell colSpan={6} className="bg-muted/30 p-4">
-                            <pre className="max-h-48 overflow-auto rounded-xl border bg-background p-4 font-mono text-xs">
-                              {getFullValue(config)}
-                            </pre>
+                            {config.valueType === "json" ||
+                            config.valueType === "array" ? (
+                              <JsonHighlight value={getFullValue(config)} />
+                            ) : (
+                              <pre className="max-h-48 overflow-auto rounded-xl border bg-background p-4 font-mono text-xs">
+                                {getFullValue(config)}
+                              </pre>
+                            )}
                           </TableCell>
                         </TableRow>
                       )}

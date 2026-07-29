@@ -13,39 +13,40 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/routes/__root.tsx:246
+#: src/routes/__root.tsx:252
 msgid "Access Denied"
 msgstr "访问被拒绝"
 
-#: src/routes/__root.tsx:376
+#: src/routes/__root.tsx:382
 msgid "Access is by request only. Rights of Admission Reserved."
 msgstr ""
 
-#: src/routes/preferences.tsx:163
+#: src/routes/preferences.tsx:357
 msgid "Account"
 msgstr "账户"
 
-#: src/routes/preferences.tsx:341
+#: src/routes/preferences.tsx:307
 msgid "Account Created"
 msgstr "账户创建时间"
 
-#: src/routes/preferences.tsx:363
+#: src/routes/preferences.tsx:329
 msgid "Account deletion is not yet available. Contact support if you need to delete your account."
 msgstr ""
 
-#: src/routes/configs.tsx:780
+#: src/components/command-palette.tsx:180
+#: src/routes/configs.tsx:462
 msgid "Actions"
 msgstr ""
 
-#: src/routes/settings.tsx:336
+#: src/routes/settings.tsx:289
 msgid "Add"
 msgstr ""
 
-#: src/routes/environments.tsx:195
+#: src/routes/environments.tsx:190
 msgid "Add a deployment target for your project."
 msgstr ""
 
-#: src/routes/configs.tsx:298
+#: src/components/config-form-modal.tsx:218
 msgid "Add a new configuration entry."
 msgstr ""
 
@@ -53,133 +54,168 @@ msgstr ""
 msgid "Add an environment"
 msgstr ""
 
-#: src/routes/configs.tsx:292
-#: src/routes/configs.tsx:634
+#: src/components/config-form-modal.tsx:209
+#: src/routes/configs.tsx:299
 msgid "Add Config"
 msgstr ""
 
-#: src/routes/environments.tsx:276
+#: src/routes/environments.tsx:273
 msgid "Add environments like production, staging, or development."
 msgstr ""
 
-#: src/routes/configs.tsx:668
+#: src/routes/configs.tsx:346
+msgid "Aging"
+msgstr ""
+
+#: src/routes/configs.tsx:344
+msgid "All ages"
+msgstr ""
+
+#: src/routes/configs.tsx:331
 msgid "All types"
 msgstr ""
 
-#: src/routes/environments.tsx:323
+#: src/routes/environments.tsx:320
 msgid "Allowed domains"
 msgstr ""
 
-#: src/routes/environments.tsx:224
+#: src/routes/environments.tsx:221
 msgid "Allowed domains (comma-separated, e.g. example.com, app.example.com)"
 msgstr ""
 
-#: src/routes/settings.tsx:348
+#: src/components/environment-form.tsx:66
 msgid "Allowed domains (comma-separated)"
 msgstr ""
 
-#: src/routes/configs.tsx:320
+#: src/components/config-form-modal.tsx:391
+msgid "Allowed values (comma-separated)"
+msgstr ""
+
+#: src/components/config-form-modal.tsx:240
 msgid "Alphanumeric, dots, and underscores only."
 msgstr ""
 
-#: src/routes/api-keys.tsx:107
+#: src/routes/api-keys.tsx:110
 msgid "API key generated"
 msgstr ""
 
-#: src/routes/api-keys.tsx:123
+#: src/routes/api-keys.tsx:126
 msgid "API key revoked"
 msgstr ""
 
-#: src/routes/__root.tsx:188
-#: src/routes/api-keys.tsx:355
+#: src/components/command-palette.tsx:101
+#: src/routes/__root.tsx:193
+#: src/routes/api-keys.tsx:351
 msgid "API Keys"
 msgstr "API 密钥"
 
-#: src/routes/configs.tsx:745
+#: src/routes/configs.tsx:426
 msgid "App Settings"
 msgstr ""
 
 #. placeholder {0}: actions.size
-#: src/routes/compare.tsx:620
+#: src/routes/compare.tsx:615
 msgid "Apply {0} changes"
 msgstr ""
 
-#: src/routes/api-keys.tsx:196
-#: src/routes/compare.tsx:610
-#: src/routes/configs.tsx:451
-#: src/routes/environments.tsx:257
-#: src/routes/settings.tsx:296
-#: src/routes/settings.tsx:405
+#: src/components/config-form-modal.tsx:412
+msgid "Boolean values are constrained to true/false by default."
+msgstr ""
+
+#: src/components/config-form-modal.tsx:462
+#: src/components/environment-form.tsx:95
+#: src/routes/api-keys.tsx:199
+#: src/routes/compare.tsx:605
+#: src/routes/environments.tsx:254
+#: src/routes/settings.tsx:109
 msgid "Cancel"
 msgstr "取消"
 
-#: src/routes/compare.tsx:396
+#: src/routes/compare.tsx:391
 msgid "changed"
 msgstr ""
 
-#: src/routes/settings.tsx:355
+#: src/routes/settings.tsx:361
+msgid "Clone"
+msgstr ""
+
+#: src/routes/settings.tsx:366
+msgid "Clone environment"
+msgstr ""
+
+#: src/components/color-picker.tsx:14
 msgid "Color"
 msgstr ""
 
-#: src/routes/configs.tsx:619
+#: src/components/command-palette.tsx:64
+msgid "Command Palette"
+msgstr ""
+
+#: src/routes/configs.tsx:285
 msgid "Compare"
 msgstr ""
 
-#: src/routes/compare.tsx:291
+#: src/components/command-palette.tsx:93
+#: src/routes/compare.tsx:289
 msgid "Compare Environments"
 msgstr ""
 
-#: src/routes/__root.tsx:157
+#: src/routes/__root.tsx:162
 msgid "Config"
 msgstr "配置"
 
-#: src/routes/configs.tsx:262
+#: src/components/config-form-modal.tsx:176
 msgid "Config created"
 msgstr ""
 
-#: src/routes/configs.tsx:507
+#: src/routes/configs.tsx:159
 msgid "Config deleted"
 msgstr ""
 
-#: src/routes/compare.tsx:440
+#: src/routes/compare.tsx:435
 msgid "Config Differences"
 msgstr ""
 
-#: src/routes/configs.tsx:309
+#: src/components/config-form-modal.tsx:229
 msgid "Config key (e.g. feature.enabled)"
 msgstr ""
 
-#: src/routes/__root.tsx:291
+#: src/routes/__root.tsx:297
 msgid "Config Portal"
 msgstr "配置门户"
 
-#: src/routes/__root.tsx:324
+#: src/routes/__root.tsx:330
 msgid "Config publishing"
 msgstr ""
 
-#: src/routes/configs.tsx:262
+#: src/components/config-form-modal.tsx:176
 msgid "Config updated"
 msgstr ""
 
-#: src/routes/__root.tsx:187
-#: src/routes/configs.tsx:608
+#: src/components/command-palette.tsx:85
+#: src/routes/__root.tsx:192
+#: src/routes/configs.tsx:271
 msgid "Configs"
 msgstr "配置项"
 
-#: src/routes/settings.tsx:487
+#: src/routes/settings.tsx:210
+msgid "Configs are being copied..."
+msgstr ""
+
+#: src/routes/settings.tsx:449
 msgid "Confirm Delete?"
 msgstr ""
 
-#: src/routes/compare.tsx:543
+#: src/routes/compare.tsx:538
 msgid "Confirm Sync"
 msgstr ""
 
-#: src/routes/environments.tsx:309
+#: src/routes/environments.tsx:306
 msgid "Confirm?"
 msgstr ""
 
 #: src/components/copy-button.tsx:26
-#: src/routes/api-keys.tsx:72
+#: src/routes/api-keys.tsx:75
 msgid "Copied to clipboard"
 msgstr ""
 
@@ -188,24 +224,28 @@ msgid "Copied!"
 msgstr ""
 
 #: src/components/copy-button.tsx:50
-#: src/routes/api-keys.tsx:79
+#: src/routes/api-keys.tsx:82
 msgid "Copy"
 msgstr ""
 
+#: src/components/config-form-modal.tsx:454
 #: src/components/onboarding-stepper.tsx:183
 #: src/components/onboarding-stepper.tsx:209
-#: src/routes/api-keys.tsx:185
-#: src/routes/configs.tsx:440
-#: src/routes/environments.tsx:244
-#: src/routes/settings.tsx:391
+#: src/routes/api-keys.tsx:188
+#: src/routes/environments.tsx:241
+#: src/routes/settings.tsx:298
 msgid "Create"
 msgstr "创建"
 
-#: src/routes/configs.tsx:684
+#: src/components/config-form-modal.tsx:216
+msgid "Create a copy with a new key."
+msgstr ""
+
+#: src/routes/configs.tsx:361
 msgid "Create an environment first to manage configs."
 msgstr ""
 
-#: src/routes/environments.tsx:287
+#: src/routes/environments.tsx:284
 msgid "Create Environment"
 msgstr ""
 
@@ -217,88 +257,113 @@ msgstr ""
 msgid "Create your first project"
 msgstr ""
 
-#: src/routes/settings.tsx:261
+#: src/routes/settings.tsx:521
 msgid "Created"
 msgstr "创建时间"
 
-#: src/routes/preferences.tsx:277
+#: src/routes/preferences.tsx:232
 msgid "Current time:"
 msgstr ""
 
-#: src/routes/configs.tsx:755
+#: src/routes/configs.tsx:437
 msgid "Custom"
 msgstr ""
 
-#: src/routes/preferences.tsx:137
+#: src/routes/preferences.tsx:349
 msgid "Customize your portal experience."
 msgstr ""
 
-#: src/routes/preferences.tsx:358
-#: src/routes/settings.tsx:468
+#: src/routes/preferences.tsx:324
+#: src/routes/settings.tsx:430
 msgid "Danger Zone"
 msgstr "危险区域"
 
-#: src/routes/api-keys.tsx:301
-#: src/routes/api-keys.tsx:306
-#: src/routes/configs.tsx:877
-#: src/routes/configs.tsx:886
-#: src/routes/environments.tsx:305
-#: src/routes/environments.tsx:316
+#: src/routes/api-keys.tsx:304
+#: src/routes/api-keys.tsx:309
+#: src/routes/configs.tsx:627
+#: src/routes/configs.tsx:636
+#: src/routes/environments.tsx:302
+#: src/routes/environments.tsx:313
+#: src/routes/settings.tsx:387
+#: src/routes/settings.tsx:392
 msgid "Delete"
 msgstr "删除"
 
-#: src/routes/settings.tsx:489
+#: src/routes/settings.tsx:451
 msgid "Delete Project"
 msgstr "删除项目"
 
-#: src/routes/settings.tsx:473
+#: src/routes/settings.tsx:435
 msgid "Deleting a project is irreversible. All environments, configs, and API keys will become inaccessible."
 msgstr ""
 
-#: src/routes/settings.tsx:283
+#: src/routes/settings.tsx:98
 msgid "Description"
 msgstr ""
 
-#: src/routes/settings.tsx:222
+#: src/hooks/use-project-description.ts:27
 msgid "Description saved"
 msgstr ""
 
-#: src/routes/compare.tsx:294
+#: src/routes/compare.tsx:290
 msgid "Diff configs between environments and sync changes."
 msgstr ""
 
-#: src/routes/preferences.tsx:319
+#: src/routes/preferences.tsx:285
 msgid "Display Name"
 msgstr "显示名称"
+
+#: src/routes/configs.tsx:591
+#: src/routes/configs.tsx:596
+msgid "Duplicate"
+msgstr ""
+
+#: src/components/config-form-modal.tsx:207
+msgid "Duplicate Config"
+msgstr ""
+
+#: src/components/config-form-modal.tsx:383
+msgid "e.g. ^https?://"
+msgstr ""
 
 #: src/components/onboarding-stepper.tsx:196
 msgid "e.g. production, staging"
 msgstr ""
 
-#: src/routes/configs.tsx:860
-#: src/routes/configs.tsx:865
-#: src/routes/settings.tsx:296
+#: src/components/config-form-modal.tsx:394
+msgid "e.g. small, medium, large"
+msgstr ""
+
+#: src/routes/configs.tsx:610
+#: src/routes/configs.tsx:615
+#: src/routes/settings.tsx:109
+#: src/routes/settings.tsx:374
+#: src/routes/settings.tsx:379
 msgid "Edit"
 msgstr ""
 
-#: src/routes/configs.tsx:292
+#: src/components/config-form-modal.tsx:205
 msgid "Edit Config"
 msgstr ""
 
-#: src/routes/preferences.tsx:327
+#: src/routes/preferences.tsx:293
 msgid "Email"
 msgstr "邮箱"
 
-#: src/routes/configs.tsx:375
+#: src/components/config-form-modal.tsx:295
 msgid "Enter a JSON array"
 msgstr ""
 
-#: src/routes/configs.tsx:374
+#: src/components/config-form-modal.tsx:294
 msgid "Enter valid JSON"
 msgstr ""
 
-#: src/routes/environments.tsx:107
-#: src/routes/settings.tsx:174
+#: src/routes/settings.tsx:209
+msgid "Environment cloned"
+msgstr ""
+
+#: src/routes/environments.tsx:110
+#: src/routes/settings.tsx:187
 msgid "Environment created"
 msgstr ""
 
@@ -306,26 +371,30 @@ msgstr ""
 msgid "Environment created!"
 msgstr ""
 
-#: src/routes/environments.tsx:128
-#: src/routes/settings.tsx:190
+#: src/routes/environments.tsx:131
+#: src/routes/settings.tsx:254
 msgid "Environment deleted"
 msgstr ""
 
-#: src/routes/settings.tsx:343
+#: src/components/environment-form.tsx:61
 msgid "Environment name"
 msgstr ""
 
-#: src/routes/environments.tsx:211
+#: src/routes/environments.tsx:208
 msgid "Environment name (e.g. production, staging)"
 msgstr ""
 
-#: src/routes/__root.tsx:313
-#: src/routes/environments.tsx:168
-#: src/routes/settings.tsx:328
+#: src/routes/settings.tsx:241
+msgid "Environment updated"
+msgstr ""
+
+#: src/routes/__root.tsx:319
+#: src/routes/environments.tsx:165
+#: src/routes/settings.tsx:281
 msgid "Environments"
 msgstr "环境"
 
-#: src/routes/compare.tsx:427
+#: src/routes/compare.tsx:422
 msgid "Environments are in sync"
 msgstr ""
 
@@ -333,8 +402,12 @@ msgstr ""
 msgid "Environments define deployment targets like production or staging."
 msgstr ""
 
-#: src/routes/configs.tsx:548
+#: src/routes/configs.tsx:206
 msgid "Failed to apply template"
+msgstr ""
+
+#: src/routes/settings.tsx:222
+msgid "Failed to clone environment"
 msgstr ""
 
 #: src/components/copy-button.tsx:29
@@ -342,8 +415,8 @@ msgid "Failed to copy"
 msgstr ""
 
 #: src/components/onboarding-stepper.tsx:60
-#: src/routes/environments.tsx:110
-#: src/routes/settings.tsx:177
+#: src/routes/environments.tsx:113
+#: src/routes/settings.tsx:189
 msgid "Failed to create environment"
 msgstr ""
 
@@ -352,56 +425,64 @@ msgstr ""
 msgid "Failed to create project"
 msgstr ""
 
-#: src/routes/configs.tsx:525
+#: src/routes/configs.tsx:177
 msgid "Failed to delete config"
 msgstr ""
 
-#: src/routes/environments.tsx:131
-#: src/routes/settings.tsx:208
+#: src/routes/environments.tsx:134
+#: src/routes/settings.tsx:272
 msgid "Failed to delete environment"
 msgstr ""
 
-#: src/routes/api-keys.tsx:289
+#: src/routes/api-keys.tsx:292
 msgid "Failed to delete key"
 msgstr ""
 
-#: src/routes/settings.tsx:148
+#: src/routes/settings.tsx:422
 msgid "Failed to delete project"
 msgstr ""
 
-#: src/routes/api-keys.tsx:112
+#: src/routes/api-keys.tsx:115
 msgid "Failed to generate API key"
 msgstr ""
 
-#: src/routes/api-keys.tsx:126
+#: src/routes/api-keys.tsx:129
 msgid "Failed to revoke API key"
 msgstr ""
 
-#: src/routes/configs.tsx:266
+#: src/components/config-form-modal.tsx:180
 msgid "Failed to save config"
 msgstr ""
 
-#: src/routes/settings.tsx:225
+#: src/hooks/use-project-description.ts:30
 msgid "Failed to save description"
 msgstr ""
 
-#: src/routes/compare.tsx:261
+#: src/routes/compare.tsx:264
 msgid "Failed to sync configs"
 msgstr ""
 
-#: src/routes/configs.tsx:738
+#: src/routes/settings.tsx:243
+msgid "Failed to update environment"
+msgstr ""
+
+#: src/routes/configs.tsx:419
 msgid "Feature Flags"
 msgstr ""
 
-#: src/routes/__root.tsx:332
+#: src/routes/__root.tsx:338
 msgid "Firebase sync"
 msgstr ""
 
-#: src/routes/api-keys.tsx:165
+#: src/routes/configs.tsx:345
+msgid "Fresh"
+msgstr ""
+
+#: src/routes/api-keys.tsx:168
 msgid "Generate Key"
 msgstr "生成密钥"
 
-#: src/routes/configs.tsx:727
+#: src/routes/configs.tsx:408
 msgid "Get started with a template or create your own."
 msgstr ""
 
@@ -409,48 +490,56 @@ msgstr ""
 msgid "Go to Environments"
 msgstr ""
 
-#: src/routes/api-keys.tsx:62
+#: src/routes/api-keys.tsx:65
 msgid "Hide"
 msgstr ""
 
-#: src/routes/compare.tsx:413
+#: src/routes/compare.tsx:408
 msgid "Hide identical"
 msgstr ""
 
-#: src/routes/configs.tsx:417
+#: src/components/config-form-modal.tsx:431
 msgid "Hide Preview"
 msgstr ""
 
-#: src/routes/compare.tsx:400
+#: src/routes/compare.tsx:395
 msgid "identical"
 msgstr ""
 
-#: src/routes/configs.tsx:283
+#: src/components/config-form-modal.tsx:145
+msgid "Invalid regex pattern"
+msgstr ""
+
+#: src/components/config-form-modal.tsx:195
 msgid "Invalid value"
 msgstr ""
 
-#: src/routes/configs.tsx:306
-#: src/routes/configs.tsx:768
+#: src/components/config-form-modal.tsx:404
+msgid "JSON and array values are validated for correct syntax automatically."
+msgstr ""
+
+#: src/components/config-form-modal.tsx:226
+#: src/routes/configs.tsx:450
 msgid "Key"
 msgstr ""
 
-#: src/routes/api-keys.tsx:286
+#: src/routes/api-keys.tsx:289
 msgid "Key deleted permanently"
 msgstr ""
 
-#: src/routes/api-keys.tsx:152
+#: src/routes/api-keys.tsx:155
 msgid "Keys are prefixed with <0>cid_</0> and contain 20 random characters."
 msgstr ""
 
-#: src/routes/api-keys.tsx:172
+#: src/routes/api-keys.tsx:175
 msgid "Label (optional)"
 msgstr ""
 
-#: src/routes/preferences.tsx:205
+#: src/routes/preferences.tsx:165
 msgid "Language"
 msgstr "语言"
 
-#: src/routes/preferences.tsx:197
+#: src/routes/preferences.tsx:157
 msgid "Language & Region"
 msgstr "语言和地区"
 
@@ -458,53 +547,69 @@ msgstr "语言和地区"
 msgid "Let's get you set up in a few quick steps."
 msgstr ""
 
-#: src/routes/configs.tsx:835
-#: src/routes/configs.tsx:846
+#: src/routes/configs.tsx:570
+#: src/routes/configs.tsx:581
 msgid "Lock"
 msgstr ""
 
-#: src/routes/api-keys.tsx:358
+#: src/routes/api-keys.tsx:353
 msgid "Manage client IDs for this environment. Use these keys to authenticate SDK requests."
 msgstr ""
 
-#: src/routes/environments.tsx:171
+#: src/routes/environments.tsx:166
 msgid "Manage deployment targets and allowed domains."
 msgstr ""
 
-#: src/routes/configs.tsx:611
+#: src/routes/configs.tsx:273
 msgid "Manage feature flags and configuration values."
 msgstr ""
 
-#: src/routes/settings.tsx:244
+#: src/routes/settings.tsx:504
 msgid "Manage project configuration and team access."
 msgstr ""
 
-#: src/routes/__root.tsx:308
+#: src/components/config-form-modal.tsx:364
+msgid "Max value"
+msgstr ""
+
+#: src/components/config-form-modal.tsx:352
+msgid "Min value"
+msgstr ""
+
+#: src/routes/__root.tsx:314
 msgid "Multi-project scoping"
 msgstr ""
 
-#: src/routes/compare.tsx:391
+#: src/components/command-palette.tsx:79
+msgid "Navigation"
+msgstr ""
+
+#: src/routes/compare.tsx:386
 msgid "new"
 msgstr ""
 
-#: src/routes/environments.tsx:179
-#: src/routes/environments.tsx:194
+#: src/components/command-palette.tsx:192
+msgid "New Config"
+msgstr ""
+
+#: src/routes/environments.tsx:173
+#: src/routes/environments.tsx:189
 msgid "New Environment"
 msgstr "新建环境"
 
-#: src/routes/api-keys.tsx:203
+#: src/routes/api-keys.tsx:206
 msgid "No API keys yet. Generate one to get started."
 msgstr "暂无 API 密钥。生成一个开始使用。"
 
-#: src/routes/configs.tsx:724
+#: src/routes/configs.tsx:405
 msgid "No configs yet"
 msgstr ""
 
-#: src/routes/settings.tsx:319
+#: src/routes/settings.tsx:157
 msgid "No description yet."
 msgstr ""
 
-#: src/routes/compare.tsx:430
+#: src/routes/compare.tsx:425
 msgid "No differences found between these environments."
 msgstr ""
 
@@ -512,57 +617,86 @@ msgstr ""
 msgid "No environments found."
 msgstr ""
 
-#: src/routes/environments.tsx:273
+#: src/routes/environments.tsx:270
 msgid "No environments yet"
 msgstr "暂无环境"
 
-#: src/routes/settings.tsx:412
+#: src/routes/settings.tsx:304
 msgid "No environments yet."
+msgstr ""
+
+#: src/components/config-form-modal.tsx:368
+msgid "No maximum"
+msgstr ""
+
+#: src/components/config-form-modal.tsx:356
+msgid "No minimum"
 msgstr ""
 
 #: src/components/project-switcher.tsx:75
 msgid "No projects found."
 msgstr "未找到项目。"
 
-#: src/routes/preferences.tsx:251
+#: src/components/command-palette.tsx:75
+msgid "No results found."
+msgstr ""
+
+#: src/routes/preferences.tsx:208
 msgid "No timezone found."
 msgstr "未找到时区。"
 
-#: src/routes/environments.tsx:340
+#: src/routes/environments.tsx:337
 msgid "None configured"
 msgstr ""
 
-#: src/routes/preferences.tsx:322
+#: src/routes/preferences.tsx:288
 msgid "Not set"
 msgstr "未设置"
 
-#: src/routes/configs.tsx:387
+#: src/components/config-form-modal.tsx:307
 msgid "Numeric value"
 msgstr ""
 
-#: src/routes/settings.tsx:272
+#: src/components/config-form-modal.tsx:343
+msgid "optional"
+msgstr ""
+
+#: src/routes/settings.tsx:532
 msgid "Owner"
 msgstr "所有者"
 
-#: src/routes/__root.tsx:316
+#: src/routes/__root.tsx:322
 msgid "Per-env overrides"
 msgstr ""
 
-#: src/routes/__root.tsx:137
-#: src/routes/preferences.tsx:134
-#: src/routes/preferences.tsx:152
+#: src/routes/configs.tsx:546
+msgid "Pin"
+msgstr ""
+
+#: src/routes/configs.tsx:559
+msgid "Pin to top"
+msgstr ""
+
+#: src/components/command-palette.tsx:119
+#: src/routes/__root.tsx:142
+#: src/routes/preferences.tsx:348
+#: src/routes/preferences.tsx:356
 msgid "Preferences"
 msgstr "偏好设置"
 
-#: src/routes/settings.tsx:429
+#: src/routes/settings.tsx:120
+msgid "Preview"
+msgstr ""
+
+#: src/routes/settings.tsx:336
 msgid "Production"
 msgstr ""
 
-#: src/routes/settings.tsx:382
+#: src/components/environment-form.tsx:78
 msgid "Production environment"
 msgstr ""
 
-#: src/routes/preferences.tsx:292
+#: src/routes/preferences.tsx:263
 msgid "Profile"
 msgstr "个人资料"
 
@@ -574,15 +708,15 @@ msgstr ""
 msgid "Project created successfully!"
 msgstr ""
 
-#: src/routes/settings.tsx:145
+#: src/routes/settings.tsx:420
 msgid "Project deleted"
 msgstr ""
 
-#: src/routes/settings.tsx:305
-msgid "Project description (supports markdown)"
+#: src/routes/settings.tsx:128
+msgid "Project description (markdown supported)"
 msgstr ""
 
-#: src/routes/settings.tsx:254
+#: src/routes/settings.tsx:514
 msgid "Project ID"
 msgstr "项目 ID"
 
@@ -591,19 +725,20 @@ msgstr "项目 ID"
 msgid "Project name"
 msgstr ""
 
-#: src/routes/settings.tsx:250
+#: src/routes/settings.tsx:510
 msgid "Project Name"
 msgstr "项目名称"
 
-#: src/routes/settings.tsx:130
+#: src/routes/settings.tsx:489
 msgid "Project not found."
 msgstr ""
 
-#: src/routes/settings.tsx:241
+#: src/components/command-palette.tsx:109
+#: src/routes/settings.tsx:502
 msgid "Project Settings"
 msgstr "项目设置"
 
-#: src/routes/__root.tsx:305
+#: src/routes/__root.tsx:311
 msgid "Projects"
 msgstr "项目"
 
@@ -611,36 +746,45 @@ msgstr "项目"
 msgid "Projects group environments and configurations together."
 msgstr ""
 
-#: src/routes/__root.tsx:365
+#: src/routes/__root.tsx:371
 msgid "Protected by Firebase Authentication."
 msgstr ""
 
-#: src/routes/__root.tsx:329
+#: src/routes/__root.tsx:335
 msgid "Real-time"
 msgstr "实时"
 
+#: src/components/config-form-modal.tsx:380
+msgid "Regex pattern"
+msgstr ""
+
 #. placeholder {0}: actions.size
-#: src/routes/compare.tsx:532
+#: src/routes/compare.tsx:527
 msgid "Review {0} changes"
 msgstr ""
 
-#: src/routes/api-keys.tsx:266
+#: src/routes/api-keys.tsx:269
 msgid "Revoke"
 msgstr "撤销"
 
-#: src/routes/api-keys.tsx:271
+#: src/routes/api-keys.tsx:274
 msgid "Revoke key"
 msgstr ""
 
-#: src/routes/api-keys.tsx:244
+#: src/routes/api-keys.tsx:247
 msgid "Revoked"
 msgstr ""
 
-#: src/routes/settings.tsx:314
+#: src/components/environment-form.tsx:87
+#: src/routes/settings.tsx:145
 msgid "Save"
 msgstr ""
 
-#: src/routes/configs.tsx:651
+#: src/components/command-palette.tsx:71
+msgid "Search commands, projects, environments..."
+msgstr ""
+
+#: src/routes/configs.tsx:312
 msgid "Search configs..."
 msgstr ""
 
@@ -660,7 +804,7 @@ msgstr ""
 msgid "Select a project to manage API keys."
 msgstr ""
 
-#: src/routes/configs.tsx:586
+#: src/routes/configs.tsx:253
 msgid "Select a project to manage configs."
 msgstr ""
 
@@ -668,15 +812,15 @@ msgstr ""
 msgid "Select a project to view environments."
 msgstr ""
 
-#: src/routes/settings.tsx:107
+#: src/routes/settings.tsx:472
 msgid "Select a project to view settings."
 msgstr ""
 
-#: src/routes/compare.tsx:375
+#: src/routes/compare.tsx:370
 msgid "Select a source and target environment to see the diff."
 msgstr ""
 
-#: src/routes/api-keys.tsx:343
+#: src/routes/api-keys.tsx:340
 msgid "Select an environment from the top bar to manage API keys."
 msgstr ""
 
@@ -688,130 +832,173 @@ msgstr ""
 msgid "Select project"
 msgstr ""
 
-#: src/routes/__root.tsx:191
+#: src/routes/__root.tsx:196
 msgid "Settings"
 msgstr "设置"
 
-#: src/routes/api-keys.tsx:62
+#: src/routes/api-keys.tsx:65
 msgid "Show"
 msgstr ""
 
-#: src/routes/compare.tsx:415
+#: src/routes/compare.tsx:410
 msgid "Show identical"
 msgstr ""
 
-#: src/routes/configs.tsx:419
+#: src/components/config-form-modal.tsx:433
 msgid "Show Preview"
 msgstr ""
 
-#: src/routes/__root.tsx:294
+#: src/routes/__root.tsx:300
 msgid "Sign in to manage your configuration platform."
 msgstr ""
 
-#: src/routes/__root.tsx:361
+#: src/routes/__root.tsx:367
 msgid "Sign in with Google"
 msgstr "使用 Google 登录"
 
-#: src/routes/__root.tsx:143
-#: src/routes/__root.tsx:265
+#: src/routes/__root.tsx:148
+#: src/routes/__root.tsx:271
 msgid "Sign out"
 msgstr "退出登录"
 
-#: src/routes/compare.tsx:308
+#: src/routes/compare.tsx:303
 msgid "Source"
+msgstr ""
+
+#: src/routes/configs.tsx:347
+msgid "Stale"
 msgstr ""
 
 #: src/components/onboarding-stepper.tsx:90
 msgid "Start configuring your environments with secrets and settings."
 msgstr ""
 
-#: src/routes/configs.tsx:396
+#: src/components/config-form-modal.tsx:316
 msgid "String value"
 msgstr ""
 
-#: src/routes/compare.tsx:331
+#: src/routes/compare.tsx:326
 msgid "Swap environments"
 msgstr ""
 
+#: src/components/command-palette.tsx:156
+msgid "Switch Environment"
+msgstr ""
+
+#: src/components/command-palette.tsx:128
+msgid "Switch Project"
+msgstr ""
+
 #. placeholder {0}: toTarget.length + toSource.length
-#: src/routes/compare.tsx:257
+#: src/routes/compare.tsx:260
 msgid "Synced {0} configs"
 msgstr ""
 
-#: src/routes/compare.tsx:344
+#: src/routes/compare.tsx:339
 msgid "Target"
 msgstr ""
 
-#: src/routes/configs.tsx:547
+#: src/routes/configs.tsx:205
 msgid "Template applied"
 msgstr ""
 
-#: src/routes/compare.tsx:544
+#: src/routes/compare.tsx:539
 msgid "The following changes will be applied:"
 msgstr ""
 
-#: src/routes/settings.tsx:275
+#: src/routes/settings.tsx:535
 msgid "The user who created this project"
 msgstr ""
 
-#: src/routes/preferences.tsx:173
+#: src/routes/preferences.tsx:70
 msgid "Theme"
 msgstr "主题"
 
-#: src/routes/configs.tsx:219
-#: src/routes/configs.tsx:496
+#: src/components/config-form-modal.tsx:100
+#: src/routes/configs.tsx:148
 msgid "This is a production environment. Changes will affect live users. Continue?"
 msgstr ""
 
-#: src/routes/preferences.tsx:229
+#: src/routes/preferences.tsx:186
 msgid "Timezone"
 msgstr "时区"
 
-#: src/routes/__root.tsx:257
+#: src/routes/__root.tsx:263
 msgid "Try a different account"
 msgstr ""
 
-#: src/routes/configs.tsx:330
-#: src/routes/configs.tsx:771
+#: src/components/config-form-modal.tsx:250
+#: src/routes/configs.tsx:453
 msgid "Type"
 msgstr ""
 
-#: src/routes/configs.tsx:509
-#: src/routes/settings.tsx:192
+#: src/routes/configs.tsx:161
+#: src/routes/settings.tsx:256
 msgid "Undo"
 msgstr ""
 
-#: src/routes/settings.tsx:257
+#: src/routes/settings.tsx:517
 msgid "Unique identifier for API integrations"
 msgstr ""
 
-#: src/routes/configs.tsx:835
-#: src/routes/configs.tsx:846
+#: src/routes/configs.tsx:570
+#: src/routes/configs.tsx:581
 msgid "Unlock"
 msgstr ""
 
-#: src/routes/configs.tsx:438
+#: src/routes/configs.tsx:546
+#: src/routes/configs.tsx:558
+msgid "Unpin"
+msgstr ""
+
+#: src/components/config-form-modal.tsx:452
 msgid "Update"
 msgstr ""
 
-#: src/routes/configs.tsx:296
+#: src/components/config-form-modal.tsx:214
 msgid "Update the configuration value."
 msgstr ""
 
-#: src/routes/configs.tsx:777
+#: src/routes/configs.tsx:459
 msgid "Updated"
 msgstr ""
 
-#: src/routes/preferences.tsx:333
+#. placeholder {0}: sourceEnv.name
+#: src/routes/settings.tsx:218
+msgid "Use \"Compare Environments\" to sync configs from \"{0}\" to the new environment."
+msgstr ""
+
+#: src/routes/preferences.tsx:299
 msgid "User ID"
 msgstr "用户 ID"
 
-#: src/routes/configs.tsx:352
-#: src/routes/configs.tsx:774
+#: src/components/config-form-modal.tsx:341
+msgid "Validation Rules"
+msgstr ""
+
+#: src/components/config-form-modal.tsx:272
+#: src/routes/configs.tsx:456
 msgid "Value"
 msgstr ""
 
-#: src/routes/__root.tsx:321
+#: src/components/config-form-modal.tsx:142
+msgid "Value does not match pattern: {validationRegex}"
+msgstr ""
+
+#: src/components/config-form-modal.tsx:131
+msgid "Value must be at least {validationMin}"
+msgstr ""
+
+#: src/components/config-form-modal.tsx:134
+msgid "Value must be at most {validationMax}"
+msgstr ""
+
+#. placeholder {0}: allowed.join(", ")
+#: src/components/config-form-modal.tsx:154
+msgid "Value must be one of: {0}"
+msgstr ""
+
+#: src/routes/__root.tsx:327
 msgid "Versioned"
 msgstr ""
 
@@ -819,10 +1006,14 @@ msgstr ""
 msgid "Welcome to Config Portal"
 msgstr ""
 
+#: src/routes/settings.tsx:119
+msgid "Write"
+msgstr ""
+
 #: src/components/onboarding-stepper.tsx:88
 msgid "You're all set!"
 msgstr ""
 
-#: src/routes/__root.tsx:249
+#: src/routes/__root.tsx:255
 msgid "Your account is not authorized to access this portal. Contact the project owner to request access."
 msgstr ""
