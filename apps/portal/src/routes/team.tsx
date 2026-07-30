@@ -27,6 +27,20 @@ const TeamPage = () => {
 
   const roles = (project as Record<string, unknown>).roles as Record<string, RBACRole> | undefined ?? {};
 
+  const handleAddMember = async (userId: string, role: RBACRole) => {
+    try {
+      const projectRef = doc(db, "projects", selectedProjectId);
+      const newAuthorized = [...(project.authorizedUsers || []), userId];
+      await updateDoc(projectRef, {
+        [`roles.${userId}`]: role,
+        authorizedUsers: newAuthorized,
+      });
+      toast.success(t`Member added`);
+    } catch {
+      toast.error(t`Failed to add member`);
+    }
+  };
+
   const handleRoleChange = async (userId: string, newRole: RBACRole) => {
     try {
       const projectRef = doc(db, "projects", selectedProjectId);
@@ -60,6 +74,7 @@ const TeamPage = () => {
         currentUserId={user?.uid ?? ""}
         onRoleChange={handleRoleChange}
         onRemoveMember={handleRemoveMember}
+        onAddMember={handleAddMember}
       />
     </PageLayout>
   );
