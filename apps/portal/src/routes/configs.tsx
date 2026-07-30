@@ -70,6 +70,7 @@ import {
   useSetConfig,
   useToggleConfigLock,
 } from "@/hooks/use-configs";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useEnvironments } from "@/hooks/use-environments";
 import { usePinnedConfigs } from "@/hooks/use-pinned-configs";
 import { CONFIG_TEMPLATES } from "@/lib/constants";
@@ -104,6 +105,7 @@ const ConfigsPage = () => {
   const [duplicatingConfig, setDuplicatingConfig] =
     useState<ConfigEntry | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebouncedValue(searchQuery, 300);
   const [filterType, setFilterType] = useState<ValueType | "all">("all");
   const [filterStaleness, setFilterStaleness] =
     useState<FilterStaleness>("all");
@@ -131,7 +133,7 @@ const ConfigsPage = () => {
   const filteredConfigs = useMemo(() => {
     const filtered = configs.filter((c) => {
       const matchesSearch =
-        !searchQuery || c.key.toLowerCase().includes(searchQuery.toLowerCase());
+        !debouncedSearch || c.key.toLowerCase().includes(debouncedSearch.toLowerCase());
       const matchesType = filterType === "all" || c.valueType === filterType;
       const staleness = getStalenessLevel(c.updatedAt);
       const matchesStaleness =
@@ -146,7 +148,7 @@ const ConfigsPage = () => {
       if (aPinned !== bPinned) return aPinned - bPinned;
       return a.key.localeCompare(b.key);
     });
-  }, [configs, searchQuery, filterType, filterStaleness, pinned]);
+  }, [configs, debouncedSearch, filterType, filterStaleness, pinned]);
 
   // Pagination
   const totalPages = Math.max(1, Math.ceil(filteredConfigs.length / PAGE_SIZE));
@@ -159,7 +161,7 @@ const ConfigsPage = () => {
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(0);
-  }, [searchQuery, filterType, filterStaleness, envId]);
+  }, [debouncedSearch, filterType, filterStaleness, envId]);
 
   const handleDelete = (key: string) => {
     if (!selectedProjectId || !envId) return;
