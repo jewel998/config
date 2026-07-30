@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { collection, getDocs, query, where, addDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, query, where, addDoc, deleteDoc, doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import type { PendingInvite } from "@/lib/team-utils";
 import type { RBACRole } from "@/lib/types";
@@ -26,6 +26,7 @@ export const usePendingInvites = (projectId: string | null) => {
 
 /**
  * Create a pending invite.
+ * Also adds the email to allowedUsers so the invited user can pass the login gate.
  */
 export const useCreateInvite = () => {
   const queryClient = useQueryClient();
@@ -34,13 +35,22 @@ export const useCreateInvite = () => {
   return useMutation({
     mutationFn: async ({ email, projectId, role }: { email: string; projectId: string; role: RBACRole }) => {
       if (!user) throw new Error("Not authenticated");
+      const normalizedEmail = email.trim().toLowerCase();
       const invite = {
-        email: email.trim().toLowerCase(),
+        email: normalizedEmail,
         projectId,
         role,
         invitedBy: user.uid,
         createdAt: new Date().toISOString(),
       };
+
+      // Add to allowedUsers so the invited user can log in
+      await setDoc(doc(db, "allowedUsers", normalizedEmail), {
+        addedBy: user.uid,
+        addedAt: new Date().toISOString(),
+        reason: "invite",
+      });
+
       const docRef = await addDoc(collection(db, "pendingInvites"), invite);
       return docRef.id;
     },
