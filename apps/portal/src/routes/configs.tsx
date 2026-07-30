@@ -76,6 +76,7 @@ import { usePinnedConfigs } from "@/hooks/use-pinned-configs";
 import { CONFIG_TEMPLATES } from "@/lib/constants";
 import { getStalenessLevel, getStalenessLabel } from "@/lib/stale-detection";
 import { useProjectStore } from "@/stores/project-store";
+import { useRBAC } from "@/hooks/use-rbac";
 
 type ValueType = ConfigEntry["valueType"];
 
@@ -129,6 +130,8 @@ const ConfigsPage = () => {
 
   const currentEnv = environments.find((e) => e.id === envId);
   const isProductionEnv = currentEnv?.isProduction ?? false;
+  const { canEditEnvironment, role: userRole } = useRBAC();
+  const canEdit = canEditEnvironment(isProductionEnv);
 
   const filteredConfigs = useMemo(() => {
     const filtered = configs.filter((c) => {
@@ -314,7 +317,7 @@ const ConfigsPage = () => {
                 setDuplicatingConfig(null);
                 setShowForm(true);
               }}
-              disabled={!envId}
+              disabled={!envId || !canEdit}
             >
               <Plus className="h-4 w-4" />
               <Trans>Add Config</Trans>
@@ -325,6 +328,14 @@ const ConfigsPage = () => {
       />
 
       {/* Toolbar: search + type filter + staleness filter */}
+      {!canEdit && envId && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800 dark:border-amber-800/30 dark:bg-amber-950/20 dark:text-amber-200">
+          {userRole === "viewer"
+            ? <Trans>You have view-only access to this project.</Trans>
+            : <Trans>This is a production environment. You have read-only access.</Trans>
+          }
+        </div>
+      )}
       {environments.length > 0 && (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
@@ -573,7 +584,7 @@ const ConfigsPage = () => {
                                       setDuplicatingConfig(null);
                                       setShowForm(true);
                                     }}
-                                    disabled={config.locked}
+                                    disabled={config.locked || !canEdit}
                                     aria-label={t`Edit`}
                                   >
                                     <Pencil className="h-3.5 w-3.5" />
@@ -589,7 +600,7 @@ const ConfigsPage = () => {
                                     className="h-7 w-7 rounded-full text-destructive hover:text-destructive"
                                     onClick={() => handleDelete(config.key)}
                                     disabled={
-                                      deleteConfig.isPending || config.locked
+                                      deleteConfig.isPending || config.locked || !canEdit
                                     }
                                     aria-label={t`Delete`}
                                   >
@@ -656,7 +667,7 @@ const ConfigsPage = () => {
                                   <DropdownMenuItem
                                     className="text-destructive focus:text-destructive"
                                     onClick={() => handleDelete(config.key)}
-                                    disabled={config.locked}
+                                    disabled={config.locked || !canEdit}
                                   >
                                     <Trash2 className="h-4 w-4" />
                                     <Trans>Delete</Trans>

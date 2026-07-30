@@ -5,6 +5,7 @@ import { Clock, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { arrayRemove, doc, updateDoc } from "firebase/firestore";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { AddMemberModal } from "@/components/add-member-modal";
 import { EmptyState } from "@/components/empty-state";
@@ -36,11 +37,11 @@ const TeamPage = () => {
   const { data: projects = [] } = useProjects();
   const project = projects.find((p) => p.id === selectedProjectId);
   const { isAdmin } = useRBAC();
+  const queryClient = useQueryClient();
 
   const [showModal, setShowModal] = useState(false);
 
   const allAuthorizedUsers = project?.authorizedUsers ?? [];
-  // Filter out email-prefixed entries (pending invites show separately)
   const authorizedUsers = allAuthorizedUsers.filter((u) => !u.startsWith("email:"));
   const roles = ((project as Record<string, unknown>)?.roles as Record<string, RBACRole>) ?? {};
 
@@ -55,15 +56,27 @@ const TeamPage = () => {
 
   const adminCount = Object.values(roles).filter((r) => r === "admin").length + (project.ownerId && !(project.ownerId in roles) ? 1 : 0);
 
+  const invalidateProjects = () => {
+    queryClient.invalidateQueries({ queryKey: ["projects"] });
+  };
+
   const handleRoleChange = async (userId: string, newRole: RBACRole) => {
+    // Prevent users from changing their own role
+    if (userId === user?.uid) {
+      toast.error(t`You cannot change your own role`);
+      return;
+    }
     try {
       await updateDoc(doc(db, "projects", selectedProjectId), { [`roles.${userId}`]: newRole });
       toast.success(t`Role updated`);
+      invalidateProjects();
     } catch { toast.error(t`Failed to update role`); }
   };
 
   const handleRemove = async (userId: string) => {
-    const isLastAdmin = (userId === project.ownerId || roles[userId] === "admin") && adminCount <= 1;
+    // Prevent self-removal for the owner
+    if (userId === project.ownerId) return;
+    const isLastAdmin = (roles[userId] === "admin") && adminCount <= 1;
     if (isLastAdmin) { toast.error(t`Cannot remove the last admin`); return; }
     if (!confirm(t`Remove this member from the project?`)) return;
     try {
@@ -74,6 +87,7 @@ const TeamPage = () => {
         roles: newRoles,
       });
       toast.success(t`Member removed`);
+      invalidateProjects();
     } catch { toast.error(t`Failed to remove member`); }
   };
 
@@ -84,6 +98,7 @@ const TeamPage = () => {
         authorizedUsers: [...authorizedUsers, uid],
       });
       toast.success(t`Member added`);
+      invalidateProjects();
     } catch { toast.error(t`Failed to add member`); }
   };
 
@@ -118,6 +133,8 @@ const TeamPage = () => {
             const role = uid === project.ownerId ? "admin" : (roles[uid] ?? "viewer");
             const isOwner = uid === project.ownerId;
             const isSelf = uid === user?.uid;
+            // Can modify: must be admin, can't modify owner, can't modify self
+            const canModifyRole = isAdmin && !isOwner && !isSelf;
 
             return (
               <div key={uid} className="flex items-center justify-between gap-3 rounded-lg border p-3">
@@ -129,7 +146,7 @@ const TeamPage = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  {isAdmin && !isOwner ? (
+                  {canModifyRole ? (
                     <Select value={role} onValueChange={(v) => handleRoleChange(uid, v as RBACRole)}>
                       <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -142,7 +159,8 @@ const TeamPage = () => {
                     <Badge variant="outline" className="text-xs capitalize">{role}</Badge>
                   )}
                   {isOwner && <Badge variant="secondary" className="text-[10px]"><Trans>Owner</Trans></Badge>}
-                  {(isAdmin || isSelf) && !isOwner && (
+                  {isSelf && <Badge variant="outline" className="text-[10px]"><Trans>You</Trans></Badge>}
+                  {isAdmin && !isOwner && !isSelf && (
                     <Button variant="ghost" size="icon-xs" onClick={() => handleRemove(uid)}>
                       <Trash2 className="h-3.5 w-3.5 text-destructive" />
                     </Button>
