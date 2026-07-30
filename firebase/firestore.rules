@@ -75,10 +75,12 @@ service cloud.firestore {
 
     function hasRole(projectId, role) {
       let project = get(/databases/$(database)/documents/projects/$(projectId));
-      let roles = project.data.roles;
       let uid = request.auth.uid;
       // Owner always has admin
       if (project.data.ownerId == uid) { return true; }
+      // If roles map doesn't exist, only owner has access
+      if (!('roles' in project.data)) { return false; }
+      let roles = project.data.roles;
       // Check roles map
       if (!(uid in roles)) { return false; }
       if (role == 'viewer') { return true; } // any role implies viewer

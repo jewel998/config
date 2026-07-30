@@ -51,6 +51,7 @@ export const useCreateProject = () => {
         name: name.trim(),
         ownerId: user.uid,
         authorizedUsers: [user.uid],
+        roles: { [user.uid]: "admin" },
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
