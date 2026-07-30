@@ -4,8 +4,11 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     match /projects/{projectId} {
-      // Read: any authenticated project member
-      allow read: if request.auth != null && isProjectMember(projectId);
+      // Read: any authenticated project member (use resource.data for the doc being accessed)
+      allow read: if request.auth != null
+        && !('deletedAt' in resource.data)
+        && (resource.data.ownerId == request.auth.uid
+            || request.auth.uid in resource.data.authorizedUsers);
       allow create: if request.auth != null;
       // Update/delete: admin only
       allow update, delete: if request.auth != null && hasRole(projectId, 'admin');
