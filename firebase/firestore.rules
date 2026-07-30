@@ -76,17 +76,16 @@ service cloud.firestore {
     function hasRole(projectId, role) {
       let project = get(/databases/$(database)/documents/projects/$(projectId));
       let uid = request.auth.uid;
-      // Owner always has admin
-      if (project.data.ownerId == uid) { return true; }
-      // If roles map doesn't exist, only owner has access
-      if (!('roles' in project.data)) { return false; }
-      let roles = project.data.roles;
-      // Check roles map
-      if (!(uid in roles)) { return false; }
-      if (role == 'viewer') { return true; } // any role implies viewer
-      if (role == 'editor') { return roles[uid] == 'editor' || roles[uid] == 'admin'; }
-      if (role == 'admin') { return roles[uid] == 'admin'; }
-      return false;
+      return project.data.ownerId == uid
+        || (
+          'roles' in project.data
+          && uid in project.data.roles
+          && (
+            (role == 'viewer')
+            || (role == 'editor' && (project.data.roles[uid] == 'editor' || project.data.roles[uid] == 'admin'))
+            || (role == 'admin' && project.data.roles[uid] == 'admin')
+          )
+        );
     }
 
     function getEnvironment(projectId, envId) {
