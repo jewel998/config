@@ -39,7 +39,9 @@ const TeamPage = () => {
 
   const [showModal, setShowModal] = useState(false);
 
-  const authorizedUsers = project?.authorizedUsers ?? [];
+  const allAuthorizedUsers = project?.authorizedUsers ?? [];
+  // Filter out email-prefixed entries (pending invites show separately)
+  const authorizedUsers = allAuthorizedUsers.filter((u) => !u.startsWith("email:"));
   const roles = ((project as Record<string, unknown>)?.roles as Record<string, RBACRole>) ?? {};
 
   const { data: profiles = {} } = useUserProfiles(authorizedUsers);
@@ -171,7 +173,7 @@ const TeamPage = () => {
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary" className="text-[10px]"><Trans>Pending</Trans></Badge>
                   {isAdmin && invite.id && (
-                    <Button variant="ghost" size="icon-xs" onClick={() => cancelInvite.mutate({ inviteId: invite.id!, projectId: selectedProjectId })}>
+                    <Button variant="ghost" size="icon-xs" onClick={() => cancelInvite.mutate({ inviteId: invite.id!, projectId: selectedProjectId, email: invite.email })}>
                       <Trash2 className="h-3.5 w-3.5 text-destructive" />
                     </Button>
                   )}

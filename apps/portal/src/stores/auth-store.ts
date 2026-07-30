@@ -15,12 +15,11 @@ import {
   setDoc,
   updateDoc,
   where,
-  arrayUnion,
 } from "firebase/firestore";
 import { create } from "zustand";
 
 import { auth, db } from "@/lib/firebase";
-import { computeProfileSync, computeInviteResolutions } from "@/lib/team-utils";
+import { computeProfileSync } from "@/lib/team-utils";
 import type { UserProfile, PendingInvite } from "@/lib/team-utils";
 
 interface AuthState {
@@ -131,6 +130,7 @@ async function resolveInvites(firebaseUser: User): Promise<void> {
   if (!firebaseUser.email) return;
 
   const normalizedEmail = firebaseUser.email.toLowerCase();
+  const emailKey = `email:${normalizedEmail}`;
 
   // Query pending invites for this email
   const invitesQuery = query(
@@ -146,39 +146,49 @@ async function resolveInvites(firebaseUser: User): Promise<void> {
     ...(d.data() as Omit<PendingInvite, "id">),
   }));
 
-  // Fetch project memberships for dedup check
-  const projectIds = [...new Set(invites.map((i) => i.projectId))];
-  const memberships: Record<string, string[]> = {};
-
-  for (const projectId of projectIds) {
+  // For each invite, claim the email-prefixed entry:
+  // Replace "email:user@example.com" with the real UID in authorizedUsers
+  for (const invite of invites) {
     try {
-      const projectDoc = await getDoc(doc(db, "projects", projectId));
-      if (projectDoc.exists()) {
-        memberships[projectId] = projectDoc.data().authorizedUsers ?? [];
-      }
-    } catch {
-      // Skip projects we can't access
-    }
-  }
+      const projectRef = doc(db, "projects", invite.projectId);
+      const projectSnap = await getDoc(projectRef);
 
-  // Compute resolutions
-  const actions = computeInviteResolutions(
-    firebaseUser.uid,
-    invites,
-    memberships,
-  );
+      if (projectSnap.exists()) {
+        const projectData = projectSnap.data();
+        const currentAuth: string[] = projectData.authorizedUsers ?? [];
 
-  // Execute resolutions
-  for (const { invite, action } of actions) {
-    try {
-      if (action === "add_and_delete") {
-        const projectRef = doc(db, "projects", invite.projectId);
-        await updateDoc(projectRef, {
-          authorizedUsers: arrayUnion(firebaseUser.uid),
-          [`roles.${firebaseUser.uid}`]: invite.role,
-        });
+        // Only claim if the email key exists and UID isn't already there
+        if (currentAuth.includes(emailKey) && !currentAuth.includes(firebaseUser.uid)) {
+          // Swap email key for real UID
+          const newAuth = currentAuth
+            .filter((entry) => entry !== emailKey)
+            .concat(firebaseUser.uid);
+
+          // Move the role from email key to uid
+          const currentRoles = projectData.roles ?? {};
+          const role = currentRoles[emailKey] ?? invite.role;
+          const newRoles = { ...currentRoles };
+          delete newRoles[emailKey];
+          newRoles[firebaseUser.uid] = role;
+
+          await updateDoc(projectRef, {
+            authorizedUsers: newAuth,
+            roles: newRoles,
+          });
+        } else if (currentAuth.includes(emailKey) && currentAuth.includes(firebaseUser.uid)) {
+          // Already claimed — just clean up the email key
+          const newAuth = currentAuth.filter((entry) => entry !== emailKey);
+          const currentRoles = projectData.roles ?? {};
+          const newRoles = { ...currentRoles };
+          delete newRoles[emailKey];
+          await updateDoc(projectRef, {
+            authorizedUsers: newAuth,
+            roles: newRoles,
+          });
+        }
       }
-      // Delete the invite in both cases
+
+      // Delete the pending invite
       if (invite.id) {
         await deleteDoc(doc(db, "pendingInvites", invite.id));
       }
