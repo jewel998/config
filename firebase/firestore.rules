@@ -57,6 +57,29 @@ service cloud.firestore {
       }
     }
 
+    // User profiles — email immutable after creation
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.email == request.auth.token.email;
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.email == resource.data.email;
+      allow delete: if false;
+    }
+
+    // Pending invites — admin create/delete, email-matching read
+    match /pendingInvites/{inviteId} {
+      allow read: if request.auth != null
+        && resource.data.email == request.auth.token.email;
+      allow create: if request.auth != null
+        && hasRole(request.resource.data.projectId, 'admin');
+      allow delete: if request.auth != null
+        && hasRole(resource.data.projectId, 'admin');
+      allow update: if false;
+    }
+
     // Rate limits
     match /rateLimits/{clientId} {
       allow read, write: if false;
