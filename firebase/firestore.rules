@@ -85,10 +85,14 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Allowed users
+    // Allowed users — gate for portal login
     match /allowedUsers/{email} {
       allow read: if request.auth != null && request.auth.token.email == email;
-      allow write: if false;
+      // Any authenticated user can create (needed for invite flow)
+      // Only the system should delete (or admin via project membership)
+      allow create: if request.auth != null;
+      allow update: if false;
+      allow delete: if request.auth != null;
     }
 
     // Helper functions
