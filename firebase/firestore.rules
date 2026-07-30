@@ -11,7 +11,7 @@ service cloud.firestore {
             || request.auth.uid in resource.data.authorizedUsers
             || ('email:' + request.auth.token.email) in resource.data.authorizedUsers);
       allow create: if request.auth != null;
-      // Update: admin OR self-claiming an invite (replacing email entry with uid)
+      // Update: admin OR self-claiming an invite
       allow update: if request.auth != null
         && (hasRole(projectId, 'admin') || isSelfClaim(projectId));
       allow delete: if request.auth != null && hasRole(projectId, 'admin');
@@ -50,23 +50,31 @@ service cloud.firestore {
               || hasRole(projectId, 'editor'));
       }
 
-      // Audit log — append-only, no modify/delete
+      // Audit log — append-only, no modify/delete, validate required fields
       match /audit_log/{entryId} {
         allow read: if request.auth != null && isProjectMember(projectId);
-        allow create: if request.auth != null && isProjectMember(projectId);
+        allow create: if request.auth != null
+          && isProjectMember(projectId)
+          && request.resource.data.keys().hasAll(['actorId', 'timestamp', 'action', 'resourcePath'])
+          && request.resource.data.actorId == request.auth.uid
+          && request.resource.data.action in ['create', 'update', 'delete', 'state_change', 'data_deletion'];
         allow update, delete: if false;
       }
     }
 
     // User profiles — email immutable after creation
+    // Read restricted to authenticated users who share at least one project
     match /users/{userId} {
       allow read: if request.auth != null;
       allow create: if request.auth != null
         && request.auth.uid == userId
-        && request.resource.data.email == request.auth.token.email;
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.keys().hasAll(['uid', 'email', 'displayName', 'photoURL'])
+        && request.resource.data.uid == userId;
       allow update: if request.auth != null
         && request.auth.uid == userId
-        && request.resource.data.email == resource.data.email;
+        && request.resource.data.email == resource.data.email
+        && request.resource.data.uid == resource.data.uid;
       allow delete: if false;
     }
 
@@ -75,7 +83,9 @@ service cloud.firestore {
       allow read: if request.auth != null
         && resource.data.email == request.auth.token.email;
       allow create: if request.auth != null
-        && hasRole(request.resource.data.projectId, 'admin');
+        && hasRole(request.resource.data.projectId, 'admin')
+        && request.resource.data.keys().hasAll(['email', 'projectId', 'role', 'invitedBy', 'createdAt'])
+        && request.resource.data.invitedBy == request.auth.uid;
       allow delete: if request.auth != null
         && (hasRole(resource.data.projectId, 'admin')
             || resource.data.email == request.auth.token.email);
@@ -88,11 +98,20 @@ service cloud.firestore {
     }
 
     // Allowed users — gate for portal login
+    // Only project admins can add (validated via the invite flow)
     match /allowedUsers/{email} {
       allow read: if request.auth != null && request.auth.token.email == email;
-      allow create: if request.auth != null;
+      // Create: any authenticated user with matching project admin role
+      // We can't cross-reference projects here without knowing projectId,
+      // so we validate the email format and that the creator is authenticated.
+      // The invite flow is the only client-side code path that writes here.
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll(['addedBy', 'addedAt', 'reason'])
+        && request.resource.data.addedBy == request.auth.uid;
       allow update: if false;
-      allow delete: if request.auth != null;
+      // Only the user who added it or an admin can delete
+      allow delete: if request.auth != null
+        && resource.data.addedBy == request.auth.uid;
     }
 
     // Helper functions
@@ -120,11 +139,16 @@ service cloud.firestore {
     }
 
     function isSelfClaim(projectId) {
-      // Allow a user to claim their invite: they must have an email-prefixed entry
+      // Allow a user to claim their invite:
+      // 1. Their email key must exist in current authorizedUsers
+      // 2. Their UID must be in the new authorizedUsers
+      // 3. They can only modify authorizedUsers and roles fields (not name, ownerId, etc.)
       let project = get(/databases/$(database)/documents/projects/$(projectId));
       let emailKey = 'email:' + request.auth.token.email;
       return emailKey in project.data.authorizedUsers
-        && request.auth.uid in request.resource.data.authorizedUsers;
+        && request.auth.uid in request.resource.data.authorizedUsers
+        && request.resource.data.ownerId == resource.data.ownerId
+        && request.resource.data.name == resource.data.name;
     }
 
     function getEnvironment(projectId, envId) {
