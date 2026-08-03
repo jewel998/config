@@ -33,6 +33,7 @@ import {
 } from "@/hooks/use-environments";
 import { useUpdateProjectDescription } from "@/hooks/use-project-description";
 import { useDeleteProject, useProjects } from "@/hooks/use-projects";
+import { useRBAC } from "@/hooks/use-rbac";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
 
@@ -75,9 +76,11 @@ const InfoCard = ({
 const DescriptionSection = ({
   projectId,
   currentDescription,
+  readOnly,
 }: {
   projectId: string;
   currentDescription: string;
+  readOnly?: boolean;
 }) => {
   const [editing, setEditing] = useState(false);
   const [description, setDescription] = useState(currentDescription);
@@ -97,6 +100,7 @@ const DescriptionSection = ({
         <CardTitle className="text-base">
           <Trans>Description</Trans>
         </CardTitle>
+        {!readOnly && (
         <Button
           size="sm"
           variant="ghost"
@@ -108,6 +112,7 @@ const DescriptionSection = ({
         >
           {editing ? <Trans>Cancel</Trans> : <Trans>Edit</Trans>}
         </Button>
+        )}
       </CardHeader>
       <CardContent>
         {editing ? (
@@ -164,7 +169,7 @@ const DescriptionSection = ({
 
 // --- Environments Section ---
 
-const EnvironmentsSection = ({ projectId }: { projectId: string }) => {
+const EnvironmentsSection = ({ projectId, readOnly }: { projectId: string; readOnly?: boolean }) => {
   const { data: environments = [] } = useEnvironments(projectId);
   const createEnv = useCreateEnvironment();
   const deleteEnv = useDeleteEnvironment();
@@ -280,6 +285,7 @@ const EnvironmentsSection = ({ projectId }: { projectId: string }) => {
         <CardTitle className="text-base">
           <Trans>Environments</Trans>
         </CardTitle>
+        {!readOnly && (
         <Button
           size="sm"
           className="rounded-full gap-2"
@@ -288,6 +294,7 @@ const EnvironmentsSection = ({ projectId }: { projectId: string }) => {
           <Plus className="h-3.5 w-3.5" />
           <Trans>Add</Trans>
         </Button>
+        )}
       </CardHeader>
       <CardContent className="space-y-3">
         {showForm && (
@@ -352,6 +359,8 @@ const EnvironmentsSection = ({ projectId }: { projectId: string }) => {
                   )}
                 </div>
                 <div className="flex items-center gap-1">
+                  {!readOnly && (
+                  <>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
@@ -391,6 +400,8 @@ const EnvironmentsSection = ({ projectId }: { projectId: string }) => {
                     </TooltipTrigger>
                     <TooltipContent>{t`Delete`}</TooltipContent>
                   </Tooltip>
+                  </>
+                  )}
                 </div>
               </div>
             )}
@@ -462,6 +473,8 @@ const SettingsPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const user = useAuthStore((s) => s.user);
   const { data: projects, isLoading } = useProjects();
+  const { role, isAdmin } = useRBAC();
+  const isViewer = role === "viewer";
 
   const selectedProject = projects?.find((p) => p.id === selectedProjectId);
 
@@ -539,11 +552,12 @@ const SettingsPage = () => {
       <DescriptionSection
         projectId={selectedProjectId}
         currentDescription={selectedProject.description || ""}
+        readOnly={isViewer}
       />
 
-      <EnvironmentsSection projectId={selectedProjectId} />
+      <EnvironmentsSection projectId={selectedProjectId} readOnly={isViewer} />
 
-      <DangerZone projectId={selectedProjectId} />
+      {isAdmin && <DangerZone projectId={selectedProjectId} />}
     </PageLayout>
   );
 };
