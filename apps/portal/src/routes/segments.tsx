@@ -1,6 +1,8 @@
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
 import { Users } from "lucide-react";
+import { toast } from "sonner";
+import { t } from "@lingui/core/macro";
 
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
@@ -27,8 +29,14 @@ const SegmentsPage = () => {
       <PageHeader title={<Trans>Segments</Trans>} description={<Trans>Define reusable audience groups for targeting rules.</Trans>} />
       <SegmentManager
         segments={segments}
-        onCreateSegment={(segment) => createSegment.mutate({ projectId: selectedProjectId, segment })}
-        onDeleteSegment={(segmentId) => deleteSegment.mutate({ projectId: selectedProjectId, segmentId })}
+        onCreateSegment={(segment) => createSegment.mutate(
+          { projectId: selectedProjectId, segment },
+          { onSuccess: () => toast.success(t`Segment created`), onError: () => toast.error(t`Failed to create segment`) },
+        )}
+        onDeleteSegment={(segmentId) => deleteSegment.mutate(
+          { projectId: selectedProjectId, segmentId },
+          { onSuccess: () => toast.success(t`Segment deleted`), onError: () => toast.error(t`Failed to delete segment`) },
+        )}
         disabled={isViewer}
       />
     </PageLayout>
