@@ -6,6 +6,7 @@ import {
   orderBy,
   limit,
   where,
+  type QueryConstraint,
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
@@ -19,14 +20,22 @@ export const useAuditLog = (
     queryKey: ["audit_log", projectId, filters],
     queryFn: async () => {
       if (!projectId) return [];
-      let q = query(
-        collection(db, "projects", projectId, "audit_log"),
-        orderBy("timestamp", "desc"),
-        limit(filters?.limit ?? 50),
-      );
+
+      const constraints: QueryConstraint[] = [];
+
+      // Add where clause BEFORE orderBy (Firestore requirement)
       if (filters?.action) {
-        q = query(q, where("action", "==", filters.action));
+        constraints.push(where("action", "==", filters.action));
       }
+
+      constraints.push(orderBy("timestamp", "desc"));
+      constraints.push(limit(filters?.limit ?? 50));
+
+      const q = query(
+        collection(db, "projects", projectId, "audit_log"),
+        ...constraints,
+      );
+
       const snapshot = await getDocs(q);
       return snapshot.docs.map(
         (d) => ({ id: d.id, ...d.data() }) as AuditEntry,
