@@ -22,13 +22,13 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { ConfigDetailPanel } from "@/components/config-detail-panel";
 import { ConfigFormModal } from "@/components/config-form-modal";
 import { EmptyState } from "@/components/empty-state";
-import { JsonHighlight } from "@/components/json-highlight";
 import { Kbd } from "@/components/kbd";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
-import { ValuePreview, getFullValue } from "@/components/value-preview";
+import { ValuePreview } from "@/components/value-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -680,14 +680,12 @@ const ConfigsPage = () => {
                         {expandedKey === config.key && (
                           <TableRow key={`${config.key}-expanded`}>
                             <TableCell colSpan={6} className="bg-muted/30 p-4">
-                              {config.valueType === "json" ||
-                              config.valueType === "array" ? (
-                                <JsonHighlight value={getFullValue(config)} />
-                              ) : (
-                                <pre className="max-h-48 overflow-auto rounded-xl border bg-background p-4 font-mono text-xs">
-                                  {getFullValue(config)}
-                                </pre>
-                              )}
+                              <ConfigDetailPanel
+                                config={config}
+                                projectId={selectedProjectId!}
+                                environmentId={envId!}
+                                canEdit={canEdit}
+                              />
                             </TableCell>
                           </TableRow>
                         )}
