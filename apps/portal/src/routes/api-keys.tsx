@@ -37,6 +37,7 @@ import {
 } from "@/hooks/use-api-keys";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
+import { useRBAC } from "@/hooks/use-rbac";
 
 const MaskedToken = ({ token }: { token: string }) => {
   const [visible, setVisible] = useState(false);
@@ -89,10 +90,12 @@ const EnvironmentKeys = ({
   projectId,
   environmentId,
   environmentName,
+  readOnly,
 }: {
   projectId: string;
   environmentId: string;
   environmentName: string;
+  readOnly?: boolean;
 }) => {
   const { data: keys = [], isLoading } = useApiKeys(projectId, environmentId);
   const generateKey = useGenerateApiKey();
@@ -162,7 +165,7 @@ const EnvironmentKeys = ({
           className="min-w-20 gap-2 rounded-full shrink-0"
           size="sm"
           onClick={() => setShowLabelInput(true)}
-          disabled={showLabelInput}
+          disabled={showLabelInput || readOnly}
         >
           <Plus className="h-3.5 w-3.5" />
           <Trans>Generate Key</Trans>
@@ -322,6 +325,8 @@ const EnvironmentKeys = ({
 const ApiKeysPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const selectedEnvironmentId = useProjectStore((s) => s.selectedEnvironmentId);
+  const { role } = useRBAC();
+  const isViewer = role === "viewer";
 
   if (!selectedProjectId) {
     return (
@@ -361,6 +366,7 @@ const ApiKeysPage = () => {
         projectId={selectedProjectId}
         environmentId={selectedEnvironmentId}
         environmentName=""
+        readOnly={isViewer}
       />
     </PageLayout>
   );
