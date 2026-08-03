@@ -45,15 +45,20 @@ export const useCreateSegment = () => {
         updatedAt: new Date().toISOString(),
         createdBy: user.uid,
       };
-      await writeAuditEntry(projectId, {
-        actorId: user.uid,
-        timestamp: new Date().toISOString(),
-        action: "create",
-        resourcePath: `segments/${segment.name}`,
-        newValue: JSON.stringify(data),
-      });
       const colRef = collection(db, "projects", projectId, "segments");
       const docRef = await addDoc(colRef, data);
+      // Audit entry — best effort, don't block segment creation
+      try {
+        await writeAuditEntry(projectId, {
+          actorId: user.uid,
+          timestamp: new Date().toISOString(),
+          action: "create",
+          resourcePath: `segments/${docRef.id}`,
+          newValue: JSON.stringify(data),
+        });
+      } catch {
+        // Audit failure should not block the operation
+      }
       return docRef.id;
     },
     onSuccess: (_data, variables) => {
