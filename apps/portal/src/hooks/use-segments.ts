@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
-import { writeAuditEntry } from "@/lib/audit";
+import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
 import type { Segment } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
 
@@ -47,17 +47,18 @@ export const useCreateSegment = () => {
       };
       const colRef = collection(db, "projects", projectId, "segments");
       const docRef = await addDoc(colRef, data);
-      // Audit entry — best effort, don't block segment creation
       try {
-        await writeAuditEntry(projectId, {
-          actorId: user.uid,
-          timestamp: new Date().toISOString(),
-          action: "create",
-          resourcePath: `segments/${segment.name}`,
-          newValue: JSON.stringify(data),
-        });
+        await writeAuditEntry(
+          projectId,
+          buildAuditEntry({
+            actorId: user.uid,
+            action: "create",
+            resourcePath: `segments/${segment.name}`,
+            newValue: data,
+          }),
+        );
       } catch {
-        // Audit failure should not block the operation
+        /* best-effort */
       }
       return docRef.id;
     },
@@ -90,14 +91,16 @@ export const useUpdateSegment = () => {
     }) => {
       if (!user) throw new Error("Not authenticated");
       const segmentName = data.name || oldData?.name || segmentId;
-      await writeAuditEntry(projectId, {
-        actorId: user.uid,
-        timestamp: new Date().toISOString(),
-        action: "update",
-        resourcePath: `segments/${segmentName}`,
-        oldValue: oldData ? JSON.stringify(oldData) : undefined,
-        newValue: JSON.stringify(data),
-      });
+      await writeAuditEntry(
+        projectId,
+        buildAuditEntry({
+          actorId: user.uid,
+          action: "update",
+          resourcePath: `segments/${segmentName}`,
+          oldValue: oldData,
+          newValue: data,
+        }),
+      );
       const docRef = doc(db, "projects", projectId, "segments", segmentId);
       await updateDoc(docRef, { ...data, updatedAt: new Date().toISOString() });
     },
@@ -127,12 +130,14 @@ export const useDeleteSegment = () => {
       segmentName?: string;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      await writeAuditEntry(projectId, {
-        actorId: user.uid,
-        timestamp: new Date().toISOString(),
-        action: "delete",
-        resourcePath: `segments/${segmentName || segmentId}`,
-      });
+      await writeAuditEntry(
+        projectId,
+        buildAuditEntry({
+          actorId: user.uid,
+          action: "delete",
+          resourcePath: `segments/${segmentName || segmentId}`,
+        }),
+      );
       await deleteDoc(doc(db, "projects", projectId, "segments", segmentId));
     },
     onSuccess: (_data, variables) => {

@@ -44,7 +44,7 @@ msgstr ""
 
 #: src/components/add-member-modal.tsx:115
 #: src/components/rbac-manager.tsx:101
-#: src/routes/settings.tsx:295
+#: src/routes/settings.tsx:301
 msgid "Add"
 msgstr ""
 
@@ -241,11 +241,11 @@ msgstr ""
 msgid "Click to see which configs use this segment"
 msgstr ""
 
-#: src/routes/settings.tsx:370
+#: src/routes/settings.tsx:376
 msgid "Clone"
 msgstr ""
 
-#: src/routes/settings.tsx:375
+#: src/routes/settings.tsx:381
 msgid "Clone environment"
 msgstr ""
 
@@ -315,7 +315,7 @@ msgstr ""
 msgid "Configs"
 msgstr "Configurations"
 
-#: src/routes/settings.tsx:215
+#: src/routes/settings.tsx:221
 msgid "Configs are being copied..."
 msgstr ""
 
@@ -323,7 +323,7 @@ msgstr ""
 msgid "Confirm Delete"
 msgstr ""
 
-#: src/routes/settings.tsx:460
+#: src/routes/settings.tsx:475
 msgid "Confirm Delete?"
 msgstr ""
 
@@ -355,7 +355,7 @@ msgstr ""
 #: src/components/segment-manager.tsx:194
 #: src/routes/api-keys.tsx:191
 #: src/routes/environments.tsx:241
-#: src/routes/settings.tsx:305
+#: src/routes/settings.tsx:311
 msgid "Create"
 msgstr "Créer"
 
@@ -384,7 +384,7 @@ msgid "Create your first project"
 msgstr ""
 
 #: src/components/audit-log-viewer.tsx:152
-#: src/routes/settings.tsx:534
+#: src/routes/settings.tsx:549
 msgid "Created"
 msgstr "Créé"
 
@@ -401,7 +401,7 @@ msgid "Customize your portal experience."
 msgstr ""
 
 #: src/routes/preferences.tsx:324
-#: src/routes/settings.tsx:441
+#: src/routes/settings.tsx:456
 msgid "Danger Zone"
 msgstr "Zone de danger"
 
@@ -438,12 +438,12 @@ msgstr ""
 #: src/routes/configs.tsx:701
 #: src/routes/environments.tsx:302
 #: src/routes/environments.tsx:313
-#: src/routes/settings.tsx:396
-#: src/routes/settings.tsx:401
+#: src/routes/settings.tsx:402
+#: src/routes/settings.tsx:407
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/routes/settings.tsx:462
+#: src/routes/settings.tsx:477
 msgid "Delete Project"
 msgstr "Supprimer le projet"
 
@@ -455,7 +455,7 @@ msgstr ""
 msgid "Deleted"
 msgstr ""
 
-#: src/routes/settings.tsx:446
+#: src/routes/settings.tsx:461
 msgid "Deleting a project is irreversible. All environments, configs, and API keys will become inaccessible."
 msgstr ""
 
@@ -516,8 +516,8 @@ msgstr ""
 #: src/routes/configs.tsx:614
 #: src/routes/configs.tsx:619
 #: src/routes/settings.tsx:113
-#: src/routes/settings.tsx:383
-#: src/routes/settings.tsx:388
+#: src/routes/settings.tsx:389
+#: src/routes/settings.tsx:394
 msgid "Edit"
 msgstr ""
 
@@ -549,12 +549,12 @@ msgstr ""
 msgid "Enter valid JSON"
 msgstr ""
 
-#: src/routes/settings.tsx:214
+#: src/routes/settings.tsx:220
 msgid "Environment cloned"
 msgstr ""
 
 #: src/routes/environments.tsx:110
-#: src/routes/settings.tsx:192
+#: src/routes/settings.tsx:198
 msgid "Environment created"
 msgstr ""
 
@@ -563,7 +563,7 @@ msgid "Environment created!"
 msgstr ""
 
 #: src/routes/environments.tsx:131
-#: src/routes/settings.tsx:259
+#: src/routes/settings.tsx:265
 msgid "Environment deleted"
 msgstr ""
 
@@ -575,13 +575,13 @@ msgstr ""
 msgid "Environment name (e.g. production, staging)"
 msgstr ""
 
-#: src/routes/settings.tsx:246
+#: src/routes/settings.tsx:252
 msgid "Environment updated"
 msgstr ""
 
 #: src/routes/__root.tsx:341
 #: src/routes/environments.tsx:165
-#: src/routes/settings.tsx:286
+#: src/routes/settings.tsx:292
 msgid "Environments"
 msgstr "Environnements"
 
@@ -621,7 +621,7 @@ msgstr ""
 msgid "Failed to apply template"
 msgstr ""
 
-#: src/routes/settings.tsx:227
+#: src/routes/settings.tsx:233
 msgid "Failed to clone environment"
 msgstr ""
 
@@ -631,7 +631,7 @@ msgstr ""
 
 #: src/components/onboarding-stepper.tsx:60
 #: src/routes/environments.tsx:113
-#: src/routes/settings.tsx:194
+#: src/routes/settings.tsx:200
 msgid "Failed to create environment"
 msgstr ""
 
@@ -649,7 +649,7 @@ msgid "Failed to delete config"
 msgstr ""
 
 #: src/routes/environments.tsx:134
-#: src/routes/settings.tsx:277
+#: src/routes/settings.tsx:283
 msgid "Failed to delete environment"
 msgstr ""
 
@@ -657,7 +657,7 @@ msgstr ""
 msgid "Failed to delete key"
 msgstr ""
 
-#: src/routes/settings.tsx:433
+#: src/routes/settings.tsx:447
 msgid "Failed to delete project"
 msgstr ""
 
@@ -705,7 +705,7 @@ msgstr ""
 msgid "Failed to sync configs"
 msgstr ""
 
-#: src/routes/settings.tsx:248
+#: src/routes/settings.tsx:254
 msgid "Failed to update environment"
 msgstr ""
 
@@ -851,7 +851,7 @@ msgstr ""
 msgid "Manage feature flags and configuration values."
 msgstr ""
 
-#: src/routes/settings.tsx:517
+#: src/routes/settings.tsx:532
 msgid "Manage project configuration and team access."
 msgstr ""
 
@@ -949,7 +949,7 @@ msgstr ""
 msgid "No environments yet"
 msgstr "Pas encore d'environnements"
 
-#: src/routes/settings.tsx:311
+#: src/routes/settings.tsx:317
 msgid "No environments yet."
 msgstr ""
 
@@ -1035,7 +1035,7 @@ msgid "Overwrite existing data?"
 msgstr ""
 
 #: src/components/rbac-manager.tsx:128
-#: src/routes/settings.tsx:545
+#: src/routes/settings.tsx:560
 #: src/routes/team.tsx:260
 msgid "Owner"
 msgstr "Propriétaire"
@@ -1100,7 +1100,7 @@ msgstr ""
 msgid "Priority"
 msgstr ""
 
-#: src/routes/settings.tsx:343
+#: src/routes/settings.tsx:349
 msgid "Production"
 msgstr ""
 
@@ -1124,7 +1124,7 @@ msgstr ""
 msgid "Project created successfully!"
 msgstr ""
 
-#: src/routes/settings.tsx:431
+#: src/routes/settings.tsx:445
 msgid "Project deleted"
 msgstr ""
 
@@ -1132,7 +1132,7 @@ msgstr ""
 msgid "Project description (markdown supported)"
 msgstr ""
 
-#: src/routes/settings.tsx:527
+#: src/routes/settings.tsx:542
 msgid "Project ID"
 msgstr "ID du projet"
 
@@ -1141,16 +1141,16 @@ msgstr "ID du projet"
 msgid "Project name"
 msgstr ""
 
-#: src/routes/settings.tsx:523
+#: src/routes/settings.tsx:538
 msgid "Project Name"
 msgstr "Nom du projet"
 
-#: src/routes/settings.tsx:502
+#: src/routes/settings.tsx:517
 msgid "Project not found."
 msgstr ""
 
 #: src/components/command-palette.tsx:113
-#: src/routes/settings.tsx:515
+#: src/routes/settings.tsx:530
 msgid "Project Settings"
 msgstr "Paramètres du projet"
 
@@ -1344,7 +1344,7 @@ msgstr ""
 msgid "Select a project to view environments."
 msgstr ""
 
-#: src/routes/settings.tsx:485
+#: src/routes/settings.tsx:500
 msgid "Select a project to view settings."
 msgstr ""
 
@@ -1501,7 +1501,7 @@ msgstr ""
 msgid "The following changes will be applied:"
 msgstr ""
 
-#: src/routes/settings.tsx:548
+#: src/routes/settings.tsx:563
 msgid "The user who created this project"
 msgstr ""
 
@@ -1544,7 +1544,7 @@ msgid "Type"
 msgstr ""
 
 #: src/routes/configs.tsx:196
-#: src/routes/settings.tsx:261
+#: src/routes/settings.tsx:267
 msgid "Undo"
 msgstr ""
 
@@ -1552,7 +1552,7 @@ msgstr ""
 msgid "Unified"
 msgstr ""
 
-#: src/routes/settings.tsx:530
+#: src/routes/settings.tsx:545
 msgid "Unique identifier for API integrations"
 msgstr ""
 
@@ -1582,7 +1582,7 @@ msgid "Updated"
 msgstr ""
 
 #. placeholder {0}: sourceEnv.name
-#: src/routes/settings.tsx:223
+#: src/routes/settings.tsx:229
 msgid "Use \"Compare Environments\" to sync configs from \"{0}\" to the new environment."
 msgstr ""
 

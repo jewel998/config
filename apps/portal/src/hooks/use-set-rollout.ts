@@ -1,70 +1,32 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { doc, updateDoc } from "firebase/firestore";
+import { createConfigFieldMutation } from "@/hooks/use-config-field-mutation";
 
-import { db } from "@/lib/firebase";
-import { writeAuditEntry, buildConfigAuditEntry } from "@/lib/audit";
-import { useAuthStore } from "@/stores/auth-store";
+interface RolloutValue {
+  rolloutPercentage: number;
+  rolloutValue: unknown;
+}
 
-export const useSetRollout = () => {
-  const queryClient = useQueryClient();
-  const user = useAuthStore((s) => s.user);
-
-  return useMutation({
-    mutationFn: async ({
-      projectId,
-      environmentId,
-      key,
-      rolloutPercentage,
-      rolloutValue,
-      oldRolloutPercentage,
-      oldRolloutValue,
-    }: {
-      projectId: string;
-      environmentId: string;
-      key: string;
-      rolloutPercentage: number;
-      rolloutValue: unknown;
-      oldRolloutPercentage?: number;
-      oldRolloutValue?: unknown;
-    }) => {
-      if (!user) throw new Error("Not authenticated");
-      await writeAuditEntry(
-        projectId,
-        buildConfigAuditEntry({
-          actorId: user.uid,
-          action: "update",
-          environmentId,
-          configKey: key,
-          oldValue: {
-            rolloutPercentage: oldRolloutPercentage,
-            rolloutValue: oldRolloutValue,
-          },
-          newValue: { rolloutPercentage, rolloutValue },
-        }),
-      );
-      const docRef = doc(
-        db,
-        "projects",
-        projectId,
-        "environments",
-        environmentId,
-        "configs",
-        key,
-      );
-      await updateDoc(docRef, {
-        rolloutPercentage,
-        rolloutValue,
-        updatedAt: new Date().toISOString(),
-        updatedBy: user.uid,
-      });
-    },
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["configs", variables.projectId, variables.environmentId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["audit_log", variables.projectId],
-      });
-    },
-  });
-};
+export const useSetRollout = createConfigFieldMutation<
+  RolloutValue,
+  {
+    rolloutPercentage: number;
+    rolloutValue: unknown;
+    oldRolloutPercentage?: number;
+    oldRolloutValue?: unknown;
+  }
+>({
+  field: "rolloutPercentage",
+  getValue: (p) => ({
+    rolloutPercentage: p.rolloutPercentage,
+    rolloutValue: p.rolloutValue,
+  }),
+  getOldValue: (p) => ({
+    rolloutPercentage: p.oldRolloutPercentage,
+    rolloutValue: p.oldRolloutValue,
+  }),
+  buildUpdate: (value, userId) => ({
+    rolloutPercentage: value.rolloutPercentage,
+    rolloutValue: value.rolloutValue,
+    updatedAt: new Date().toISOString(),
+    updatedBy: userId,
+  }),
+});
