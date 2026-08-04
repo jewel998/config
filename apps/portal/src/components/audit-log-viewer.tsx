@@ -41,11 +41,11 @@ const ACTION_COLORS: Record<string, string> = {
 };
 
 const ACTION_ICONS: Record<string, string> = {
-  create: "●",
-  update: "◐",
-  delete: "○",
-  state_change: "◑",
-  data_deletion: "◌",
+  create: "+",
+  update: "~",
+  delete: "×",
+  state_change: "↻",
+  data_deletion: "⊘",
 };
 
 const ACTION_LABELS: Record<string, string> = {
@@ -162,6 +162,7 @@ interface AuditLogViewerProps {
 
 export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
   const [actionFilter, setActionFilter] = useState<string>("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [diffEntry, setDiffEntry] = useState<AuditEntry | null>(null);
   const [diffMode, setDiffMode] = useState<"side-by-side" | "unified">(
@@ -188,15 +189,20 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
   );
   const { data: profiles = {} } = useUserProfiles(actorIds);
 
-  const filtered = useMemo(
-    () =>
-      searchQuery
-        ? entries.filter((e) =>
-            e.resourcePath.toLowerCase().includes(searchQuery.toLowerCase()),
-          )
-        : entries,
-    [entries, searchQuery],
-  );
+  const filtered = useMemo(() => {
+    let result = entries;
+    if (searchQuery) {
+      result = result.filter((e) =>
+        e.resourcePath.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    }
+    if (categoryFilter !== "all") {
+      result = result.filter(
+        (e) => getResourceCategory(e.resourcePath) === categoryFilter,
+      );
+    }
+    return result;
+  }, [entries, searchQuery, categoryFilter]);
 
   // Infinite scroll
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -237,10 +243,32 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
     return parts[parts.length - 1] || path;
   };
 
-  const getResourceType = (path: string) => {
+  const getResourceCategory = (path: string): string => {
     if (path.includes("configs")) return "config";
     if (path.includes("segments")) return "segment";
-    return "resource";
+    if (path.includes("apiKeys") || path.includes("clientIds"))
+      return "api_key";
+    if (path.startsWith("project/")) return "project";
+    if (path.includes("team") || path.includes("members")) return "team";
+    return "other";
+  };
+
+  const getResourceType = (path: string) => {
+    const cat = getResourceCategory(path);
+    const labels: Record<string, string> = {
+      config: "config",
+      segment: "segment",
+      api_key: "API key",
+      project: "project",
+      team: "team",
+      other: "resource",
+    };
+    return labels[cat] ?? "resource";
+  };
+
+  const getEnvironmentFromPath = (path: string): string | null => {
+    const match = path.match(/environments\/([^/]+)/);
+    return match ? match[1] : null;
   };
 
   const diffLines = useMemo(() => {
@@ -274,12 +302,25 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-8 text-sm w-full sm:w-44"
               />
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger className="h-8 text-sm w-full sm:w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t`All resources`}</SelectItem>
+                  <SelectItem value="config">{t`Configs`}</SelectItem>
+                  <SelectItem value="segment">{t`Segments`}</SelectItem>
+                  <SelectItem value="api_key">{t`API Keys`}</SelectItem>
+                  <SelectItem value="project">{t`Project`}</SelectItem>
+                  <SelectItem value="team">{t`Team`}</SelectItem>
+                </SelectContent>
+              </Select>
               <Select value={actionFilter} onValueChange={setActionFilter}>
                 <SelectTrigger className="h-8 text-sm w-full sm:w-32">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{t`All`}</SelectItem>
+                  <SelectItem value="all">{t`All actions`}</SelectItem>
                   <SelectItem value="create">{t`Created`}</SelectItem>
                   <SelectItem value="update">{t`Updated`}</SelectItem>
                   <SelectItem value="delete">{t`Deleted`}</SelectItem>
@@ -335,10 +376,19 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
                       </span>
                     </p>
 
-                    {/* Secondary: resource type + time */}
+                    {/* Secondary: resource type + env + time */}
                     <p className="text-xs text-muted-foreground">
-                      {getResourceType(entry.resourcePath)} ·{" "}
-                      {new Date(entry.timestamp).toLocaleString()}
+                      {getResourceType(entry.resourcePath)}
+                      {getEnvironmentFromPath(entry.resourcePath) && (
+                        <span>
+                          {" "}
+                          ·{" "}
+                          <span className="font-mono">
+                            {getEnvironmentFromPath(entry.resourcePath)}
+                          </span>
+                        </span>
+                      )}{" "}
+                      · {new Date(entry.timestamp).toLocaleString()}
                     </p>
 
                     {/* Changes indicator */}

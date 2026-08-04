@@ -13,6 +13,7 @@ import {
 import { db } from "@/lib/firebase";
 import type { Project } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
+import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
 
 export type { Project };
 
@@ -55,6 +56,20 @@ export const useCreateProject = () => {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
+      // Audit
+      try {
+        await writeAuditEntry(
+          docRef.id,
+          buildAuditEntry({
+            actorId: user.uid,
+            action: "create",
+            resourcePath: `project/${docRef.id}`,
+            newValue: { name: name.trim() },
+          }),
+        );
+      } catch {
+        /* best-effort */
+      }
       return docRef.id;
     },
     onSuccess: () => {
@@ -65,12 +80,26 @@ export const useCreateProject = () => {
 
 export const useDeleteProject = () => {
   const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
 
   return useMutation({
     mutationFn: async (projectId: string) => {
+      if (!user) throw new Error("Not authenticated");
       await updateDoc(doc(db, "projects", projectId), {
         deletedAt: new Date().toISOString(),
       });
+      try {
+        await writeAuditEntry(
+          projectId,
+          buildAuditEntry({
+            actorId: user.uid,
+            action: "delete",
+            resourcePath: `project/${projectId}`,
+          }),
+        );
+      } catch {
+        /* best-effort */
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
