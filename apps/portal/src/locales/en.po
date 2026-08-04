@@ -38,7 +38,7 @@ msgstr "Account deletion is not yet available. Contact support if you need to de
 msgid "Actions"
 msgstr "Actions"
 
-#: src/components/audit-log-viewer.tsx:319
+#: src/components/audit-log-viewer.tsx:328
 msgid "Activity"
 msgstr "Activity"
 
@@ -74,7 +74,7 @@ msgid "Add environments like production, staging, or development."
 msgstr "Add environments like production, staging, or development."
 
 #: src/components/rbac-manager.tsx:76
-#: src/routes/team.tsx:120
+#: src/routes/team.tsx:144
 msgid "Add Member"
 msgstr "Add Member"
 
@@ -90,7 +90,7 @@ msgstr "Add Rule"
 msgid "Add Team Member"
 msgstr "Add Team Member"
 
-#: src/components/audit-log-viewer.tsx:602
+#: src/components/audit-log-viewer.tsx:611
 msgid "After"
 msgstr "After"
 
@@ -98,7 +98,7 @@ msgstr "After"
 msgid "Aging"
 msgstr "Aging"
 
-#: src/components/audit-log-viewer.tsx:346
+#: src/components/audit-log-viewer.tsx:355
 msgid "All actions"
 msgstr "All actions"
 
@@ -106,7 +106,7 @@ msgstr "All actions"
 msgid "All ages"
 msgstr "All ages"
 
-#: src/components/audit-log-viewer.tsx:333
+#: src/components/audit-log-viewer.tsx:342
 msgid "All resources"
 msgstr "All resources"
 
@@ -146,7 +146,7 @@ msgstr "API key generated"
 msgid "API key revoked"
 msgstr "API key revoked"
 
-#: src/components/audit-log-viewer.tsx:336
+#: src/components/audit-log-viewer.tsx:345
 #: src/components/command-palette.tsx:105
 #: src/routes/__root.tsx:204
 #: src/routes/api-keys.tsx:356
@@ -184,7 +184,7 @@ msgstr "Audit"
 msgid "Audit Log"
 msgstr "Audit Log"
 
-#: src/components/audit-log-viewer.tsx:570
+#: src/components/audit-log-viewer.tsx:579
 msgid "Before"
 msgstr "Before"
 
@@ -213,11 +213,11 @@ msgstr "Cancel"
 msgid "Cannot add self as prerequisite (circular dependency)."
 msgstr "Cannot add self as prerequisite (circular dependency)."
 
-#: src/routes/team.tsx:80
+#: src/routes/team.tsx:90
 msgid "Cannot remove the last admin"
 msgstr "Cannot remove the last admin"
 
-#: src/components/audit-log-viewer.tsx:460
+#: src/components/audit-log-viewer.tsx:469
 msgid "Change Details"
 msgstr "Change Details"
 
@@ -308,7 +308,7 @@ msgstr "Config updated"
 msgid "config{0}"
 msgstr "config{0}"
 
-#: src/components/audit-log-viewer.tsx:334
+#: src/components/audit-log-viewer.tsx:343
 #: src/components/command-palette.tsx:89
 #: src/routes/__root.tsx:202
 #: src/routes/configs.tsx:296
@@ -383,7 +383,7 @@ msgstr "Create Segment"
 msgid "Create your first project"
 msgstr "Create your first project"
 
-#: src/components/audit-log-viewer.tsx:347
+#: src/components/audit-log-viewer.tsx:356
 #: src/routes/settings.tsx:534
 msgid "Created"
 msgstr "Created"
@@ -451,7 +451,7 @@ msgstr "Delete Project"
 msgid "Delete segment?"
 msgstr "Delete segment?"
 
-#: src/components/audit-log-viewer.tsx:349
+#: src/components/audit-log-viewer.tsx:358
 msgid "Deleted"
 msgstr "Deleted"
 
@@ -609,7 +609,7 @@ msgstr "Export failed"
 msgid "Exporting..."
 msgstr "Exporting..."
 
-#: src/routes/team.tsx:102
+#: src/routes/team.tsx:126
 msgid "Failed to add member"
 msgstr "Failed to add member"
 
@@ -669,7 +669,7 @@ msgstr "Failed to delete segment"
 msgid "Failed to generate API key"
 msgstr "Failed to generate API key"
 
-#: src/routes/team.tsx:91
+#: src/routes/team.tsx:108
 msgid "Failed to remove member"
 msgstr "Failed to remove member"
 
@@ -697,7 +697,7 @@ msgstr "Failed to save prerequisites"
 msgid "Failed to save rules"
 msgstr "Failed to save rules"
 
-#: src/routes/team.tsx:108
+#: src/routes/team.tsx:132
 msgid "Failed to send invite"
 msgstr "Failed to send invite"
 
@@ -709,7 +709,7 @@ msgstr "Failed to sync configs"
 msgid "Failed to update environment"
 msgstr "Failed to update environment"
 
-#: src/routes/team.tsx:73
+#: src/routes/team.tsx:83
 msgid "Failed to update role"
 msgstr "Failed to update role"
 
@@ -774,7 +774,7 @@ msgstr "Hide identical"
 msgid "Hide Preview"
 msgstr "Hide Preview"
 
-#: src/components/audit-log-viewer.tsx:501
+#: src/components/audit-log-viewer.tsx:510
 msgid "Hide unchanged ({unchangedCount})"
 msgstr "Hide unchanged ({unchangedCount})"
 
@@ -794,7 +794,7 @@ msgstr "Invalid regex pattern"
 msgid "Invalid value"
 msgstr "Invalid value"
 
-#: src/routes/team.tsx:108
+#: src/routes/team.tsx:132
 msgid "Invite sent"
 msgstr "Invite sent"
 
@@ -855,7 +855,7 @@ msgstr "Manage feature flags and configuration values."
 msgid "Manage project configuration and team access."
 msgstr "Manage project configuration and team access."
 
-#: src/routes/team.tsx:116
+#: src/routes/team.tsx:140
 msgid "Manage project members and their roles."
 msgstr "Manage project members and their roles."
 
@@ -863,15 +863,15 @@ msgstr "Manage project members and their roles."
 msgid "Max value"
 msgstr "Max value"
 
-#: src/routes/team.tsx:100
+#: src/routes/team.tsx:124
 msgid "Member added"
 msgstr "Member added"
 
-#: src/routes/team.tsx:89
+#: src/routes/team.tsx:106
 msgid "Member removed"
 msgstr "Member removed"
 
-#: src/routes/team.tsx:128
+#: src/routes/team.tsx:152
 msgid "Members"
 msgstr "Members"
 
@@ -917,7 +917,7 @@ msgstr "New Environment"
 msgid "Next page"
 msgstr "Next page"
 
-#: src/components/audit-log-viewer.tsx:367
+#: src/components/audit-log-viewer.tsx:376
 msgid "No activity yet"
 msgstr "No activity yet"
 
@@ -925,7 +925,7 @@ msgstr "No activity yet"
 msgid "No API keys yet. Generate one to get started."
 msgstr "No API keys yet. Generate one to get started."
 
-#: src/components/audit-log-viewer.tsx:513
+#: src/components/audit-log-viewer.tsx:522
 msgid "No changes to display"
 msgstr "No changes to display"
 
@@ -1036,15 +1036,15 @@ msgstr "Overwrite existing data?"
 
 #: src/components/rbac-manager.tsx:128
 #: src/routes/settings.tsx:545
-#: src/routes/team.tsx:161
+#: src/routes/team.tsx:185
 msgid "Owner"
 msgstr "Owner"
 
-#: src/routes/team.tsx:192
+#: src/routes/team.tsx:216
 msgid "Pending"
 msgstr "Pending"
 
-#: src/routes/team.tsx:179
+#: src/routes/team.tsx:203
 msgid "Pending Invites"
 msgstr "Pending Invites"
 
@@ -1112,7 +1112,7 @@ msgstr "Production environment"
 msgid "Profile"
 msgstr "Profile"
 
-#: src/components/audit-log-viewer.tsx:337
+#: src/components/audit-log-viewer.tsx:346
 msgid "Project"
 msgstr "Project"
 
@@ -1183,7 +1183,7 @@ msgstr "Remove"
 msgid "Remove group"
 msgstr "Remove group"
 
-#: src/routes/team.tsx:81
+#: src/routes/team.tsx:91
 msgid "Remove this member from the project?"
 msgstr "Remove this member from the project?"
 
@@ -1212,7 +1212,7 @@ msgstr "Revoke key"
 msgid "Revoked"
 msgstr "Revoked"
 
-#: src/routes/team.tsx:71
+#: src/routes/team.tsx:81
 msgid "Role updated"
 msgstr "Role updated"
 
@@ -1275,7 +1275,7 @@ msgstr "Search environments..."
 msgid "Search projects..."
 msgstr "Search projects..."
 
-#: src/components/audit-log-viewer.tsx:323
+#: src/components/audit-log-viewer.tsx:332
 msgid "Search..."
 msgstr "Search..."
 
@@ -1304,7 +1304,7 @@ msgstr "Segment name is required."
 msgid "Segment updated"
 msgstr "Segment updated"
 
-#: src/components/audit-log-viewer.tsx:335
+#: src/components/audit-log-viewer.tsx:344
 #: src/components/command-palette.tsx:133
 #: src/components/segment-manager.tsx:83
 #: src/routes/__root.tsx:203
@@ -1332,7 +1332,7 @@ msgstr "Select a project to manage GDPR compliance."
 msgid "Select a project to manage segments."
 msgstr "Select a project to manage segments."
 
-#: src/routes/team.tsx:54
+#: src/routes/team.tsx:55
 msgid "Select a project to manage team access."
 msgstr "Select a project to manage team access."
 
@@ -1384,7 +1384,7 @@ msgstr "Show identical"
 msgid "Show Preview"
 msgstr "Show Preview"
 
-#: src/components/audit-log-viewer.tsx:503
+#: src/components/audit-log-viewer.tsx:512
 msgid "Show unchanged ({unchangedCount})"
 msgstr "Show unchanged ({unchangedCount})"
 
@@ -1395,7 +1395,7 @@ msgstr "Show unchanged ({unchangedCount})"
 msgid "Showing {0}–{1} of {2}"
 msgstr "Showing {0}–{1} of {2}"
 
-#: src/components/audit-log-viewer.tsx:491
+#: src/components/audit-log-viewer.tsx:500
 msgid "Side by side"
 msgstr "Side by side"
 
@@ -1424,7 +1424,7 @@ msgstr "Stale"
 msgid "Start configuring your environments with secrets and settings."
 msgstr "Start configuring your environments with secrets and settings."
 
-#: src/components/audit-log-viewer.tsx:350
+#: src/components/audit-log-viewer.tsx:359
 msgid "State change"
 msgstr "State change"
 
@@ -1471,13 +1471,13 @@ msgstr "Targeting Rules"
 msgid "Targeting rules saved"
 msgstr "Targeting rules saved"
 
-#: src/components/audit-log-viewer.tsx:338
+#: src/components/audit-log-viewer.tsx:347
 #: src/routes/__root.tsx:206
 msgid "Team"
 msgstr "Team"
 
 #: src/components/command-palette.tsx:149
-#: src/routes/team.tsx:115
+#: src/routes/team.tsx:139
 msgid "Team & Access"
 msgstr "Team & Access"
 
@@ -1548,7 +1548,7 @@ msgstr "Type"
 msgid "Undo"
 msgstr "Undo"
 
-#: src/components/audit-log-viewer.tsx:482
+#: src/components/audit-log-viewer.tsx:491
 msgid "Unified"
 msgstr "Unified"
 
@@ -1576,7 +1576,7 @@ msgstr "Update the configuration value."
 msgid "Update the segment name, description, and conditions."
 msgstr "Update the segment name, description, and conditions."
 
-#: src/components/audit-log-viewer.tsx:348
+#: src/components/audit-log-viewer.tsx:357
 #: src/routes/configs.tsx:496
 msgid "Updated"
 msgstr "Updated"
@@ -1640,7 +1640,7 @@ msgstr "Value served when rule matches"
 msgid "Versioned"
 msgstr "Versioned"
 
-#: src/components/audit-log-viewer.tsx:432
+#: src/components/audit-log-viewer.tsx:441
 msgid "View changes"
 msgstr "View changes"
 
@@ -1657,11 +1657,11 @@ msgstr "What does this segment represent?"
 msgid "Write"
 msgstr "Write"
 
-#: src/routes/team.tsx:162
+#: src/routes/team.tsx:186
 msgid "You"
 msgstr "You"
 
-#: src/routes/team.tsx:66
+#: src/routes/team.tsx:67
 msgid "You cannot change your own role"
 msgstr "You cannot change your own role"
 

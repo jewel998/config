@@ -113,12 +113,24 @@ function getResourceCategory(path: string): ResourceCategory {
 
 function formatResourceName(path: string): string {
   const parts = path.split("/");
+  // configs: "environments/prod/configs/feature.darkMode" → "feature.darkMode"
   if (parts.includes("configs") && parts.length >= 4)
     return parts[parts.length - 1];
-  if (parts.includes("apiKeys") && parts.length >= 4)
-    return `key …${parts[parts.length - 1]}`;
-  if (parts[0] === "segments") return parts[1] ? `segment` : "segments";
-  if (parts[0] === "project") return "project";
+  // API keys: "environments/prod/apiKeys/cid_abc12345" → "API key …abc12345"
+  if (parts.includes("apiKeys") && parts.length >= 4) {
+    const keyId = parts[parts.length - 1];
+    return keyId.startsWith("cid_") ? `API key …${keyId.slice(-6)}` : keyId;
+  }
+  // Segments
+  if (parts[0] === "segments") return "segment";
+  // Project
+  if (parts[0] === "project") return "project settings";
+  // Team members: "team/members/John Doe"
+  if (parts[0] === "team" && parts[1] === "members")
+    return parts[2] ?? "member";
+  // Team invites: "team/invites/user@example.com"
+  if (parts[0] === "team" && parts[1] === "invites")
+    return parts[2] ?? "invite";
   return parts[parts.length - 1] || path;
 }
 
@@ -309,7 +321,7 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
 
   return (
     <>
-      <Card className="rounded-xl overflow-hidden">
+      <Card className="rounded-xl overflow-hidden py-0">
         <CardHeader className="border-b bg-muted/20 px-4 py-3 space-y-3">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold">
             <History className="h-4 w-4 text-muted-foreground" />

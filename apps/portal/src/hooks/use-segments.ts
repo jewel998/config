@@ -53,7 +53,7 @@ export const useCreateSegment = () => {
           actorId: user.uid,
           timestamp: new Date().toISOString(),
           action: "create",
-          resourcePath: `segments/${docRef.id}`,
+          resourcePath: `segments/${segment.name}`,
           newValue: JSON.stringify(data),
         });
       } catch {
