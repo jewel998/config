@@ -67,20 +67,16 @@ export const useSetConfig = () => {
       if (!user) throw new Error("Not authenticated");
 
       // Write audit entry for config creation/update
-      try {
-        await writeAuditEntry(
-          projectId,
-          buildConfigAuditEntry({
-            actorId: user.uid,
-            action: "create",
-            environmentId,
-            configKey: key,
-            newValue: { key, value, valueType },
-          }),
-        );
-      } catch {
-        // Audit failure should not block config creation
-      }
+      await writeAuditEntry(
+        projectId,
+        buildConfigAuditEntry({
+          actorId: user.uid,
+          action: "create",
+          environmentId,
+          configKey: key,
+          newValue: { key, value, valueType },
+        }),
+      );
 
       const docRef = doc(
         db,
@@ -133,19 +129,15 @@ export const useDeleteConfig = () => {
       if (!user) throw new Error("Not authenticated");
 
       // Write audit entry for config deletion
-      try {
-        await writeAuditEntry(
-          projectId,
-          buildConfigAuditEntry({
-            actorId: user.uid,
-            action: "delete",
-            environmentId,
-            configKey: key,
-          }),
-        );
-      } catch {
-        // Audit failure should not block config deletion
-      }
+      await writeAuditEntry(
+        projectId,
+        buildConfigAuditEntry({
+          actorId: user.uid,
+          action: "delete",
+          environmentId,
+          configKey: key,
+        }),
+      );
 
       await deleteDoc(
         doc(

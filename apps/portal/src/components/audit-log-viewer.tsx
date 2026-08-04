@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuditLog } from "@/hooks/use-audit-log";
+import { useEnvironments } from "@/hooks/use-environments";
 import { useUserProfiles } from "@/hooks/use-user-profiles";
 import type { AuditEntry } from "@/lib/types";
 
@@ -45,35 +46,32 @@ const CATEGORY_CONFIG: Record<
 > = {
   config: {
     label: "Config",
-    color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+    color: "bg-secondary text-secondary-foreground",
     icon: Layers,
   },
   segment: {
     label: "Segment",
-    color:
-      "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300",
+    color: "bg-secondary text-secondary-foreground",
     icon: Users,
   },
   api_key: {
     label: "API Key",
-    color:
-      "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+    color: "bg-secondary text-secondary-foreground",
     icon: Key,
   },
   project: {
     label: "Project",
-    color:
-      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300",
+    color: "bg-secondary text-secondary-foreground",
     icon: Layers,
   },
   team: {
     label: "Team",
-    color: "bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300",
+    color: "bg-secondary text-secondary-foreground",
     icon: Users,
   },
   other: {
     label: "Other",
-    color: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+    color: "bg-secondary text-secondary-foreground",
     icon: History,
   },
 };
@@ -87,14 +85,11 @@ const ACTION_ICONS: Record<string, LucideIcon> = {
 };
 
 const ACTION_COLORS: Record<string, string> = {
-  create:
-    "text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30",
-  update: "text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30",
-  delete: "text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30",
-  state_change:
-    "text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30",
-  data_deletion:
-    "text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30",
+  create: "text-emerald-700/80 dark:text-emerald-300/80 bg-emerald-500/8",
+  update: "text-blue-700/80 dark:text-blue-300/80 bg-blue-500/8",
+  delete: "text-red-700/80 dark:text-red-300/80 bg-red-500/8",
+  state_change: "text-amber-700/80 dark:text-amber-300/80 bg-amber-500/8",
+  data_deletion: "text-purple-700/80 dark:text-purple-300/80 bg-purple-500/8",
 };
 
 const ACTION_LABELS: Record<string, string> = {
@@ -239,6 +234,13 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useAuditLog(projectId, filters);
 
+  const { data: environments = [] } = useEnvironments(projectId);
+  const envMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const env of environments) map[env.id] = env.name;
+    return map;
+  }, [environments]);
+
   const entries = useMemo(
     () => data?.pages.flatMap((p) => p.entries) ?? [],
     [data],
@@ -308,45 +310,43 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
   return (
     <>
       <Card className="rounded-xl overflow-hidden">
-        <CardHeader className="border-b bg-muted/30">
-          <div className="flex flex-col gap-3">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <History className="h-4 w-4" />
-              <Trans>Activity</Trans>
-            </CardTitle>
-            <div className="flex flex-wrap gap-2">
-              <Input
-                placeholder={t`Search...`}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8 text-sm w-full sm:w-40"
-              />
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="h-8 text-sm w-full sm:w-36">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t`All resources`}</SelectItem>
-                  <SelectItem value="config">{t`Configs`}</SelectItem>
-                  <SelectItem value="segment">{t`Segments`}</SelectItem>
-                  <SelectItem value="api_key">{t`API Keys`}</SelectItem>
-                  <SelectItem value="project">{t`Project`}</SelectItem>
-                  <SelectItem value="team">{t`Team`}</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={actionFilter} onValueChange={setActionFilter}>
-                <SelectTrigger className="h-8 text-sm w-full sm:w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t`All actions`}</SelectItem>
-                  <SelectItem value="create">{t`Created`}</SelectItem>
-                  <SelectItem value="update">{t`Updated`}</SelectItem>
-                  <SelectItem value="delete">{t`Deleted`}</SelectItem>
-                  <SelectItem value="state_change">{t`State change`}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+        <CardHeader className="border-b bg-muted/20 px-4 py-3 space-y-3">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <History className="h-4 w-4 text-muted-foreground" />
+            <Trans>Activity</Trans>
+          </CardTitle>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Input
+              placeholder={t`Search...`}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-8 text-sm flex-1 sm:max-w-44"
+            />
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="h-8 text-sm w-full sm:w-auto">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t`All resources`}</SelectItem>
+                <SelectItem value="config">{t`Configs`}</SelectItem>
+                <SelectItem value="segment">{t`Segments`}</SelectItem>
+                <SelectItem value="api_key">{t`API Keys`}</SelectItem>
+                <SelectItem value="project">{t`Project`}</SelectItem>
+                <SelectItem value="team">{t`Team`}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={actionFilter} onValueChange={setActionFilter}>
+              <SelectTrigger className="h-8 text-sm w-full sm:w-auto">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t`All actions`}</SelectItem>
+                <SelectItem value="create">{t`Created`}</SelectItem>
+                <SelectItem value="update">{t`Updated`}</SelectItem>
+                <SelectItem value="delete">{t`Deleted`}</SelectItem>
+                <SelectItem value="state_change">{t`State change`}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardHeader>
         <CardContent className="p-0">
@@ -412,7 +412,7 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
                             variant="outline"
                             className="text-[10px] px-1.5 py-0 rounded-full font-mono"
                           >
-                            {envName}
+                            {envMap[envName] || envName}
                           </Badge>
                         )}
                         <DateDisplay

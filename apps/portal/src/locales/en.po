@@ -38,7 +38,7 @@ msgstr "Account deletion is not yet available. Contact support if you need to de
 msgid "Actions"
 msgstr "Actions"
 
-#: src/components/audit-log-viewer.tsx:226
+#: src/components/audit-log-viewer.tsx:319
 msgid "Activity"
 msgstr "Activity"
 
@@ -90,7 +90,7 @@ msgstr "Add Rule"
 msgid "Add Team Member"
 msgstr "Add Team Member"
 
-#: src/components/audit-log-viewer.tsx:404
+#: src/components/audit-log-viewer.tsx:602
 msgid "After"
 msgstr "After"
 
@@ -98,7 +98,7 @@ msgstr "After"
 msgid "Aging"
 msgstr "Aging"
 
-#: src/components/audit-log-viewer.tsx:253
+#: src/components/audit-log-viewer.tsx:346
 msgid "All actions"
 msgstr "All actions"
 
@@ -106,7 +106,7 @@ msgstr "All actions"
 msgid "All ages"
 msgstr "All ages"
 
-#: src/components/audit-log-viewer.tsx:240
+#: src/components/audit-log-viewer.tsx:333
 msgid "All resources"
 msgstr "All resources"
 
@@ -146,7 +146,7 @@ msgstr "API key generated"
 msgid "API key revoked"
 msgstr "API key revoked"
 
-#: src/components/audit-log-viewer.tsx:243
+#: src/components/audit-log-viewer.tsx:336
 #: src/components/command-palette.tsx:105
 #: src/routes/__root.tsx:204
 #: src/routes/api-keys.tsx:356
@@ -184,7 +184,7 @@ msgstr "Audit"
 msgid "Audit Log"
 msgstr "Audit Log"
 
-#: src/components/audit-log-viewer.tsx:391
+#: src/components/audit-log-viewer.tsx:570
 msgid "Before"
 msgstr "Before"
 
@@ -217,7 +217,7 @@ msgstr "Cannot add self as prerequisite (circular dependency)."
 msgid "Cannot remove the last admin"
 msgstr "Cannot remove the last admin"
 
-#: src/components/audit-log-viewer.tsx:336
+#: src/components/audit-log-viewer.tsx:460
 msgid "Change Details"
 msgstr "Change Details"
 
@@ -308,7 +308,7 @@ msgstr "Config updated"
 msgid "config{0}"
 msgstr "config{0}"
 
-#: src/components/audit-log-viewer.tsx:241
+#: src/components/audit-log-viewer.tsx:334
 #: src/components/command-palette.tsx:89
 #: src/routes/__root.tsx:202
 #: src/routes/configs.tsx:296
@@ -383,7 +383,7 @@ msgstr "Create Segment"
 msgid "Create your first project"
 msgstr "Create your first project"
 
-#: src/components/audit-log-viewer.tsx:254
+#: src/components/audit-log-viewer.tsx:347
 #: src/routes/settings.tsx:534
 msgid "Created"
 msgstr "Created"
@@ -451,7 +451,7 @@ msgstr "Delete Project"
 msgid "Delete segment?"
 msgstr "Delete segment?"
 
-#: src/components/audit-log-viewer.tsx:256
+#: src/components/audit-log-viewer.tsx:349
 msgid "Deleted"
 msgstr "Deleted"
 
@@ -774,7 +774,7 @@ msgstr "Hide identical"
 msgid "Hide Preview"
 msgstr "Hide Preview"
 
-#: src/components/audit-log-viewer.tsx:355
+#: src/components/audit-log-viewer.tsx:501
 msgid "Hide unchanged ({unchangedCount})"
 msgstr "Hide unchanged ({unchangedCount})"
 
@@ -917,7 +917,7 @@ msgstr "New Environment"
 msgid "Next page"
 msgstr "Next page"
 
-#: src/components/audit-log-viewer.tsx:269
+#: src/components/audit-log-viewer.tsx:367
 msgid "No activity yet"
 msgstr "No activity yet"
 
@@ -925,7 +925,7 @@ msgstr "No activity yet"
 msgid "No API keys yet. Generate one to get started."
 msgstr "No API keys yet. Generate one to get started."
 
-#: src/components/audit-log-viewer.tsx:363
+#: src/components/audit-log-viewer.tsx:513
 msgid "No changes to display"
 msgstr "No changes to display"
 
@@ -1112,7 +1112,7 @@ msgstr "Production environment"
 msgid "Profile"
 msgstr "Profile"
 
-#: src/components/audit-log-viewer.tsx:244
+#: src/components/audit-log-viewer.tsx:337
 msgid "Project"
 msgstr "Project"
 
@@ -1275,7 +1275,7 @@ msgstr "Search environments..."
 msgid "Search projects..."
 msgstr "Search projects..."
 
-#: src/components/audit-log-viewer.tsx:230
+#: src/components/audit-log-viewer.tsx:323
 msgid "Search..."
 msgstr "Search..."
 
@@ -1304,7 +1304,7 @@ msgstr "Segment name is required."
 msgid "Segment updated"
 msgstr "Segment updated"
 
-#: src/components/audit-log-viewer.tsx:242
+#: src/components/audit-log-viewer.tsx:335
 #: src/components/command-palette.tsx:133
 #: src/components/segment-manager.tsx:83
 #: src/routes/__root.tsx:203
@@ -1384,7 +1384,7 @@ msgstr "Show identical"
 msgid "Show Preview"
 msgstr "Show Preview"
 
-#: src/components/audit-log-viewer.tsx:355
+#: src/components/audit-log-viewer.tsx:503
 msgid "Show unchanged ({unchangedCount})"
 msgstr "Show unchanged ({unchangedCount})"
 
@@ -1395,7 +1395,7 @@ msgstr "Show unchanged ({unchangedCount})"
 msgid "Showing {0}–{1} of {2}"
 msgstr "Showing {0}–{1} of {2}"
 
-#: src/components/audit-log-viewer.tsx:351
+#: src/components/audit-log-viewer.tsx:491
 msgid "Side by side"
 msgstr "Side by side"
 
@@ -1424,7 +1424,7 @@ msgstr "Stale"
 msgid "Start configuring your environments with secrets and settings."
 msgstr "Start configuring your environments with secrets and settings."
 
-#: src/components/audit-log-viewer.tsx:257
+#: src/components/audit-log-viewer.tsx:350
 msgid "State change"
 msgstr "State change"
 
@@ -1471,7 +1471,7 @@ msgstr "Targeting Rules"
 msgid "Targeting rules saved"
 msgstr "Targeting rules saved"
 
-#: src/components/audit-log-viewer.tsx:245
+#: src/components/audit-log-viewer.tsx:338
 #: src/routes/__root.tsx:206
 msgid "Team"
 msgstr "Team"
@@ -1548,7 +1548,7 @@ msgstr "Type"
 msgid "Undo"
 msgstr "Undo"
 
-#: src/components/audit-log-viewer.tsx:348
+#: src/components/audit-log-viewer.tsx:482
 msgid "Unified"
 msgstr "Unified"
 
@@ -1576,7 +1576,7 @@ msgstr "Update the configuration value."
 msgid "Update the segment name, description, and conditions."
 msgstr "Update the segment name, description, and conditions."
 
-#: src/components/audit-log-viewer.tsx:255
+#: src/components/audit-log-viewer.tsx:348
 #: src/routes/configs.tsx:496
 msgid "Updated"
 msgstr "Updated"
@@ -1640,7 +1640,7 @@ msgstr "Value served when rule matches"
 msgid "Versioned"
 msgstr "Versioned"
 
-#: src/components/audit-log-viewer.tsx:313
+#: src/components/audit-log-viewer.tsx:432
 msgid "View changes"
 msgstr "View changes"
 

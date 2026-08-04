@@ -10,11 +10,23 @@ export async function writeAuditEntry(
   projectId: string,
   entry: Omit<AuditEntry, "id">,
 ): Promise<string> {
-  const sanitizedEntry = {
-    ...entry,
-    oldValue: entry.oldValue ? truncate(entry.oldValue, 10_000) : undefined,
-    newValue: entry.newValue ? truncate(entry.newValue, 10_000) : undefined,
+  // Build a clean entry object — Firestore rejects undefined values
+  const sanitizedEntry: Record<string, unknown> = {
+    actorId: entry.actorId,
+    timestamp: entry.timestamp,
+    action: entry.action,
+    resourcePath: entry.resourcePath,
   };
+
+  if (entry.oldValue) {
+    sanitizedEntry.oldValue = truncate(entry.oldValue, 10_000);
+  }
+  if (entry.newValue) {
+    sanitizedEntry.newValue = truncate(entry.newValue, 10_000);
+  }
+  if (entry.metadata) {
+    sanitizedEntry.metadata = entry.metadata;
+  }
 
   const auditRef = collection(db, "projects", projectId, "audit_log");
   const docRef = await addDoc(auditRef, sanitizedEntry);
