@@ -1,34 +1,57 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
-import { Plus, Trash2, Users } from "lucide-react";
+import { Plus, Trash2, Users, AlertTriangle } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
+import { ConditionSummary } from "@/components/condition-summary";
 import { ResponsiveModal } from "@/components/responsive-modal";
+import { SegmentEditModal } from "@/components/segment-edit-modal";
+import { UsageIndicator } from "@/components/usage-indicator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { Segment, PredicateGroup } from "@/lib/types";
 
 interface SegmentManagerProps {
   segments: Segment[];
+  projectId: string;
+  environmentId: string;
   onCreateSegment: (segment: {
     name: string;
     description: string;
     conditions: PredicateGroup[];
   }) => void;
+  onUpdateSegment?: (
+    segmentId: string,
+    data: { name: string; description: string; conditions: PredicateGroup[] },
+  ) => void;
   onDeleteSegment: (segmentId: string) => void;
   disabled?: boolean;
 }
 
 export const SegmentManager = ({
   segments,
+  projectId,
+  environmentId,
   onCreateSegment,
+  onUpdateSegment,
   onDeleteSegment,
   disabled,
 }: SegmentManagerProps) => {
-  const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
+  const [deletingSegment, setDeletingSegment] = useState<Segment | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
@@ -41,7 +64,14 @@ export const SegmentManager = ({
     });
     setName("");
     setDescription("");
-    setShowModal(false);
+    setShowCreateModal(false);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deletingSegment) {
+      onDeleteSegment(deletingSegment.id);
+      setDeletingSegment(null);
+    }
   };
 
   return (
@@ -56,7 +86,7 @@ export const SegmentManager = ({
             <Button
               size="sm"
               className="rounded-full gap-1"
-              onClick={() => setShowModal(true)}
+              onClick={() => setShowCreateModal(true)}
             >
               <Plus className="h-3.5 w-3.5" />
               <Trans>New</Trans>
@@ -72,19 +102,33 @@ export const SegmentManager = ({
           {segments.map((seg) => (
             <div
               key={seg.id}
-              className="flex items-center justify-between rounded-lg border p-3"
+              className="flex items-center justify-between rounded-lg border p-3 cursor-pointer hover:bg-muted/30 transition-colors"
+              onClick={() => !disabled && setEditingSegment(seg)}
+              role={!disabled ? "button" : undefined}
+              tabIndex={!disabled ? 0 : undefined}
+              onKeyDown={(e) => {
+                if (!disabled && (e.key === "Enter" || e.key === " ")) {
+                  e.preventDefault();
+                  setEditingSegment(seg);
+                }
+              }}
             >
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium truncate">{seg.name}</p>
                 {seg.description && (
                   <p className="text-xs text-muted-foreground truncate">
                     {seg.description}
                   </p>
                 )}
+                <div className="mt-1">
+                  <ConditionSummary conditions={seg.conditions} />
+                </div>
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge variant="secondary" className="text-[10px]">
-                    {seg.conditions.length} groups
-                  </Badge>
+                  <UsageIndicator
+                    segmentId={seg.id}
+                    projectId={projectId}
+                    environmentId={environmentId}
+                  />
                   <span className="text-[10px] text-muted-foreground">
                     {new Date(seg.updatedAt).toLocaleDateString()}
                   </span>
@@ -94,7 +138,10 @@ export const SegmentManager = ({
                 <Button
                   variant="ghost"
                   size="icon-xs"
-                  onClick={() => onDeleteSegment(seg.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeletingSegment(seg);
+                  }}
                 >
                   <Trash2 className="h-3.5 w-3.5 text-destructive" />
                 </Button>
@@ -104,14 +151,13 @@ export const SegmentManager = ({
         </CardContent>
       </Card>
 
+      {/* Create Modal */}
       <ResponsiveModal
-        open={showModal}
-        onOpenChange={setShowModal}
+        open={showCreateModal}
+        onOpenChange={setShowCreateModal}
         title={<Trans>Create Segment</Trans>}
         description={
-          <Trans>
-            Define a reusable audience group for targeting rules.
-          </Trans>
+          <Trans>Define a reusable audience group for targeting rules.</Trans>
         }
       >
         <div className="space-y-4">
@@ -150,13 +196,64 @@ export const SegmentManager = ({
             <Button
               variant="ghost"
               className="rounded-full"
-              onClick={() => setShowModal(false)}
+              onClick={() => setShowCreateModal(false)}
             >
               <Trans>Cancel</Trans>
             </Button>
           </div>
         </div>
       </ResponsiveModal>
+
+      {/* Edit Modal */}
+      {editingSegment && (
+        <SegmentEditModal
+          segment={editingSegment}
+          open={!!editingSegment}
+          onOpenChange={(open) => !open && setEditingSegment(null)}
+          onSave={(data) => {
+            onUpdateSegment?.(editingSegment.id, data);
+            setEditingSegment(null);
+          }}
+          disabled={disabled}
+        />
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={!!deletingSegment}
+        onOpenChange={(open) => !open && setDeletingSegment(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-destructive" />
+              <Trans>Delete segment?</Trans>
+            </DialogTitle>
+            <DialogDescription>
+              <Trans>
+                Are you sure you want to delete "{deletingSegment?.name}"? This
+                action cannot be undone.
+              </Trans>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              className="rounded-full"
+              onClick={() => setDeletingSegment(null)}
+            >
+              <Trans>Cancel</Trans>
+            </Button>
+            <Button
+              variant="destructive"
+              className="rounded-full"
+              onClick={handleDeleteConfirm}
+            >
+              <Trans>Delete</Trans>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
