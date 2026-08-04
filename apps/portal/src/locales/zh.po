@@ -469,7 +469,7 @@ msgid "e.g. small, medium, large"
 msgstr ""
 
 #: src/components/rule-builder.tsx:227
-msgid "e.g., plan, country, email, userId"
+msgid "e.g., plan, country, email"
 msgstr ""
 
 #: src/routes/configs.tsx:588
@@ -725,10 +725,6 @@ msgstr ""
 msgid "Go to Environments"
 msgstr ""
 
-#: src/components/rule-builder.tsx:290
-msgid "Group"
-msgstr ""
-
 #: src/routes/api-keys.tsx:66
 msgid "Hide"
 msgstr ""
@@ -789,10 +785,6 @@ msgstr "语言"
 #: src/routes/preferences.tsx:157
 msgid "Language & Region"
 msgstr "语言和地区"
-
-#: src/components/section-help-text.tsx:36
-msgid "Learn more"
-msgstr ""
 
 #: src/components/onboarding-stepper.tsx:104
 msgid "Let's get you set up in a few quick steps."
@@ -981,10 +973,6 @@ msgstr "未设置"
 msgid "Numeric value"
 msgstr ""
 
-#: src/components/section-help-text.tsx:41
-msgid "Open documentation for this section"
-msgstr ""
-
 #: src/components/config-form-modal.tsx:343
 msgid "optional"
 msgstr ""
@@ -1140,6 +1128,10 @@ msgstr ""
 #: src/components/date-picker-schedule.tsx:140
 #: src/components/schedule-ui.tsx:73
 msgid "Remove"
+msgstr ""
+
+#: src/components/rule-builder.tsx:293
+msgid "Remove group"
 msgstr ""
 
 #: src/routes/team.tsx:81
