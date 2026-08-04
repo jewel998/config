@@ -401,7 +401,7 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
                 return (
                   <div
                     key={entry.id}
-                    className="flex gap-3 px-4 py-3 hover:bg-muted/20 transition-colors"
+                    className="flex gap-3 px-4 py-3 hover:bg-muted/20 transition-colors [content-visibility:auto] [contain-intrinsic-size:auto_64px]"
                   >
                     {/* Icon */}
                     <div

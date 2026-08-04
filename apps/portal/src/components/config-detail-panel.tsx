@@ -10,6 +10,7 @@ import {
   Link2,
 } from "lucide-react";
 import { useState } from "react";
+import React from "react";
 import { toast } from "sonner";
 
 import { DatePickerSchedule } from "@/components/date-picker-schedule";
@@ -38,6 +39,48 @@ import type {
   TemplateType,
 } from "@/lib/types";
 
+const EMPTY_RULES: TargetingRule[] = [];
+const EMPTY_OVERRIDES: Record<string, unknown> = {};
+const EMPTY_PREREQUISITES: Array<{ flagKey: string; requiredValue: unknown }> =
+  [];
+
+interface SectionHeaderProps {
+  id: SectionId;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  badge?: string;
+  isOpen: boolean;
+  onToggle: (id: SectionId) => void;
+}
+
+const SectionHeader = ({
+  id,
+  icon: Icon,
+  label,
+  badge,
+  isOpen,
+  onToggle,
+}: SectionHeaderProps) => (
+  <button
+    type="button"
+    className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium hover:bg-muted/50 transition-colors"
+    onClick={() => onToggle(id)}
+  >
+    {isOpen ? (
+      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+    ) : (
+      <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+    )}
+    <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+    <span>{label}</span>
+    {badge && (
+      <Badge variant="secondary" className="ml-auto text-[10px]">
+        {badge}
+      </Badge>
+    )}
+  </button>
+);
+
 interface ConfigDetailPanelProps {
   config: ConfigFlagExtended;
   projectId: string;
@@ -63,12 +106,12 @@ export const ConfigDetailPanel = ({
   const { data: segments = [] } = useSegments(projectId);
   const { data: allConfigs = [] } = useConfigs(projectId, environmentId);
 
-  const targetingRules = config.targetingRules ?? [];
+  const targetingRules = config.targetingRules ?? EMPTY_RULES;
   const rolloutPercentage = config.rolloutPercentage ?? 0;
   const rolloutValue = config.rolloutValue;
-  const overrides = config.overrides ?? {};
+  const overrides = config.overrides ?? EMPTY_OVERRIDES;
   const schedule = config.schedule ?? null;
-  const prerequisites = config.prerequisites ?? [];
+  const prerequisites = config.prerequisites ?? EMPTY_PREREQUISITES;
 
   const toggle = (id: SectionId) =>
     setOpenSection(openSection === id ? null : id);
@@ -143,37 +186,6 @@ export const ConfigDetailPanel = ({
     }
   };
 
-  const SectionHeader = ({
-    id,
-    icon: Icon,
-    label,
-    badge,
-  }: {
-    id: SectionId;
-    icon: typeof Target;
-    label: string;
-    badge?: string;
-  }) => (
-    <button
-      type="button"
-      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium hover:bg-muted/50 transition-colors"
-      onClick={() => toggle(id)}
-    >
-      {openSection === id ? (
-        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-      ) : (
-        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-      )}
-      <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-      <span>{label}</span>
-      {badge && (
-        <Badge variant="secondary" className="ml-auto text-[10px]">
-          {badge}
-        </Badge>
-      )}
-    </button>
-  );
-
   return (
     <div className="space-y-2">
       {/* Template Bar */}
@@ -189,7 +201,13 @@ export const ConfigDetailPanel = ({
 
       {/* Value Section */}
       <div className="border-l-2 border-l-primary/10 rounded-r-lg">
-        <SectionHeader id="value" icon={Target} label={t`Value`} />
+        <SectionHeader
+          id="value"
+          icon={Target}
+          label={t`Value`}
+          isOpen={openSection === "value"}
+          onToggle={toggle}
+        />
         {openSection === "value" && (
           <>
             <SectionHelpText sectionId="value" />
@@ -215,6 +233,8 @@ export const ConfigDetailPanel = ({
           badge={
             targetingRules.length > 0 ? `${targetingRules.length}` : undefined
           }
+          isOpen={openSection === "targeting"}
+          onToggle={toggle}
         />
         {openSection === "targeting" && (
           <>
@@ -274,6 +294,8 @@ export const ConfigDetailPanel = ({
           icon={Percent}
           label={t`Rollout`}
           badge={rolloutPercentage > 0 ? `${rolloutPercentage}%` : undefined}
+          isOpen={openSection === "rollout"}
+          onToggle={toggle}
         />
         {openSection === "rollout" && (
           <>
@@ -304,6 +326,8 @@ export const ConfigDetailPanel = ({
               ? `${Object.keys(overrides).length}`
               : undefined
           }
+          isOpen={openSection === "overrides"}
+          onToggle={toggle}
         />
         {openSection === "overrides" && (
           <>
@@ -341,6 +365,8 @@ export const ConfigDetailPanel = ({
           icon={Timer}
           label={t`Schedule`}
           badge={schedule ? "1" : undefined}
+          isOpen={openSection === "schedule"}
+          onToggle={toggle}
         />
         {openSection === "schedule" && (
           <>
@@ -379,6 +405,8 @@ export const ConfigDetailPanel = ({
           badge={
             prerequisites.length > 0 ? `${prerequisites.length}` : undefined
           }
+          isOpen={openSection === "prerequisites"}
+          onToggle={toggle}
         />
         {openSection === "prerequisites" && (
           <>
