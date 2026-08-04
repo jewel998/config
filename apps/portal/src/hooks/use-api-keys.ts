@@ -11,6 +11,7 @@ import {
 import { db } from "@/lib/firebase";
 import type { ApiKey } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
+import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
 
 export type { ApiKey };
 
@@ -79,6 +80,20 @@ export const useGenerateApiKey = () => {
         token,
       );
       await setDoc(docRef, data);
+      // Audit
+      try {
+        await writeAuditEntry(
+          projectId,
+          buildAuditEntry({
+            actorId: user.uid,
+            action: "create",
+            resourcePath: `environments/${environmentId}/apiKeys/${token}`,
+            newValue: { label: data.label, token: token.slice(0, 8) + "…" },
+          }),
+        );
+      } catch {
+        /* best-effort */
+      }
       return data;
     },
     onSuccess: (_data, variables) => {
@@ -91,6 +106,7 @@ export const useGenerateApiKey = () => {
 
 export const useRevokeApiKey = () => {
   const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
 
   return useMutation({
     mutationFn: async ({
@@ -102,6 +118,7 @@ export const useRevokeApiKey = () => {
       environmentId: string;
       token: string;
     }) => {
+      if (!user) throw new Error("Not authenticated");
       const docRef = doc(
         db,
         "projects",
@@ -115,6 +132,19 @@ export const useRevokeApiKey = () => {
         status: "revoked",
         revokedAt: new Date().toISOString(),
       });
+      try {
+        await writeAuditEntry(
+          projectId,
+          buildAuditEntry({
+            actorId: user.uid,
+            action: "update",
+            resourcePath: `environments/${environmentId}/apiKeys/${token.slice(0, 8)}`,
+            newValue: { status: "revoked" },
+          }),
+        );
+      } catch {
+        /* best-effort */
+      }
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -126,6 +156,7 @@ export const useRevokeApiKey = () => {
 
 export const useDeleteApiKey = () => {
   const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
 
   return useMutation({
     mutationFn: async ({
@@ -137,6 +168,7 @@ export const useDeleteApiKey = () => {
       environmentId: string;
       token: string;
     }) => {
+      if (!user) throw new Error("Not authenticated");
       const docRef = doc(
         db,
         "projects",
@@ -147,6 +179,18 @@ export const useDeleteApiKey = () => {
         token,
       );
       await deleteDoc(docRef);
+      try {
+        await writeAuditEntry(
+          projectId,
+          buildAuditEntry({
+            actorId: user.uid,
+            action: "delete",
+            resourcePath: `environments/${environmentId}/apiKeys/${token.slice(0, 8)}`,
+          }),
+        );
+      } catch {
+        /* best-effort */
+      }
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({

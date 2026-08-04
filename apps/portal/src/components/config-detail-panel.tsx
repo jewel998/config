@@ -21,6 +21,7 @@ import { RuleBuilder } from "@/components/rule-builder";
 import { SectionHelpText } from "@/components/section-help-text";
 import { TemplateBar } from "@/components/template-bar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { getFullValue } from "@/components/value-preview";
 import type { ConfigEntry } from "@/hooks/use-configs";
 import { useSetTargetingRules } from "@/hooks/use-targeting-rules";
@@ -47,6 +48,8 @@ export const ConfigDetailPanel = ({
   canEdit,
 }: ConfigDetailPanelProps) => {
   const [openSection, setOpenSection] = useState<SectionId | null>("value");
+  const [localRules, setLocalRules] = useState<TargetingRule[] | null>(null);
+  const rulesDirty = localRules !== null;
 
   const setTargetingRules = useSetTargetingRules();
   const setOverrides = useSetOverrides();
@@ -219,26 +222,49 @@ export const ConfigDetailPanel = ({
         {openSection === "targeting" && (
           <>
             <SectionHelpText sectionId="targeting" />
-            <div className="px-3 pb-3">
+            <div className="px-3 pb-3 space-y-3">
               <RuleBuilder
-                rules={targetingRules}
-                onSave={(rules) => {
-                  setTargetingRules.mutate(
-                    {
-                      projectId,
-                      environmentId,
-                      key: config.key,
-                      rules,
-                      oldRules: targetingRules,
-                    },
-                    {
-                      onSuccess: () => toast.success(t`Targeting rules saved`),
-                      onError: () => toast.error(t`Failed to save rules`),
-                    },
-                  );
-                }}
+                rules={localRules ?? targetingRules}
+                onSave={(rules) => setLocalRules(rules)}
                 disabled={!canEdit}
               />
+              {rulesDirty && canEdit && (
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    className="rounded-full"
+                    onClick={() => {
+                      setTargetingRules.mutate(
+                        {
+                          projectId,
+                          environmentId,
+                          key: config.key,
+                          rules: localRules!,
+                          oldRules: targetingRules,
+                        },
+                        {
+                          onSuccess: () => {
+                            toast.success(t`Targeting rules saved`);
+                            setLocalRules(null);
+                          },
+                          onError: () => toast.error(t`Failed to save rules`),
+                        },
+                      );
+                    }}
+                    disabled={setTargetingRules.isPending}
+                  >
+                    <Trans>Save rules</Trans>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="rounded-full"
+                    onClick={() => setLocalRules(null)}
+                  >
+                    <Trans>Discard</Trans>
+                  </Button>
+                </div>
+              )}
             </div>
           </>
         )}

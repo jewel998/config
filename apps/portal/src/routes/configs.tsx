@@ -136,7 +136,8 @@ const ConfigsPage = () => {
   const filteredConfigs = useMemo(() => {
     const filtered = configs.filter((c) => {
       const matchesSearch =
-        !debouncedSearch || c.key.toLowerCase().includes(debouncedSearch.toLowerCase());
+        !debouncedSearch ||
+        c.key.toLowerCase().includes(debouncedSearch.toLowerCase());
       const matchesType = filterType === "all" || c.valueType === filterType;
       const staleness = getStalenessLevel(c.updatedAt);
       const matchesStaleness =
@@ -330,10 +331,13 @@ const ConfigsPage = () => {
       {/* Toolbar: search + type filter + staleness filter */}
       {!canEdit && envId && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800 dark:border-amber-800/30 dark:bg-amber-950/20 dark:text-amber-200">
-          {userRole === "viewer"
-            ? <Trans>You have view-only access to this project.</Trans>
-            : <Trans>This is a production environment. You have read-only access.</Trans>
-          }
+          {userRole === "viewer" ? (
+            <Trans>You have view-only access to this project.</Trans>
+          ) : (
+            <Trans>
+              This is a production environment. You have read-only access.
+            </Trans>
+          )}
         </div>
       )}
       {environments.length > 0 && (
@@ -520,7 +524,14 @@ const ConfigsPage = () => {
                               {isPinned(config.key) && (
                                 <Pin className="h-3 w-3 shrink-0 text-primary" />
                               )}
-                              <span className="truncate">{config.key}</span>
+                              {config.locked && (
+                                <Lock className="h-3 w-3 shrink-0 text-amber-500" />
+                              )}
+                              <span
+                                className={`truncate ${config.locked ? "text-muted-foreground" : ""}`}
+                              >
+                                {config.key}
+                              </span>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -600,7 +611,9 @@ const ConfigsPage = () => {
                                     className="h-7 w-7 rounded-full text-destructive hover:text-destructive"
                                     onClick={() => handleDelete(config.key)}
                                     disabled={
-                                      deleteConfig.isPending || config.locked || !canEdit
+                                      deleteConfig.isPending ||
+                                      config.locked ||
+                                      !canEdit
                                     }
                                     aria-label={t`Delete`}
                                   >
