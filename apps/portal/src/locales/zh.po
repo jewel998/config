@@ -82,7 +82,7 @@ msgstr ""
 msgid "Aging"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:55
+#: src/components/audit-log-viewer.tsx:153
 msgid "All actions"
 msgstr ""
 
@@ -154,9 +154,9 @@ msgstr ""
 msgid "Audit"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:46
+#: src/components/audit-log-viewer.tsx:136
 #: src/components/command-palette.tsx:141
-#: src/routes/audit.tsx:22
+#: src/routes/audit.tsx:20
 msgid "Audit Log"
 msgstr ""
 
@@ -315,7 +315,7 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:56
+#: src/components/audit-log-viewer.tsx:154
 #: src/components/config-form-modal.tsx:454
 #: src/components/onboarding-stepper.tsx:183
 #: src/components/onboarding-stepper.tsx:209
@@ -395,7 +395,7 @@ msgstr ""
 msgid "Define reusable audience groups for targeting rules."
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:58
+#: src/components/audit-log-viewer.tsx:156
 #: src/components/gdpr-panel.tsx:87
 #: src/components/segment-manager.tsx:252
 #: src/routes/api-keys.tsx:307
@@ -468,7 +468,7 @@ msgstr ""
 msgid "e.g. small, medium, large"
 msgstr ""
 
-#: src/components/rule-builder.tsx:227
+#: src/components/rule-builder.tsx:233
 msgid "e.g., plan, country, email"
 msgstr ""
 
@@ -688,10 +688,6 @@ msgstr ""
 msgid "Feature Flags"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:51
-msgid "Filter by resource..."
-msgstr ""
-
 #: src/routes/__root.tsx:360
 msgid "Firebase sync"
 msgstr ""
@@ -790,10 +786,6 @@ msgstr "语言和地区"
 msgid "Let's get you set up in a few quick steps."
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:64
-msgid "Loading..."
-msgstr ""
-
 #: src/routes/configs.tsx:662
 msgid "Lock"
 msgstr ""
@@ -884,7 +876,7 @@ msgstr ""
 msgid "No API keys yet. Generate one to get started."
 msgstr "暂无 API 密钥。生成一个开始使用。"
 
-#: src/components/audit-log-viewer.tsx:66
+#: src/components/audit-log-viewer.tsx:169
 msgid "No audit entries found."
 msgstr ""
 
@@ -1130,7 +1122,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: src/components/rule-builder.tsx:293
+#: src/components/rule-builder.tsx:301
 msgid "Remove group"
 msgstr ""
 
@@ -1199,6 +1191,10 @@ msgstr ""
 
 #: src/components/add-member-modal.tsx:65
 msgid "Search by email to add an existing user, or send an invite."
+msgstr ""
+
+#: src/components/audit-log-viewer.tsx:143
+msgid "Search by resource..."
 msgstr ""
 
 #: src/components/command-palette.tsx:75
@@ -1273,7 +1269,7 @@ msgstr ""
 msgid "Select a project to manage team access."
 msgstr ""
 
-#: src/routes/audit.tsx:17
+#: src/routes/audit.tsx:15
 msgid "Select a project to view audit log."
 msgstr ""
 
@@ -1353,7 +1349,7 @@ msgstr ""
 msgid "Start configuring your environments with secrets and settings."
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:59
+#: src/components/audit-log-viewer.tsx:157
 msgid "State change"
 msgstr ""
 
@@ -1458,7 +1454,7 @@ msgstr ""
 msgid "Timezone"
 msgstr "时区"
 
-#: src/routes/audit.tsx:22
+#: src/routes/audit.tsx:20
 msgid "Track all configuration changes for SOC2 compliance."
 msgstr ""
 
@@ -1488,7 +1484,7 @@ msgstr ""
 msgid "Unpin"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:57
+#: src/components/audit-log-viewer.tsx:155
 #: src/components/config-form-modal.tsx:452
 msgid "Update"
 msgstr ""
