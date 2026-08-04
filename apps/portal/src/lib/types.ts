@@ -129,9 +129,18 @@ export interface Predicate {
 }
 
 export type PredicateOperator =
-  | "equals" | "not_equals" | "contains" | "starts_with" | "ends_with"
-  | "in_list" | "not_in_list" | "greater_than" | "less_than"
-  | "regex_match" | "in_segment" | "not_in_segment";
+  | "equals"
+  | "not_equals"
+  | "contains"
+  | "starts_with"
+  | "ends_with"
+  | "in_list"
+  | "not_in_list"
+  | "greater_than"
+  | "less_than"
+  | "regex_match"
+  | "in_segment"
+  | "not_in_segment";
 
 export type LifecycleState = "draft" | "active" | "stale" | "archived";
 
@@ -166,3 +175,51 @@ export interface ProjectWithRBAC extends Project {
 }
 
 export type RBACRole = "viewer" | "editor" | "admin";
+
+// ═══════════════════════════════════════════════════════════════
+// Config UX Overhaul Types
+// ═══════════════════════════════════════════════════════════════
+
+/** Template type identifiers */
+export type TemplateType =
+  "beta-users" | "gradual-rollout" | "internal-only" | "scheduled-launch";
+
+/** Result of applying a config template */
+export interface TemplateResult {
+  targetingRules?: TargetingRule[];
+  rolloutPercentage?: number;
+  rolloutValue?: unknown;
+  overrides?: Record<string, unknown>;
+  schedule?: { targetValue: unknown; activateAt: string };
+}
+
+/** Template definition for the TemplateBar */
+export interface ConfigTemplate {
+  id: TemplateType;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  description: string;
+  apply: (config: ConfigEntry) => TemplateResult;
+}
+
+/** Segment usage computation result */
+export interface SegmentUsageResult {
+  count: number;
+  configKeys: string[];
+}
+
+/** Section help text configuration */
+export interface SectionHelpConfig {
+  description: string;
+  tip?: string;
+  learnMoreUrl?: string;
+}
+
+/** Section identifiers for the config detail panel */
+export type SectionId =
+  | "value"
+  | "targeting"
+  | "rollout"
+  | "overrides"
+  | "schedule"
+  | "prerequisites";
