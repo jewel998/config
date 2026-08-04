@@ -206,11 +206,31 @@ export const usePromoteConfigs = () => {
         );
       });
       await Promise.all(batch);
+
+      // Single audit entry for the batch promote/template
+      try {
+        await writeAuditEntry(
+          projectId,
+          buildConfigAuditEntry({
+            actorId: user.uid,
+            action: "create",
+            environmentId: targetEnvId,
+            configKey: configs.map((c) => c.key).join(", "),
+            newValue: { configs: configs.map((c) => c.key) },
+          }),
+        );
+      } catch {
+        /* best-effort */
+      }
+
       return configs.length;
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["configs", variables.projectId, variables.targetEnvId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
       });
     },
   });

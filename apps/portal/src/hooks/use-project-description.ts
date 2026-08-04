@@ -14,10 +14,12 @@ export const useUpdateProjectDescription = () => {
   return useMutation({
     mutationFn: async ({
       projectId,
+      projectName,
       description,
       oldDescription,
     }: {
       projectId: string;
+      projectName?: string;
       description: string;
       oldDescription?: string;
     }) => {
@@ -33,7 +35,7 @@ export const useUpdateProjectDescription = () => {
           buildAuditEntry({
             actorId: user.uid,
             action: "update",
-            resourcePath: "project/description",
+            resourcePath: `project/${projectName || "description"}`,
             oldValue: oldDescription
               ? { description: oldDescription }
               : undefined,
