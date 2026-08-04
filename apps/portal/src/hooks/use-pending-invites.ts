@@ -1,6 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { collection, getDocs, query, where, addDoc, deleteDoc, doc, setDoc, updateDoc, deleteField } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  addDoc,
+  deleteDoc,
+  doc,
+  setDoc,
+  updateDoc,
+  deleteField,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
 import type { PendingInvite } from "@/lib/team-utils";
 import type { RBACRole } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
@@ -18,7 +30,9 @@ export const usePendingInvites = (projectId: string | null) => {
         where("projectId", "==", projectId),
       );
       const snapshot = await getDocs(q);
-      return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as PendingInvite);
+      return snapshot.docs.map(
+        (d) => ({ id: d.id, ...d.data() }) as PendingInvite,
+      );
     },
     enabled: !!projectId,
   });
@@ -35,7 +49,15 @@ export const useCreateInvite = () => {
   const user = useAuthStore((s) => s.user);
 
   return useMutation({
-    mutationFn: async ({ email, projectId, role }: { email: string; projectId: string; role: RBACRole }) => {
+    mutationFn: async ({
+      email,
+      projectId,
+      role,
+    }: {
+      email: string;
+      projectId: string;
+      role: RBACRole;
+    }) => {
       if (!user) throw new Error("Not authenticated");
       const normalizedEmail = email.trim().toLowerCase();
       const emailKey = `email:${normalizedEmail}`;
@@ -63,11 +85,32 @@ export const useCreateInvite = () => {
 
       // 3. Create the pending invite document
       const docRef = await addDoc(collection(db, "pendingInvites"), invite);
+
+      // 4. Audit
+      try {
+        await writeAuditEntry(
+          projectId,
+          buildAuditEntry({
+            actorId: user.uid,
+            action: "create",
+            resourcePath: `team/invites/${normalizedEmail}`,
+            newValue: { email: normalizedEmail, role },
+          }),
+        );
+      } catch {
+        /* best-effort */
+      }
+
       return docRef.id;
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["pendingInvites", variables.projectId] });
+      queryClient.invalidateQueries({
+        queryKey: ["pendingInvites", variables.projectId],
+      });
       queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
+      });
     },
   });
 };
@@ -80,7 +123,15 @@ export const useCancelInvite = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ inviteId, projectId, email }: { inviteId: string; projectId: string; email?: string }) => {
+    mutationFn: async ({
+      inviteId,
+      projectId,
+      email,
+    }: {
+      inviteId: string;
+      projectId: string;
+      email?: string;
+    }) => {
       // Remove email-prefixed entry from project if email provided
       if (email) {
         const emailKey = `email:${email.toLowerCase()}`;
@@ -92,10 +143,30 @@ export const useCancelInvite = () => {
         });
       }
       await deleteDoc(doc(db, "pendingInvites", inviteId));
+
+      // Audit
+      const user = useAuthStore.getState().user;
+      if (user) {
+        try {
+          await writeAuditEntry(
+            projectId,
+            buildAuditEntry({
+              actorId: user.uid,
+              action: "delete",
+              resourcePath: `team/invites/${email ?? inviteId}`,
+            }),
+          );
+        } catch {
+          /* best-effort */
+        }
+      }
+
       return projectId;
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["pendingInvites", variables.projectId] });
+      queryClient.invalidateQueries({
+        queryKey: ["pendingInvites", variables.projectId],
+      });
       queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
   });

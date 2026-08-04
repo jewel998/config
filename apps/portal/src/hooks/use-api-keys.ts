@@ -87,8 +87,8 @@ export const useGenerateApiKey = () => {
           buildAuditEntry({
             actorId: user.uid,
             action: "create",
-            resourcePath: `environments/${environmentId}/apiKeys/${token}`,
-            newValue: { label: data.label, token: token.slice(0, 8) + "…" },
+            resourcePath: `environments/${environmentId}/apiKeys/${data.label || "Untitled"}`,
+            newValue: { label: data.label || "Untitled" },
           }),
         );
       } catch {

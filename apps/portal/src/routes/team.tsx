@@ -22,13 +22,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { usePendingInvites, useCreateInvite, useCancelInvite } from "@/hooks/use-pending-invites";
+import {
+  usePendingInvites,
+  useCreateInvite,
+  useCancelInvite,
+} from "@/hooks/use-pending-invites";
 import { useUserProfiles } from "@/hooks/use-user-profiles";
 import { useProjects } from "@/hooks/use-projects";
 import { useRBAC } from "@/hooks/use-rbac";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
 import { db } from "@/lib/firebase";
+import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
 import type { RBACRole } from "@/lib/types";
 
 const TeamPage = () => {
@@ -42,8 +47,12 @@ const TeamPage = () => {
   const [showModal, setShowModal] = useState(false);
 
   const allAuthorizedUsers = project?.authorizedUsers ?? [];
-  const authorizedUsers = allAuthorizedUsers.filter((u) => !u.startsWith("email:"));
-  const roles = ((project as Record<string, unknown>)?.roles as Record<string, RBACRole>) ?? {};
+  const authorizedUsers = allAuthorizedUsers.filter(
+    (u) => !u.startsWith("email:"),
+  );
+  const roles =
+    ((project as Record<string, unknown>)?.roles as Record<string, RBACRole>) ??
+    {};
 
   const { data: profiles = {} } = useUserProfiles(authorizedUsers);
   const { data: pendingInvites = [] } = usePendingInvites(selectedProjectId);
@@ -51,10 +60,17 @@ const TeamPage = () => {
   const cancelInvite = useCancelInvite();
 
   if (!selectedProjectId || !project) {
-    return <EmptyState icon={ShieldCheck} message={<Trans>Select a project to manage team access.</Trans>} />;
+    return (
+      <EmptyState
+        icon={ShieldCheck}
+        message={<Trans>Select a project to manage team access.</Trans>}
+      />
+    );
   }
 
-  const adminCount = Object.values(roles).filter((r) => r === "admin").length + (project.ownerId && !(project.ownerId in roles) ? 1 : 0);
+  const adminCount =
+    Object.values(roles).filter((r) => r === "admin").length +
+    (project.ownerId && !(project.ownerId in roles) ? 1 : 0);
 
   const invalidateProjects = () => {
     queryClient.invalidateQueries({ queryKey: ["projects"] });
@@ -67,17 +83,39 @@ const TeamPage = () => {
       return;
     }
     try {
-      await updateDoc(doc(db, "projects", selectedProjectId), { [`roles.${userId}`]: newRole });
+      await updateDoc(doc(db, "projects", selectedProjectId), {
+        [`roles.${userId}`]: newRole,
+      });
+      const memberName =
+        profiles[userId]?.displayName || profiles[userId]?.email || userId;
+      await writeAuditEntry(
+        selectedProjectId,
+        buildAuditEntry({
+          actorId: user!.uid,
+          action: "update",
+          resourcePath: `team/members/${memberName}`,
+          oldValue: { role: roles[userId] ?? "viewer" },
+          newValue: { role: newRole },
+        }),
+      );
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", selectedProjectId],
+      });
       toast.success(t`Role updated`);
       invalidateProjects();
-    } catch { toast.error(t`Failed to update role`); }
+    } catch {
+      toast.error(t`Failed to update role`);
+    }
   };
 
   const handleRemove = async (userId: string) => {
     // Prevent self-removal for the owner
     if (userId === project.ownerId) return;
-    const isLastAdmin = (roles[userId] === "admin") && adminCount <= 1;
-    if (isLastAdmin) { toast.error(t`Cannot remove the last admin`); return; }
+    const isLastAdmin = roles[userId] === "admin" && adminCount <= 1;
+    if (isLastAdmin) {
+      toast.error(t`Cannot remove the last admin`);
+      return;
+    }
     if (!confirm(t`Remove this member from the project?`)) return;
     try {
       const newRoles = { ...roles };
@@ -86,9 +124,24 @@ const TeamPage = () => {
         authorizedUsers: arrayRemove(userId),
         roles: newRoles,
       });
+      const memberName =
+        profiles[userId]?.displayName || profiles[userId]?.email || userId;
+      await writeAuditEntry(
+        selectedProjectId,
+        buildAuditEntry({
+          actorId: user!.uid,
+          action: "delete",
+          resourcePath: `team/members/${memberName}`,
+        }),
+      );
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", selectedProjectId],
+      });
       toast.success(t`Member removed`);
       invalidateProjects();
-    } catch { toast.error(t`Failed to remove member`); }
+    } catch {
+      toast.error(t`Failed to remove member`);
+    }
   };
 
   const handleAddUser = async (uid: string, role: RBACRole) => {
@@ -97,15 +150,32 @@ const TeamPage = () => {
         [`roles.${uid}`]: role,
         authorizedUsers: [...authorizedUsers, uid],
       });
+      await writeAuditEntry(
+        selectedProjectId,
+        buildAuditEntry({
+          actorId: user!.uid,
+          action: "create",
+          resourcePath: `team/members/${uid}`,
+          newValue: { role },
+        }),
+      );
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", selectedProjectId],
+      });
       toast.success(t`Member added`);
       invalidateProjects();
-    } catch { toast.error(t`Failed to add member`); }
+    } catch {
+      toast.error(t`Failed to add member`);
+    }
   };
 
   const handleInvite = (email: string, role: RBACRole) => {
     createInvite.mutate(
       { email, projectId: selectedProjectId, role },
-      { onSuccess: () => toast.success(t`Invite sent`), onError: () => toast.error(t`Failed to send invite`) },
+      {
+        onSuccess: () => toast.success(t`Invite sent`),
+        onError: () => toast.error(t`Failed to send invite`),
+      },
     );
   };
 
@@ -114,41 +184,66 @@ const TeamPage = () => {
       <PageHeader
         title={<Trans>Team & Access</Trans>}
         description={<Trans>Manage project members and their roles.</Trans>}
-        actions={isAdmin ? (
-          <Button className="gap-2 rounded-full" onClick={() => setShowModal(true)}>
-            <Plus className="h-4 w-4" />
-            <Trans>Add Member</Trans>
-          </Button>
-        ) : undefined}
+        actions={
+          isAdmin ? (
+            <Button
+              className="gap-2 rounded-full"
+              onClick={() => setShowModal(true)}
+            >
+              <Plus className="h-4 w-4" />
+              <Trans>Add Member</Trans>
+            </Button>
+          ) : undefined
+        }
       />
 
       {/* Members list */}
       <Card className="rounded-xl">
         <CardHeader>
-          <CardTitle className="text-base"><Trans>Members</Trans></CardTitle>
+          <CardTitle className="text-base">
+            <Trans>Members</Trans>
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           {authorizedUsers.map((uid) => {
             const profile = profiles[uid];
-            const role = uid === project.ownerId ? "admin" : (roles[uid] ?? "viewer");
+            const role =
+              uid === project.ownerId ? "admin" : (roles[uid] ?? "viewer");
             const isOwner = uid === project.ownerId;
             const isSelf = uid === user?.uid;
             // Can modify: must be admin, can't modify owner, can't modify self
             const canModifyRole = isAdmin && !isOwner && !isSelf;
 
             return (
-              <div key={uid} className="flex items-center justify-between gap-3 rounded-lg border p-3">
+              <div
+                key={uid}
+                className="flex items-center justify-between gap-3 rounded-lg border p-3"
+              >
                 <div className="flex items-center gap-3 min-w-0">
-                  <UserAvatar displayName={profile?.displayName ?? null} photoURL={profile?.photoURL ?? null} />
+                  <UserAvatar
+                    displayName={profile?.displayName ?? null}
+                    photoURL={profile?.photoURL ?? null}
+                  />
                   <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{profile?.displayName ?? uid}</p>
-                    <p className="text-xs text-muted-foreground truncate">{profile?.email ?? ""}</p>
+                    <p className="text-sm font-medium truncate">
+                      {profile?.displayName ?? uid}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {profile?.email ?? ""}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   {canModifyRole ? (
-                    <Select value={role} onValueChange={(v) => handleRoleChange(uid, v as RBACRole)}>
-                      <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
+                    <Select
+                      value={role}
+                      onValueChange={(v) =>
+                        handleRoleChange(uid, v as RBACRole)
+                      }
+                    >
+                      <SelectTrigger className="h-8 w-28 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="viewer">Viewer</SelectItem>
                         <SelectItem value="editor">Editor</SelectItem>
@@ -156,12 +251,26 @@ const TeamPage = () => {
                       </SelectContent>
                     </Select>
                   ) : (
-                    <Badge variant="outline" className="text-xs capitalize">{role}</Badge>
+                    <Badge variant="outline" className="text-xs capitalize">
+                      {role}
+                    </Badge>
                   )}
-                  {isOwner && <Badge variant="secondary" className="text-[10px]"><Trans>Owner</Trans></Badge>}
-                  {isSelf && <Badge variant="outline" className="text-[10px]"><Trans>You</Trans></Badge>}
+                  {isOwner && (
+                    <Badge variant="secondary" className="text-[10px]">
+                      <Trans>Owner</Trans>
+                    </Badge>
+                  )}
+                  {isSelf && (
+                    <Badge variant="outline" className="text-[10px]">
+                      <Trans>You</Trans>
+                    </Badge>
+                  )}
                   {isAdmin && !isOwner && !isSelf && (
-                    <Button variant="ghost" size="icon-xs" onClick={() => handleRemove(uid)}>
+                    <Button
+                      variant="ghost"
+                      size="icon-xs"
+                      onClick={() => handleRemove(uid)}
+                    >
                       <Trash2 className="h-3.5 w-3.5 text-destructive" />
                     </Button>
                   )}
@@ -176,22 +285,41 @@ const TeamPage = () => {
       {pendingInvites.length > 0 && (
         <Card className="rounded-xl">
           <CardHeader>
-            <CardTitle className="text-base"><Trans>Pending Invites</Trans></CardTitle>
+            <CardTitle className="text-base">
+              <Trans>Pending Invites</Trans>
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {pendingInvites.map((invite) => (
-              <div key={invite.id} className="flex items-center justify-between gap-3 rounded-lg border border-dashed p-3">
+              <div
+                key={invite.id}
+                className="flex items-center justify-between gap-3 rounded-lg border border-dashed p-3"
+              >
                 <div className="flex items-center gap-3">
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <div>
                     <p className="text-sm">{invite.email}</p>
-                    <p className="text-xs text-muted-foreground capitalize">{invite.role}</p>
+                    <p className="text-xs text-muted-foreground capitalize">
+                      {invite.role}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="text-[10px]"><Trans>Pending</Trans></Badge>
+                  <Badge variant="secondary" className="text-[10px]">
+                    <Trans>Pending</Trans>
+                  </Badge>
                   {isAdmin && invite.id && (
-                    <Button variant="ghost" size="icon-xs" onClick={() => cancelInvite.mutate({ inviteId: invite.id!, projectId: selectedProjectId, email: invite.email })}>
+                    <Button
+                      variant="ghost"
+                      size="icon-xs"
+                      onClick={() =>
+                        cancelInvite.mutate({
+                          inviteId: invite.id!,
+                          projectId: selectedProjectId,
+                          email: invite.email,
+                        })
+                      }
+                    >
                       <Trash2 className="h-3.5 w-3.5 text-destructive" />
                     </Button>
                   )}
