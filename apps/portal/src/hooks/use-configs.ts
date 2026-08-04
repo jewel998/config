@@ -109,6 +109,9 @@ export const useSetConfig = () => {
       queryClient.invalidateQueries({
         queryKey: ["configs", variables.projectId, variables.environmentId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
+      });
     },
   });
 };
@@ -159,6 +162,9 @@ export const useDeleteConfig = () => {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["configs", variables.projectId, variables.environmentId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
       });
     },
   });

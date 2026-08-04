@@ -3,12 +3,21 @@ import { t } from "@lingui/core/macro";
 import {
   ArrowLeftRight,
   ChevronRight,
+  FilePlus2,
+  FileX2,
   History,
+  Key,
+  Layers,
+  Pencil,
+  RefreshCw,
   Rows3,
-  User,
+  Trash2,
+  Users,
 } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
+import type { LucideIcon } from "lucide-react";
 
+import { DateDisplay } from "@/components/date-display";
 import { ResponsiveModal } from "@/components/responsive-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,36 +34,103 @@ import { useAuditLog } from "@/hooks/use-audit-log";
 import { useUserProfiles } from "@/hooks/use-user-profiles";
 import type { AuditEntry } from "@/lib/types";
 
-// ─── Constants ────────────────────────────────────────────────
+// ─── Resource Categories ──────────────────────────────────────
+
+type ResourceCategory =
+  "config" | "segment" | "api_key" | "project" | "team" | "other";
+
+const CATEGORY_CONFIG: Record<
+  ResourceCategory,
+  { label: string; color: string; icon: LucideIcon }
+> = {
+  config: {
+    label: "Config",
+    color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+    icon: Layers,
+  },
+  segment: {
+    label: "Segment",
+    color:
+      "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300",
+    icon: Users,
+  },
+  api_key: {
+    label: "API Key",
+    color:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+    icon: Key,
+  },
+  project: {
+    label: "Project",
+    color:
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300",
+    icon: Layers,
+  },
+  team: {
+    label: "Team",
+    color: "bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300",
+    icon: Users,
+  },
+  other: {
+    label: "Other",
+    color: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+    icon: History,
+  },
+};
+
+const ACTION_ICONS: Record<string, LucideIcon> = {
+  create: FilePlus2,
+  update: Pencil,
+  delete: Trash2,
+  state_change: RefreshCw,
+  data_deletion: FileX2,
+};
 
 const ACTION_COLORS: Record<string, string> = {
   create:
-    "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
-  update:
-    "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800",
-  delete:
-    "bg-red-500/10 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800",
+    "text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30",
+  update: "text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30",
+  delete: "text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30",
   state_change:
-    "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800",
+    "text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30",
   data_deletion:
-    "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800",
-};
-
-const ACTION_ICONS: Record<string, string> = {
-  create: "+",
-  update: "~",
-  delete: "×",
-  state_change: "↻",
-  data_deletion: "⊘",
+    "text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30",
 };
 
 const ACTION_LABELS: Record<string, string> = {
-  create: "Created",
-  update: "Updated",
-  delete: "Deleted",
-  state_change: "State changed",
-  data_deletion: "Data deleted",
+  create: "created",
+  update: "updated",
+  delete: "deleted",
+  state_change: "changed state of",
+  data_deletion: "deleted data from",
 };
+
+// ─── Utilities ────────────────────────────────────────────────
+
+function getResourceCategory(path: string): ResourceCategory {
+  if (path.includes("configs")) return "config";
+  if (path.includes("segments")) return "segment";
+  if (path.includes("apiKeys") || path.includes("clientIds")) return "api_key";
+  if (path.startsWith("project/") || path === "project") return "project";
+  if (path.includes("team") || path.includes("members")) return "team";
+  return "other";
+}
+
+function formatResourceName(path: string): string {
+  const parts = path.split("/");
+  if (parts.includes("configs") && parts.length >= 4)
+    return parts[parts.length - 1];
+  if (parts.includes("apiKeys") && parts.length >= 4)
+    return `key …${parts[parts.length - 1]}`;
+  if (parts[0] === "segments") return parts[1] ? `segment` : "segments";
+  if (parts[0] === "project") return "project";
+  return parts[parts.length - 1] || path;
+}
+
+function getEnvironmentFromPath(path: string): string | null {
+  const match = path.match(/environments\/([^/]+)/);
+  return match ? match[1] : null;
+}
 
 // ─── Diff Utilities ───────────────────────────────────────────
 
@@ -74,18 +150,15 @@ function flattenObject(obj: unknown, prefix = ""): Record<string, string> {
     return result;
   }
   if (Array.isArray(obj)) {
-    for (let i = 0; i < obj.length; i++) {
+    for (let i = 0; i < obj.length; i++)
       Object.assign(result, flattenObject(obj[i], `${prefix}[${i}]`));
-    }
     return result;
   }
   for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
     const path = prefix ? `${prefix}.${key}` : key;
-    if (typeof value === "object" && value !== null) {
+    if (typeof value === "object" && value !== null)
       Object.assign(result, flattenObject(value, path));
-    } else {
-      result[path] = JSON.stringify(value);
-    }
+    else result[path] = JSON.stringify(value);
   }
   return result;
 }
@@ -103,8 +176,6 @@ function computeDiff(
 ): DiffLine[] {
   const oldObj = oldRaw ? tryParseJson(oldRaw) : null;
   const newObj = newRaw ? tryParseJson(newRaw) : null;
-
-  // If both can't be parsed as JSON, show raw diff
   if (oldObj === null && newObj === null) {
     const lines: DiffLine[] = [];
     if (oldRaw)
@@ -112,27 +183,21 @@ function computeDiff(
     if (newRaw) lines.push({ key: "(value)", type: "added", newValue: newRaw });
     return lines;
   }
-
   const oldFlat = oldObj ? flattenObject(oldObj) : {};
   const newFlat = newObj ? flattenObject(newObj) : {};
   const allKeys = new Set([...Object.keys(oldFlat), ...Object.keys(newFlat)]);
   const lines: DiffLine[] = [];
-
   for (const key of allKeys) {
     const o = oldFlat[key];
     const n = newFlat[key];
-    if (o === undefined && n !== undefined) {
+    if (o === undefined && n !== undefined)
       lines.push({ key, type: "added", newValue: n });
-    } else if (o !== undefined && n === undefined) {
+    else if (o !== undefined && n === undefined)
       lines.push({ key, type: "removed", oldValue: o });
-    } else if (o !== n) {
+    else if (o !== n)
       lines.push({ key, type: "changed", oldValue: o, newValue: n });
-    } else {
-      lines.push({ key, type: "unchanged", oldValue: o, newValue: n });
-    }
+    else lines.push({ key, type: "unchanged", oldValue: o, newValue: n });
   }
-
-  // Sort: changed/added/removed first, unchanged last
   const order = { changed: 0, added: 1, removed: 2, unchanged: 3 };
   lines.sort((a, b) => order[a.type] - order[b.type]);
   return lines;
@@ -141,16 +206,12 @@ function computeDiff(
 // ─── Skeleton ─────────────────────────────────────────────────
 
 const EntrySkeleton = () => (
-  <div className="flex gap-3 p-4 animate-pulse">
-    <div className="h-8 w-8 rounded-full bg-muted shrink-0" />
+  <div className="flex gap-3 px-4 py-3 animate-pulse">
+    <div className="h-8 w-8 rounded-lg bg-muted shrink-0" />
     <div className="flex-1 space-y-2">
-      <div className="flex items-center gap-2">
-        <div className="h-4 w-24 rounded bg-muted" />
-        <div className="h-4 w-32 rounded bg-muted" />
-      </div>
-      <div className="h-3 w-48 rounded bg-muted" />
+      <div className="h-4 w-3/4 rounded bg-muted" />
+      <div className="h-3 w-1/2 rounded bg-muted" />
     </div>
-    <div className="h-3 w-20 rounded bg-muted shrink-0" />
   </div>
 );
 
@@ -182,7 +243,6 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
     () => data?.pages.flatMap((p) => p.entries) ?? [],
     [data],
   );
-
   const actorIds = useMemo(
     () => [...new Set(entries.map((e) => e.actorId))],
     [entries],
@@ -204,7 +264,6 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
     return result;
   }, [entries, searchQuery, categoryFilter]);
 
-  // Infinite scroll
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sentinelRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -212,13 +271,8 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
       if (!node) return;
       observerRef.current = new IntersectionObserver(
         (observed) => {
-          if (
-            observed[0].isIntersecting &&
-            hasNextPage &&
-            !isFetchingNextPage
-          ) {
+          if (observed[0].isIntersecting && hasNextPage && !isFetchingNextPage)
             fetchNextPage();
-          }
         },
         { threshold: 0.1 },
       );
@@ -234,53 +288,18 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
     return actorId.slice(0, 8) + "…";
   };
 
-  const formatResourcePath = (path: string) => {
-    const parts = path.split("/");
-    if (parts.includes("configs") && parts.length >= 4) {
-      return parts[parts.length - 1];
-    }
-    if (parts[0] === "segments") return "segment";
-    return parts[parts.length - 1] || path;
-  };
-
-  const getResourceCategory = (path: string): string => {
-    if (path.includes("configs")) return "config";
-    if (path.includes("segments")) return "segment";
-    if (path.includes("apiKeys") || path.includes("clientIds"))
-      return "api_key";
-    if (path.startsWith("project/")) return "project";
-    if (path.includes("team") || path.includes("members")) return "team";
-    return "other";
-  };
-
-  const getResourceType = (path: string) => {
-    const cat = getResourceCategory(path);
-    const labels: Record<string, string> = {
-      config: "config",
-      segment: "segment",
-      api_key: "API key",
-      project: "project",
-      team: "team",
-      other: "resource",
-    };
-    return labels[cat] ?? "resource";
-  };
-
-  const getEnvironmentFromPath = (path: string): string | null => {
-    const match = path.match(/environments\/([^/]+)/);
-    return match ? match[1] : null;
-  };
-
-  const diffLines = useMemo(() => {
-    if (!diffEntry) return [];
-    return computeDiff(diffEntry.oldValue, diffEntry.newValue);
-  }, [diffEntry]);
-
-  const visibleDiffLines = useMemo(() => {
-    if (showUnchanged) return diffLines;
-    return diffLines.filter((l) => l.type !== "unchanged");
-  }, [diffLines, showUnchanged]);
-
+  const diffLines = useMemo(
+    () =>
+      diffEntry ? computeDiff(diffEntry.oldValue, diffEntry.newValue) : [],
+    [diffEntry],
+  );
+  const visibleDiffLines = useMemo(
+    () =>
+      showUnchanged
+        ? diffLines
+        : diffLines.filter((l) => l.type !== "unchanged"),
+    [diffLines, showUnchanged],
+  );
   const unchangedCount = useMemo(
     () => diffLines.filter((l) => l.type === "unchanged").length,
     [diffLines],
@@ -290,20 +309,20 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
     <>
       <Card className="rounded-xl overflow-hidden">
         <CardHeader className="border-b bg-muted/30">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex flex-col gap-3">
             <CardTitle className="flex items-center gap-2 text-base">
               <History className="h-4 w-4" />
               <Trans>Activity</Trans>
             </CardTitle>
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex flex-wrap gap-2">
               <Input
-                placeholder={t`Filter...`}
+                placeholder={t`Search...`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8 text-sm w-full sm:w-44"
+                className="h-8 text-sm w-full sm:w-40"
               />
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="h-8 text-sm w-full sm:w-32">
+                <SelectTrigger className="h-8 text-sm w-full sm:w-36">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -347,66 +366,76 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
             </div>
           ) : (
             <div className="divide-y max-h-[75vh] overflow-y-auto">
-              {filtered.map((entry) => (
-                <div
-                  key={entry.id}
-                  className="flex gap-3 px-4 py-3 hover:bg-muted/20 transition-colors group"
-                >
-                  {/* Action indicator */}
+              {filtered.map((entry) => {
+                const category = getResourceCategory(entry.resourcePath);
+                const catConfig = CATEGORY_CONFIG[category];
+                const ActionIcon = ACTION_ICONS[entry.action] ?? History;
+                const envName = getEnvironmentFromPath(entry.resourcePath);
+
+                return (
                   <div
-                    className={`shrink-0 mt-0.5 h-8 w-8 rounded-full flex items-center justify-center text-sm border ${ACTION_COLORS[entry.action] ?? ""}`}
+                    key={entry.id}
+                    className="flex gap-3 px-4 py-3 hover:bg-muted/20 transition-colors"
                   >
-                    {ACTION_ICONS[entry.action] ?? "·"}
-                  </div>
+                    {/* Icon */}
+                    <div
+                      className={`shrink-0 mt-0.5 h-8 w-8 rounded-lg flex items-center justify-center ${ACTION_COLORS[entry.action] ?? ""}`}
+                    >
+                      <ActionIcon className="h-4 w-4" />
+                    </div>
 
-                  {/* Content */}
-                  <div className="flex-1 min-w-0 space-y-0.5">
-                    {/* Primary line: who did what */}
-                    <p className="text-sm">
-                      <span className="font-medium text-foreground">
-                        {getActorName(entry.actorId)}
-                      </span>{" "}
-                      <span className="text-muted-foreground">
-                        {(
-                          ACTION_LABELS[entry.action] ?? entry.action
-                        ).toLowerCase()}
-                      </span>{" "}
-                      <span className="font-medium font-mono text-foreground">
-                        {formatResourcePath(entry.resourcePath)}
-                      </span>
-                    </p>
-
-                    {/* Secondary: resource type + env + time */}
-                    <p className="text-xs text-muted-foreground">
-                      {getResourceType(entry.resourcePath)}
-                      {getEnvironmentFromPath(entry.resourcePath) && (
-                        <span>
-                          {" "}
-                          ·{" "}
-                          <span className="font-mono">
-                            {getEnvironmentFromPath(entry.resourcePath)}
-                          </span>
+                    {/* Content */}
+                    <div className="flex-1 min-w-0 space-y-1">
+                      {/* Primary line */}
+                      <p className="text-sm leading-snug">
+                        <span className="font-medium">
+                          {getActorName(entry.actorId)}
+                        </span>{" "}
+                        <span className="text-muted-foreground">
+                          {ACTION_LABELS[entry.action] ?? entry.action}
+                        </span>{" "}
+                        <span className="font-medium font-mono">
+                          {formatResourceName(entry.resourcePath)}
                         </span>
-                      )}{" "}
-                      · {new Date(entry.timestamp).toLocaleString()}
-                    </p>
+                      </p>
 
-                    {/* Changes indicator */}
-                    {(entry.oldValue || entry.newValue) && (
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-1 text-xs text-primary/80 hover:text-primary mt-1 transition-colors"
-                        onClick={() => setDiffEntry(entry)}
-                      >
-                        <ChevronRight className="h-3 w-3" />
-                        <Trans>View changes</Trans>
-                      </button>
-                    )}
+                      {/* Metadata row: category chip + env + timestamp + view changes */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge
+                          variant="secondary"
+                          className={`text-[10px] px-1.5 py-0 rounded-full ${catConfig.color}`}
+                        >
+                          {catConfig.label}
+                        </Badge>
+                        {envName && (
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] px-1.5 py-0 rounded-full font-mono"
+                          >
+                            {envName}
+                          </Badge>
+                        )}
+                        <DateDisplay
+                          date={entry.timestamp}
+                          className="text-[11px] text-muted-foreground"
+                        />
+                        {(entry.oldValue || entry.newValue) && (
+                          <button
+                            type="button"
+                            className="inline-flex items-center gap-1 text-[11px] text-primary/80 hover:text-primary transition-colors ml-auto"
+                            onClick={() => setDiffEntry(entry)}
+                          >
+                            <ChevronRight className="h-3 w-3" />
+                            <Trans>View changes</Trans>
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
-              {/* Infinite scroll sentinel — always shimmer */}
+              {/* Infinite scroll sentinel */}
               <div ref={sentinelRef}>
                 {hasNextPage && (
                   <>
@@ -431,18 +460,14 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
               <span className="font-medium">
                 {getActorName(diffEntry.actorId)}
               </span>{" "}
-              {(
-                ACTION_LABELS[diffEntry.action] ?? diffEntry.action
-              ).toLowerCase()}{" "}
+              {ACTION_LABELS[diffEntry.action] ?? diffEntry.action}{" "}
               <span className="font-mono">
-                {formatResourcePath(diffEntry.resourcePath)}
-              </span>{" "}
-              · {new Date(diffEntry.timestamp).toLocaleString()}
+                {formatResourceName(diffEntry.resourcePath)}
+              </span>
             </span>
           }
         >
           <div className="space-y-4">
-            {/* Mode toggle */}
             <div className="flex items-center gap-2 flex-wrap">
               <Button
                 variant={diffMode === "unified" ? "default" : "outline"}
@@ -478,7 +503,6 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
               )}
             </div>
 
-            {/* Diff content */}
             {diffMode === "unified" ? (
               <div className="rounded-lg border overflow-hidden font-mono text-xs">
                 {visibleDiffLines.length === 0 ? (
@@ -489,17 +513,8 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
                   <div className="divide-y divide-border/50">
                     {visibleDiffLines.map((line, i) => (
                       <div key={i} className="flex">
-                        {/* Gutter */}
                         <div
-                          className={`w-7 shrink-0 flex items-start justify-center pt-1.5 text-[10px] select-none ${
-                            line.type === "added"
-                              ? "bg-green-50 dark:bg-green-950/30 text-green-600"
-                              : line.type === "removed"
-                                ? "bg-red-50 dark:bg-red-950/30 text-red-600"
-                                : line.type === "changed"
-                                  ? "bg-amber-50 dark:bg-amber-950/30 text-amber-600"
-                                  : "bg-muted/30 text-muted-foreground"
-                          }`}
+                          className={`w-7 shrink-0 flex items-start justify-center pt-1.5 text-[10px] select-none ${line.type === "added" ? "bg-green-50 dark:bg-green-950/30 text-green-600" : line.type === "removed" ? "bg-red-50 dark:bg-red-950/30 text-red-600" : line.type === "changed" ? "bg-amber-50 dark:bg-amber-950/30 text-amber-600" : "bg-muted/30 text-muted-foreground"}`}
                         >
                           {line.type === "added"
                             ? "+"
@@ -509,17 +524,8 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
                                 ? "~"
                                 : " "}
                         </div>
-                        {/* Content */}
                         <div
-                          className={`flex-1 px-3 py-1.5 overflow-x-auto ${
-                            line.type === "added"
-                              ? "bg-green-50/50 dark:bg-green-950/20"
-                              : line.type === "removed"
-                                ? "bg-red-50/50 dark:bg-red-950/20"
-                                : line.type === "changed"
-                                  ? "bg-amber-50/50 dark:bg-amber-950/20"
-                                  : ""
-                          }`}
+                          className={`flex-1 px-3 py-1.5 overflow-x-auto ${line.type === "added" ? "bg-green-50/50 dark:bg-green-950/20" : line.type === "removed" ? "bg-red-50/50 dark:bg-red-950/20" : line.type === "changed" ? "bg-amber-50/50 dark:bg-amber-950/20" : ""}`}
                         >
                           <span className="text-muted-foreground mr-2">
                             {line.key}:
@@ -554,7 +560,6 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
                 )}
               </div>
             ) : (
-              /* Side-by-side mode */
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-1.5 text-xs font-medium text-red-600 dark:text-red-400">
@@ -568,11 +573,7 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
                         .map((line, i) => (
                           <div
                             key={i}
-                            className={`px-3 py-1 ${
-                              line.type === "removed" || line.type === "changed"
-                                ? "bg-red-100/50 dark:bg-red-900/20"
-                                : ""
-                            }`}
+                            className={`px-3 py-1 ${line.type === "removed" || line.type === "changed" ? "bg-red-100/50 dark:bg-red-900/20" : ""}`}
                           >
                             <span className="text-muted-foreground">
                               {line.key}:{" "}
@@ -604,11 +605,7 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
                         .map((line, i) => (
                           <div
                             key={i}
-                            className={`px-3 py-1 ${
-                              line.type === "added" || line.type === "changed"
-                                ? "bg-green-100/50 dark:bg-green-900/20"
-                                : ""
-                            }`}
+                            className={`px-3 py-1 ${line.type === "added" || line.type === "changed" ? "bg-green-100/50 dark:bg-green-900/20" : ""}`}
                           >
                             <span className="text-muted-foreground">
                               {line.key}:{" "}
