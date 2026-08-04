@@ -121,6 +121,7 @@ export const useCreateInvite = () => {
  */
 export const useCancelInvite = () => {
   const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
 
   return useMutation({
     mutationFn: async ({
@@ -145,7 +146,6 @@ export const useCancelInvite = () => {
       await deleteDoc(doc(db, "pendingInvites", inviteId));
 
       // Audit
-      const user = useAuthStore.getState().user;
       if (user) {
         try {
           await writeAuditEntry(
@@ -168,6 +168,9 @@ export const useCancelInvite = () => {
         queryKey: ["pendingInvites", variables.projectId],
       });
       queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
+      });
     },
   });
 };

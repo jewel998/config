@@ -218,6 +218,8 @@ export const usePromoteConfigs = () => {
 
 export const useToggleConfigLock = () => {
   const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
+
   return useMutation({
     mutationFn: async ({
       projectId,
@@ -230,6 +232,19 @@ export const useToggleConfigLock = () => {
       key: string;
       locked: boolean;
     }) => {
+      if (!user) throw new Error("Not authenticated");
+
+      await writeAuditEntry(
+        projectId,
+        buildConfigAuditEntry({
+          actorId: user.uid,
+          action: "update",
+          environmentId,
+          configKey: key,
+          newValue: { locked },
+        }),
+      );
+
       const docRef = doc(
         db,
         "projects",
@@ -244,6 +259,9 @@ export const useToggleConfigLock = () => {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["configs", variables.projectId, variables.environmentId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
       });
     },
   });

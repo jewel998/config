@@ -14,10 +14,7 @@ export const useSegmentUsage = (
   return useQuery({
     queryKey: ["segment-usage", projectId, environmentId, segmentId],
     queryFn: () => {
-      return computeSegmentUsage(
-        configs as unknown as ConfigFlagExtended[],
-        segmentId,
-      );
+      return computeSegmentUsage(configs as ConfigFlagExtended[], segmentId);
     },
     enabled: !!projectId && !!environmentId && configs.length > 0,
   });

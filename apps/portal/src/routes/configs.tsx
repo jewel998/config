@@ -77,6 +77,7 @@ import { CONFIG_TEMPLATES } from "@/lib/constants";
 import { getStalenessLevel, getStalenessLabel } from "@/lib/stale-detection";
 import { useProjectStore } from "@/stores/project-store";
 import { useRBAC } from "@/hooks/use-rbac";
+import type { ConfigFlagExtended } from "@/lib/types";
 
 type ValueType = ConfigEntry["valueType"];
 
@@ -694,7 +695,7 @@ const ConfigsPage = () => {
                           <TableRow key={`${config.key}-expanded`}>
                             <TableCell colSpan={6} className="bg-muted/30 p-4">
                               <ConfigDetailPanel
-                                config={config}
+                                config={config as ConfigFlagExtended}
                                 projectId={selectedProjectId!}
                                 environmentId={envId!}
                                 canEdit={canEdit}
