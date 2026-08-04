@@ -71,16 +71,12 @@ export const useAuthStore = create<AuthState>((set) => ({
         // Profile sync (non-blocking)
         try {
           await syncUserProfile(firebaseUser);
-        } catch (err) {
-          console.warn("[auth] Profile sync failed:", err);
-        }
+        } catch {}
 
         // Invite resolution (non-blocking)
         try {
           await resolveInvites(firebaseUser);
-        } catch (err) {
-          console.warn("[auth] Invite resolution failed:", err);
-        }
+        } catch {}
 
         set({ accessDenied: false, user: firebaseUser, loading: false });
       } else {
@@ -158,7 +154,10 @@ async function resolveInvites(firebaseUser: User): Promise<void> {
         const currentAuth: string[] = projectData.authorizedUsers ?? [];
 
         // Only claim if the email key exists and UID isn't already there
-        if (currentAuth.includes(emailKey) && !currentAuth.includes(firebaseUser.uid)) {
+        if (
+          currentAuth.includes(emailKey) &&
+          !currentAuth.includes(firebaseUser.uid)
+        ) {
           // Swap email key for real UID
           const newAuth = currentAuth
             .filter((entry) => entry !== emailKey)
@@ -175,7 +174,10 @@ async function resolveInvites(firebaseUser: User): Promise<void> {
             authorizedUsers: newAuth,
             roles: newRoles,
           });
-        } else if (currentAuth.includes(emailKey) && currentAuth.includes(firebaseUser.uid)) {
+        } else if (
+          currentAuth.includes(emailKey) &&
+          currentAuth.includes(firebaseUser.uid)
+        ) {
           // Already claimed — just clean up the email key
           const newAuth = currentAuth.filter((entry) => entry !== emailKey);
           const currentRoles = projectData.roles ?? {};
@@ -192,8 +194,6 @@ async function resolveInvites(firebaseUser: User): Promise<void> {
       if (invite.id) {
         await deleteDoc(doc(db, "pendingInvites", invite.id));
       }
-    } catch (err) {
-      console.warn(`[auth] Failed to resolve invite for project ${invite.projectId}:`, err);
-    }
+    } catch {}
   }
 }

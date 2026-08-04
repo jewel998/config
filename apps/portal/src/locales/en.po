@@ -13,11 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/routes/__root.tsx:274
+#: src/routes/__root.tsx:275
 msgid "Access Denied"
 msgstr "Access Denied"
 
-#: src/routes/__root.tsx:404
+#: src/routes/__root.tsx:405
 msgid "Access is by request only. Rights of Admission Reserved."
 msgstr "Access is by request only. Rights of Admission Reserved."
 
@@ -34,7 +34,7 @@ msgid "Account deletion is not yet available. Contact support if you need to del
 msgstr "Account deletion is not yet available. Contact support if you need to delete your account."
 
 #: src/components/command-palette.tsx:218
-#: src/routes/configs.tsx:514
+#: src/routes/configs.tsx:510
 msgid "Actions"
 msgstr "Actions"
 
@@ -65,7 +65,7 @@ msgid "Add condition"
 msgstr "Add condition"
 
 #: src/components/config-form-modal.tsx:209
-#: src/routes/configs.tsx:332
+#: src/routes/configs.tsx:328
 msgid "Add Config"
 msgstr "Add Config"
 
@@ -94,7 +94,7 @@ msgstr "Add Team Member"
 msgid "After"
 msgstr "After"
 
-#: src/routes/configs.tsx:396
+#: src/routes/configs.tsx:392
 msgid "Aging"
 msgstr "Aging"
 
@@ -102,7 +102,7 @@ msgstr "Aging"
 msgid "All actions"
 msgstr "All actions"
 
-#: src/routes/configs.tsx:394
+#: src/routes/configs.tsx:390
 msgid "All ages"
 msgstr "All ages"
 
@@ -110,7 +110,7 @@ msgstr "All ages"
 msgid "All resources"
 msgstr "All resources"
 
-#: src/routes/configs.tsx:379
+#: src/routes/configs.tsx:375
 msgid "All types"
 msgstr "All types"
 
@@ -148,12 +148,12 @@ msgstr "API key revoked"
 
 #: src/components/audit-log-viewer.tsx:141
 #: src/components/command-palette.tsx:105
-#: src/routes/__root.tsx:204
+#: src/routes/__root.tsx:205
 #: src/routes/api-keys.tsx:356
 msgid "API Keys"
 msgstr "API Keys"
 
-#: src/routes/configs.tsx:476
+#: src/routes/configs.tsx:472
 msgid "App Settings"
 msgstr "App Settings"
 
@@ -175,7 +175,7 @@ msgstr "Are you sure you want to delete \"{0}\"? This action cannot be undone."
 msgid "Attribute"
 msgstr "Attribute"
 
-#: src/routes/__root.tsx:205
+#: src/routes/__root.tsx:206
 msgid "Audit"
 msgstr "Audit"
 
@@ -204,6 +204,7 @@ msgstr "Boolean values are constrained to true/false by default."
 #: src/components/template-bar.tsx:119
 #: src/routes/api-keys.tsx:202
 #: src/routes/compare.tsx:605
+#: src/routes/configs.tsx:781
 #: src/routes/environments.tsx:254
 #: src/routes/settings.tsx:113
 msgid "Cancel"
@@ -220,6 +221,10 @@ msgstr "Cannot remove the last admin"
 #: src/components/audit-log-viewer.tsx:209
 msgid "Change Details"
 msgstr "Change Details"
+
+#: src/routes/__root.tsx:85
+msgid "Change language"
+msgstr "Change language"
 
 #: src/routes/compare.tsx:391
 msgid "changed"
@@ -257,7 +262,7 @@ msgstr "Color"
 msgid "Command Palette"
 msgstr "Command Palette"
 
-#: src/routes/configs.tsx:318
+#: src/routes/configs.tsx:314
 msgid "Compare"
 msgstr "Compare"
 
@@ -271,7 +276,7 @@ msgstr "Compare Environments"
 msgid "Conditions"
 msgstr "Conditions"
 
-#: src/routes/__root.tsx:172
+#: src/routes/__root.tsx:173
 msgid "Config"
 msgstr "Config"
 
@@ -279,7 +284,7 @@ msgstr "Config"
 msgid "Config created"
 msgstr "Config created"
 
-#: src/routes/configs.tsx:194
+#: src/routes/configs.tsx:202
 msgid "Config deleted"
 msgstr "Config deleted"
 
@@ -291,11 +296,11 @@ msgstr "Config Differences"
 msgid "Config key (e.g. feature.enabled)"
 msgstr "Config key (e.g. feature.enabled)"
 
-#: src/routes/__root.tsx:319
+#: src/routes/__root.tsx:320
 msgid "Config Portal"
 msgstr "Config Portal"
 
-#: src/routes/__root.tsx:352
+#: src/routes/__root.tsx:353
 msgid "Config publishing"
 msgstr "Config publishing"
 
@@ -310,8 +315,8 @@ msgstr "config{0}"
 
 #: src/components/audit-log-viewer.tsx:139
 #: src/components/command-palette.tsx:89
-#: src/routes/__root.tsx:202
-#: src/routes/configs.tsx:304
+#: src/routes/__root.tsx:203
+#: src/routes/configs.tsx:300
 msgid "Configs"
 msgstr "Configs"
 
@@ -363,7 +368,7 @@ msgstr "Create"
 msgid "Create a copy with a new key."
 msgstr "Create a copy with a new key."
 
-#: src/routes/configs.tsx:411
+#: src/routes/configs.tsx:407
 msgid "Create an environment first to manage configs."
 msgstr "Create an environment first to manage configs."
 
@@ -392,7 +397,7 @@ msgstr "Created"
 msgid "Current time:"
 msgstr "Current time:"
 
-#: src/routes/configs.tsx:487
+#: src/routes/configs.tsx:483
 msgid "Custom"
 msgstr "Custom"
 
@@ -433,15 +438,20 @@ msgstr "Define reusable audience groups for targeting rules."
 #: src/components/segment-manager.tsx:252
 #: src/routes/api-keys.tsx:307
 #: src/routes/api-keys.tsx:312
-#: src/routes/configs.tsx:633
-#: src/routes/configs.tsx:642
-#: src/routes/configs.tsx:701
+#: src/routes/configs.tsx:629
+#: src/routes/configs.tsx:638
+#: src/routes/configs.tsx:697
+#: src/routes/configs.tsx:782
 #: src/routes/environments.tsx:302
 #: src/routes/environments.tsx:313
 #: src/routes/settings.tsx:402
 #: src/routes/settings.tsx:407
 msgid "Delete"
 msgstr "Delete"
+
+#: src/routes/configs.tsx:777
+msgid "Delete in production?"
+msgstr "Delete in production?"
 
 #: src/routes/settings.tsx:477
 msgid "Delete Project"
@@ -467,6 +477,10 @@ msgstr "Deleting..."
 msgid "Deletion failed"
 msgstr "Deletion failed"
 
+#: src/routes/gdpr.tsx:34
+msgid "Deletion request submitted"
+msgstr "Deletion request submitted"
+
 #: src/components/segment-edit-modal.tsx:104
 #: src/components/segment-manager.tsx:178
 #: src/routes/settings.tsx:101
@@ -489,7 +503,7 @@ msgstr "Discard"
 msgid "Display Name"
 msgstr "Display Name"
 
-#: src/routes/configs.tsx:677
+#: src/routes/configs.tsx:673
 msgid "Duplicate"
 msgstr "Duplicate"
 
@@ -513,8 +527,8 @@ msgstr "e.g. small, medium, large"
 msgid "e.g., plan, country, email"
 msgstr "e.g., plan, country, email"
 
-#: src/routes/configs.tsx:614
-#: src/routes/configs.tsx:619
+#: src/routes/configs.tsx:610
+#: src/routes/configs.tsx:615
 #: src/routes/settings.tsx:113
 #: src/routes/settings.tsx:389
 #: src/routes/settings.tsx:394
@@ -579,7 +593,7 @@ msgstr "Environment name (e.g. production, staging)"
 msgid "Environment updated"
 msgstr "Environment updated"
 
-#: src/routes/__root.tsx:341
+#: src/routes/__root.tsx:342
 #: src/routes/environments.tsx:165
 #: src/routes/settings.tsx:292
 msgid "Environments"
@@ -617,7 +631,7 @@ msgstr "Failed to add member"
 #: src/components/config-detail-panel.tsx:153
 #: src/components/config-detail-panel.tsx:168
 #: src/components/config-detail-panel.tsx:183
-#: src/routes/configs.tsx:241
+#: src/routes/configs.tsx:237
 msgid "Failed to apply template"
 msgstr "Failed to apply template"
 
@@ -644,7 +658,7 @@ msgstr "Failed to create project"
 msgid "Failed to create segment"
 msgstr "Failed to create segment"
 
-#: src/routes/configs.tsx:212
+#: src/routes/configs.tsx:208
 msgid "Failed to delete config"
 msgstr "Failed to delete config"
 
@@ -725,11 +739,11 @@ msgstr "Failed to update schedule"
 msgid "Failed to update segment"
 msgstr "Failed to update segment"
 
-#: src/routes/configs.tsx:469
+#: src/routes/configs.tsx:465
 msgid "Feature Flags"
 msgstr "Feature Flags"
 
-#: src/routes/__root.tsx:360
+#: src/routes/__root.tsx:361
 msgid "Firebase sync"
 msgstr "Firebase sync"
 
@@ -737,16 +751,16 @@ msgstr "Firebase sync"
 msgid "Flag key"
 msgstr "Flag key"
 
-#: src/routes/configs.tsx:395
+#: src/routes/configs.tsx:391
 msgid "Fresh"
 msgstr "Fresh"
 
 #: src/components/command-palette.tsx:157
-#: src/routes/__root.tsx:152
+#: src/routes/__root.tsx:153
 msgid "GDPR & Privacy"
 msgstr "GDPR & Privacy"
 
-#: src/routes/gdpr.tsx:37
+#: src/routes/gdpr.tsx:39
 msgid "GDPR Compliance"
 msgstr "GDPR Compliance"
 
@@ -754,7 +768,7 @@ msgstr "GDPR Compliance"
 msgid "Generate Key"
 msgstr "Generate Key"
 
-#: src/routes/configs.tsx:458
+#: src/routes/configs.tsx:454
 msgid "Get started with a template or create your own."
 msgstr "Get started with a template or create your own."
 
@@ -803,7 +817,7 @@ msgid "JSON and array values are validated for correct syntax automatically."
 msgstr "JSON and array values are validated for correct syntax automatically."
 
 #: src/components/config-form-modal.tsx:226
-#: src/routes/configs.tsx:502
+#: src/routes/configs.tsx:498
 msgid "Key"
 msgstr "Key"
 
@@ -831,7 +845,7 @@ msgstr "Language & Region"
 msgid "Let's get you set up in a few quick steps."
 msgstr "Let's get you set up in a few quick steps."
 
-#: src/routes/configs.tsx:690
+#: src/routes/configs.tsx:686
 msgid "Lock"
 msgstr "Lock"
 
@@ -839,7 +853,7 @@ msgstr "Lock"
 msgid "Manage client IDs for this environment. Use these keys to authenticate SDK requests."
 msgstr "Manage client IDs for this environment. Use these keys to authenticate SDK requests."
 
-#: src/routes/gdpr.tsx:37
+#: src/routes/gdpr.tsx:39
 msgid "Manage data export and deletion requests for compliance."
 msgstr "Manage data export and deletion requests for compliance."
 
@@ -847,7 +861,7 @@ msgstr "Manage data export and deletion requests for compliance."
 msgid "Manage deployment targets and allowed domains."
 msgstr "Manage deployment targets and allowed domains."
 
-#: src/routes/configs.tsx:306
+#: src/routes/configs.tsx:302
 msgid "Manage feature flags and configuration values."
 msgstr "Manage feature flags and configuration values."
 
@@ -879,11 +893,11 @@ msgstr "Members"
 msgid "Min value"
 msgstr "Min value"
 
-#: src/routes/configs.tsx:652
+#: src/routes/configs.tsx:648
 msgid "More actions"
 msgstr "More actions"
 
-#: src/routes/__root.tsx:336
+#: src/routes/__root.tsx:337
 msgid "Multi-project scoping"
 msgstr "Multi-project scoping"
 
@@ -913,7 +927,7 @@ msgstr "New Config"
 msgid "New Environment"
 msgstr "New Environment"
 
-#: src/routes/configs.tsx:766
+#: src/routes/configs.tsx:762
 msgid "Next page"
 msgstr "Next page"
 
@@ -929,7 +943,7 @@ msgstr "No API keys yet. Generate one to get started."
 msgid "No changes to display"
 msgstr "No changes to display"
 
-#: src/routes/configs.tsx:455
+#: src/routes/configs.tsx:451
 msgid "No configs yet"
 msgstr "No configs yet"
 
@@ -1048,7 +1062,7 @@ msgstr "Pending"
 msgid "Pending Invites"
 msgstr "Pending Invites"
 
-#: src/routes/__root.tsx:344
+#: src/routes/__root.tsx:345
 msgid "Per-env overrides"
 msgstr "Per-env overrides"
 
@@ -1064,7 +1078,7 @@ msgstr "Permanently remove all personal data for a user ID. This action cannot b
 msgid "Pick a date"
 msgstr "Pick a date"
 
-#: src/routes/configs.tsx:669
+#: src/routes/configs.tsx:665
 msgid "Pin to top"
 msgstr "Pin to top"
 
@@ -1073,7 +1087,7 @@ msgid "Potential PII detected in config value"
 msgstr "Potential PII detected in config value"
 
 #: src/components/command-palette.tsx:123
-#: src/routes/__root.tsx:146
+#: src/routes/__root.tsx:147
 #: src/routes/preferences.tsx:348
 #: src/routes/preferences.tsx:356
 msgid "Preferences"
@@ -1092,7 +1106,7 @@ msgstr "Prerequisites saved"
 msgid "Preview"
 msgstr "Preview"
 
-#: src/routes/configs.tsx:751
+#: src/routes/configs.tsx:747
 msgid "Previous page"
 msgstr "Previous page"
 
@@ -1154,7 +1168,7 @@ msgstr "Project not found."
 msgid "Project Settings"
 msgstr "Project Settings"
 
-#: src/routes/__root.tsx:333
+#: src/routes/__root.tsx:334
 msgid "Projects"
 msgstr "Projects"
 
@@ -1162,11 +1176,11 @@ msgstr "Projects"
 msgid "Projects group environments and configurations together."
 msgstr "Projects group environments and configurations together."
 
-#: src/routes/__root.tsx:393
+#: src/routes/__root.tsx:394
 msgid "Protected by Firebase Authentication."
 msgstr "Protected by Firebase Authentication."
 
-#: src/routes/__root.tsx:357
+#: src/routes/__root.tsx:358
 msgid "Real-time"
 msgstr "Real-time"
 
@@ -1263,7 +1277,7 @@ msgstr "Search by email to add an existing user, or send an invite."
 msgid "Search commands, projects, environments..."
 msgstr "Search commands, projects, environments..."
 
-#: src/routes/configs.tsx:356
+#: src/routes/configs.tsx:352
 msgid "Search configs..."
 msgstr "Search configs..."
 
@@ -1307,7 +1321,7 @@ msgstr "Segment updated"
 #: src/components/audit-log-viewer.tsx:140
 #: src/components/command-palette.tsx:133
 #: src/components/segment-manager.tsx:83
-#: src/routes/__root.tsx:203
+#: src/routes/__root.tsx:204
 #: src/routes/segments.tsx:42
 msgid "Segments"
 msgstr "Segments"
@@ -1320,11 +1334,11 @@ msgstr "Select a project to compare environments."
 msgid "Select a project to manage API keys."
 msgstr "Select a project to manage API keys."
 
-#: src/routes/configs.tsx:286
+#: src/routes/configs.tsx:282
 msgid "Select a project to manage configs."
 msgstr "Select a project to manage configs."
 
-#: src/routes/gdpr.tsx:15
+#: src/routes/gdpr.tsx:17
 msgid "Select a project to manage GDPR compliance."
 msgstr "Select a project to manage GDPR compliance."
 
@@ -1368,7 +1382,7 @@ msgstr "Select project"
 msgid "Send Invite"
 msgstr "Send Invite"
 
-#: src/routes/__root.tsx:209
+#: src/routes/__root.tsx:210
 msgid "Settings"
 msgstr "Settings"
 
@@ -1391,7 +1405,7 @@ msgstr "Show unchanged ({unchangedCount})"
 #. placeholder {0}: safePage * PAGE_SIZE + 1
 #. placeholder {1}: Math.min( (safePage + 1) * PAGE_SIZE, filteredConfigs.length, )
 #. placeholder {2}: filteredConfigs.length
-#: src/routes/configs.tsx:733
+#: src/routes/configs.tsx:729
 msgid "Showing {0}–{1} of {2}"
 msgstr "Showing {0}–{1} of {2}"
 
@@ -1399,16 +1413,16 @@ msgstr "Showing {0}–{1} of {2}"
 msgid "Side by side"
 msgstr "Side by side"
 
-#: src/routes/__root.tsx:322
+#: src/routes/__root.tsx:323
 msgid "Sign in to manage your configuration platform."
 msgstr "Sign in to manage your configuration platform."
 
-#: src/routes/__root.tsx:389
+#: src/routes/__root.tsx:390
 msgid "Sign in with Google"
 msgstr "Sign in with Google"
 
-#: src/routes/__root.tsx:158
-#: src/routes/__root.tsx:293
+#: src/routes/__root.tsx:159
+#: src/routes/__root.tsx:294
 msgid "Sign out"
 msgstr "Sign out"
 
@@ -1416,7 +1430,7 @@ msgstr "Sign out"
 msgid "Source"
 msgstr "Source"
 
-#: src/routes/configs.tsx:397
+#: src/routes/configs.tsx:393
 msgid "Stale"
 msgstr "Stale"
 
@@ -1472,7 +1486,7 @@ msgid "Targeting rules saved"
 msgstr "Targeting rules saved"
 
 #: src/components/audit-log-viewer.tsx:143
-#: src/routes/__root.tsx:206
+#: src/routes/__root.tsx:207
 msgid "Team"
 msgstr "Team"
 
@@ -1489,7 +1503,7 @@ msgstr "Team Members"
 #: src/components/config-detail-panel.tsx:152
 #: src/components/config-detail-panel.tsx:167
 #: src/components/config-detail-panel.tsx:182
-#: src/routes/configs.tsx:240
+#: src/routes/configs.tsx:236
 msgid "Template applied"
 msgstr "Template applied"
 
@@ -1509,12 +1523,15 @@ msgstr "The user who created this project"
 msgid "Theme"
 msgstr "Theme"
 
+#: src/routes/configs.tsx:778
+msgid "This is a production environment. Changes will affect live users."
+msgstr "This is a production environment. Changes will affect live users."
+
 #: src/components/config-form-modal.tsx:100
-#: src/routes/configs.tsx:183
 msgid "This is a production environment. Changes will affect live users. Continue?"
 msgstr "This is a production environment. Changes will affect live users. Continue?"
 
-#: src/routes/configs.tsx:345
+#: src/routes/configs.tsx:341
 msgid "This is a production environment. You have read-only access."
 msgstr "This is a production environment. You have read-only access."
 
@@ -1530,20 +1547,24 @@ msgstr "This user is already a member of this project."
 msgid "Timezone"
 msgstr "Timezone"
 
+#: src/routes/__root.tsx:63
+msgid "Toggle theme"
+msgstr "Toggle theme"
+
 #: src/routes/audit.tsx:28
 msgid "Track all configuration changes for SOC2 compliance."
 msgstr "Track all configuration changes for SOC2 compliance."
 
-#: src/routes/__root.tsx:285
+#: src/routes/__root.tsx:286
 msgid "Try a different account"
 msgstr "Try a different account"
 
 #: src/components/config-form-modal.tsx:250
-#: src/routes/configs.tsx:505
+#: src/routes/configs.tsx:501
 msgid "Type"
 msgstr "Type"
 
-#: src/routes/configs.tsx:196
+#: src/routes/configs.tsx:203
 #: src/routes/settings.tsx:267
 msgid "Undo"
 msgstr "Undo"
@@ -1556,11 +1577,11 @@ msgstr "Unified"
 msgid "Unique identifier for API integrations"
 msgstr "Unique identifier for API integrations"
 
-#: src/routes/configs.tsx:685
+#: src/routes/configs.tsx:681
 msgid "Unlock"
 msgstr "Unlock"
 
-#: src/routes/configs.tsx:664
+#: src/routes/configs.tsx:660
 msgid "Unpin"
 msgstr "Unpin"
 
@@ -1577,7 +1598,7 @@ msgid "Update the segment name, description, and conditions."
 msgstr "Update the segment name, description, and conditions."
 
 #: src/components/audit-log-viewer.tsx:153
-#: src/routes/configs.tsx:511
+#: src/routes/configs.tsx:507
 msgid "Updated"
 msgstr "Updated"
 
@@ -1611,7 +1632,7 @@ msgstr "Validation Rules"
 #: src/components/config-form-modal.tsx:272
 #: src/components/override-manager.tsx:46
 #: src/components/rule-builder.tsx:307
-#: src/routes/configs.tsx:508
+#: src/routes/configs.tsx:504
 msgid "Value"
 msgstr "Value"
 
@@ -1636,7 +1657,7 @@ msgstr "Value must be one of: {0}"
 msgid "Value served when rule matches"
 msgstr "Value served when rule matches"
 
-#: src/routes/__root.tsx:349
+#: src/routes/__root.tsx:350
 msgid "Versioned"
 msgstr "Versioned"
 
@@ -1665,7 +1686,7 @@ msgstr "You"
 msgid "You cannot change your own role"
 msgstr "You cannot change your own role"
 
-#: src/routes/configs.tsx:343
+#: src/routes/configs.tsx:339
 msgid "You have view-only access to this project."
 msgstr "You have view-only access to this project."
 
@@ -1673,6 +1694,6 @@ msgstr "You have view-only access to this project."
 msgid "You're all set!"
 msgstr "You're all set!"
 
-#: src/routes/__root.tsx:277
+#: src/routes/__root.tsx:278
 msgid "Your account is not authorized to access this portal. Contact the project owner to request access."
 msgstr "Your account is not authorized to access this portal. Contact the project owner to request access."
