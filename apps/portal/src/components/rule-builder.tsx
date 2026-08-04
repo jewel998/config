@@ -169,12 +169,12 @@ export const RuleBuilder = ({ rules, onSave, disabled }: RuleBuilderProps) => {
         )}
         {rules.map((rule) => (
           <div key={rule.id} className="rounded-lg border p-3 space-y-3">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
               <Input
                 type="number"
                 min={1}
                 max={1000}
-                className="w-24 h-9 text-sm"
+                className="w-full sm:w-24 h-9 text-sm"
                 value={rule.priority}
                 onChange={(e) =>
                   updateRule(rule.id, { priority: Number(e.target.value) })
@@ -200,7 +200,7 @@ export const RuleBuilder = ({ rules, onSave, disabled }: RuleBuilderProps) => {
               )}
             </div>
             {rule.conditions.map((group, gi) => (
-              <div key={gi} className="ml-4 space-y-2">
+              <div key={gi} className="ml-0 sm:ml-4 space-y-2">
                 {gi > 0 && (
                   <span className="text-xs font-medium text-muted-foreground uppercase">
                     OR
@@ -208,68 +208,84 @@ export const RuleBuilder = ({ rules, onSave, disabled }: RuleBuilderProps) => {
                 )}
                 <div className="rounded-lg border bg-muted/30 p-3 space-y-2">
                   {group.predicates.map((pred, pi) => (
-                    <div key={pi} className="flex items-center gap-2">
+                    <div key={pi} className="space-y-2 sm:space-y-0">
                       {pi > 0 && (
-                        <span className="text-xs text-muted-foreground w-8 shrink-0">
+                        <span className="text-xs font-medium text-muted-foreground block sm:hidden">
                           AND
                         </span>
                       )}
-                      {pi === 0 && <span className="w-8 shrink-0" />}
-                      <Input
-                        className="flex-1 h-9 text-sm"
-                        value={pred.attribute}
-                        onChange={(e) =>
-                          updatePredicate(rule.id, gi, pi, {
-                            attribute: e.target.value,
-                          })
-                        }
-                        disabled={disabled}
-                        placeholder={t`e.g., plan, country, email`}
-                        list="common-attributes"
-                      />
-                      <Select
-                        value={pred.operator}
-                        onValueChange={(v) =>
-                          updatePredicate(rule.id, gi, pi, {
-                            operator: v as PredicateOperator,
-                          })
-                        }
-                        disabled={disabled}
-                      >
-                        <SelectTrigger className="w-36 h-9 text-sm">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {OPERATORS.map((op) => (
-                            <SelectItem key={op} value={op} className="text-sm">
-                              <span className="font-medium">{op}</span>
-                              <span className="text-muted-foreground ml-1.5 text-xs">
-                                {OPERATOR_DESCRIPTIONS[op]}
-                              </span>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        className="flex-1 h-9 text-sm"
-                        value={String(pred.value)}
-                        onChange={(e) =>
-                          updatePredicate(rule.id, gi, pi, {
-                            value: e.target.value,
-                          })
-                        }
-                        disabled={disabled}
-                        placeholder={OPERATOR_VALUE_PLACEHOLDERS[pred.operator]}
-                      />
-                      {!disabled && (
-                        <Button
-                          variant="ghost"
-                          size="icon-xs"
-                          onClick={() => removePredicate(rule.id, gi, pi)}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                        {pi > 0 && (
+                          <span className="text-xs text-muted-foreground w-8 shrink-0 hidden sm:block">
+                            AND
+                          </span>
+                        )}
+                        {pi === 0 && (
+                          <span className="w-8 shrink-0 hidden sm:block" />
+                        )}
+                        <Input
+                          className="flex-1 h-9 text-sm"
+                          value={pred.attribute}
+                          onChange={(e) =>
+                            updatePredicate(rule.id, gi, pi, {
+                              attribute: e.target.value,
+                            })
+                          }
+                          disabled={disabled}
+                          placeholder={t`e.g., plan, country, email`}
+                          list="common-attributes"
+                        />
+                        <Select
+                          value={pred.operator}
+                          onValueChange={(v) =>
+                            updatePredicate(rule.id, gi, pi, {
+                              operator: v as PredicateOperator,
+                            })
+                          }
+                          disabled={disabled}
                         >
-                          <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
-                        </Button>
-                      )}
+                          <SelectTrigger className="w-full sm:w-36 h-9 text-sm">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {OPERATORS.map((op) => (
+                              <SelectItem
+                                key={op}
+                                value={op}
+                                className="text-sm"
+                              >
+                                <span className="font-medium">{op}</span>
+                                <span className="text-muted-foreground ml-1.5 text-xs">
+                                  {OPERATOR_DESCRIPTIONS[op]}
+                                </span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          className="flex-1 h-9 text-sm"
+                          value={String(pred.value)}
+                          onChange={(e) =>
+                            updatePredicate(rule.id, gi, pi, {
+                              value: e.target.value,
+                            })
+                          }
+                          disabled={disabled}
+                          placeholder={
+                            OPERATOR_VALUE_PLACEHOLDERS[pred.operator]
+                          }
+                        />
+                        {!disabled && (
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            className="shrink-0 self-end sm:self-auto"
+                            onClick={() => removePredicate(rule.id, gi, pi)}
+                          >
+                            <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   ))}
                   {!disabled && (
@@ -301,7 +317,7 @@ export const RuleBuilder = ({ rules, onSave, disabled }: RuleBuilderProps) => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="ml-4 h-7 text-xs"
+                className="ml-0 sm:ml-4 h-7 text-xs"
                 onClick={() => addGroup(rule.id)}
               >
                 <Plus className="h-3.5 w-3.5 mr-1" />

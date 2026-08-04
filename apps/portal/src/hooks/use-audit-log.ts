@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import {
   collection,
   getDocs,
@@ -6,30 +6,38 @@ import {
   orderBy,
   limit,
   where,
+  startAfter,
   type QueryConstraint,
+  type DocumentSnapshot,
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
 import type { AuditEntry } from "@/lib/types";
 
+const PAGE_SIZE = 20;
+
 export const useAuditLog = (
   projectId: string | null,
-  filters?: { action?: string; configKey?: string; limit?: number },
+  filters?: { action?: string; configKey?: string },
 ) => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["audit_log", projectId, filters],
-    queryFn: async () => {
-      if (!projectId) return [];
+    queryFn: async ({ pageParam }: { pageParam: DocumentSnapshot | null }) => {
+      if (!projectId) return { entries: [], lastDoc: null };
 
       const constraints: QueryConstraint[] = [];
 
-      // Add where clause BEFORE orderBy (Firestore requirement)
       if (filters?.action) {
         constraints.push(where("action", "==", filters.action));
       }
 
       constraints.push(orderBy("timestamp", "desc"));
-      constraints.push(limit(filters?.limit ?? 50));
+
+      if (pageParam) {
+        constraints.push(startAfter(pageParam));
+      }
+
+      constraints.push(limit(PAGE_SIZE));
 
       const q = query(
         collection(db, "projects", projectId, "audit_log"),
@@ -37,9 +45,17 @@ export const useAuditLog = (
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(
+      const entries = snapshot.docs.map(
         (d) => ({ id: d.id, ...d.data() }) as AuditEntry,
       );
+      const lastDoc = snapshot.docs[snapshot.docs.length - 1] ?? null;
+
+      return { entries, lastDoc };
+    },
+    initialPageParam: null as DocumentSnapshot | null,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.entries.length < PAGE_SIZE) return undefined;
+      return lastPage.lastDoc;
     },
     enabled: !!projectId,
   });

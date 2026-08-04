@@ -15,6 +15,7 @@ import {
   configValueSchema,
 } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
+import { writeAuditEntry, buildConfigAuditEntry } from "@/lib/audit";
 
 export type { ConfigEntry };
 export { configKeySchema, configValueSchema };
@@ -64,6 +65,23 @@ export const useSetConfig = () => {
       valueType: ConfigEntry["valueType"];
     }) => {
       if (!user) throw new Error("Not authenticated");
+
+      // Write audit entry for config creation/update
+      try {
+        await writeAuditEntry(
+          projectId,
+          buildConfigAuditEntry({
+            actorId: user.uid,
+            action: "create",
+            environmentId,
+            configKey: key,
+            newValue: { key, value, valueType },
+          }),
+        );
+      } catch {
+        // Audit failure should not block config creation
+      }
+
       const docRef = doc(
         db,
         "projects",
@@ -97,6 +115,7 @@ export const useSetConfig = () => {
 
 export const useDeleteConfig = () => {
   const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
 
   return useMutation({
     mutationFn: async ({
@@ -108,6 +127,23 @@ export const useDeleteConfig = () => {
       environmentId: string;
       key: string;
     }) => {
+      if (!user) throw new Error("Not authenticated");
+
+      // Write audit entry for config deletion
+      try {
+        await writeAuditEntry(
+          projectId,
+          buildConfigAuditEntry({
+            actorId: user.uid,
+            action: "delete",
+            environmentId,
+            configKey: key,
+          }),
+        );
+      } catch {
+        // Audit failure should not block config deletion
+      }
+
       await deleteDoc(
         doc(
           db,

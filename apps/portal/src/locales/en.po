@@ -82,7 +82,7 @@ msgstr "Add Team Member"
 msgid "Aging"
 msgstr "Aging"
 
-#: src/components/audit-log-viewer.tsx:55
+#: src/components/audit-log-viewer.tsx:153
 msgid "All actions"
 msgstr "All actions"
 
@@ -154,9 +154,9 @@ msgstr "Are you sure you want to delete \"{0}\"? This action cannot be undone."
 msgid "Audit"
 msgstr "Audit"
 
-#: src/components/audit-log-viewer.tsx:46
+#: src/components/audit-log-viewer.tsx:136
 #: src/components/command-palette.tsx:141
-#: src/routes/audit.tsx:22
+#: src/routes/audit.tsx:20
 msgid "Audit Log"
 msgstr "Audit Log"
 
@@ -315,7 +315,7 @@ msgstr "Copied!"
 msgid "Copy"
 msgstr "Copy"
 
-#: src/components/audit-log-viewer.tsx:56
+#: src/components/audit-log-viewer.tsx:154
 #: src/components/config-form-modal.tsx:454
 #: src/components/onboarding-stepper.tsx:183
 #: src/components/onboarding-stepper.tsx:209
@@ -395,7 +395,7 @@ msgstr "Define a reusable audience group for targeting rules."
 msgid "Define reusable audience groups for targeting rules."
 msgstr "Define reusable audience groups for targeting rules."
 
-#: src/components/audit-log-viewer.tsx:58
+#: src/components/audit-log-viewer.tsx:156
 #: src/components/gdpr-panel.tsx:87
 #: src/components/segment-manager.tsx:252
 #: src/routes/api-keys.tsx:307
@@ -468,7 +468,7 @@ msgstr "e.g. production, staging"
 msgid "e.g. small, medium, large"
 msgstr "e.g. small, medium, large"
 
-#: src/components/rule-builder.tsx:227
+#: src/components/rule-builder.tsx:233
 msgid "e.g., plan, country, email"
 msgstr "e.g., plan, country, email"
 
@@ -688,10 +688,6 @@ msgstr "Failed to update segment"
 msgid "Feature Flags"
 msgstr "Feature Flags"
 
-#: src/components/audit-log-viewer.tsx:51
-msgid "Filter by resource..."
-msgstr "Filter by resource..."
-
 #: src/routes/__root.tsx:360
 msgid "Firebase sync"
 msgstr "Firebase sync"
@@ -790,10 +786,6 @@ msgstr "Language & Region"
 msgid "Let's get you set up in a few quick steps."
 msgstr "Let's get you set up in a few quick steps."
 
-#: src/components/audit-log-viewer.tsx:64
-msgid "Loading..."
-msgstr "Loading..."
-
 #: src/routes/configs.tsx:662
 msgid "Lock"
 msgstr "Lock"
@@ -884,7 +876,7 @@ msgstr "Next page"
 msgid "No API keys yet. Generate one to get started."
 msgstr "No API keys yet. Generate one to get started."
 
-#: src/components/audit-log-viewer.tsx:66
+#: src/components/audit-log-viewer.tsx:169
 msgid "No audit entries found."
 msgstr "No audit entries found."
 
@@ -1130,7 +1122,7 @@ msgstr "Regex pattern"
 msgid "Remove"
 msgstr "Remove"
 
-#: src/components/rule-builder.tsx:293
+#: src/components/rule-builder.tsx:301
 msgid "Remove group"
 msgstr "Remove group"
 
@@ -1200,6 +1192,10 @@ msgstr "Scheduled Change"
 #: src/components/add-member-modal.tsx:65
 msgid "Search by email to add an existing user, or send an invite."
 msgstr "Search by email to add an existing user, or send an invite."
+
+#: src/components/audit-log-viewer.tsx:143
+msgid "Search by resource..."
+msgstr "Search by resource..."
 
 #: src/components/command-palette.tsx:75
 msgid "Search commands, projects, environments..."
@@ -1273,7 +1269,7 @@ msgstr "Select a project to manage segments."
 msgid "Select a project to manage team access."
 msgstr "Select a project to manage team access."
 
-#: src/routes/audit.tsx:17
+#: src/routes/audit.tsx:15
 msgid "Select a project to view audit log."
 msgstr "Select a project to view audit log."
 
@@ -1353,7 +1349,7 @@ msgstr "Stale"
 msgid "Start configuring your environments with secrets and settings."
 msgstr "Start configuring your environments with secrets and settings."
 
-#: src/components/audit-log-viewer.tsx:59
+#: src/components/audit-log-viewer.tsx:157
 msgid "State change"
 msgstr "State change"
 
@@ -1458,7 +1454,7 @@ msgstr "This user is already a member of this project."
 msgid "Timezone"
 msgstr "Timezone"
 
-#: src/routes/audit.tsx:22
+#: src/routes/audit.tsx:20
 msgid "Track all configuration changes for SOC2 compliance."
 msgstr "Track all configuration changes for SOC2 compliance."
 
@@ -1488,7 +1484,7 @@ msgstr "Unlock"
 msgid "Unpin"
 msgstr "Unpin"
 
-#: src/components/audit-log-viewer.tsx:57
+#: src/components/audit-log-viewer.tsx:155
 #: src/components/config-form-modal.tsx:452
 msgid "Update"
 msgstr "Update"
