@@ -11,7 +11,7 @@ export const ENV_COLOR_PRESETS = [
 
 export const DEFAULT_ENV_COLOR = ENV_COLOR_PRESETS[5];
 
-export const CONFIG_TEMPLATES: Record<
+export const SEED_TEMPLATES: Record<
   string,
   Array<{ key: string; value: unknown; valueType: ConfigEntry["valueType"] }>
 > = {

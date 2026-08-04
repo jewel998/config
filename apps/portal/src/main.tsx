@@ -18,6 +18,11 @@ const queryClient = new QueryClient({
       staleTime: 1000 * 60 * 5, // 5 minutes
       retry: 1,
     },
+    mutations: {
+      onError: (error) => {
+        console.error("[mutation error]", error);
+      },
+    },
   },
 });
 

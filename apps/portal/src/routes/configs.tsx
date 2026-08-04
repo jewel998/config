@@ -79,7 +79,15 @@ import {
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useEnvironments } from "@/hooks/use-environments";
 import { usePinnedConfigs } from "@/hooks/use-pinned-configs";
-import { CONFIG_TEMPLATES } from "@/lib/constants";
+import { SEED_TEMPLATES } from "@/lib/constants";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { getStalenessLevel, getStalenessLabel } from "@/lib/stale-detection";
 import { useProjectStore } from "@/stores/project-store";
 import { useRBAC } from "@/hooks/use-rbac";
@@ -118,6 +126,7 @@ const ConfigsPage = () => {
   const [filterStaleness, setFilterStaleness] =
     useState<FilterStaleness>("all");
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
+  const [deleteConfirmKey, setDeleteConfirmKey] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [isPending, startTransition] = useTransition();
 
@@ -177,25 +186,24 @@ const ConfigsPage = () => {
 
   const handleDelete = (key: string) => {
     if (!selectedProjectId || !envId) return;
-
     if (isProductionEnv) {
-      const confirmed = window.confirm(
-        t`This is a production environment. Changes will affect live users. Continue?`,
-      );
-      if (!confirmed) return;
+      setDeleteConfirmKey(key);
+      return;
     }
+    executeDelete(key);
+  };
 
+  const executeDelete = (key: string) => {
     const config = configs.find((c) => c.key === key);
-
     deleteConfig.mutate(
-      { projectId: selectedProjectId, environmentId: envId, key },
+      { projectId: selectedProjectId!, environmentId: envId!, key },
       {
         onSuccess: () => {
           toast.success(t`Config deleted`, {
             action: {
               label: t`Undo`,
               onClick: () => {
-                if (config) {
+                if (config)
                   setConfigForUndo.mutate({
                     projectId: selectedProjectId!,
                     environmentId: envId!,
@@ -203,11 +211,11 @@ const ConfigsPage = () => {
                     value: config.value,
                     valueType: config.valueType,
                   });
-                }
               },
             },
             duration: 5000,
           });
+          setDeleteConfirmKey(null);
         },
         onError: () => toast.error(t`Failed to delete config`),
       },
@@ -232,7 +240,7 @@ const ConfigsPage = () => {
 
   const applyTemplate = (templateId: string) => {
     if (!selectedProjectId || !envId) return;
-    const template = CONFIG_TEMPLATES[templateId];
+    const template = SEED_TEMPLATES[templateId];
     if (!template) return;
     promoteConfigs.mutate(
       { projectId: selectedProjectId, targetEnvId: envId, configs: template },
@@ -775,6 +783,42 @@ const ConfigsPage = () => {
           )}
         </>
       )}
+      <Dialog
+        open={!!deleteConfirmKey}
+        onOpenChange={(open) => !open && setDeleteConfirmKey(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              <Trans>Delete in production?</Trans>
+            </DialogTitle>
+            <DialogDescription>
+              <Trans>
+                This is a production environment. Changes will affect live
+                users.
+              </Trans>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              className="rounded-full"
+              onClick={() => setDeleteConfirmKey(null)}
+            >
+              <Trans>Cancel</Trans>
+            </Button>
+            <Button
+              variant="destructive"
+              className="rounded-full"
+              onClick={() =>
+                deleteConfirmKey && executeDelete(deleteConfirmKey)
+              }
+            >
+              <Trans>Delete</Trans>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PageLayout>
   );
 };

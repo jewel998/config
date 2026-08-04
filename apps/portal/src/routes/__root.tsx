@@ -1,4 +1,5 @@
 import { useLingui } from "@lingui/react";
+import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import {
@@ -59,7 +60,7 @@ const ThemeToggle = () => {
       size="icon"
       className="h-9 w-9"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      aria-label="Toggle theme"
+      aria-label={t`Toggle theme`}
     >
       <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -81,7 +82,12 @@ const LanguageSwitcher = () => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9"
+          aria-label={t`Change language`}
+        >
           <Globe className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
@@ -212,7 +218,7 @@ const TabNav = () => {
   ];
 
   return (
-    <nav className="border-b px-4">
+    <nav className="border-b px-4" aria-label="Main navigation">
       <div className="flex gap-1 overflow-x-auto">
         {tabs.map(({ to, label, icon: Icon }) => (
           <Link
