@@ -212,7 +212,6 @@ export interface SegmentUsageResult {
 export interface SectionHelpConfig {
   description: string;
   tip?: string;
-  learnMoreUrl?: string;
 }
 
 /** Section identifiers for the config detail panel */

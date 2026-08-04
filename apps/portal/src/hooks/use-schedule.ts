@@ -54,6 +54,9 @@ export const useSetSchedule = () => {
       queryClient.invalidateQueries({
         queryKey: ["configs", variables.projectId, variables.environmentId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
+      });
     },
   });
 };

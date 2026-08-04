@@ -23,7 +23,6 @@ import { TemplateBar } from "@/components/template-bar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getFullValue } from "@/components/value-preview";
-import type { ConfigEntry } from "@/hooks/use-configs";
 import { useSetTargetingRules } from "@/hooks/use-targeting-rules";
 import { useSetOverrides } from "@/hooks/use-overrides";
 import { useSetSchedule } from "@/hooks/use-schedule";
@@ -32,10 +31,15 @@ import { useSegments } from "@/hooks/use-segments";
 import { useConfigs } from "@/hooks/use-configs";
 import { useSetRollout } from "@/hooks/use-set-rollout";
 import { CONFIG_TEMPLATES } from "@/lib/config-templates";
-import type { SectionId, TargetingRule, TemplateType } from "@/lib/types";
+import type {
+  ConfigFlagExtended,
+  SectionId,
+  TargetingRule,
+  TemplateType,
+} from "@/lib/types";
 
 interface ConfigDetailPanelProps {
-  config: ConfigEntry;
+  config: ConfigFlagExtended;
   projectId: string;
   environmentId: string;
   canEdit: boolean;
@@ -59,19 +63,12 @@ export const ConfigDetailPanel = ({
   const { data: segments = [] } = useSegments(projectId);
   const { data: allConfigs = [] } = useConfigs(projectId, environmentId);
 
-  // Cast config to extended type for advanced fields
-  const extConfig = config as unknown as Record<string, unknown>;
-  const targetingRules = (extConfig.targetingRules as TargetingRule[]) ?? [];
-  const rolloutPercentage = (extConfig.rolloutPercentage as number) ?? 0;
-  const rolloutValue = extConfig.rolloutValue;
-  const overrides = (extConfig.overrides as Record<string, unknown>) ?? {};
-  const schedule = extConfig.schedule as
-    { targetValue: unknown; activateAt: string } | null | undefined;
-  const prerequisites =
-    (extConfig.prerequisites as Array<{
-      flagKey: string;
-      requiredValue: unknown;
-    }>) ?? [];
+  const targetingRules = config.targetingRules ?? [];
+  const rolloutPercentage = config.rolloutPercentage ?? 0;
+  const rolloutValue = config.rolloutValue;
+  const overrides = config.overrides ?? {};
+  const schedule = config.schedule ?? null;
+  const prerequisites = config.prerequisites ?? [];
 
   const toggle = (id: SectionId) =>
     setOpenSection(openSection === id ? null : id);
