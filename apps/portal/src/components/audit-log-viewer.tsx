@@ -1,6 +1,12 @@
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
-import { ArrowLeftRight, History, Loader2, Rows3, User } from "lucide-react";
+import {
+  ArrowLeftRight,
+  ChevronRight,
+  History,
+  Rows3,
+  User,
+} from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { ResponsiveModal } from "@/components/responsive-modal";
@@ -19,15 +25,27 @@ import { useAuditLog } from "@/hooks/use-audit-log";
 import { useUserProfiles } from "@/hooks/use-user-profiles";
 import type { AuditEntry } from "@/lib/types";
 
+// ─── Constants ────────────────────────────────────────────────
+
 const ACTION_COLORS: Record<string, string> = {
   create:
-    "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  update: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  delete: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+    "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
+  update:
+    "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800",
+  delete:
+    "bg-red-500/10 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800",
   state_change:
-    "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+    "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800",
   data_deletion:
-    "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+    "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800",
+};
+
+const ACTION_ICONS: Record<string, string> = {
+  create: "●",
+  update: "◐",
+  delete: "○",
+  state_change: "◑",
+  data_deletion: "◌",
 };
 
 const ACTION_LABELS: Record<string, string> = {
@@ -38,31 +56,105 @@ const ACTION_LABELS: Record<string, string> = {
   data_deletion: "Data deleted",
 };
 
-function tryPrettifyJson(raw: string): string {
+// ─── Diff Utilities ───────────────────────────────────────────
+
+function tryParseJson(raw: string): unknown | null {
   try {
-    return JSON.stringify(JSON.parse(raw), null, 2);
+    return JSON.parse(raw);
   } catch {
-    return raw;
+    return null;
   }
 }
 
-/** Shimmer loading skeleton for audit entries */
+function flattenObject(obj: unknown, prefix = ""): Record<string, string> {
+  const result: Record<string, string> = {};
+  if (obj === null || obj === undefined) return result;
+  if (typeof obj !== "object") {
+    result[prefix || "(value)"] = String(obj);
+    return result;
+  }
+  if (Array.isArray(obj)) {
+    for (let i = 0; i < obj.length; i++) {
+      Object.assign(result, flattenObject(obj[i], `${prefix}[${i}]`));
+    }
+    return result;
+  }
+  for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
+    const path = prefix ? `${prefix}.${key}` : key;
+    if (typeof value === "object" && value !== null) {
+      Object.assign(result, flattenObject(value, path));
+    } else {
+      result[path] = JSON.stringify(value);
+    }
+  }
+  return result;
+}
+
+interface DiffLine {
+  key: string;
+  type: "added" | "removed" | "changed" | "unchanged";
+  oldValue?: string;
+  newValue?: string;
+}
+
+function computeDiff(
+  oldRaw: string | undefined,
+  newRaw: string | undefined,
+): DiffLine[] {
+  const oldObj = oldRaw ? tryParseJson(oldRaw) : null;
+  const newObj = newRaw ? tryParseJson(newRaw) : null;
+
+  // If both can't be parsed as JSON, show raw diff
+  if (oldObj === null && newObj === null) {
+    const lines: DiffLine[] = [];
+    if (oldRaw)
+      lines.push({ key: "(value)", type: "removed", oldValue: oldRaw });
+    if (newRaw) lines.push({ key: "(value)", type: "added", newValue: newRaw });
+    return lines;
+  }
+
+  const oldFlat = oldObj ? flattenObject(oldObj) : {};
+  const newFlat = newObj ? flattenObject(newObj) : {};
+  const allKeys = new Set([...Object.keys(oldFlat), ...Object.keys(newFlat)]);
+  const lines: DiffLine[] = [];
+
+  for (const key of allKeys) {
+    const o = oldFlat[key];
+    const n = newFlat[key];
+    if (o === undefined && n !== undefined) {
+      lines.push({ key, type: "added", newValue: n });
+    } else if (o !== undefined && n === undefined) {
+      lines.push({ key, type: "removed", oldValue: o });
+    } else if (o !== n) {
+      lines.push({ key, type: "changed", oldValue: o, newValue: n });
+    } else {
+      lines.push({ key, type: "unchanged", oldValue: o, newValue: n });
+    }
+  }
+
+  // Sort: changed/added/removed first, unchanged last
+  const order = { changed: 0, added: 1, removed: 2, unchanged: 3 };
+  lines.sort((a, b) => order[a.type] - order[b.type]);
+  return lines;
+}
+
+// ─── Skeleton ─────────────────────────────────────────────────
+
 const EntrySkeleton = () => (
-  <div className="rounded-lg border p-3 space-y-2 animate-pulse">
-    <div className="flex items-center justify-between">
+  <div className="flex gap-3 p-4 animate-pulse">
+    <div className="h-8 w-8 rounded-full bg-muted shrink-0" />
+    <div className="flex-1 space-y-2">
       <div className="flex items-center gap-2">
-        <div className="h-5 w-16 rounded-full bg-muted" />
+        <div className="h-4 w-24 rounded bg-muted" />
         <div className="h-4 w-32 rounded bg-muted" />
       </div>
-      <div className="h-4 w-28 rounded bg-muted" />
+      <div className="h-3 w-48 rounded bg-muted" />
     </div>
-    <div className="flex items-center gap-1.5">
-      <div className="h-3 w-3 rounded-full bg-muted" />
-      <div className="h-3 w-24 rounded bg-muted" />
-    </div>
-    <div className="h-10 w-full rounded bg-muted/60" />
+    <div className="h-3 w-20 rounded bg-muted shrink-0" />
   </div>
 );
+
+// ─── Component ────────────────────────────────────────────────
 
 interface AuditLogViewerProps {
   projectId: string;
@@ -72,9 +164,10 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
   const [actionFilter, setActionFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [diffEntry, setDiffEntry] = useState<AuditEntry | null>(null);
-  const [diffMode, setDiffMode] = useState<"side-by-side" | "line-by-line">(
-    "side-by-side",
+  const [diffMode, setDiffMode] = useState<"side-by-side" | "unified">(
+    "unified",
   );
+  const [showUnchanged, setShowUnchanged] = useState(false);
 
   const filters = useMemo(
     () => (actionFilter !== "all" ? { action: actionFilter } : undefined),
@@ -89,14 +182,12 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
     [data],
   );
 
-  // Collect unique actor IDs for name resolution
   const actorIds = useMemo(
     () => [...new Set(entries.map((e) => e.actorId))],
     [entries],
   );
   const { data: profiles = {} } = useUserProfiles(actorIds);
 
-  // Client-side search filter
   const filtered = useMemo(
     () =>
       searchQuery
@@ -107,17 +198,16 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
     [entries, searchQuery],
   );
 
-  // Infinite scroll observer
+  // Infinite scroll
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sentinelRef = useCallback(
     (node: HTMLDivElement | null) => {
       if (observerRef.current) observerRef.current.disconnect();
       if (!node) return;
-
       observerRef.current = new IntersectionObserver(
-        (observedEntries) => {
+        (observed) => {
           if (
-            observedEntries[0].isIntersecting &&
+            observed[0].isIntersecting &&
             hasNextPage &&
             !isFetchingNextPage
           ) {
@@ -143,121 +233,136 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
     if (parts.includes("configs") && parts.length >= 4) {
       return parts[parts.length - 1];
     }
-    if (parts[0] === "segments") {
-      return "segment";
-    }
+    if (parts[0] === "segments") return "segment";
     return parts[parts.length - 1] || path;
   };
 
+  const getResourceType = (path: string) => {
+    if (path.includes("configs")) return "config";
+    if (path.includes("segments")) return "segment";
+    return "resource";
+  };
+
+  const diffLines = useMemo(() => {
+    if (!diffEntry) return [];
+    return computeDiff(diffEntry.oldValue, diffEntry.newValue);
+  }, [diffEntry]);
+
+  const visibleDiffLines = useMemo(() => {
+    if (showUnchanged) return diffLines;
+    return diffLines.filter((l) => l.type !== "unchanged");
+  }, [diffLines, showUnchanged]);
+
+  const unchangedCount = useMemo(
+    () => diffLines.filter((l) => l.type === "unchanged").length,
+    [diffLines],
+  );
+
   return (
     <>
-      <Card className="rounded-xl">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <History className="h-4 w-4" />
-            <Trans>Audit Log</Trans>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Input
-              placeholder={t`Search by resource...`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1"
-            />
-            <Select value={actionFilter} onValueChange={setActionFilter}>
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t`All actions`}</SelectItem>
-                <SelectItem value="create">{t`Create`}</SelectItem>
-                <SelectItem value="update">{t`Update`}</SelectItem>
-                <SelectItem value="delete">{t`Delete`}</SelectItem>
-                <SelectItem value="state_change">{t`State change`}</SelectItem>
-              </SelectContent>
-            </Select>
+      <Card className="rounded-xl overflow-hidden">
+        <CardHeader className="border-b bg-muted/30">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <History className="h-4 w-4" />
+              <Trans>Activity</Trans>
+            </CardTitle>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Input
+                placeholder={t`Filter...`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-8 text-sm w-full sm:w-44"
+              />
+              <Select value={actionFilter} onValueChange={setActionFilter}>
+                <SelectTrigger className="h-8 text-sm w-full sm:w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t`All`}</SelectItem>
+                  <SelectItem value="create">{t`Created`}</SelectItem>
+                  <SelectItem value="update">{t`Updated`}</SelectItem>
+                  <SelectItem value="delete">{t`Deleted`}</SelectItem>
+                  <SelectItem value="state_change">{t`State change`}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-
-          {/* Entry List */}
+        </CardHeader>
+        <CardContent className="p-0">
           {isLoading ? (
-            <div className="space-y-2">
+            <div className="divide-y">
+              <EntrySkeleton />
               <EntrySkeleton />
               <EntrySkeleton />
               <EntrySkeleton />
             </div>
           ) : filtered.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-12">
-              <Trans>No audit entries found.</Trans>
-            </p>
+            <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+              <History className="h-8 w-8 mb-2 opacity-40" />
+              <p className="text-sm">
+                <Trans>No activity yet</Trans>
+              </p>
+            </div>
           ) : (
-            <div className="space-y-2 max-h-[70vh] overflow-y-auto pr-1">
+            <div className="divide-y max-h-[75vh] overflow-y-auto">
               {filtered.map((entry) => (
                 <div
                   key={entry.id}
-                  className="rounded-lg border p-3 space-y-2 hover:bg-muted/30 transition-colors"
+                  className="flex gap-3 px-4 py-3 hover:bg-muted/20 transition-colors group"
                 >
-                  {/* Header row */}
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge
-                        className={`rounded-full text-xs px-2 py-0.5 ${ACTION_COLORS[entry.action] ?? ""}`}
-                      >
-                        {ACTION_LABELS[entry.action] ?? entry.action}
-                      </Badge>
-                      <code className="text-sm font-mono text-foreground font-medium">
+                  {/* Action indicator */}
+                  <div
+                    className={`shrink-0 mt-0.5 h-8 w-8 rounded-full flex items-center justify-center text-sm border ${ACTION_COLORS[entry.action] ?? ""}`}
+                  >
+                    {ACTION_ICONS[entry.action] ?? "·"}
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0 space-y-0.5">
+                    {/* Primary line: who did what */}
+                    <p className="text-sm">
+                      <span className="font-medium text-foreground">
+                        {getActorName(entry.actorId)}
+                      </span>{" "}
+                      <span className="text-muted-foreground">
+                        {(
+                          ACTION_LABELS[entry.action] ?? entry.action
+                        ).toLowerCase()}
+                      </span>{" "}
+                      <span className="font-medium font-mono text-foreground">
                         {formatResourcePath(entry.resourcePath)}
-                      </code>
-                    </div>
-                    <span className="text-xs text-muted-foreground shrink-0">
+                      </span>
+                    </p>
+
+                    {/* Secondary: resource type + time */}
+                    <p className="text-xs text-muted-foreground">
+                      {getResourceType(entry.resourcePath)} ·{" "}
                       {new Date(entry.timestamp).toLocaleString()}
-                    </span>
-                  </div>
+                    </p>
 
-                  {/* Actor */}
-                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                    <User className="h-3.5 w-3.5" />
-                    <span>{getActorName(entry.actorId)}</span>
-                  </div>
-
-                  {/* Diff preview + View Changes button */}
-                  {(entry.oldValue || entry.newValue) && (
-                    <div className="flex flex-col gap-1.5">
-                      <div className="text-xs font-mono p-2 rounded bg-muted/40 overflow-hidden max-h-16">
-                        {entry.oldValue && (
-                          <p className="text-red-600 dark:text-red-400 truncate">
-                            − {entry.oldValue.slice(0, 80)}
-                          </p>
-                        )}
-                        {entry.newValue && (
-                          <p className="text-green-600 dark:text-green-400 truncate">
-                            + {entry.newValue.slice(0, 80)}
-                          </p>
-                        )}
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="self-start h-7 text-xs gap-1.5"
+                    {/* Changes indicator */}
+                    {(entry.oldValue || entry.newValue) && (
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-1 text-xs text-primary/80 hover:text-primary mt-1 transition-colors"
                         onClick={() => setDiffEntry(entry)}
                       >
-                        <ArrowLeftRight className="h-3 w-3" />
+                        <ChevronRight className="h-3 w-3" />
                         <Trans>View changes</Trans>
-                      </Button>
-                    </div>
-                  )}
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
 
-              {/* Infinite scroll: always show shimmer skeleton */}
+              {/* Infinite scroll sentinel — always shimmer */}
               <div ref={sentinelRef}>
                 {hasNextPage && (
-                  <div className="space-y-2 pt-1">
+                  <>
                     <EntrySkeleton />
                     <EntrySkeleton />
-                  </div>
+                  </>
                 )}
               </div>
             </div>
@@ -265,23 +370,39 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
         </CardContent>
       </Card>
 
-      {/* Diff Viewer Modal */}
+      {/* ─── Diff Modal ─────────────────────────────────────── */}
       {diffEntry && (
         <ResponsiveModal
           open={!!diffEntry}
           onOpenChange={(open) => !open && setDiffEntry(null)}
           title={<Trans>Change Details</Trans>}
           description={
-            <span className="font-mono text-xs">
-              {formatResourcePath(diffEntry.resourcePath)} ·{" "}
-              {ACTION_LABELS[diffEntry.action] ?? diffEntry.action} ·{" "}
-              {new Date(diffEntry.timestamp).toLocaleString()}
+            <span className="text-xs text-muted-foreground">
+              <span className="font-medium">
+                {getActorName(diffEntry.actorId)}
+              </span>{" "}
+              {(
+                ACTION_LABELS[diffEntry.action] ?? diffEntry.action
+              ).toLowerCase()}{" "}
+              <span className="font-mono">
+                {formatResourcePath(diffEntry.resourcePath)}
+              </span>{" "}
+              · {new Date(diffEntry.timestamp).toLocaleString()}
             </span>
           }
         >
-          <div className="space-y-3">
+          <div className="space-y-4">
             {/* Mode toggle */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Button
+                variant={diffMode === "unified" ? "default" : "outline"}
+                size="sm"
+                className="h-7 text-xs rounded-full gap-1"
+                onClick={() => setDiffMode("unified")}
+              >
+                <Rows3 className="h-3 w-3" />
+                <Trans>Unified</Trans>
+              </Button>
               <Button
                 variant={diffMode === "side-by-side" ? "default" : "outline"}
                 size="sm"
@@ -291,64 +412,171 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
                 <ArrowLeftRight className="h-3 w-3" />
                 <Trans>Side by side</Trans>
               </Button>
-              <Button
-                variant={diffMode === "line-by-line" ? "default" : "outline"}
-                size="sm"
-                className="h-7 text-xs rounded-full gap-1"
-                onClick={() => setDiffMode("line-by-line")}
-              >
-                <Rows3 className="h-3 w-3" />
-                <Trans>Line by line</Trans>
-              </Button>
+              {unchangedCount > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 text-xs rounded-full ml-auto"
+                  onClick={() => setShowUnchanged(!showUnchanged)}
+                >
+                  {showUnchanged ? (
+                    <Trans>Hide unchanged ({unchangedCount})</Trans>
+                  ) : (
+                    <Trans>Show unchanged ({unchangedCount})</Trans>
+                  )}
+                </Button>
+              )}
             </div>
 
-            {diffMode === "side-by-side" ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Old value */}
-                <div className="space-y-1.5">
-                  <p className="text-xs font-medium text-red-600 dark:text-red-400">
-                    <Trans>Before</Trans>
+            {/* Diff content */}
+            {diffMode === "unified" ? (
+              <div className="rounded-lg border overflow-hidden font-mono text-xs">
+                {visibleDiffLines.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-6">
+                    <Trans>No changes to display</Trans>
                   </p>
-                  <pre className="text-xs font-mono p-3 rounded-lg border bg-red-50/50 dark:bg-red-950/20 overflow-auto max-h-[50vh] whitespace-pre-wrap break-all">
-                    {diffEntry.oldValue
-                      ? tryPrettifyJson(diffEntry.oldValue)
-                      : "—"}
-                  </pre>
-                </div>
-                {/* New value */}
-                <div className="space-y-1.5">
-                  <p className="text-xs font-medium text-green-600 dark:text-green-400">
-                    <Trans>After</Trans>
-                  </p>
-                  <pre className="text-xs font-mono p-3 rounded-lg border bg-green-50/50 dark:bg-green-950/20 overflow-auto max-h-[50vh] whitespace-pre-wrap break-all">
-                    {diffEntry.newValue
-                      ? tryPrettifyJson(diffEntry.newValue)
-                      : "—"}
-                  </pre>
-                </div>
+                ) : (
+                  <div className="divide-y divide-border/50">
+                    {visibleDiffLines.map((line, i) => (
+                      <div key={i} className="flex">
+                        {/* Gutter */}
+                        <div
+                          className={`w-7 shrink-0 flex items-start justify-center pt-1.5 text-[10px] select-none ${
+                            line.type === "added"
+                              ? "bg-green-50 dark:bg-green-950/30 text-green-600"
+                              : line.type === "removed"
+                                ? "bg-red-50 dark:bg-red-950/30 text-red-600"
+                                : line.type === "changed"
+                                  ? "bg-amber-50 dark:bg-amber-950/30 text-amber-600"
+                                  : "bg-muted/30 text-muted-foreground"
+                          }`}
+                        >
+                          {line.type === "added"
+                            ? "+"
+                            : line.type === "removed"
+                              ? "−"
+                              : line.type === "changed"
+                                ? "~"
+                                : " "}
+                        </div>
+                        {/* Content */}
+                        <div
+                          className={`flex-1 px-3 py-1.5 overflow-x-auto ${
+                            line.type === "added"
+                              ? "bg-green-50/50 dark:bg-green-950/20"
+                              : line.type === "removed"
+                                ? "bg-red-50/50 dark:bg-red-950/20"
+                                : line.type === "changed"
+                                  ? "bg-amber-50/50 dark:bg-amber-950/20"
+                                  : ""
+                          }`}
+                        >
+                          <span className="text-muted-foreground mr-2">
+                            {line.key}:
+                          </span>
+                          {line.type === "changed" ? (
+                            <span>
+                              <span className="line-through text-red-600 dark:text-red-400">
+                                {line.oldValue}
+                              </span>
+                              <span className="mx-1.5">→</span>
+                              <span className="text-green-600 dark:text-green-400">
+                                {line.newValue}
+                              </span>
+                            </span>
+                          ) : line.type === "removed" ? (
+                            <span className="text-red-600 dark:text-red-400">
+                              {line.oldValue}
+                            </span>
+                          ) : line.type === "added" ? (
+                            <span className="text-green-600 dark:text-green-400">
+                              {line.newValue}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">
+                              {line.oldValue}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ) : (
-              <div className="space-y-2">
-                {diffEntry.oldValue && (
-                  <div className="space-y-1.5">
-                    <p className="text-xs font-medium text-red-600 dark:text-red-400">
-                      <Trans>Removed</Trans>
-                    </p>
-                    <pre className="text-xs font-mono p-3 rounded-lg border bg-red-50/50 dark:bg-red-950/20 overflow-auto max-h-[40vh] whitespace-pre-wrap break-all">
-                      {tryPrettifyJson(diffEntry.oldValue)}
-                    </pre>
+              /* Side-by-side mode */
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-red-600 dark:text-red-400">
+                    <span className="h-2 w-2 rounded-full bg-red-500" />
+                    <Trans>Before</Trans>
                   </div>
-                )}
-                {diffEntry.newValue && (
-                  <div className="space-y-1.5">
-                    <p className="text-xs font-medium text-green-600 dark:text-green-400">
-                      <Trans>Added</Trans>
-                    </p>
-                    <pre className="text-xs font-mono p-3 rounded-lg border bg-green-50/50 dark:bg-green-950/20 overflow-auto max-h-[40vh] whitespace-pre-wrap break-all">
-                      {tryPrettifyJson(diffEntry.newValue)}
-                    </pre>
+                  <div className="rounded-lg border bg-red-50/30 dark:bg-red-950/10 overflow-auto max-h-[50vh]">
+                    <div className="font-mono text-xs divide-y divide-border/30">
+                      {visibleDiffLines
+                        .filter((l) => l.type !== "added")
+                        .map((line, i) => (
+                          <div
+                            key={i}
+                            className={`px-3 py-1 ${
+                              line.type === "removed" || line.type === "changed"
+                                ? "bg-red-100/50 dark:bg-red-900/20"
+                                : ""
+                            }`}
+                          >
+                            <span className="text-muted-foreground">
+                              {line.key}:{" "}
+                            </span>
+                            <span
+                              className={
+                                line.type === "removed" ||
+                                line.type === "changed"
+                                  ? "text-red-700 dark:text-red-300"
+                                  : "text-muted-foreground"
+                              }
+                            >
+                              {line.oldValue ?? "—"}
+                            </span>
+                          </div>
+                        ))}
+                    </div>
                   </div>
-                )}
+                </div>
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-green-600 dark:text-green-400">
+                    <span className="h-2 w-2 rounded-full bg-green-500" />
+                    <Trans>After</Trans>
+                  </div>
+                  <div className="rounded-lg border bg-green-50/30 dark:bg-green-950/10 overflow-auto max-h-[50vh]">
+                    <div className="font-mono text-xs divide-y divide-border/30">
+                      {visibleDiffLines
+                        .filter((l) => l.type !== "removed")
+                        .map((line, i) => (
+                          <div
+                            key={i}
+                            className={`px-3 py-1 ${
+                              line.type === "added" || line.type === "changed"
+                                ? "bg-green-100/50 dark:bg-green-900/20"
+                                : ""
+                            }`}
+                          >
+                            <span className="text-muted-foreground">
+                              {line.key}:{" "}
+                            </span>
+                            <span
+                              className={
+                                line.type === "added" || line.type === "changed"
+                                  ? "text-green-700 dark:text-green-300"
+                                  : "text-muted-foreground"
+                              }
+                            >
+                              {line.newValue ?? "—"}
+                            </span>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

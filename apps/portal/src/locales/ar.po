@@ -38,6 +38,10 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+#: src/components/audit-log-viewer.tsx:253
+msgid "Activity"
+msgstr ""
+
 #: src/components/add-member-modal.tsx:115
 #: src/components/rbac-manager.tsx:101
 #: src/routes/settings.tsx:295
@@ -56,7 +60,7 @@ msgstr ""
 msgid "Add an environment"
 msgstr ""
 
-#: src/components/rule-builder.tsx:352
+#: src/components/rule-builder.tsx:349
 msgid "Add condition"
 msgstr ""
 
@@ -74,7 +78,7 @@ msgstr ""
 msgid "Add Member"
 msgstr ""
 
-#: src/components/rule-builder.tsx:378
+#: src/components/rule-builder.tsx:375
 msgid "Add OR group"
 msgstr ""
 
@@ -86,11 +90,7 @@ msgstr ""
 msgid "Add Team Member"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:351
-msgid "Added"
-msgstr ""
-
-#: src/components/audit-log-viewer.tsx:327
+#: src/components/audit-log-viewer.tsx:528
 msgid "After"
 msgstr ""
 
@@ -98,8 +98,8 @@ msgstr ""
 msgid "Aging"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:181
-msgid "All actions"
+#: src/components/audit-log-viewer.tsx:267
+msgid "All"
 msgstr ""
 
 #: src/routes/configs.tsx:376
@@ -166,7 +166,7 @@ msgstr ""
 msgid "Are you sure you want to delete \"{0}\"? This action cannot be undone."
 msgstr ""
 
-#: src/components/rule-builder.tsx:255
+#: src/components/rule-builder.tsx:252
 msgid "Attribute"
 msgstr ""
 
@@ -174,13 +174,12 @@ msgstr ""
 msgid "Audit"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:164
 #: src/components/command-palette.tsx:141
 #: src/routes/audit.tsx:26
 msgid "Audit Log"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:316
+#: src/components/audit-log-viewer.tsx:493
 msgid "Before"
 msgstr ""
 
@@ -213,7 +212,7 @@ msgstr ""
 msgid "Cannot remove the last admin"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:279
+#: src/components/audit-log-viewer.tsx:361
 msgid "Change Details"
 msgstr ""
 
@@ -262,7 +261,7 @@ msgstr ""
 msgid "Compare Environments"
 msgstr ""
 
-#: src/components/rule-builder.tsx:228
+#: src/components/rule-builder.tsx:225
 #: src/components/segment-edit-modal.tsx:118
 msgid "Conditions"
 msgstr ""
@@ -344,7 +343,6 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:182
 #: src/components/config-form-modal.tsx:454
 #: src/components/onboarding-stepper.tsx:183
 #: src/components/onboarding-stepper.tsx:209
@@ -379,6 +377,7 @@ msgstr ""
 msgid "Create your first project"
 msgstr ""
 
+#: src/components/audit-log-viewer.tsx:268
 #: src/routes/settings.tsx:534
 msgid "Created"
 msgstr "تاريخ الإنشاء"
@@ -424,7 +423,6 @@ msgstr ""
 msgid "Define reusable audience groups for targeting rules."
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:184
 #: src/components/gdpr-panel.tsx:87
 #: src/components/segment-manager.tsx:252
 #: src/routes/api-keys.tsx:307
@@ -445,6 +443,10 @@ msgstr "حذف المشروع"
 
 #: src/components/segment-manager.tsx:230
 msgid "Delete segment?"
+msgstr ""
+
+#: src/components/audit-log-viewer.tsx:270
+msgid "Deleted"
 msgstr ""
 
 #: src/routes/settings.tsx:446
@@ -497,7 +499,7 @@ msgstr ""
 msgid "e.g. small, medium, large"
 msgstr ""
 
-#: src/components/rule-builder.tsx:267
+#: src/components/rule-builder.tsx:264
 msgid "e.g., plan, country, email"
 msgstr ""
 
@@ -717,6 +719,10 @@ msgstr ""
 msgid "Feature Flags"
 msgstr ""
 
+#: src/components/audit-log-viewer.tsx:257
+msgid "Filter..."
+msgstr ""
+
 #: src/routes/__root.tsx:360
 msgid "Firebase sync"
 msgstr ""
@@ -760,6 +766,10 @@ msgstr ""
 
 #: src/components/config-form-modal.tsx:431
 msgid "Hide Preview"
+msgstr ""
+
+#: src/components/audit-log-viewer.tsx:404
+msgid "Hide unchanged ({unchangedCount})"
 msgstr ""
 
 #: src/components/pii-warning.tsx:49
@@ -813,10 +823,6 @@ msgstr "اللغة والمنطقة"
 
 #: src/components/onboarding-stepper.tsx:104
 msgid "Let's get you set up in a few quick steps."
-msgstr ""
-
-#: src/components/audit-log-viewer.tsx:307
-msgid "Line by line"
 msgstr ""
 
 #: src/routes/configs.tsx:662
@@ -905,12 +911,16 @@ msgstr "بيئة جديدة"
 msgid "Next page"
 msgstr ""
 
+#: src/components/audit-log-viewer.tsx:289
+msgid "No activity yet"
+msgstr ""
+
 #: src/routes/api-keys.tsx:209
 msgid "No API keys yet. Generate one to get started."
 msgstr "لا توجد مفاتيح API بعد. أنشئ واحدًا للبدء."
 
-#: src/components/audit-log-viewer.tsx:199
-msgid "No audit entries found."
+#: src/components/audit-log-viewer.tsx:417
+msgid "No changes to display"
 msgstr ""
 
 #: src/routes/configs.tsx:437
@@ -998,7 +1008,7 @@ msgstr "غير محدد"
 msgid "Numeric value"
 msgstr ""
 
-#: src/components/rule-builder.tsx:275
+#: src/components/rule-builder.tsx:272
 msgid "Operator"
 msgstr ""
 
@@ -1080,7 +1090,7 @@ msgstr ""
 msgid "Previous page"
 msgstr ""
 
-#: src/components/rule-builder.tsx:195
+#: src/components/rule-builder.tsx:192
 msgid "Priority"
 msgstr ""
 
@@ -1159,7 +1169,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: src/components/rule-builder.tsx:361
+#: src/components/rule-builder.tsx:358
 msgid "Remove group"
 msgstr ""
 
@@ -1167,15 +1177,11 @@ msgstr ""
 msgid "Remove this member from the project?"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:341
-msgid "Removed"
-msgstr ""
-
 #: src/components/prerequisite-ui.tsx:54
 msgid "Required value"
 msgstr ""
 
-#: src/components/rule-builder.tsx:211
+#: src/components/rule-builder.tsx:208
 msgid "Return value"
 msgstr ""
 
@@ -1209,7 +1215,7 @@ msgid "Rollout updated"
 msgstr ""
 
 #. placeholder {0}: ruleIdx + 1
-#: src/components/rule-builder.tsx:178
+#: src/components/rule-builder.tsx:175
 msgid "Rule {0}"
 msgstr ""
 
@@ -1237,10 +1243,6 @@ msgstr ""
 
 #: src/components/add-member-modal.tsx:65
 msgid "Search by email to add an existing user, or send an invite."
-msgstr ""
-
-#: src/components/audit-log-viewer.tsx:171
-msgid "Search by resource..."
 msgstr ""
 
 #: src/components/command-palette.tsx:75
@@ -1363,6 +1365,10 @@ msgstr ""
 msgid "Show Preview"
 msgstr ""
 
+#: src/components/audit-log-viewer.tsx:406
+msgid "Show unchanged ({unchangedCount})"
+msgstr ""
+
 #. placeholder {0}: safePage * PAGE_SIZE + 1
 #. placeholder {1}: Math.min( (safePage + 1) * PAGE_SIZE, filteredConfigs.length, )
 #. placeholder {2}: filteredConfigs.length
@@ -1370,7 +1376,7 @@ msgstr ""
 msgid "Showing {0}–{1} of {2}"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:298
+#: src/components/audit-log-viewer.tsx:394
 msgid "Side by side"
 msgstr ""
 
@@ -1399,7 +1405,7 @@ msgstr ""
 msgid "Start configuring your environments with secrets and settings."
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:185
+#: src/components/audit-log-viewer.tsx:271
 msgid "State change"
 msgstr ""
 
@@ -1522,6 +1528,10 @@ msgstr ""
 msgid "Undo"
 msgstr ""
 
+#: src/components/audit-log-viewer.tsx:385
+msgid "Unified"
+msgstr ""
+
 #: src/routes/settings.tsx:530
 msgid "Unique identifier for API integrations"
 msgstr ""
@@ -1534,7 +1544,6 @@ msgstr ""
 msgid "Unpin"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:183
 #: src/components/config-form-modal.tsx:452
 msgid "Update"
 msgstr ""
@@ -1547,6 +1556,7 @@ msgstr ""
 msgid "Update the segment name, description, and conditions."
 msgstr ""
 
+#: src/components/audit-log-viewer.tsx:269
 #: src/routes/configs.tsx:492
 msgid "Updated"
 msgstr ""
@@ -1580,7 +1590,7 @@ msgstr ""
 #: src/components/config-detail-panel.tsx:192
 #: src/components/config-form-modal.tsx:272
 #: src/components/override-manager.tsx:46
-#: src/components/rule-builder.tsx:310
+#: src/components/rule-builder.tsx:307
 #: src/routes/configs.tsx:489
 msgid "Value"
 msgstr ""
@@ -1602,7 +1612,7 @@ msgstr ""
 msgid "Value must be one of: {0}"
 msgstr ""
 
-#: src/components/rule-builder.tsx:220
+#: src/components/rule-builder.tsx:217
 msgid "Value served when rule matches"
 msgstr ""
 
@@ -1610,7 +1620,7 @@ msgstr ""
 msgid "Versioned"
 msgstr ""
 
-#: src/components/audit-log-viewer.tsx:253
+#: src/components/audit-log-viewer.tsx:335
 msgid "View changes"
 msgstr ""
 
