@@ -34,7 +34,7 @@ msgid "Account deletion is not yet available. Contact support if you need to del
 msgstr ""
 
 #: src/components/command-palette.tsx:218
-#: src/routes/configs.tsx:500
+#: src/routes/configs.tsx:502
 msgid "Actions"
 msgstr ""
 
@@ -65,7 +65,7 @@ msgid "Add condition"
 msgstr ""
 
 #: src/components/config-form-modal.tsx:209
-#: src/routes/configs.tsx:325
+#: src/routes/configs.tsx:326
 msgid "Add Config"
 msgstr ""
 
@@ -94,7 +94,7 @@ msgstr ""
 msgid "After"
 msgstr ""
 
-#: src/routes/configs.tsx:383
+#: src/routes/configs.tsx:384
 msgid "Aging"
 msgstr ""
 
@@ -102,7 +102,7 @@ msgstr ""
 msgid "All actions"
 msgstr ""
 
-#: src/routes/configs.tsx:381
+#: src/routes/configs.tsx:382
 msgid "All ages"
 msgstr ""
 
@@ -110,7 +110,7 @@ msgstr ""
 msgid "All resources"
 msgstr ""
 
-#: src/routes/configs.tsx:368
+#: src/routes/configs.tsx:369
 msgid "All types"
 msgstr ""
 
@@ -153,7 +153,7 @@ msgstr ""
 msgid "API Keys"
 msgstr "مفاتيح API"
 
-#: src/routes/configs.tsx:463
+#: src/routes/configs.tsx:464
 msgid "App Settings"
 msgstr ""
 
@@ -257,7 +257,7 @@ msgstr ""
 msgid "Command Palette"
 msgstr ""
 
-#: src/routes/configs.tsx:311
+#: src/routes/configs.tsx:312
 msgid "Compare"
 msgstr ""
 
@@ -279,7 +279,7 @@ msgstr "إعدادات"
 msgid "Config created"
 msgstr ""
 
-#: src/routes/configs.tsx:187
+#: src/routes/configs.tsx:188
 msgid "Config deleted"
 msgstr ""
 
@@ -311,7 +311,7 @@ msgstr ""
 #: src/components/audit-log-viewer.tsx:357
 #: src/components/command-palette.tsx:89
 #: src/routes/__root.tsx:202
-#: src/routes/configs.tsx:297
+#: src/routes/configs.tsx:298
 msgid "Configs"
 msgstr "الإعدادات"
 
@@ -363,7 +363,7 @@ msgstr "إنشاء"
 msgid "Create a copy with a new key."
 msgstr ""
 
-#: src/routes/configs.tsx:398
+#: src/routes/configs.tsx:399
 msgid "Create an environment first to manage configs."
 msgstr ""
 
@@ -392,7 +392,7 @@ msgstr "تاريخ الإنشاء"
 msgid "Current time:"
 msgstr ""
 
-#: src/routes/configs.tsx:474
+#: src/routes/configs.tsx:475
 msgid "Custom"
 msgstr ""
 
@@ -433,9 +433,9 @@ msgstr ""
 #: src/components/segment-manager.tsx:252
 #: src/routes/api-keys.tsx:307
 #: src/routes/api-keys.tsx:312
-#: src/routes/configs.tsx:619
-#: src/routes/configs.tsx:628
-#: src/routes/configs.tsx:687
+#: src/routes/configs.tsx:621
+#: src/routes/configs.tsx:630
+#: src/routes/configs.tsx:689
 #: src/routes/environments.tsx:302
 #: src/routes/environments.tsx:313
 #: src/routes/settings.tsx:396
@@ -481,7 +481,7 @@ msgstr ""
 msgid "Diff configs between environments and sync changes."
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:256
+#: src/components/config-detail-panel.tsx:269
 msgid "Discard"
 msgstr ""
 
@@ -489,7 +489,7 @@ msgstr ""
 msgid "Display Name"
 msgstr "الاسم المعروض"
 
-#: src/routes/configs.tsx:663
+#: src/routes/configs.tsx:665
 msgid "Duplicate"
 msgstr ""
 
@@ -513,8 +513,8 @@ msgstr ""
 msgid "e.g., plan, country, email"
 msgstr ""
 
-#: src/routes/configs.tsx:600
-#: src/routes/configs.tsx:605
+#: src/routes/configs.tsx:602
+#: src/routes/configs.tsx:607
 #: src/routes/settings.tsx:113
 #: src/routes/settings.tsx:383
 #: src/routes/settings.tsx:388
@@ -613,11 +613,11 @@ msgstr ""
 msgid "Failed to add member"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:88
-#: src/components/config-detail-panel.tsx:105
-#: src/components/config-detail-panel.tsx:120
-#: src/components/config-detail-panel.tsx:135
-#: src/routes/configs.tsx:234
+#: src/components/config-detail-panel.tsx:128
+#: src/components/config-detail-panel.tsx:145
+#: src/components/config-detail-panel.tsx:160
+#: src/components/config-detail-panel.tsx:175
+#: src/routes/configs.tsx:235
 msgid "Failed to apply template"
 msgstr ""
 
@@ -644,7 +644,7 @@ msgstr ""
 msgid "Failed to create segment"
 msgstr ""
 
-#: src/routes/configs.tsx:205
+#: src/routes/configs.tsx:206
 msgid "Failed to delete config"
 msgstr ""
 
@@ -685,15 +685,15 @@ msgstr ""
 msgid "Failed to save description"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:321
+#: src/components/config-detail-panel.tsx:338
 msgid "Failed to save overrides"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:400
+#: src/components/config-detail-panel.tsx:421
 msgid "Failed to save prerequisites"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:242
+#: src/components/config-detail-panel.tsx:255
 msgid "Failed to save rules"
 msgstr ""
 
@@ -717,7 +717,7 @@ msgstr ""
 msgid "Failed to update rollout"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:357
+#: src/components/config-detail-panel.tsx:376
 msgid "Failed to update schedule"
 msgstr ""
 
@@ -725,7 +725,7 @@ msgstr ""
 msgid "Failed to update segment"
 msgstr ""
 
-#: src/routes/configs.tsx:456
+#: src/routes/configs.tsx:457
 msgid "Feature Flags"
 msgstr ""
 
@@ -737,7 +737,7 @@ msgstr ""
 msgid "Flag key"
 msgstr ""
 
-#: src/routes/configs.tsx:382
+#: src/routes/configs.tsx:383
 msgid "Fresh"
 msgstr ""
 
@@ -754,7 +754,7 @@ msgstr ""
 msgid "Generate Key"
 msgstr "إنشاء مفتاح"
 
-#: src/routes/configs.tsx:445
+#: src/routes/configs.tsx:446
 msgid "Get started with a template or create your own."
 msgstr ""
 
@@ -803,7 +803,7 @@ msgid "JSON and array values are validated for correct syntax automatically."
 msgstr ""
 
 #: src/components/config-form-modal.tsx:226
-#: src/routes/configs.tsx:488
+#: src/routes/configs.tsx:490
 msgid "Key"
 msgstr ""
 
@@ -831,7 +831,7 @@ msgstr "اللغة والمنطقة"
 msgid "Let's get you set up in a few quick steps."
 msgstr ""
 
-#: src/routes/configs.tsx:676
+#: src/routes/configs.tsx:678
 msgid "Lock"
 msgstr ""
 
@@ -847,7 +847,7 @@ msgstr ""
 msgid "Manage deployment targets and allowed domains."
 msgstr ""
 
-#: src/routes/configs.tsx:299
+#: src/routes/configs.tsx:300
 msgid "Manage feature flags and configuration values."
 msgstr ""
 
@@ -879,7 +879,7 @@ msgstr ""
 msgid "Min value"
 msgstr ""
 
-#: src/routes/configs.tsx:638
+#: src/routes/configs.tsx:640
 msgid "More actions"
 msgstr ""
 
@@ -913,7 +913,7 @@ msgstr ""
 msgid "New Environment"
 msgstr "بيئة جديدة"
 
-#: src/routes/configs.tsx:747
+#: src/routes/configs.tsx:749
 msgid "Next page"
 msgstr ""
 
@@ -929,7 +929,7 @@ msgstr "لا توجد مفاتيح API بعد. أنشئ واحدًا للبدء.
 msgid "No changes to display"
 msgstr ""
 
-#: src/routes/configs.tsx:442
+#: src/routes/configs.tsx:443
 msgid "No configs yet"
 msgstr ""
 
@@ -1022,11 +1022,11 @@ msgstr ""
 msgid "optional"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:296
+#: src/components/config-detail-panel.tsx:311
 msgid "Overrides"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:320
+#: src/components/config-detail-panel.tsx:337
 msgid "Overrides saved"
 msgstr ""
 
@@ -1064,7 +1064,7 @@ msgstr ""
 msgid "Pick a date"
 msgstr ""
 
-#: src/routes/configs.tsx:655
+#: src/routes/configs.tsx:657
 msgid "Pin to top"
 msgstr ""
 
@@ -1079,12 +1079,12 @@ msgstr ""
 msgid "Preferences"
 msgstr "التفضيلات"
 
-#: src/components/config-detail-panel.tsx:373
+#: src/components/config-detail-panel.tsx:392
 #: src/components/prerequisite-ui.tsx:44
 msgid "Prerequisites"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:398
+#: src/components/config-detail-panel.tsx:419
 msgid "Prerequisites saved"
 msgstr ""
 
@@ -1092,7 +1092,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: src/routes/configs.tsx:732
+#: src/routes/configs.tsx:734
 msgid "Previous page"
 msgstr ""
 
@@ -1216,7 +1216,7 @@ msgstr ""
 msgid "Role updated"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:270
+#: src/components/config-detail-panel.tsx:283
 msgid "Rollout"
 msgstr ""
 
@@ -1236,17 +1236,17 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:248
+#: src/components/config-detail-panel.tsx:261
 msgid "Save rules"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:337
+#: src/components/config-detail-panel.tsx:354
 #: src/components/date-picker-schedule.tsx:222
 #: src/components/schedule-ui.tsx:82
 msgid "Schedule"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:356
+#: src/components/config-detail-panel.tsx:375
 msgid "Schedule updated"
 msgstr ""
 
@@ -1263,7 +1263,7 @@ msgstr ""
 msgid "Search commands, projects, environments..."
 msgstr ""
 
-#: src/routes/configs.tsx:349
+#: src/routes/configs.tsx:350
 msgid "Search configs..."
 msgstr ""
 
@@ -1320,7 +1320,7 @@ msgstr ""
 msgid "Select a project to manage API keys."
 msgstr ""
 
-#: src/routes/configs.tsx:279
+#: src/routes/configs.tsx:280
 msgid "Select a project to manage configs."
 msgstr ""
 
@@ -1391,7 +1391,7 @@ msgstr ""
 #. placeholder {0}: safePage * PAGE_SIZE + 1
 #. placeholder {1}: Math.min( (safePage + 1) * PAGE_SIZE, filteredConfigs.length, )
 #. placeholder {2}: filteredConfigs.length
-#: src/routes/configs.tsx:716
+#: src/routes/configs.tsx:718
 msgid "Showing {0}–{1} of {2}"
 msgstr ""
 
@@ -1416,7 +1416,7 @@ msgstr "تسجيل الخروج"
 msgid "Source"
 msgstr ""
 
-#: src/routes/configs.tsx:384
+#: src/routes/configs.tsx:385
 msgid "Stale"
 msgstr ""
 
@@ -1462,12 +1462,12 @@ msgstr ""
 msgid "Target value"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:209
+#: src/components/config-detail-panel.tsx:220
 #: src/components/rule-builder.tsx:148
 msgid "Targeting Rules"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:239
+#: src/components/config-detail-panel.tsx:252
 msgid "Targeting rules saved"
 msgstr ""
 
@@ -1485,11 +1485,11 @@ msgstr ""
 msgid "Team Members"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:87
-#: src/components/config-detail-panel.tsx:104
-#: src/components/config-detail-panel.tsx:119
-#: src/components/config-detail-panel.tsx:134
-#: src/routes/configs.tsx:233
+#: src/components/config-detail-panel.tsx:127
+#: src/components/config-detail-panel.tsx:144
+#: src/components/config-detail-panel.tsx:159
+#: src/components/config-detail-panel.tsx:174
+#: src/routes/configs.tsx:234
 msgid "Template applied"
 msgstr ""
 
@@ -1510,11 +1510,11 @@ msgid "Theme"
 msgstr "المظهر"
 
 #: src/components/config-form-modal.tsx:100
-#: src/routes/configs.tsx:176
+#: src/routes/configs.tsx:177
 msgid "This is a production environment. Changes will affect live users. Continue?"
 msgstr ""
 
-#: src/routes/configs.tsx:338
+#: src/routes/configs.tsx:339
 msgid "This is a production environment. You have read-only access."
 msgstr ""
 
@@ -1539,11 +1539,11 @@ msgid "Try a different account"
 msgstr ""
 
 #: src/components/config-form-modal.tsx:250
-#: src/routes/configs.tsx:491
+#: src/routes/configs.tsx:493
 msgid "Type"
 msgstr ""
 
-#: src/routes/configs.tsx:189
+#: src/routes/configs.tsx:190
 #: src/routes/settings.tsx:261
 msgid "Undo"
 msgstr ""
@@ -1556,11 +1556,11 @@ msgstr ""
 msgid "Unique identifier for API integrations"
 msgstr ""
 
-#: src/routes/configs.tsx:671
+#: src/routes/configs.tsx:673
 msgid "Unlock"
 msgstr ""
 
-#: src/routes/configs.tsx:650
+#: src/routes/configs.tsx:652
 msgid "Unpin"
 msgstr ""
 
@@ -1577,7 +1577,7 @@ msgid "Update the segment name, description, and conditions."
 msgstr ""
 
 #: src/components/audit-log-viewer.tsx:371
-#: src/routes/configs.tsx:497
+#: src/routes/configs.tsx:499
 msgid "Updated"
 msgstr ""
 
@@ -1607,11 +1607,11 @@ msgstr ""
 msgid "Validation Rules"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:187
+#: src/components/config-detail-panel.tsx:198
 #: src/components/config-form-modal.tsx:272
 #: src/components/override-manager.tsx:46
 #: src/components/rule-builder.tsx:307
-#: src/routes/configs.tsx:494
+#: src/routes/configs.tsx:496
 msgid "Value"
 msgstr ""
 
@@ -1665,7 +1665,7 @@ msgstr ""
 msgid "You cannot change your own role"
 msgstr ""
 
-#: src/routes/configs.tsx:336
+#: src/routes/configs.tsx:337
 msgid "You have view-only access to this project."
 msgstr ""
 
