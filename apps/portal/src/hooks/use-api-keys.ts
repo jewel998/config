@@ -100,6 +100,9 @@ export const useGenerateApiKey = () => {
       queryClient.invalidateQueries({
         queryKey: ["apiKeys", variables.projectId, variables.environmentId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
+      });
     },
   });
 };
@@ -113,10 +116,12 @@ export const useRevokeApiKey = () => {
       projectId,
       environmentId,
       token,
+      label,
     }: {
       projectId: string;
       environmentId: string;
       token: string;
+      label?: string;
     }) => {
       if (!user) throw new Error("Not authenticated");
       const docRef = doc(
@@ -138,7 +143,7 @@ export const useRevokeApiKey = () => {
           buildAuditEntry({
             actorId: user.uid,
             action: "update",
-            resourcePath: `environments/${environmentId}/apiKeys/${token.slice(0, 8)}`,
+            resourcePath: `environments/${environmentId}/apiKeys/${label || "API key"}`,
             newValue: { status: "revoked" },
           }),
         );
@@ -149,6 +154,9 @@ export const useRevokeApiKey = () => {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["apiKeys", variables.projectId, variables.environmentId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
       });
     },
   });
@@ -163,10 +171,12 @@ export const useDeleteApiKey = () => {
       projectId,
       environmentId,
       token,
+      label,
     }: {
       projectId: string;
       environmentId: string;
       token: string;
+      label?: string;
     }) => {
       if (!user) throw new Error("Not authenticated");
       const docRef = doc(
@@ -185,7 +195,7 @@ export const useDeleteApiKey = () => {
           buildAuditEntry({
             actorId: user.uid,
             action: "delete",
-            resourcePath: `environments/${environmentId}/apiKeys/${token.slice(0, 8)}`,
+            resourcePath: `environments/${environmentId}/apiKeys/${label || "API key"}`,
           }),
         );
       } catch {
@@ -195,6 +205,9 @@ export const useDeleteApiKey = () => {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["apiKeys", variables.projectId, variables.environmentId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
       });
     },
   });

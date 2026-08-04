@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { LucideIcon } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { DateDisplay } from "@/components/date-display";
 import { ResponsiveModal } from "@/components/responsive-modal";
@@ -229,6 +230,7 @@ interface AuditLogViewerProps {
 }
 
 export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
+  const queryClient = useQueryClient();
   const [actionFilter, setActionFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -326,6 +328,18 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
           <CardTitle className="flex items-center gap-2 text-sm font-semibold">
             <History className="h-4 w-4 text-muted-foreground" />
             <Trans>Activity</Trans>
+            <Button
+              variant="ghost"
+              size="icon-xs"
+              className="ml-auto"
+              onClick={() =>
+                queryClient.invalidateQueries({
+                  queryKey: ["audit_log", projectId],
+                })
+              }
+            >
+              <RefreshCw className="h-3.5 w-3.5 text-muted-foreground" />
+            </Button>
           </CardTitle>
           <div className="flex flex-col sm:flex-row gap-2">
             <Input

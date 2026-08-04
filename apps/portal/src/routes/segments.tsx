@@ -72,15 +72,16 @@ const SegmentsPage = () => {
             },
           );
         }}
-        onDeleteSegment={(segmentId) =>
+        onDeleteSegment={(segmentId) => {
+          const seg = segments.find((s) => s.id === segmentId);
           deleteSegment.mutate(
-            { projectId: selectedProjectId, segmentId },
+            { projectId: selectedProjectId, segmentId, segmentName: seg?.name },
             {
               onSuccess: () => toast.success(t`Segment deleted`),
               onError: () => toast.error(t`Failed to delete segment`),
             },
-          )
-        }
+          );
+        }}
         disabled={isViewer}
       />
     </PageLayout>

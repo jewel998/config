@@ -65,6 +65,9 @@ export const useCreateSegment = () => {
       queryClient.invalidateQueries({
         queryKey: ["segments", variables.projectId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
+      });
     },
   });
 };
@@ -86,11 +89,12 @@ export const useUpdateSegment = () => {
       oldData?: Segment;
     }) => {
       if (!user) throw new Error("Not authenticated");
+      const segmentName = data.name || oldData?.name || segmentId;
       await writeAuditEntry(projectId, {
         actorId: user.uid,
         timestamp: new Date().toISOString(),
         action: "update",
-        resourcePath: `segments/${segmentId}`,
+        resourcePath: `segments/${segmentName}`,
         oldValue: oldData ? JSON.stringify(oldData) : undefined,
         newValue: JSON.stringify(data),
       });
@@ -100,6 +104,9 @@ export const useUpdateSegment = () => {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["segments", variables.projectId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
       });
     },
   });
@@ -113,22 +120,27 @@ export const useDeleteSegment = () => {
     mutationFn: async ({
       projectId,
       segmentId,
+      segmentName,
     }: {
       projectId: string;
       segmentId: string;
+      segmentName?: string;
     }) => {
       if (!user) throw new Error("Not authenticated");
       await writeAuditEntry(projectId, {
         actorId: user.uid,
         timestamp: new Date().toISOString(),
         action: "delete",
-        resourcePath: `segments/${segmentId}`,
+        resourcePath: `segments/${segmentName || segmentId}`,
       });
       await deleteDoc(doc(db, "projects", projectId, "segments", segmentId));
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["segments", variables.projectId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["audit_log", variables.projectId],
       });
     },
   });
