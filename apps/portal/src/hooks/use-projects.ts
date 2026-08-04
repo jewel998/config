@@ -63,7 +63,7 @@ export const useCreateProject = () => {
           buildAuditEntry({
             actorId: user.uid,
             action: "create",
-            resourcePath: `project/${docRef.id}`,
+            resourcePath: `project/${name.trim()}`,
             newValue: { name: name.trim() },
           }),
         );
@@ -83,7 +83,13 @@ export const useDeleteProject = () => {
   const user = useAuthStore((s) => s.user);
 
   return useMutation({
-    mutationFn: async (projectId: string) => {
+    mutationFn: async ({
+      projectId,
+      projectName,
+    }: {
+      projectId: string;
+      projectName?: string;
+    }) => {
       if (!user) throw new Error("Not authenticated");
       await updateDoc(doc(db, "projects", projectId), {
         deletedAt: new Date().toISOString(),
@@ -94,7 +100,7 @@ export const useDeleteProject = () => {
           buildAuditEntry({
             actorId: user.uid,
             action: "delete",
-            resourcePath: `project/${projectId}`,
+            resourcePath: `project/${projectName || projectId}`,
           }),
         );
       } catch {

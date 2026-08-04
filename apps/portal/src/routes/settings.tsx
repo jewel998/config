@@ -101,17 +101,17 @@ const DescriptionSection = ({
           <Trans>Description</Trans>
         </CardTitle>
         {!readOnly && (
-        <Button
-          size="sm"
-          variant="ghost"
-          className="rounded-full"
-          onClick={() => {
-            if (!editing) setDescription(currentDescription);
-            setEditing(!editing);
-          }}
-        >
-          {editing ? <Trans>Cancel</Trans> : <Trans>Edit</Trans>}
-        </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="rounded-full"
+            onClick={() => {
+              if (!editing) setDescription(currentDescription);
+              setEditing(!editing);
+            }}
+          >
+            {editing ? <Trans>Cancel</Trans> : <Trans>Edit</Trans>}
+          </Button>
         )}
       </CardHeader>
       <CardContent>
@@ -169,7 +169,13 @@ const DescriptionSection = ({
 
 // --- Environments Section ---
 
-const EnvironmentsSection = ({ projectId, readOnly }: { projectId: string; readOnly?: boolean }) => {
+const EnvironmentsSection = ({
+  projectId,
+  readOnly,
+}: {
+  projectId: string;
+  readOnly?: boolean;
+}) => {
   const { data: environments = [] } = useEnvironments(projectId);
   const createEnv = useCreateEnvironment();
   const deleteEnv = useDeleteEnvironment();
@@ -286,14 +292,14 @@ const EnvironmentsSection = ({ projectId, readOnly }: { projectId: string; readO
           <Trans>Environments</Trans>
         </CardTitle>
         {!readOnly && (
-        <Button
-          size="sm"
-          className="rounded-full gap-2"
-          onClick={() => setShowForm(true)}
-        >
-          <Plus className="h-3.5 w-3.5" />
-          <Trans>Add</Trans>
-        </Button>
+          <Button
+            size="sm"
+            className="rounded-full gap-2"
+            onClick={() => setShowForm(true)}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <Trans>Add</Trans>
+          </Button>
         )}
       </CardHeader>
       <CardContent className="space-y-3">
@@ -360,47 +366,47 @@ const EnvironmentsSection = ({ projectId, readOnly }: { projectId: string; readO
                 </div>
                 <div className="flex items-center gap-1">
                   {!readOnly && (
-                  <>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon-xs"
-                        onClick={() => handleClone(env.id)}
-                        aria-label={t`Clone`}
-                      >
-                        <Copy className="h-3.5 w-3.5" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>{t`Clone environment`}</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon-xs"
-                        onClick={() => setEditingEnvId(env.id)}
-                        aria-label={t`Edit`}
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>{t`Edit`}</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon-xs"
-                        onClick={() => handleDelete(env.id)}
-                        aria-label={t`Delete`}
-                      >
-                        <Trash2 className="h-3.5 w-3.5 text-destructive" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>{t`Delete`}</TooltipContent>
-                  </Tooltip>
-                  </>
+                    <>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() => handleClone(env.id)}
+                            aria-label={t`Clone`}
+                          >
+                            <Copy className="h-3.5 w-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{t`Clone environment`}</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() => setEditingEnvId(env.id)}
+                            aria-label={t`Edit`}
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{t`Edit`}</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() => handleDelete(env.id)}
+                            aria-label={t`Delete`}
+                          >
+                            <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{t`Delete`}</TooltipContent>
+                      </Tooltip>
+                    </>
                   )}
                 </div>
               </div>
@@ -414,7 +420,13 @@ const EnvironmentsSection = ({ projectId, readOnly }: { projectId: string; readO
 
 // --- Danger Zone ---
 
-const DangerZone = ({ projectId }: { projectId: string }) => {
+const DangerZone = ({
+  projectId,
+  projectName,
+}: {
+  projectId: string;
+  projectName: string;
+}) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const deleteProject = useDeleteProject();
   const setSelectedProjectId = useProjectStore((s) => s.setSelectedProjectId);
@@ -425,13 +437,16 @@ const DangerZone = ({ projectId }: { projectId: string }) => {
       setTimeout(() => setConfirmDelete(false), 5000);
       return;
     }
-    deleteProject.mutate(projectId, {
-      onSuccess: () => {
-        setSelectedProjectId(null);
-        toast.success(t`Project deleted`);
+    deleteProject.mutate(
+      { projectId, projectName },
+      {
+        onSuccess: () => {
+          setSelectedProjectId(null);
+          toast.success(t`Project deleted`);
+        },
+        onError: () => toast.error(t`Failed to delete project`),
       },
-      onError: () => toast.error(t`Failed to delete project`),
-    });
+    );
   };
 
   return (
@@ -557,7 +572,12 @@ const SettingsPage = () => {
 
       <EnvironmentsSection projectId={selectedProjectId} readOnly={isViewer} />
 
-      {isAdmin && <DangerZone projectId={selectedProjectId} />}
+      {isAdmin && (
+        <DangerZone
+          projectId={selectedProjectId}
+          projectName={selectedProject.name}
+        />
+      )}
     </PageLayout>
   );
 };

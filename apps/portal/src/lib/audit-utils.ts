@@ -69,6 +69,13 @@ export function getResourceCategory(path: string): ResourceCategory {
   if (path.includes("apiKeys") || path.includes("clientIds")) return "api_key";
   if (path.startsWith("project/") || path === "project") return "project";
   if (path.includes("team") || path.includes("members")) return "team";
+  // bare "environments/name" = environment resource (show under project)
+  if (
+    path.startsWith("environments/") &&
+    !path.includes("/configs/") &&
+    !path.includes("/apiKeys/")
+  )
+    return "project";
   return "other";
 }
 
@@ -80,8 +87,10 @@ export function formatResourceName(path: string): string {
     const keyId = parts[parts.length - 1];
     return keyId.startsWith("cid_") ? `API key …${keyId.slice(-6)}` : keyId;
   }
+  // "environments/production" (create/delete env, no sub-resource)
+  if (parts[0] === "environments" && parts.length === 2) return parts[1];
   if (parts[0] === "segments") return parts[1] ?? "segment";
-  if (parts[0] === "project") return "project settings";
+  if (parts[0] === "project") return parts[1] ?? "project";
   if (parts[0] === "team" && parts[1] === "members")
     return parts[2] ?? "member";
   if (parts[0] === "team" && parts[1] === "invites")
