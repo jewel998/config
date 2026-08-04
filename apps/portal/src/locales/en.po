@@ -469,8 +469,8 @@ msgid "e.g. small, medium, large"
 msgstr "e.g. small, medium, large"
 
 #: src/components/rule-builder.tsx:227
-msgid "e.g., plan, country, email, userId"
-msgstr "e.g., plan, country, email, userId"
+msgid "e.g., plan, country, email"
+msgstr "e.g., plan, country, email"
 
 #: src/routes/configs.tsx:588
 #: src/routes/configs.tsx:593
@@ -725,10 +725,6 @@ msgstr "Get started with a template or create your own."
 msgid "Go to Environments"
 msgstr "Go to Environments"
 
-#: src/components/rule-builder.tsx:290
-msgid "Group"
-msgstr "Group"
-
 #: src/routes/api-keys.tsx:66
 msgid "Hide"
 msgstr "Hide"
@@ -789,10 +785,6 @@ msgstr "Language"
 #: src/routes/preferences.tsx:157
 msgid "Language & Region"
 msgstr "Language & Region"
-
-#: src/components/section-help-text.tsx:36
-msgid "Learn more"
-msgstr "Learn more"
 
 #: src/components/onboarding-stepper.tsx:104
 msgid "Let's get you set up in a few quick steps."
@@ -981,10 +973,6 @@ msgstr "Not set"
 msgid "Numeric value"
 msgstr "Numeric value"
 
-#: src/components/section-help-text.tsx:41
-msgid "Open documentation for this section"
-msgstr "Open documentation for this section"
-
 #: src/components/config-form-modal.tsx:343
 msgid "optional"
 msgstr "optional"
@@ -1141,6 +1129,10 @@ msgstr "Regex pattern"
 #: src/components/schedule-ui.tsx:73
 msgid "Remove"
 msgstr "Remove"
+
+#: src/components/rule-builder.tsx:293
+msgid "Remove group"
+msgstr "Remove group"
 
 #: src/routes/team.tsx:81
 msgid "Remove this member from the project?"

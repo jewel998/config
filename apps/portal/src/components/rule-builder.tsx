@@ -174,7 +174,7 @@ export const RuleBuilder = ({ rules, onSave, disabled }: RuleBuilderProps) => {
                 type="number"
                 min={1}
                 max={1000}
-                className="w-20 h-8 text-xs"
+                className="w-24 h-9 text-sm"
                 value={rule.priority}
                 onChange={(e) =>
                   updateRule(rule.id, { priority: Number(e.target.value) })
@@ -183,7 +183,7 @@ export const RuleBuilder = ({ rules, onSave, disabled }: RuleBuilderProps) => {
                 placeholder={t`Priority`}
               />
               <Input
-                className="flex-1 h-8 text-xs"
+                className="flex-1 h-9 text-sm"
                 value={String(rule.value)}
                 onChange={(e) => updateRule(rule.id, { value: e.target.value })}
                 disabled={disabled}
@@ -200,23 +200,23 @@ export const RuleBuilder = ({ rules, onSave, disabled }: RuleBuilderProps) => {
               )}
             </div>
             {rule.conditions.map((group, gi) => (
-              <div key={gi} className="ml-4 space-y-1.5">
+              <div key={gi} className="ml-4 space-y-2">
                 {gi > 0 && (
-                  <span className="text-[10px] font-medium text-muted-foreground uppercase">
+                  <span className="text-xs font-medium text-muted-foreground uppercase">
                     OR
                   </span>
                 )}
-                <div className="rounded border bg-muted/30 p-2 space-y-1.5">
+                <div className="rounded-lg border bg-muted/30 p-3 space-y-2">
                   {group.predicates.map((pred, pi) => (
-                    <div key={pi} className="flex items-center gap-1.5">
+                    <div key={pi} className="flex items-center gap-2">
                       {pi > 0 && (
-                        <span className="text-[9px] text-muted-foreground w-6">
+                        <span className="text-xs text-muted-foreground w-8 shrink-0">
                           AND
                         </span>
                       )}
-                      {pi === 0 && <span className="w-6" />}
+                      {pi === 0 && <span className="w-8 shrink-0" />}
                       <Input
-                        className="flex-1 h-7 text-xs"
+                        className="flex-1 h-9 text-sm"
                         value={pred.attribute}
                         onChange={(e) =>
                           updatePredicate(rule.id, gi, pi, {
@@ -224,7 +224,7 @@ export const RuleBuilder = ({ rules, onSave, disabled }: RuleBuilderProps) => {
                           })
                         }
                         disabled={disabled}
-                        placeholder={t`e.g., plan, country, email, userId`}
+                        placeholder={t`e.g., plan, country, email`}
                         list="common-attributes"
                       />
                       <Select
@@ -236,19 +236,22 @@ export const RuleBuilder = ({ rules, onSave, disabled }: RuleBuilderProps) => {
                         }
                         disabled={disabled}
                       >
-                        <SelectTrigger className="w-40 h-7 text-[10px]">
+                        <SelectTrigger className="w-36 h-9 text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           {OPERATORS.map((op) => (
-                            <SelectItem key={op} value={op} className="text-xs">
-                              {op} — {OPERATOR_DESCRIPTIONS[op]}
+                            <SelectItem key={op} value={op} className="text-sm">
+                              <span className="font-medium">{op}</span>
+                              <span className="text-muted-foreground ml-1.5 text-xs">
+                                {OPERATOR_DESCRIPTIONS[op]}
+                              </span>
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                       <Input
-                        className="flex-1 h-7 text-xs"
+                        className="flex-1 h-9 text-sm"
                         value={String(pred.value)}
                         onChange={(e) =>
                           updatePredicate(rule.id, gi, pi, {
@@ -264,7 +267,7 @@ export const RuleBuilder = ({ rules, onSave, disabled }: RuleBuilderProps) => {
                           size="icon-xs"
                           onClick={() => removePredicate(rule.id, gi, pi)}
                         >
-                          <Trash2 className="h-3 w-3 text-muted-foreground" />
+                          <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
                         </Button>
                       )}
                     </div>
@@ -274,20 +277,20 @@ export const RuleBuilder = ({ rules, onSave, disabled }: RuleBuilderProps) => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-6 text-[10px]"
+                        className="h-7 text-xs"
                         onClick={() => addPredicate(rule.id, gi)}
                       >
-                        <Plus className="h-3 w-3 mr-0.5" />
+                        <Plus className="h-3.5 w-3.5 mr-1" />
                         AND
                       </Button>
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-6 text-[10px] text-destructive"
+                        className="h-7 text-xs text-destructive"
                         onClick={() => removeGroup(rule.id, gi)}
                       >
-                        <Trash2 className="h-3 w-3 mr-0.5" />
-                        <Trans>Group</Trans>
+                        <Trash2 className="h-3.5 w-3.5 mr-1" />
+                        <Trans>Remove group</Trans>
                       </Button>
                     </div>
                   )}
@@ -298,10 +301,10 @@ export const RuleBuilder = ({ rules, onSave, disabled }: RuleBuilderProps) => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="ml-4 h-6 text-[10px]"
+                className="ml-4 h-7 text-xs"
                 onClick={() => addGroup(rule.id)}
               >
-                <Plus className="h-3 w-3 mr-0.5" />
+                <Plus className="h-3.5 w-3.5 mr-1" />
                 OR Group
               </Button>
             )}

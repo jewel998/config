@@ -70,7 +70,7 @@ export const TemplateBar = ({
     <>
       <div className="flex items-center gap-2 px-3 py-2 overflow-x-auto">
         <Sparkles className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-        <span className="text-[10px] text-muted-foreground font-medium uppercase shrink-0">
+        <span className="text-xs text-muted-foreground font-medium uppercase shrink-0">
           <Trans>Templates</Trans>
         </span>
         {CONFIG_TEMPLATES.map((tmpl) => (
@@ -79,7 +79,7 @@ export const TemplateBar = ({
               <Button
                 variant="outline"
                 size="sm"
-                className="h-7 text-[10px] rounded-full gap-1 shrink-0"
+                className="h-8 text-xs rounded-full gap-1.5 shrink-0"
                 disabled={!canEdit}
                 onClick={() => handleClick(tmpl.id)}
               >

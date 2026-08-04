@@ -17,29 +17,24 @@ export const SECTION_HELP: Record<SectionId, SectionHelpConfig> = {
     description:
       "Route specific config values to users based on attributes like plan, country, or custom properties.",
     tip: "Rules are evaluated top-to-bottom by priority. First match wins.",
-    learnMoreUrl: "/docs/targeting",
   },
   rollout: {
     description:
       "Gradually roll out this config value to a percentage of users.",
     tip: "Rollout uses consistent hashing — the same user always gets the same result.",
-    learnMoreUrl: "/docs/rollout",
   },
   overrides: {
     description:
       "Force a specific value for individual user IDs, bypassing all other rules.",
-    learnMoreUrl: "/docs/overrides",
   },
   schedule: {
     description:
       "Automatically change this config's value at a future date and time.",
-    learnMoreUrl: "/docs/schedule",
   },
   prerequisites: {
     description:
       "Require other flags to have specific values before this config takes effect.",
     tip: "Circular dependencies are blocked automatically.",
-    learnMoreUrl: "/docs/prerequisites",
   },
 };
 
