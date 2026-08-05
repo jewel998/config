@@ -37,7 +37,7 @@ declare module "@tanstack/react-router" {
   }
 }
 
-// Initialize auth listener (runs once)
+// Initialize auth listener — persists for app lifetime (SPA never unmounts)
 useAuthStore.getState()._initialize();
 
 const root = document.getElementById("root");

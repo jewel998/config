@@ -17,7 +17,7 @@ import {
   Users,
   UsersRound,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 
 import { EnvironmentSwitcher } from "@/components/environment-switcher";
@@ -49,6 +49,7 @@ import {
 import { useTheme } from "@/lib/theme";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
+import { useProjects } from "@/hooks/use-projects";
 import { cn } from "@/lib/utils";
 
 const ThemeToggle = () => {
@@ -238,10 +239,27 @@ const TabNav = () => {
 
 const AuthenticatedLayout = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
+  const { data: projects } = useProjects();
+
+  useEffect(() => {
+    if (
+      projects &&
+      selectedProjectId &&
+      !projects.find((p) => p.id === selectedProjectId)
+    ) {
+      useProjectStore.getState().setSelectedProjectId(null);
+    }
+  }, [projects, selectedProjectId]);
 
   return (
     <>
       <div className="flex min-h-screen flex-col">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:rounded-lg focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:ring-2 focus:ring-ring"
+        >
+          Skip to content
+        </a>
         <TopBar />
         {/* Always render TabNav container to avoid CLS when project gets selected.
             The nav collapses to 0 height when hidden via CSS instead of unmounting. */}
@@ -253,7 +271,10 @@ const AuthenticatedLayout = () => {
         >
           <TabNav />
         </div>
-        <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
+        <main
+          id="main-content"
+          className="flex-1 overflow-auto p-4 md:p-6 lg:p-8"
+        >
           <ErrorBoundary>
             <Outlet />
           </ErrorBoundary>
