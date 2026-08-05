@@ -13,11 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/routes/__root.tsx:294
+#: src/routes/__root.tsx:301
 msgid "Access Denied"
 msgstr "访问被拒绝"
 
-#: src/routes/__root.tsx:424
+#: src/routes/__root.tsx:431
 msgid "Access is by request only. Rights of Admission Reserved."
 msgstr ""
 
@@ -296,11 +296,11 @@ msgstr ""
 msgid "Config key (e.g. feature.enabled)"
 msgstr ""
 
-#: src/routes/__root.tsx:339
+#: src/routes/__root.tsx:346
 msgid "Config Portal"
 msgstr "配置门户"
 
-#: src/routes/__root.tsx:372
+#: src/routes/__root.tsx:379
 msgid "Config publishing"
 msgstr ""
 
@@ -593,7 +593,7 @@ msgstr ""
 msgid "Environment updated"
 msgstr ""
 
-#: src/routes/__root.tsx:361
+#: src/routes/__root.tsx:368
 #: src/routes/environments.tsx:165
 #: src/routes/settings.tsx:292
 msgid "Environments"
@@ -743,7 +743,7 @@ msgstr ""
 msgid "Feature Flags"
 msgstr ""
 
-#: src/routes/__root.tsx:380
+#: src/routes/__root.tsx:387
 msgid "Firebase sync"
 msgstr ""
 
@@ -897,7 +897,7 @@ msgstr ""
 msgid "More actions"
 msgstr ""
 
-#: src/routes/__root.tsx:356
+#: src/routes/__root.tsx:363
 msgid "Multi-project scoping"
 msgstr ""
 
@@ -1062,7 +1062,7 @@ msgstr ""
 msgid "Pending Invites"
 msgstr ""
 
-#: src/routes/__root.tsx:364
+#: src/routes/__root.tsx:371
 msgid "Per-env overrides"
 msgstr ""
 
@@ -1168,7 +1168,7 @@ msgstr ""
 msgid "Project Settings"
 msgstr "项目设置"
 
-#: src/routes/__root.tsx:353
+#: src/routes/__root.tsx:360
 msgid "Projects"
 msgstr "项目"
 
@@ -1176,11 +1176,11 @@ msgstr "项目"
 msgid "Projects group environments and configurations together."
 msgstr ""
 
-#: src/routes/__root.tsx:413
+#: src/routes/__root.tsx:420
 msgid "Protected by Firebase Authentication."
 msgstr ""
 
-#: src/routes/__root.tsx:377
+#: src/routes/__root.tsx:384
 msgid "Real-time"
 msgstr "实时"
 
@@ -1413,16 +1413,16 @@ msgstr ""
 msgid "Side by side"
 msgstr ""
 
-#: src/routes/__root.tsx:342
+#: src/routes/__root.tsx:349
 msgid "Sign in to manage your configuration platform."
 msgstr ""
 
-#: src/routes/__root.tsx:409
+#: src/routes/__root.tsx:416
 msgid "Sign in with Google"
 msgstr "使用 Google 登录"
 
 #: src/routes/__root.tsx:165
-#: src/routes/__root.tsx:313
+#: src/routes/__root.tsx:320
 msgid "Sign out"
 msgstr "退出登录"
 
@@ -1555,7 +1555,7 @@ msgstr ""
 msgid "Track all configuration changes for SOC2 compliance."
 msgstr ""
 
-#: src/routes/__root.tsx:305
+#: src/routes/__root.tsx:312
 msgid "Try a different account"
 msgstr ""
 
@@ -1657,7 +1657,7 @@ msgstr ""
 msgid "Value served when rule matches"
 msgstr ""
 
-#: src/routes/__root.tsx:369
+#: src/routes/__root.tsx:376
 msgid "Versioned"
 msgstr ""
 
@@ -1694,6 +1694,6 @@ msgstr ""
 msgid "You're all set!"
 msgstr ""
 
-#: src/routes/__root.tsx:297
+#: src/routes/__root.tsx:304
 msgid "Your account is not authorized to access this portal. Contact the project owner to request access."
 msgstr ""
