@@ -1,6 +1,7 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ErrorBoundary } from "@/components/error-boundary";
 import {
   ChevronDown,
   ChevronLeft,
@@ -444,7 +445,7 @@ const ConfigsPage = () => {
 
       {/* Table */}
       {envId && (
-        <>
+        <ErrorBoundary>
           {configsLoading ? (
             <div className="space-y-3">
               {Array.from({ length: 5 }).map((_, i) => (
@@ -781,7 +782,7 @@ const ConfigsPage = () => {
               </div>
             </>
           )}
-        </>
+        </ErrorBoundary>
       )}
       <Dialog
         open={!!deleteConfirmKey}
