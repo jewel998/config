@@ -13,6 +13,7 @@ import { EmptyState } from "@/components/empty-state";
 import { EnvironmentForm } from "@/components/environment-form";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
+import { WebhookSettings } from "@/components/webhook-settings";
 import { SegmentedControl } from "@/components/segmented-control";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -571,6 +572,8 @@ const SettingsPage = () => {
       />
 
       <EnvironmentsSection projectId={selectedProjectId} readOnly={isViewer} />
+
+      <WebhookSettings projectId={selectedProjectId} />
 
       {isAdmin && (
         <DangerZone

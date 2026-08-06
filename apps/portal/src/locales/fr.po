@@ -38,13 +38,18 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+#: src/components/webhook-card.tsx:39
+msgid "Active"
+msgstr ""
+
 #: src/components/audit-log-viewer.tsx:112
 msgid "Activity"
 msgstr ""
 
 #: src/components/add-member-modal.tsx:115
 #: src/components/rbac-manager.tsx:101
-#: src/routes/settings.tsx:301
+#: src/components/webhook-settings.tsx:65
+#: src/routes/settings.tsx:302
 msgid "Add"
 msgstr ""
 
@@ -54,6 +59,10 @@ msgstr ""
 
 #: src/components/config-form-modal.tsx:218
 msgid "Add a new configuration entry."
+msgstr ""
+
+#: src/components/webhook-settings.tsx:77
+msgid "Add a webhook to receive notifications when configs change."
 msgstr ""
 
 #: src/components/onboarding-stepper.tsx:80
@@ -88,6 +97,10 @@ msgstr ""
 
 #: src/components/add-member-modal.tsx:64
 msgid "Add Team Member"
+msgstr ""
+
+#: src/components/webhook-form-modal.tsx:60
+msgid "Add Webhook"
 msgstr ""
 
 #: src/components/audit-diff-viewer.tsx:86
@@ -202,11 +215,13 @@ msgstr ""
 #: src/components/segment-manager.tsx:201
 #: src/components/segment-manager.tsx:245
 #: src/components/template-bar.tsx:119
+#: src/components/webhook-form-modal.tsx:132
+#: src/components/webhook-settings.tsx:127
 #: src/routes/api-keys.tsx:202
 #: src/routes/compare.tsx:605
 #: src/routes/configs.tsx:809
 #: src/routes/environments.tsx:254
-#: src/routes/settings.tsx:113
+#: src/routes/settings.tsx:114
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -246,11 +261,11 @@ msgstr ""
 msgid "Click to see which configs use this segment"
 msgstr ""
 
-#: src/routes/settings.tsx:376
+#: src/routes/settings.tsx:377
 msgid "Clone"
 msgstr ""
 
-#: src/routes/settings.tsx:381
+#: src/routes/settings.tsx:382
 msgid "Clone environment"
 msgstr ""
 
@@ -320,15 +335,19 @@ msgstr ""
 msgid "Configs"
 msgstr "Configurations"
 
-#: src/routes/settings.tsx:221
+#: src/routes/settings.tsx:222
 msgid "Configs are being copied..."
+msgstr ""
+
+#: src/components/webhook-form-modal.tsx:61
+msgid "Configure an HTTP endpoint to receive notifications."
 msgstr ""
 
 #: src/components/gdpr-panel.tsx:87
 msgid "Confirm Delete"
 msgstr ""
 
-#: src/routes/settings.tsx:475
+#: src/routes/settings.tsx:476
 msgid "Confirm Delete?"
 msgstr ""
 
@@ -358,9 +377,10 @@ msgstr ""
 #: src/components/onboarding-stepper.tsx:183
 #: src/components/onboarding-stepper.tsx:209
 #: src/components/segment-manager.tsx:194
+#: src/components/webhook-form-modal.tsx:129
 #: src/routes/api-keys.tsx:191
 #: src/routes/environments.tsx:241
-#: src/routes/settings.tsx:311
+#: src/routes/settings.tsx:312
 msgid "Create"
 msgstr "Créer"
 
@@ -389,7 +409,7 @@ msgid "Create your first project"
 msgstr ""
 
 #: src/components/audit-log-viewer.tsx:152
-#: src/routes/settings.tsx:549
+#: src/routes/settings.tsx:550
 msgid "Created"
 msgstr "Créé"
 
@@ -406,7 +426,7 @@ msgid "Customize your portal experience."
 msgstr ""
 
 #: src/routes/preferences.tsx:324
-#: src/routes/settings.tsx:456
+#: src/routes/settings.tsx:457
 msgid "Danger Zone"
 msgstr "Zone de danger"
 
@@ -436,6 +456,8 @@ msgstr ""
 
 #: src/components/gdpr-panel.tsx:87
 #: src/components/segment-manager.tsx:252
+#: src/components/webhook-card.tsx:65
+#: src/components/webhook-settings.tsx:128
 #: src/routes/api-keys.tsx:307
 #: src/routes/api-keys.tsx:312
 #: src/routes/configs.tsx:642
@@ -444,16 +466,21 @@ msgstr ""
 #: src/routes/configs.tsx:818
 #: src/routes/environments.tsx:302
 #: src/routes/environments.tsx:313
-#: src/routes/settings.tsx:402
-#: src/routes/settings.tsx:407
+#: src/routes/settings.tsx:403
+#: src/routes/settings.tsx:408
 msgid "Delete"
 msgstr "Supprimer"
+
+#. placeholder {0}: deletingWebhook?.name
+#: src/components/webhook-settings.tsx:123
+msgid "Delete \"{0}\"? This will also remove all delivery history."
+msgstr ""
 
 #: src/routes/configs.tsx:794
 msgid "Delete in production?"
 msgstr ""
 
-#: src/routes/settings.tsx:477
+#: src/routes/settings.tsx:478
 msgid "Delete Project"
 msgstr "Supprimer le projet"
 
@@ -461,11 +488,15 @@ msgstr "Supprimer le projet"
 msgid "Delete segment?"
 msgstr ""
 
+#: src/components/webhook-settings.tsx:120
+msgid "Delete webhook?"
+msgstr ""
+
 #: src/components/audit-log-viewer.tsx:154
 msgid "Deleted"
 msgstr ""
 
-#: src/routes/settings.tsx:461
+#: src/routes/settings.tsx:462
 msgid "Deleting a project is irreversible. All environments, configs, and API keys will become inaccessible."
 msgstr ""
 
@@ -483,7 +514,7 @@ msgstr ""
 
 #: src/components/segment-edit-modal.tsx:104
 #: src/components/segment-manager.tsx:178
-#: src/routes/settings.tsx:101
+#: src/routes/settings.tsx:102
 msgid "Description"
 msgstr ""
 
@@ -527,11 +558,16 @@ msgstr ""
 msgid "e.g., plan, country, email"
 msgstr ""
 
+#: src/components/webhook-form-modal.tsx:67
+msgid "e.g., Slack #deployments"
+msgstr ""
+
+#: src/components/webhook-card.tsx:62
 #: src/routes/configs.tsx:623
 #: src/routes/configs.tsx:628
-#: src/routes/settings.tsx:113
-#: src/routes/settings.tsx:389
-#: src/routes/settings.tsx:394
+#: src/routes/settings.tsx:114
+#: src/routes/settings.tsx:390
+#: src/routes/settings.tsx:395
 msgid "Edit"
 msgstr ""
 
@@ -543,12 +579,20 @@ msgstr ""
 msgid "Edit Segment"
 msgstr ""
 
+#: src/components/webhook-form-modal.tsx:60
+msgid "Edit Webhook"
+msgstr ""
+
 #: src/routes/preferences.tsx:293
 msgid "Email"
 msgstr "E-mail"
 
 #: src/components/add-member-modal.tsx:70
 msgid "Email address"
+msgstr ""
+
+#: src/components/webhook-card.tsx:55
+msgid "Enable"
 msgstr ""
 
 #: src/components/config-form-modal.tsx:295
@@ -563,12 +607,12 @@ msgstr ""
 msgid "Enter valid JSON"
 msgstr ""
 
-#: src/routes/settings.tsx:220
+#: src/routes/settings.tsx:221
 msgid "Environment cloned"
 msgstr ""
 
 #: src/routes/environments.tsx:110
-#: src/routes/settings.tsx:198
+#: src/routes/settings.tsx:199
 msgid "Environment created"
 msgstr ""
 
@@ -577,7 +621,7 @@ msgid "Environment created!"
 msgstr ""
 
 #: src/routes/environments.tsx:131
-#: src/routes/settings.tsx:265
+#: src/routes/settings.tsx:266
 msgid "Environment deleted"
 msgstr ""
 
@@ -589,13 +633,14 @@ msgstr ""
 msgid "Environment name (e.g. production, staging)"
 msgstr ""
 
-#: src/routes/settings.tsx:252
+#: src/routes/settings.tsx:253
 msgid "Environment updated"
 msgstr ""
 
+#: src/components/webhook-form-modal.tsx:115
 #: src/routes/__root.tsx:368
 #: src/routes/environments.tsx:165
-#: src/routes/settings.tsx:292
+#: src/routes/settings.tsx:293
 msgid "Environments"
 msgstr "Environnements"
 
@@ -605,6 +650,10 @@ msgstr ""
 
 #: src/components/onboarding-stepper.tsx:82
 msgid "Environments define deployment targets like production or staging."
+msgstr ""
+
+#: src/components/webhook-form-modal.tsx:91
+msgid "Event types"
 msgstr ""
 
 #: src/components/gdpr-panel.tsx:68
@@ -635,7 +684,7 @@ msgstr ""
 msgid "Failed to apply template"
 msgstr ""
 
-#: src/routes/settings.tsx:233
+#: src/routes/settings.tsx:234
 msgid "Failed to clone environment"
 msgstr ""
 
@@ -645,7 +694,7 @@ msgstr ""
 
 #: src/components/onboarding-stepper.tsx:60
 #: src/routes/environments.tsx:113
-#: src/routes/settings.tsx:200
+#: src/routes/settings.tsx:201
 msgid "Failed to create environment"
 msgstr ""
 
@@ -658,12 +707,16 @@ msgstr ""
 msgid "Failed to create segment"
 msgstr ""
 
+#: src/hooks/use-webhook-mutations.ts:51
+msgid "Failed to create webhook"
+msgstr ""
+
 #: src/routes/configs.tsx:221
 msgid "Failed to delete config"
 msgstr ""
 
 #: src/routes/environments.tsx:134
-#: src/routes/settings.tsx:283
+#: src/routes/settings.tsx:284
 msgid "Failed to delete environment"
 msgstr ""
 
@@ -671,12 +724,16 @@ msgstr ""
 msgid "Failed to delete key"
 msgstr ""
 
-#: src/routes/settings.tsx:447
+#: src/routes/settings.tsx:448
 msgid "Failed to delete project"
 msgstr ""
 
 #: src/routes/segments.tsx:81
 msgid "Failed to delete segment"
+msgstr ""
+
+#: src/hooks/use-webhook-mutations.ts:86
+msgid "Failed to delete webhook"
 msgstr ""
 
 #: src/routes/api-keys.tsx:118
@@ -715,11 +772,15 @@ msgstr ""
 msgid "Failed to send invite"
 msgstr ""
 
+#: src/hooks/use-test-webhook.ts:28
+msgid "Failed to send test webhook"
+msgstr ""
+
 #: src/routes/compare.tsx:264
 msgid "Failed to sync configs"
 msgstr ""
 
-#: src/routes/settings.tsx:254
+#: src/routes/settings.tsx:255
 msgid "Failed to update environment"
 msgstr ""
 
@@ -739,6 +800,10 @@ msgstr ""
 msgid "Failed to update segment"
 msgstr ""
 
+#: src/hooks/use-webhook-mutations.ts:77
+msgid "Failed to update webhook"
+msgstr ""
+
 #: src/routes/configs.tsx:478
 msgid "Feature Flags"
 msgstr ""
@@ -749,6 +814,10 @@ msgstr ""
 
 #: src/components/prerequisite-ui.tsx:50
 msgid "Flag key"
+msgstr ""
+
+#: src/components/webhook-form-modal.tsx:79
+msgid "Format"
 msgstr ""
 
 #: src/routes/configs.tsx:404
@@ -845,6 +914,11 @@ msgstr "Langue et région"
 msgid "Let's get you set up in a few quick steps."
 msgstr ""
 
+#: src/components/webhook-delivery-log.tsx:16
+#: src/components/webhook-settings.tsx:71
+msgid "Loading..."
+msgstr ""
+
 #: src/routes/configs.tsx:699
 msgid "Lock"
 msgstr ""
@@ -865,7 +939,7 @@ msgstr ""
 msgid "Manage feature flags and configuration values."
 msgstr ""
 
-#: src/routes/settings.tsx:532
+#: src/routes/settings.tsx:533
 msgid "Manage project configuration and team access."
 msgstr ""
 
@@ -903,6 +977,7 @@ msgstr ""
 
 #: src/components/segment-edit-modal.tsx:82
 #: src/components/segment-manager.tsx:166
+#: src/components/webhook-form-modal.tsx:66
 msgid "Name"
 msgstr ""
 
@@ -947,12 +1022,20 @@ msgstr ""
 msgid "No configs yet"
 msgstr ""
 
-#: src/routes/settings.tsx:162
+#: src/components/webhook-delivery-log.tsx:17
+msgid "No deliveries yet"
+msgstr ""
+
+#: src/routes/settings.tsx:163
 msgid "No description yet."
 msgstr ""
 
 #: src/routes/compare.tsx:425
 msgid "No differences found between these environments."
+msgstr ""
+
+#: src/components/webhook-form-modal.tsx:122
+msgid "No environments configured"
 msgstr ""
 
 #: src/components/environment-switcher.tsx:62
@@ -963,7 +1046,7 @@ msgstr ""
 msgid "No environments yet"
 msgstr "Pas encore d'environnements"
 
-#: src/routes/settings.tsx:317
+#: src/routes/settings.tsx:318
 msgid "No environments yet."
 msgstr ""
 
@@ -1016,6 +1099,10 @@ msgstr "Aucun fuseau horaire trouvé."
 msgid "No user found with this email. Send them an invite?"
 msgstr ""
 
+#: src/components/webhook-settings.tsx:75
+msgid "No webhooks configured"
+msgstr ""
+
 #: src/routes/environments.tsx:337
 msgid "None configured"
 msgstr ""
@@ -1026,6 +1113,10 @@ msgstr "Non défini"
 
 #: src/components/config-form-modal.tsx:307
 msgid "Numeric value"
+msgstr ""
+
+#: src/hooks/use-webhook-mutations.ts:34
+msgid "Operation failed"
 msgstr ""
 
 #: src/components/rule-builder.tsx:272
@@ -1049,10 +1140,18 @@ msgid "Overwrite existing data?"
 msgstr ""
 
 #: src/components/rbac-manager.tsx:128
-#: src/routes/settings.tsx:560
+#: src/routes/settings.tsx:561
 #: src/routes/team.tsx:260
 msgid "Owner"
 msgstr "Propriétaire"
+
+#: src/components/webhook-card.tsx:55
+msgid "Pause"
+msgstr ""
+
+#: src/components/webhook-card.tsx:39
+msgid "Paused"
+msgstr ""
 
 #: src/routes/team.tsx:309
 msgid "Pending"
@@ -1102,7 +1201,7 @@ msgstr ""
 msgid "Prerequisites saved"
 msgstr ""
 
-#: src/routes/settings.tsx:125
+#: src/routes/settings.tsx:126
 msgid "Preview"
 msgstr ""
 
@@ -1114,7 +1213,7 @@ msgstr ""
 msgid "Priority"
 msgstr ""
 
-#: src/routes/settings.tsx:349
+#: src/routes/settings.tsx:350
 msgid "Production"
 msgstr ""
 
@@ -1138,15 +1237,15 @@ msgstr ""
 msgid "Project created successfully!"
 msgstr ""
 
-#: src/routes/settings.tsx:445
+#: src/routes/settings.tsx:446
 msgid "Project deleted"
 msgstr ""
 
-#: src/routes/settings.tsx:133
+#: src/routes/settings.tsx:134
 msgid "Project description (markdown supported)"
 msgstr ""
 
-#: src/routes/settings.tsx:542
+#: src/routes/settings.tsx:543
 msgid "Project ID"
 msgstr "ID du projet"
 
@@ -1155,16 +1254,16 @@ msgstr "ID du projet"
 msgid "Project name"
 msgstr ""
 
-#: src/routes/settings.tsx:538
+#: src/routes/settings.tsx:539
 msgid "Project Name"
 msgstr "Nom du projet"
 
-#: src/routes/settings.tsx:517
+#: src/routes/settings.tsx:518
 msgid "Project not found."
 msgstr ""
 
 #: src/components/command-palette.tsx:113
-#: src/routes/settings.tsx:530
+#: src/routes/settings.tsx:531
 msgid "Project Settings"
 msgstr "Paramètres du projet"
 
@@ -1203,6 +1302,10 @@ msgstr ""
 
 #: src/components/prerequisite-ui.tsx:54
 msgid "Required value"
+msgstr ""
+
+#: src/components/webhook-form-modal.tsx:103
+msgid "Resource categories"
 msgstr ""
 
 #: src/components/rule-builder.tsx:208
@@ -1246,7 +1349,8 @@ msgstr ""
 #: src/components/environment-form.tsx:87
 #: src/components/rollout-section.tsx:101
 #: src/components/segment-edit-modal.tsx:133
-#: src/routes/settings.tsx:150
+#: src/components/webhook-form-modal.tsx:129
+#: src/routes/settings.tsx:151
 msgid "Save"
 msgstr ""
 
@@ -1358,7 +1462,7 @@ msgstr ""
 msgid "Select a project to view environments."
 msgstr ""
 
-#: src/routes/settings.tsx:500
+#: src/routes/settings.tsx:501
 msgid "Select a project to view settings."
 msgstr ""
 
@@ -1426,12 +1530,20 @@ msgstr "Se connecter avec Google"
 msgid "Sign out"
 msgstr "Se déconnecter"
 
+#: src/components/webhook-form-modal.tsx:84
+msgid "Slack Block Kit"
+msgstr ""
+
 #: src/routes/compare.tsx:303
 msgid "Source"
 msgstr ""
 
 #: src/routes/configs.tsx:406
 msgid "Stale"
+msgstr ""
+
+#: src/components/webhook-form-modal.tsx:83
+msgid "Standard JSON"
 msgstr ""
 
 #: src/components/onboarding-stepper.tsx:90
@@ -1511,11 +1623,25 @@ msgstr ""
 msgid "Templates"
 msgstr ""
 
+#: src/components/webhook-card.tsx:59
+msgid "Test"
+msgstr ""
+
+#. placeholder {0}: data.error ?? "Unknown error"
+#: src/hooks/use-test-webhook.ts:24
+msgid "Test delivery failed: {0}"
+msgstr ""
+
+#. placeholder {0}: String(data.httpStatus)
+#: src/hooks/use-test-webhook.ts:22
+msgid "Test delivery successful (HTTP {0})"
+msgstr ""
+
 #: src/routes/compare.tsx:539
 msgid "The following changes will be applied:"
 msgstr ""
 
-#: src/routes/settings.tsx:563
+#: src/routes/settings.tsx:564
 msgid "The user who created this project"
 msgstr ""
 
@@ -1565,7 +1691,7 @@ msgid "Type"
 msgstr ""
 
 #: src/routes/configs.tsx:205
-#: src/routes/settings.tsx:267
+#: src/routes/settings.tsx:268
 msgid "Undo"
 msgstr ""
 
@@ -1573,7 +1699,7 @@ msgstr ""
 msgid "Unified"
 msgstr ""
 
-#: src/routes/settings.tsx:545
+#: src/routes/settings.tsx:546
 msgid "Unique identifier for API integrations"
 msgstr ""
 
@@ -1602,8 +1728,16 @@ msgstr ""
 msgid "Updated"
 msgstr ""
 
+#: src/components/webhook-form-modal.tsx:72
+msgid "URL (HTTPS)"
+msgstr ""
+
+#: src/components/webhook-form-modal.tsx:48
+msgid "URL must use HTTPS"
+msgstr ""
+
 #. placeholder {0}: sourceEnv.name
-#: src/routes/settings.tsx:229
+#: src/routes/settings.tsx:230
 msgid "Use \"Compare Environments\" to sync configs from \"{0}\" to the new environment."
 msgstr ""
 
@@ -1665,6 +1799,23 @@ msgstr ""
 msgid "View changes"
 msgstr ""
 
+#: src/hooks/use-webhook-mutations.ts:50
+msgid "Webhook created"
+msgstr ""
+
+#: src/hooks/use-webhook-mutations.ts:85
+msgid "Webhook deleted"
+msgstr ""
+
+#: src/hooks/use-webhook-mutations.ts:76
+#: src/hooks/use-webhook-mutations.ts:98
+msgid "Webhook updated"
+msgstr ""
+
+#: src/components/webhook-settings.tsx:60
+msgid "Webhooks"
+msgstr ""
+
 #: src/components/onboarding-stepper.tsx:101
 msgid "Welcome to Config Portal"
 msgstr ""
@@ -1674,7 +1825,7 @@ msgstr ""
 msgid "What does this segment represent?"
 msgstr ""
 
-#: src/routes/settings.tsx:124
+#: src/routes/settings.tsx:125
 msgid "Write"
 msgstr ""
 
