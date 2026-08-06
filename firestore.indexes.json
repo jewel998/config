@@ -16,9 +16,7 @@
     {
       "collectionGroup": "audit_log",
       "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "timestamp", "order": "DESCENDING" }
-      ]
+      "fields": [{ "fieldPath": "timestamp", "order": "DESCENDING" }]
     },
     {
       "collectionGroup": "audit_log",
