@@ -50,6 +50,19 @@ service cloud.firestore {
               || hasRole(projectId, 'editor'));
       }
 
+      // Webhooks — admin-only management, read for all members
+      match /webhooks/{webhookId} {
+        allow read: if request.auth != null && isProjectMember(projectId);
+        allow create, update, delete: if request.auth != null
+          && hasRole(projectId, 'admin');
+
+        // Delivery log — written by Cloud Functions (admin SDK), read by members
+        match /deliveries/{deliveryId} {
+          allow read: if request.auth != null && isProjectMember(projectId);
+          allow create, update, delete: if false; // Only Cloud Functions (admin SDK) write here
+        }
+      }
+
       // Audit log — append-only, no modify/delete
       match /audit_log/{entryId} {
         allow read: if request.auth != null && isProjectMember(projectId);
