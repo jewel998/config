@@ -38,7 +38,7 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: src/components/webhook-card.tsx:62
+#: src/components/webhook-card.tsx:71
 msgid "Active"
 msgstr ""
 
@@ -99,7 +99,7 @@ msgstr ""
 msgid "Add Team Member"
 msgstr ""
 
-#: src/components/webhook-form-modal.tsx:102
+#: src/components/webhook-form-modal.tsx:110
 msgid "Add Webhook"
 msgstr ""
 
@@ -197,6 +197,10 @@ msgstr ""
 msgid "Audit Log"
 msgstr ""
 
+#: src/components/webhook-form-modal.tsx:196
+msgid "Available Variables"
+msgstr ""
+
 #: src/components/audit-diff-viewer.tsx:86
 msgid "Before"
 msgstr ""
@@ -215,7 +219,7 @@ msgstr ""
 #: src/components/segment-manager.tsx:201
 #: src/components/segment-manager.tsx:245
 #: src/components/template-bar.tsx:119
-#: src/components/webhook-form-modal.tsx:249
+#: src/components/webhook-form-modal.tsx:328
 #: src/components/webhook-settings.tsx:167
 #: src/routes/api-keys.tsx:202
 #: src/routes/compare.tsx:605
@@ -339,7 +343,7 @@ msgstr "الإعدادات"
 msgid "Configs are being copied..."
 msgstr ""
 
-#: src/components/webhook-form-modal.tsx:106
+#: src/components/webhook-form-modal.tsx:114
 msgid "Configure an HTTP endpoint to receive notifications."
 msgstr ""
 
@@ -377,7 +381,7 @@ msgstr ""
 #: src/components/onboarding-stepper.tsx:183
 #: src/components/onboarding-stepper.tsx:209
 #: src/components/segment-manager.tsx:194
-#: src/components/webhook-form-modal.tsx:242
+#: src/components/webhook-form-modal.tsx:321
 #: src/routes/api-keys.tsx:191
 #: src/routes/environments.tsx:241
 #: src/routes/settings.tsx:312
@@ -421,6 +425,10 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
+#: src/components/webhook-form-modal.tsx:176
+msgid "Custom Template"
+msgstr ""
+
 #: src/routes/preferences.tsx:349
 msgid "Customize your portal experience."
 msgstr ""
@@ -456,7 +464,7 @@ msgstr ""
 
 #: src/components/gdpr-panel.tsx:87
 #: src/components/segment-manager.tsx:252
-#: src/components/webhook-card.tsx:118
+#: src/components/webhook-card.tsx:127
 #: src/components/webhook-settings.tsx:174
 #: src/routes/api-keys.tsx:307
 #: src/routes/api-keys.tsx:312
@@ -530,6 +538,10 @@ msgstr ""
 msgid "Discard"
 msgstr ""
 
+#: src/components/webhook-form-modal.tsx:167
+msgid "Discord"
+msgstr ""
+
 #: src/routes/preferences.tsx:285
 msgid "Display Name"
 msgstr "الاسم المعروض"
@@ -558,11 +570,11 @@ msgstr ""
 msgid "e.g., plan, country, email"
 msgstr ""
 
-#: src/components/webhook-form-modal.tsx:116
+#: src/components/webhook-form-modal.tsx:124
 msgid "e.g., Slack #deployments"
 msgstr ""
 
-#: src/components/webhook-card.tsx:110
+#: src/components/webhook-card.tsx:119
 #: src/routes/configs.tsx:623
 #: src/routes/configs.tsx:628
 #: src/routes/settings.tsx:114
@@ -579,7 +591,7 @@ msgstr ""
 msgid "Edit Segment"
 msgstr ""
 
-#: src/components/webhook-form-modal.tsx:100
+#: src/components/webhook-form-modal.tsx:108
 msgid "Edit Webhook"
 msgstr ""
 
@@ -591,7 +603,7 @@ msgstr "البريد الإلكتروني"
 msgid "Email address"
 msgstr ""
 
-#: src/components/webhook-card.tsx:89
+#: src/components/webhook-card.tsx:98
 msgid "Enable"
 msgstr ""
 
@@ -637,7 +649,7 @@ msgstr ""
 msgid "Environment updated"
 msgstr ""
 
-#: src/components/webhook-form-modal.tsx:209
+#: src/components/webhook-form-modal.tsx:288
 #: src/routes/__root.tsx:368
 #: src/routes/environments.tsx:165
 #: src/routes/settings.tsx:293
@@ -652,7 +664,7 @@ msgstr ""
 msgid "Environments define deployment targets like production or staging."
 msgstr ""
 
-#: src/components/webhook-form-modal.tsx:165
+#: src/components/webhook-form-modal.tsx:244
 msgid "Event types"
 msgstr ""
 
@@ -707,7 +719,7 @@ msgstr ""
 msgid "Failed to create segment"
 msgstr ""
 
-#: src/hooks/use-webhook-mutations.ts:65
+#: src/hooks/use-webhook-mutations.ts:66
 msgid "Failed to create webhook"
 msgstr ""
 
@@ -732,7 +744,7 @@ msgstr ""
 msgid "Failed to delete segment"
 msgstr ""
 
-#: src/hooks/use-webhook-mutations.ts:109
+#: src/hooks/use-webhook-mutations.ts:111
 msgid "Failed to delete webhook"
 msgstr ""
 
@@ -800,7 +812,7 @@ msgstr ""
 msgid "Failed to update segment"
 msgstr ""
 
-#: src/hooks/use-webhook-mutations.ts:91
+#: src/hooks/use-webhook-mutations.ts:93
 msgid "Failed to update webhook"
 msgstr ""
 
@@ -816,7 +828,7 @@ msgstr ""
 msgid "Flag key"
 msgstr ""
 
-#: src/components/webhook-form-modal.tsx:142
+#: src/components/webhook-form-modal.tsx:150
 msgid "Format"
 msgstr ""
 
@@ -843,6 +855,10 @@ msgstr ""
 
 #: src/components/onboarding-stepper.tsx:224
 msgid "Go to Environments"
+msgstr ""
+
+#: src/components/webhook-form-modal.tsx:170
+msgid "Google Chat"
 msgstr ""
 
 #: src/routes/api-keys.tsx:66
@@ -963,6 +979,14 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
+#: src/components/webhook-form-modal.tsx:186
+msgid "Message Template"
+msgstr ""
+
+#: src/components/webhook-form-modal.tsx:173
+msgid "Microsoft Teams"
+msgstr ""
+
 #: src/components/config-form-modal.tsx:352
 msgid "Min value"
 msgstr ""
@@ -977,7 +1001,7 @@ msgstr ""
 
 #: src/components/segment-edit-modal.tsx:82
 #: src/components/segment-manager.tsx:166
-#: src/components/webhook-form-modal.tsx:113
+#: src/components/webhook-form-modal.tsx:121
 msgid "Name"
 msgstr ""
 
@@ -1034,7 +1058,7 @@ msgstr ""
 msgid "No differences found between these environments."
 msgstr ""
 
-#: src/components/webhook-form-modal.tsx:229
+#: src/components/webhook-form-modal.tsx:308
 msgid "No environments configured"
 msgstr ""
 
@@ -1145,11 +1169,11 @@ msgstr ""
 msgid "Owner"
 msgstr "المالك"
 
-#: src/components/webhook-card.tsx:89
+#: src/components/webhook-card.tsx:98
 msgid "Pause"
 msgstr ""
 
-#: src/components/webhook-card.tsx:62
+#: src/components/webhook-card.tsx:71
 msgid "Paused"
 msgstr ""
 
@@ -1304,7 +1328,7 @@ msgstr ""
 msgid "Required value"
 msgstr ""
 
-#: src/components/webhook-form-modal.tsx:185
+#: src/components/webhook-form-modal.tsx:264
 msgid "Resource categories"
 msgstr ""
 
@@ -1349,7 +1373,7 @@ msgstr ""
 #: src/components/environment-form.tsx:87
 #: src/components/rollout-section.tsx:101
 #: src/components/segment-edit-modal.tsx:133
-#: src/components/webhook-form-modal.tsx:242
+#: src/components/webhook-form-modal.tsx:321
 #: src/routes/settings.tsx:151
 msgid "Save"
 msgstr ""
@@ -1530,8 +1554,8 @@ msgstr "تسجيل الدخول بحساب Google"
 msgid "Sign out"
 msgstr "تسجيل الخروج"
 
-#: src/components/webhook-form-modal.tsx:156
-msgid "Slack Block Kit"
+#: src/components/webhook-form-modal.tsx:164
+msgid "Slack"
 msgstr ""
 
 #: src/routes/compare.tsx:303
@@ -1542,7 +1566,7 @@ msgstr ""
 msgid "Stale"
 msgstr ""
 
-#: src/components/webhook-form-modal.tsx:153
+#: src/components/webhook-form-modal.tsx:161
 msgid "Standard JSON"
 msgstr ""
 
@@ -1623,7 +1647,7 @@ msgstr ""
 msgid "Templates"
 msgstr ""
 
-#: src/components/webhook-card.tsx:101
+#: src/components/webhook-card.tsx:110
 msgid "Test"
 msgstr ""
 
@@ -1728,11 +1752,11 @@ msgstr ""
 msgid "Updated"
 msgstr ""
 
-#: src/components/webhook-form-modal.tsx:126
+#: src/components/webhook-form-modal.tsx:134
 msgid "URL (HTTPS)"
 msgstr ""
 
-#: src/components/webhook-form-modal.tsx:79
+#: src/components/webhook-form-modal.tsx:86
 msgid "URL must use HTTPS"
 msgstr ""
 
@@ -1799,16 +1823,16 @@ msgstr ""
 msgid "View changes"
 msgstr ""
 
-#: src/hooks/use-webhook-mutations.ts:64
+#: src/hooks/use-webhook-mutations.ts:65
 msgid "Webhook created"
 msgstr ""
 
-#: src/hooks/use-webhook-mutations.ts:108
+#: src/hooks/use-webhook-mutations.ts:110
 msgid "Webhook deleted"
 msgstr ""
 
-#: src/hooks/use-webhook-mutations.ts:90
-#: src/hooks/use-webhook-mutations.ts:133
+#: src/hooks/use-webhook-mutations.ts:92
+#: src/hooks/use-webhook-mutations.ts:135
 msgid "Webhook updated"
 msgstr ""
 

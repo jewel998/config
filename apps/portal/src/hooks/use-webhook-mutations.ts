@@ -56,10 +56,12 @@ function createWebhookMutation<TParams>(options: {
 export const useCreateWebhook = createWebhookMutation<{
   name: string;
   url: string;
-  format: "standard" | "slack";
+  format:
+    "standard" | "slack" | "discord" | "google-chat" | "ms-teams" | "custom";
   eventTypes: string[];
   resourceCategories: string[];
   environments: string[];
+  customTemplate?: string;
 }>({
   toastSuccess: t`Webhook created`,
   toastError: t`Failed to create webhook`,
@@ -77,6 +79,9 @@ export const useCreateWebhook = createWebhookMutation<{
       eventTypes: params.eventTypes,
       resourceCategories: params.resourceCategories,
       environments: params.environments,
+      ...(params.customTemplate
+        ? { customTemplate: params.customTemplate }
+        : {}),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
