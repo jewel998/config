@@ -16,6 +16,15 @@ import { useTestWebhook } from "@/hooks/use-test-webhook";
 import { useToggleWebhook } from "@/hooks/use-webhook-mutations";
 import type { WebhookConfig } from "@/types/webhook";
 
+const FORMAT_LABELS: Record<string, string> = {
+  standard: "JSON",
+  slack: "Slack",
+  discord: "Discord",
+  "google-chat": "Google Chat",
+  "ms-teams": "MS Teams",
+  custom: "Custom",
+};
+
 interface WebhookCardProps {
   webhook: WebhookConfig;
   projectId: string;
@@ -63,9 +72,9 @@ export const WebhookCard = ({
             </Badge>
             <Badge
               variant="outline"
-              className="text-[10px] px-1.5 py-0 rounded-full capitalize"
+              className="text-[10px] px-1.5 py-0 rounded-full"
             >
-              {webhook.format}
+              {FORMAT_LABELS[webhook.format] ?? webhook.format}
             </Badge>
           </div>
           <p className="text-xs text-muted-foreground font-mono truncate">

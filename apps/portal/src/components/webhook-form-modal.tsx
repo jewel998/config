@@ -13,8 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useEnvironments } from "@/hooks/use-environments";
 import type { WebhookConfig } from "@/types/webhook";
+
+type WebhookFormat = WebhookConfig["format"];
 
 const EVENT_TYPES = ["create", "update", "delete", "state_change"] as const;
 const RESOURCE_CATEGORIES = [
@@ -34,10 +37,11 @@ interface WebhookFormModalProps {
   onSubmit: (data: {
     name: string;
     url: string;
-    format: "standard" | "slack";
+    format: WebhookFormat;
     eventTypes: string[];
     resourceCategories: string[];
     environments: string[];
+    customTemplate?: string;
   }) => void;
 }
 
@@ -50,8 +54,11 @@ export const WebhookFormModal = ({
 }: WebhookFormModalProps) => {
   const [name, setName] = useState(editingWebhook?.name ?? "");
   const [url, setUrl] = useState(editingWebhook?.url ?? "");
-  const [format, setFormat] = useState<"standard" | "slack">(
+  const [format, setFormat] = useState<WebhookFormat>(
     editingWebhook?.format ?? "standard",
+  );
+  const [customTemplate, setCustomTemplate] = useState(
+    editingWebhook?.customTemplate ?? "",
   );
   const [eventTypes, setEventTypes] = useState<string[]>(
     editingWebhook?.eventTypes ?? [],
@@ -87,6 +94,7 @@ export const WebhookFormModal = ({
       eventTypes,
       resourceCategories,
       environments,
+      ...(format === "custom" ? { customTemplate } : {}),
     });
     onOpenChange(false);
   };
@@ -143,7 +151,7 @@ export const WebhookFormModal = ({
           </label>
           <Select
             value={format}
-            onValueChange={(v) => setFormat(v as "standard" | "slack")}
+            onValueChange={(v) => setFormat(v as WebhookFormat)}
           >
             <SelectTrigger className="h-9">
               <SelectValue />
@@ -153,11 +161,82 @@ export const WebhookFormModal = ({
                 <Trans>Standard JSON</Trans>
               </SelectItem>
               <SelectItem value="slack">
-                <Trans>Slack Block Kit</Trans>
+                <Trans>Slack</Trans>
+              </SelectItem>
+              <SelectItem value="discord">
+                <Trans>Discord</Trans>
+              </SelectItem>
+              <SelectItem value="google-chat">
+                <Trans>Google Chat</Trans>
+              </SelectItem>
+              <SelectItem value="ms-teams">
+                <Trans>Microsoft Teams</Trans>
+              </SelectItem>
+              <SelectItem value="custom">
+                <Trans>Custom Template</Trans>
               </SelectItem>
             </SelectContent>
           </Select>
         </div>
+
+        {/* Custom Template */}
+        {format === "custom" && (
+          <div className="space-y-2">
+            <label className="text-xs font-medium">
+              <Trans>Message Template</Trans>
+            </label>
+            <Textarea
+              placeholder="{{actor.id}} {{action}} {{resource.name}} in {{environment}}"
+              value={customTemplate}
+              onChange={(e) => setCustomTemplate(e.target.value)}
+              className="min-h-24 font-mono text-xs"
+            />
+            <details className="text-xs text-muted-foreground">
+              <summary className="cursor-pointer font-medium">
+                <Trans>Available Variables</Trans>
+              </summary>
+              <div className="mt-2 space-y-1 pl-2 border-l">
+                <p>
+                  <code>{"{{action}}"}</code> — create, update, delete,
+                  state_change
+                </p>
+                <p>
+                  <code>{"{{resource.category}}"}</code> — config, segment,
+                  api_key, etc.
+                </p>
+                <p>
+                  <code>{"{{resource.path}}"}</code> — full resource path
+                </p>
+                <p>
+                  <code>{"{{resource.name}}"}</code> — human-readable resource
+                  name
+                </p>
+                <p>
+                  <code>{"{{environment}}"}</code> — environment name or empty
+                </p>
+                <p>
+                  <code>{"{{actor.id}}"}</code> — user ID of the actor
+                </p>
+                <p>
+                  <code>{"{{timestamp}}"}</code> — ISO 8601 timestamp
+                </p>
+                <p>
+                  <code>{"{{project.id}}"}</code> — project ID
+                </p>
+                <p>
+                  <code>{"{{webhook.id}}"}</code> — webhook ID
+                </p>
+                <p>
+                  <code>{"{{changes.old}}"}</code> — previous value (JSON
+                  string)
+                </p>
+                <p>
+                  <code>{"{{changes.new}}"}</code> — new value (JSON string)
+                </p>
+              </div>
+            </details>
+          </div>
+        )}
 
         {/* Event Type Filters */}
         <div className="space-y-1">

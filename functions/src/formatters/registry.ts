@@ -1,6 +1,10 @@
 import type { PayloadFormatter } from "../types.js";
-import { standardFormatter } from "./standard.formatter.js";
+import { customFormatter } from "./custom.formatter.js";
+import { discordFormatter } from "./discord.formatter.js";
+import { googleChatFormatter } from "./google-chat.formatter.js";
+import { msTeamsFormatter } from "./ms-teams.formatter.js";
 import { slackFormatter } from "./slack.formatter.js";
+import { standardFormatter } from "./standard.formatter.js";
 
 /**
  * Formatter registry (Strategy pattern).
@@ -9,6 +13,10 @@ import { slackFormatter } from "./slack.formatter.js";
 const formatterRegistry: Record<string, PayloadFormatter> = {
   standard: standardFormatter,
   slack: slackFormatter,
+  discord: discordFormatter,
+  "google-chat": googleChatFormatter,
+  "ms-teams": msTeamsFormatter,
+  custom: customFormatter,
 };
 
 /**

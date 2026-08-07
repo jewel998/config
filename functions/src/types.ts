@@ -11,6 +11,7 @@ export interface WebhookConfig {
   format: string;
   createdAt: string;
   updatedAt: string;
+  customTemplate?: string;
 }
 
 export type EventType = "create" | "update" | "delete" | "state_change";
