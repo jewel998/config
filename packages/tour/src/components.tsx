@@ -10,10 +10,9 @@ import type {
 // ─── Main Renderer ────────────────────────────────────────────
 
 export function TourRenderer() {
-  const { currentStep, next, dismiss, goTo, currentFlow, state, totalSteps } =
-    useTour();
+  const { currentStep, next, dismiss, goTo, state, totalSteps } = useTour();
 
-  if (!currentStep || !currentFlow) return null;
+  if (!currentStep) return null;
 
   switch (currentStep.type) {
     case "modal":
@@ -48,7 +47,7 @@ export function TourRenderer() {
         />
       );
     case "action":
-      return null; // Action steps are invisible — they just trigger navigation
+      return null;
     default:
       return null;
   }
@@ -90,7 +89,7 @@ function TourModal({
               step.actions.map((action, i) => (
                 <button
                   key={i}
-                  className={`tour-btn ${i === step.actions!.length - 1 ? "tour-btn-primary" : "tour-btn-ghost"}`}
+                  className={`tour-btn ${i === (step.actions?.length ?? 1) - 1 ? "tour-btn-primary" : "tour-btn-ghost"}`}
                   onClick={() => {
                     if (action.dismiss) onDismiss();
                     else if (action.next) onGoTo(action.next);
@@ -117,7 +116,7 @@ function TourModal({
   );
 }
 
-// ─── Spotlight Step ───────────────────────────────────────────
+// ─── Spotlight Step (box-shadow cutout — works in dark/light) ──
 
 function TourSpotlight({
   step,
@@ -132,29 +131,46 @@ function TourSpotlight({
   stepIndex: number;
   totalSteps: number;
 }) {
-  const pos = useElementPosition(step.target);
+  const rect = useElementRect(step.target);
   const hasWaitFor = !!step.waitFor;
 
-  if (!pos) return null;
+  if (!rect) return null;
+
+  const padding = 6;
 
   return (
     <>
-      {/* Overlay with cutout */}
-      <div className="tour-spotlight-overlay" onClick={onDismiss}>
+      {/* Overlay — the target element is "cut out" via box-shadow */}
+      <div
+        className="tour-spotlight"
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 9998,
+          pointerEvents: "auto",
+          // The magic: a huge box-shadow creates the overlay, the element itself is transparent
+        }}
+        onClick={onDismiss}
+      >
         <div
-          className="tour-spotlight-cutout"
           style={{
-            top: pos.top - 4,
-            left: pos.left - 4,
-            width: pos.width + 8,
-            height: pos.height + 8,
+            position: "absolute",
+            top: rect.top - padding,
+            left: rect.left - padding,
+            width: rect.width + padding * 2,
+            height: rect.height + padding * 2,
+            borderRadius: 8,
+            boxShadow: "0 0 0 9999px rgba(0, 0, 0, 0.6)",
+            pointerEvents: "none",
           }}
         />
       </div>
-      {/* Tooltip */}
+
+      {/* Popover */}
       <div
         className="tour-popover"
-        style={getPopoverStyle(pos, step.position ?? "bottom")}
+        style={getPopoverPosition(rect, step.position ?? "bottom")}
+        onClick={(e) => e.stopPropagation()}
       >
         <h3 className="tour-popover-title">{step.title}</h3>
         {step.description && (
@@ -173,6 +189,11 @@ function TourSpotlight({
                 Next
               </button>
             </div>
+          )}
+          {hasWaitFor && (
+            <button className="tour-btn tour-btn-ghost" onClick={onDismiss}>
+              Skip
+            </button>
           )}
         </div>
       </div>
@@ -195,15 +216,15 @@ function TourTooltip({
   stepIndex: number;
   totalSteps: number;
 }) {
-  const pos = useElementPosition(step.target);
+  const rect = useElementRect(step.target);
   const hasWaitFor = !!step.waitFor;
 
-  if (!pos) return null;
+  if (!rect) return null;
 
   return (
     <div
       className="tour-popover"
-      style={getPopoverStyle(pos, step.position ?? "bottom")}
+      style={getPopoverPosition(rect, step.position ?? "bottom")}
     >
       <h3 className="tour-popover-title">{step.title}</h3>
       {step.description && (
@@ -223,96 +244,76 @@ function TourTooltip({
             </button>
           </div>
         )}
+        {hasWaitFor && (
+          <button className="tour-btn tour-btn-ghost" onClick={onDismiss}>
+            Skip tour
+          </button>
+        )}
       </div>
     </div>
   );
 }
 
-// ─── Positioning Utilities ────────────────────────────────────
+// ─── Element Rect Hook (viewport-relative, updates on scroll) ──
 
-interface ElementRect {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-}
-
-function useElementPosition(selector: string): ElementRect | null {
-  const [rect, setRect] = useState<ElementRect | null>(null);
-  const observerRef = useRef<MutationObserver | null>(null);
+function useElementRect(selector: string) {
+  const [rect, setRect] = useState<DOMRect | null>(null);
+  const frameRef = useRef<number>(0);
 
   useEffect(() => {
-    const measure = () => {
+    function measure() {
       const el = document.querySelector(selector);
       if (el) {
-        const r = el.getBoundingClientRect();
-        setRect({
-          top: r.top + window.scrollY,
-          left: r.left + window.scrollX,
-          width: r.width,
-          height: r.height,
-        });
+        setRect(el.getBoundingClientRect());
       } else {
         setRect(null);
       }
-    };
+      frameRef.current = requestAnimationFrame(measure);
+    }
 
     measure();
-
-    // Re-measure on DOM changes (element might not exist yet)
-    observerRef.current = new MutationObserver(measure);
-    observerRef.current.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-    });
-
-    // Re-measure on scroll/resize
-    window.addEventListener("scroll", measure, true);
-    window.addEventListener("resize", measure);
-
-    return () => {
-      observerRef.current?.disconnect();
-      window.removeEventListener("scroll", measure, true);
-      window.removeEventListener("resize", measure);
-    };
+    return () => cancelAnimationFrame(frameRef.current);
   }, [selector]);
 
   return rect;
 }
 
-function getPopoverStyle(
-  targetRect: ElementRect,
+// ─── Popover Positioning (viewport-relative for fixed) ────────
+
+function getPopoverPosition(
+  rect: DOMRect,
   position: Position,
 ): React.CSSProperties {
   const gap = 12;
+  const base: React.CSSProperties = { position: "fixed", zIndex: 9999 };
+
   switch (position) {
     case "top":
       return {
-        position: "absolute",
-        top: targetRect.top - gap,
-        left: targetRect.left + targetRect.width / 2,
-        transform: "translate(-50%, -100%)",
+        ...base,
+        bottom: `${window.innerHeight - rect.top + gap}px`,
+        left: `${rect.left + rect.width / 2}px`,
+        transform: "translateX(-50%)",
       };
     case "bottom":
       return {
-        position: "absolute",
-        top: targetRect.top + targetRect.height + gap,
-        left: targetRect.left + targetRect.width / 2,
+        ...base,
+        top: `${rect.bottom + gap}px`,
+        left: `${rect.left + rect.width / 2}px`,
         transform: "translateX(-50%)",
       };
     case "left":
       return {
-        position: "absolute",
-        top: targetRect.top + targetRect.height / 2,
-        left: targetRect.left - gap,
-        transform: "translate(-100%, -50%)",
+        ...base,
+        top: `${rect.top + rect.height / 2}px`,
+        right: `${window.innerWidth - rect.left + gap}px`,
+        transform: "translateY(-50%)",
       };
     case "right":
       return {
-        position: "absolute",
-        top: targetRect.top + targetRect.height / 2,
-        left: targetRect.left + targetRect.width + gap,
+        ...base,
+        top: `${rect.top + rect.height / 2}px`,
+        left: `${rect.right + gap}px`,
         transform: "translateY(-50%)",
       };
   }

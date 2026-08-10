@@ -6,6 +6,7 @@ import {
   Link,
   Outlet,
   useNavigate,
+  useRouterState,
 } from "@tanstack/react-router";
 import {
   Globe,
@@ -22,7 +23,7 @@ import {
   Users,
   UsersRound,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Toaster } from "sonner";
 
 import { EnvironmentSwitcher } from "@/components/environment-switcher";
@@ -57,10 +58,10 @@ import { useProjectStore } from "@/stores/project-store";
 import { useProjects } from "@/hooks/use-projects";
 import { TourProvider, TourRenderer } from "@jewel998/tour";
 import type { TourFlow } from "@jewel998/tour";
-import quickstartFlow from "@/tours/quickstart.json";
+import tourFlowsJson from "@/tours/quickstart.json";
 import { cn } from "@/lib/utils";
 
-const tourFlows = [quickstartFlow] as TourFlow[];
+const tourFlows = tourFlowsJson as TourFlow[];
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
@@ -254,8 +255,27 @@ const TabNav = () => {
 
 const AuthenticatedLayout = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
+  const selectedEnvironmentId = useProjectStore((s) => s.selectedEnvironmentId);
   const { data: projects } = useProjects();
   const navigate = useNavigate();
+  const routerState = useRouterState();
+  const currentPath = routerState.location.pathname.replace(
+    "/config/portal",
+    "",
+  );
+
+  // Tour context — determines which flow triggers
+  const hasProject = !!selectedProjectId;
+  const hasEnvironment = !!selectedEnvironmentId;
+  const tourContext = useMemo(
+    () => ({
+      hasProject,
+      hasEnvironment,
+      needsEnvironment: hasProject && !hasEnvironment,
+      needsConfig: hasProject && hasEnvironment,
+    }),
+    [hasProject, hasEnvironment],
+  );
 
   useEffect(() => {
     if (
@@ -270,10 +290,9 @@ const AuthenticatedLayout = () => {
   return (
     <TourProvider
       flows={tourFlows}
+      currentPath={currentPath}
+      context={tourContext}
       onNavigate={(path) => navigate({ to: path })}
-      getCurrentPath={() =>
-        window.location.pathname.replace("/config/portal", "")
-      }
     >
       <div className="flex min-h-screen flex-col">
         <a

@@ -8,12 +8,11 @@ export interface TourFlow {
 }
 
 export interface TourTrigger {
-  /** When to auto-start this flow */
-  type: "first-visit" | "manual" | "event";
-  /** For "first-visit": localStorage key to track completion */
+  type: "first-visit" | "manual" | "event" | "context";
   storage?: string;
-  /** For "event": custom DOM event name */
   eventName?: string;
+  /** For "context" trigger: only start when this condition is true */
+  condition?: StepCondition;
 }
 
 // ─── Step Types ───────────────────────────────────────────────
@@ -22,10 +21,14 @@ export type TourStep = ModalStep | SpotlightStep | TooltipStep | ActionStep;
 
 interface BaseStep {
   id: string;
-  /** Which page/route this step expects (optional, for multi-page tours) */
+  /** Which route this step expects */
   page?: string;
-  /** Condition to advance to next step automatically */
+  /** Condition to auto-advance to next step */
   waitFor?: WaitCondition;
+  /** Skip this step if condition is true (evaluated against context) */
+  skipIf?: StepCondition;
+  /** Only show this step if condition is true */
+  showIf?: StepCondition;
 }
 
 export interface ModalStep extends BaseStep {
@@ -38,7 +41,7 @@ export interface ModalStep extends BaseStep {
 
 export interface SpotlightStep extends BaseStep {
   type: "spotlight";
-  target: string; // CSS selector
+  target: string;
   title: string;
   description?: string;
   position?: Position;
@@ -46,7 +49,7 @@ export interface SpotlightStep extends BaseStep {
 
 export interface TooltipStep extends BaseStep {
   type: "tooltip";
-  target: string; // CSS selector
+  target: string;
   title: string;
   description?: string;
   position?: Position;
@@ -54,17 +57,23 @@ export interface TooltipStep extends BaseStep {
 
 export interface ActionStep extends BaseStep {
   type: "action";
-  /** Navigate to this path programmatically */
   navigate?: string;
 }
 
-// ─── Step Actions & Conditions ────────────────────────────────
+// ─── Conditions ───────────────────────────────────────────────
+
+export interface StepCondition {
+  /** Check a context key — e.g. "hasProject", "hasEnvironment" */
+  key: string;
+  /** Operator: exists (truthy), equals, not_equals */
+  op?: "exists" | "equals" | "not_equals";
+  /** Value to compare against (for equals/not_equals) */
+  value?: unknown;
+}
 
 export interface StepAction {
   label: string;
-  /** Go to a specific step by id */
   next?: string;
-  /** Dismiss the entire tour */
   dismiss?: boolean;
 }
 
@@ -83,10 +92,12 @@ export type Position = "top" | "bottom" | "left" | "right";
 export interface TourProviderProps {
   flows: TourFlow[];
   children: React.ReactNode;
-  /** Optional callback when route navigation is needed */
+  /** Current route path — pass from your router reactively */
+  currentPath?: string;
+  /** Callback to navigate programmatically */
   onNavigate?: (path: string) => void;
-  /** Optional callback for getting current route path */
-  getCurrentPath?: () => string;
+  /** Dynamic context for conditional steps (e.g., { hasProject: true }) */
+  context?: Record<string, unknown>;
 }
 
 // ─── Internal State ───────────────────────────────────────────

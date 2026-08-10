@@ -1,74 +1,112 @@
-{
-  "id": "quickstart",
-  "name": "Getting Started",
-  "trigger": { "type": "first-visit" },
-  "steps": [
-    {
-      "id": "welcome",
-      "type": "modal",
-      "title": "👋 Welcome to Config Portal",
-      "description": "Let's get you set up in under 2 minutes. We'll create a project, add an environment, and create your first config flag.",
-      "actions": [
-        { "label": "Let's go" },
-        { "label": "Skip tour", "dismiss": true }
-      ]
+[
+  {
+    "id": "create-project",
+    "name": "Create Your First Project",
+    "trigger": {
+      "type": "context",
+      "condition": { "key": "hasProject", "op": "equals", "value": false }
     },
-    {
-      "id": "select-project",
-      "type": "spotlight",
-      "target": "[data-tour='project-switcher']",
-      "title": "Create or select a project",
-      "description": "Projects group your configs by app or service. Click here to create one.",
-      "position": "bottom",
-      "waitFor": { "type": "click", "target": "[data-tour='project-switcher']" }
-    },
-    {
-      "id": "go-to-settings",
-      "type": "tooltip",
-      "target": "[data-tour='nav-settings']",
-      "title": "Set up an environment",
-      "description": "Navigate to Settings to create your first environment (e.g., production, staging).",
-      "position": "bottom",
-      "waitFor": { "type": "route-change", "path": "/settings" }
-    },
-    {
-      "id": "go-to-configs",
-      "type": "tooltip",
-      "target": "[data-tour='nav-configs']",
-      "title": "Now let's create a config",
-      "description": "Head to the Configs tab to add your first feature flag.",
-      "position": "bottom",
-      "page": "/settings",
-      "waitFor": { "type": "route-change", "path": "/configs" }
-    },
-    {
-      "id": "add-config",
-      "type": "spotlight",
-      "target": "[data-tour='add-config-btn']",
-      "title": "Create your first config",
-      "description": "Click here to add a feature flag or configuration value.",
-      "position": "bottom",
-      "page": "/configs",
-      "waitFor": {
-        "type": "element-visible",
-        "selector": "[data-tour='config-form-modal']"
+    "steps": [
+      {
+        "id": "welcome",
+        "type": "modal",
+        "title": "👋 Welcome to Config Portal",
+        "description": "Let's get you set up. First, we'll create a project to group your configs.",
+        "actions": [
+          { "label": "Create project" },
+          { "label": "Skip", "dismiss": true }
+        ]
+      },
+      {
+        "id": "click-project-switcher",
+        "type": "spotlight",
+        "target": "[data-tour='project-switcher']",
+        "title": "Create a project",
+        "description": "Click here to create your first project. Projects group configs by app or service.",
+        "position": "bottom",
+        "waitFor": {
+          "type": "click",
+          "target": "[data-tour='project-switcher']"
+        }
       }
+    ]
+  },
+  {
+    "id": "create-environment",
+    "name": "Create an Environment",
+    "trigger": {
+      "type": "context",
+      "condition": { "key": "needsEnvironment", "op": "exists" }
     },
-    {
-      "id": "done",
-      "type": "modal",
-      "title": "🎉 You're all set!",
-      "description": "Your first config is ready. Next, grab your API key from the API Keys tab and integrate the SDK into your app.",
-      "actions": [
-        { "label": "Go to API Keys", "next": "go-api-keys" },
-        { "label": "Done", "dismiss": true }
-      ]
+    "steps": [
+      {
+        "id": "intro",
+        "type": "modal",
+        "title": "🌍 Set up an environment",
+        "description": "Environments separate your dev, staging, and production configs. Let's create one.",
+        "actions": [
+          { "label": "Go to Settings" },
+          { "label": "Later", "dismiss": true }
+        ]
+      },
+      {
+        "id": "nav-to-settings",
+        "type": "tooltip",
+        "target": "[data-tour='nav-settings']",
+        "title": "Go to Settings",
+        "description": "Click Settings to manage environments.",
+        "position": "bottom",
+        "waitFor": { "type": "route-change", "path": "/settings" }
+      }
+    ]
+  },
+  {
+    "id": "create-first-config",
+    "name": "Create Your First Config",
+    "trigger": {
+      "type": "context",
+      "condition": { "key": "needsConfig", "op": "exists" }
     },
-    {
-      "id": "go-api-keys",
-      "type": "action",
-      "navigate": "/api-keys",
-      "waitFor": { "type": "route-change", "path": "/api-keys" }
-    }
-  ]
-}
+    "steps": [
+      {
+        "id": "intro",
+        "type": "modal",
+        "title": "🚀 Create your first config",
+        "description": "You have a project and environment ready. Let's add your first feature flag.",
+        "actions": [
+          { "label": "Let's go" },
+          { "label": "Skip", "dismiss": true }
+        ]
+      },
+      {
+        "id": "nav-to-configs",
+        "type": "tooltip",
+        "target": "[data-tour='nav-configs']",
+        "title": "Go to Configs",
+        "description": "Navigate to the Configs tab.",
+        "position": "bottom",
+        "waitFor": { "type": "route-change", "path": "/configs" }
+      },
+      {
+        "id": "click-add",
+        "type": "spotlight",
+        "target": "[data-tour='add-config-btn']",
+        "title": "Add a config",
+        "description": "Click here to create a feature flag or config value.",
+        "position": "bottom",
+        "page": "/configs",
+        "waitFor": {
+          "type": "element-visible",
+          "selector": "[data-tour='config-form-modal']"
+        }
+      },
+      {
+        "id": "done",
+        "type": "modal",
+        "title": "🎉 You're all set!",
+        "description": "Your config is ready. Grab an API key from the API Keys tab to integrate the SDK.",
+        "actions": [{ "label": "Done", "dismiss": true }]
+      }
+    ]
+  }
+]
