@@ -1,5 +1,6 @@
 export { TourProvider, useTour } from "./context.js";
 export { TourRenderer } from "./components.js";
+export { TourHelpButton } from "./help-button.js";
 export type {
   TourFlow,
   TourStep,
@@ -9,6 +10,7 @@ export type {
   TooltipStep,
   ActionStep,
   StepAction,
+  StepCondition,
   WaitCondition,
   Position,
   TourProviderProps,

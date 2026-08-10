@@ -11,7 +11,7 @@
         "id": "welcome",
         "type": "modal",
         "title": "👋 Welcome to Config Portal",
-        "description": "Manage feature flags and remote configuration for your apps — completely free. Let's get started by creating your first project.",
+        "description": "Control your app's behavior without deploying code. Toggle features for specific users, roll out gradually, and schedule changes — all from this dashboard.\n\nExample: Ship a new checkout flow to 10% of users, then ramp up as you gain confidence.",
         "actions": [
           { "label": "Create my first project" },
           { "label": "I'll explore on my own", "dismiss": true }
@@ -21,8 +21,8 @@
         "id": "project-switcher",
         "type": "spotlight",
         "target": "[data-tour='project-switcher']",
-        "title": "Create a project",
-        "description": "A project groups all your configs for one app or service. Click here to get started.",
+        "title": "Start with a project",
+        "description": "A project represents one app or service. For example: 'Web App', 'Mobile API', or 'Admin Dashboard'. Click to create yours.",
         "position": "bottom",
         "waitFor": {
           "type": "click",
@@ -42,10 +42,10 @@
       {
         "id": "intro",
         "type": "modal",
-        "title": "🌍 Nice! Now add an environment",
-        "description": "Environments let you have different config values for development, staging, and production.",
+        "title": "🌍 Environments keep things safe",
+        "description": "Environments let you test changes in 'staging' before they hit 'production'. Most teams use 2-3: development, staging, and production.\n\nThis way, turning on a feature in staging won't affect your real users.",
         "actions": [
-          { "label": "Take me to Settings" },
+          { "label": "Set one up" },
           { "label": "Later", "dismiss": true }
         ]
       },
@@ -53,8 +53,8 @@
         "id": "nav-settings",
         "type": "tooltip",
         "target": "[data-tour='nav-settings']",
-        "title": "Open Settings",
-        "description": "Click here to create an environment.",
+        "title": "Create an environment in Settings",
+        "description": "Head to Settings → Environments to add 'production' or 'staging'.",
         "position": "bottom",
         "waitFor": { "type": "route-change", "path": "/settings" }
       }
@@ -71,10 +71,10 @@
       {
         "id": "intro",
         "type": "modal",
-        "title": "🚀 Ready to create your first config",
-        "description": "You have a project and environment set up. Now let's add a feature flag or config value.",
+        "title": "🚀 Your first feature flag",
+        "description": "A config can be a boolean (on/off), a string, number, or even JSON. Use cases:\n\n• feature.dark_mode = true (toggle a UI feature)\n• app.max_upload_mb = 10 (tune a limit without deploying)\n• feature.checkout_v2 = false (hide unfinished work)",
         "actions": [
-          { "label": "Let's go" },
+          { "label": "Create one" },
           { "label": "Skip", "dismiss": true }
         ]
       },
@@ -82,8 +82,8 @@
         "id": "nav-configs",
         "type": "tooltip",
         "target": "[data-tour='nav-configs']",
-        "title": "Go to Configs",
-        "description": "Click the Configs tab to manage your flags.",
+        "title": "Open Configs",
+        "description": "This is where you manage all your feature flags and remote values.",
         "position": "bottom",
         "page": "/settings",
         "waitFor": { "type": "route-change", "path": "/configs" }
@@ -92,8 +92,8 @@
         "id": "add-config",
         "type": "spotlight",
         "target": "[data-tour='add-config-btn']",
-        "title": "Create a config",
-        "description": "Click here to add your first feature flag.",
+        "title": "Add a config",
+        "description": "Click here. Try creating a boolean flag like 'feature.new_checkout' with value 'false'.",
         "position": "bottom",
         "page": "/configs",
         "waitFor": {
@@ -104,8 +104,8 @@
       {
         "id": "done",
         "type": "modal",
-        "title": "🎉 Awesome!",
-        "description": "Your first config is created. You can now target users, schedule changes, set up rollouts, and more from the expanded config panel.",
+        "title": "🎉 You're live!",
+        "description": "Your config is saved. From here you can:\n\n• Expand a config to add targeting rules (serve different values to different users)\n• Set up a gradual rollout (10% → 50% → 100%)\n• Schedule a future value change\n\nNext: grab an API key to connect your app.",
         "actions": [{ "label": "Done", "dismiss": true }]
       }
     ]

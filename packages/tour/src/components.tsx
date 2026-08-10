@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTour } from "./context.js";
 import type {
   ModalStep,
@@ -7,50 +8,59 @@ import type {
   TooltipStep,
 } from "./types.js";
 
-// ─── Main Renderer ────────────────────────────────────────────
+// ─── Main Renderer (portaled to body to escape stacking contexts) ──
 
 export function TourRenderer() {
   const { currentStep, next, dismiss, goTo, state, totalSteps } = useTour();
+  const [mounted, setMounted] = useState(false);
 
-  if (!currentStep) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  switch (currentStep.type) {
-    case "modal":
-      return (
-        <TourModal
-          step={currentStep}
-          onNext={next}
-          onDismiss={dismiss}
-          onGoTo={goTo}
-          stepIndex={state.currentStepIndex}
-          totalSteps={totalSteps}
-        />
-      );
-    case "spotlight":
-      return (
-        <TourSpotlight
-          step={currentStep}
-          onNext={next}
-          onDismiss={dismiss}
-          stepIndex={state.currentStepIndex}
-          totalSteps={totalSteps}
-        />
-      );
-    case "tooltip":
-      return (
-        <TourTooltip
-          step={currentStep}
-          onNext={next}
-          onDismiss={dismiss}
-          stepIndex={state.currentStepIndex}
-          totalSteps={totalSteps}
-        />
-      );
-    case "action":
-      return null;
-    default:
-      return null;
-  }
+  if (!currentStep || !mounted) return null;
+
+  const content = (() => {
+    switch (currentStep.type) {
+      case "modal":
+        return (
+          <TourModal
+            step={currentStep}
+            onNext={next}
+            onDismiss={dismiss}
+            onGoTo={goTo}
+            stepIndex={state.currentStepIndex}
+            totalSteps={totalSteps}
+          />
+        );
+      case "spotlight":
+        return (
+          <TourSpotlight
+            step={currentStep}
+            onNext={next}
+            onDismiss={dismiss}
+            stepIndex={state.currentStepIndex}
+            totalSteps={totalSteps}
+          />
+        );
+      case "tooltip":
+        return (
+          <TourTooltip
+            step={currentStep}
+            onNext={next}
+            onDismiss={dismiss}
+            stepIndex={state.currentStepIndex}
+            totalSteps={totalSteps}
+          />
+        );
+      case "action":
+        return null;
+      default:
+        return null;
+    }
+  })();
+
+  return createPortal(content, document.body);
 }
 
 // ─── Modal Step ───────────────────────────────────────────────
