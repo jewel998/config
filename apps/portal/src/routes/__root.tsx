@@ -194,10 +194,14 @@ const TopBar = () => {
       </div>
 
       {/* Project switcher */}
-      <ProjectSwitcher />
+      <div data-tour="project-switcher">
+        <ProjectSwitcher />
+      </div>
 
       {/* Environment switcher */}
-      <EnvironmentSwitcher />
+      <div data-tour="env-switcher">
+        <EnvironmentSwitcher />
+      </div>
 
       {/* Spacer */}
       <div className="flex-1" />
@@ -235,6 +239,7 @@ const TabNav = () => {
           <Link
             key={to}
             to={to}
+            data-tour={`nav-${to.replace("/", "")}`}
             className="flex shrink-0 items-center gap-2 px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground [&.active]:border-b-2 [&.active]:border-primary [&.active]:text-foreground"
             activeProps={{ className: "active" }}
           >

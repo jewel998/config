@@ -9,7 +9,7 @@
       "title": "👋 Welcome to Config Portal",
       "description": "Let's get you set up in under 2 minutes. We'll create a project, add an environment, and create your first config flag.",
       "actions": [
-        { "label": "Let's go", "next": "select-project" },
+        { "label": "Let's go" },
         { "label": "Skip tour", "dismiss": true }
       ]
     },
