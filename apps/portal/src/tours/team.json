@@ -1,16 +1,16 @@
 [
   {
     "id": "tour-team",
-    "name": "Team Guide",
+    "name": "Team & Roles",
     "trigger": { "type": "manual" },
     "steps": [
       {
         "id": "intro",
         "type": "modal",
-        "title": "🤝 Team & Access",
-        "description": "Invite your teammates and control who can view, edit, or manage your project's configs.",
+        "title": "🤝 Collaborate with your team",
+        "description": "Invite teammates with the right level of access:\n\n• Viewer — can see configs and audit log, can't change anything\n• Editor — can create/edit configs, segments, targeting rules\n• Admin — full control: manage environments, API keys, team, webhooks\n\nUse case: Give your product manager 'viewer' access to check feature flags, and your backend engineer 'editor' to manage configs.",
         "actions": [
-          { "label": "Show me" },
+          { "label": "Go to Team" },
           { "label": "Close", "dismiss": true }
         ]
       },
@@ -18,8 +18,8 @@
         "id": "nav-team",
         "type": "tooltip",
         "target": "[data-tour='nav-team']",
-        "title": "Open Team",
-        "description": "Click here to manage members and roles.",
+        "title": "Open Team settings",
+        "description": "Add members by email. They'll get an invite to join this project.",
         "position": "bottom",
         "waitFor": { "type": "route-change", "path": "/team" }
       }

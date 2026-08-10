@@ -1,16 +1,16 @@
 [
   {
     "id": "tour-segments",
-    "name": "Segments Guide",
+    "name": "Segments",
     "trigger": { "type": "manual" },
     "steps": [
       {
         "id": "intro",
         "type": "modal",
-        "title": "👥 Audience Segments",
-        "description": "Segments let you define reusable audience groups (e.g., 'Beta users', 'Enterprise plan') and target configs to them.",
+        "title": "👥 Target users with Segments",
+        "description": "Segments are reusable audience groups. Define a segment once, use it across multiple configs.\n\nExamples:\n• 'Beta Users' → plan equals 'pro'\n• 'EU Users' → country in [DE, FR, ES, IT]\n• 'Internal' → email ends with '@yourcompany.com'\n\nWhen you add a targeting rule to a config, you can target an entire segment instead of writing conditions each time.",
         "actions": [
-          { "label": "Learn more" },
+          { "label": "Show me" },
           { "label": "Close", "dismiss": true }
         ]
       },
@@ -18,10 +18,17 @@
         "id": "nav-segments",
         "type": "tooltip",
         "target": "[data-tour='nav-segments']",
-        "title": "Open Segments",
-        "description": "Click here to create and manage audience segments.",
+        "title": "Manage Segments",
+        "description": "Create and edit audience segments here. You'll see which configs use each segment.",
         "position": "bottom",
         "waitFor": { "type": "route-change", "path": "/segments" }
+      },
+      {
+        "id": "usage",
+        "type": "modal",
+        "title": "💡 How segments work in practice",
+        "description": "1. Create a segment: 'Premium Users' (plan = pro)\n2. Go to any config → Targeting Rules\n3. Add rule: operator 'in_segment', value 'Premium Users'\n4. That config value now only applies to premium users\n\nBonus: The usage indicator shows how many configs reference each segment, so you know the impact of changes.",
+        "actions": [{ "label": "Got it", "dismiss": true }]
       }
     ]
   }
