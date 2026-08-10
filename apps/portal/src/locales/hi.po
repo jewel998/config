@@ -13,11 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/routes/__root.tsx:335
+#: src/routes/__root.tsx:341
 msgid "Access Denied"
 msgstr "पहुँच अस्वीकृत"
 
-#: src/routes/__root.tsx:465
+#: src/routes/__root.tsx:471
 msgid "Access is by request only. Rights of Admission Reserved."
 msgstr ""
 
@@ -315,11 +315,11 @@ msgstr ""
 msgid "Config key (e.g. feature.enabled)"
 msgstr ""
 
-#: src/routes/__root.tsx:380
+#: src/routes/__root.tsx:386
 msgid "Config Portal"
 msgstr "कॉन्फ़िग पोर्टल"
 
-#: src/routes/__root.tsx:413
+#: src/routes/__root.tsx:419
 msgid "Config publishing"
 msgstr ""
 
@@ -650,7 +650,7 @@ msgid "Environment updated"
 msgstr ""
 
 #: src/components/webhook-form-modal.tsx:288
-#: src/routes/__root.tsx:402
+#: src/routes/__root.tsx:408
 #: src/routes/environments.tsx:165
 #: src/routes/settings.tsx:293
 msgid "Environments"
@@ -820,7 +820,7 @@ msgstr ""
 msgid "Feature Flags"
 msgstr ""
 
-#: src/routes/__root.tsx:421
+#: src/routes/__root.tsx:427
 msgid "Firebase sync"
 msgstr ""
 
@@ -995,7 +995,7 @@ msgstr ""
 msgid "More actions"
 msgstr ""
 
-#: src/routes/__root.tsx:397
+#: src/routes/__root.tsx:403
 msgid "Multi-project scoping"
 msgstr ""
 
@@ -1185,7 +1185,7 @@ msgstr ""
 msgid "Pending Invites"
 msgstr ""
 
-#: src/routes/__root.tsx:405
+#: src/routes/__root.tsx:411
 msgid "Per-env overrides"
 msgstr ""
 
@@ -1291,7 +1291,7 @@ msgstr ""
 msgid "Project Settings"
 msgstr "प्रोजेक्ट सेटिंग्स"
 
-#: src/routes/__root.tsx:394
+#: src/routes/__root.tsx:400
 msgid "Projects"
 msgstr "प्रोजेक्ट"
 
@@ -1299,11 +1299,11 @@ msgstr "प्रोजेक्ट"
 msgid "Projects group environments and configurations together."
 msgstr ""
 
-#: src/routes/__root.tsx:454
+#: src/routes/__root.tsx:460
 msgid "Protected by Firebase Authentication."
 msgstr ""
 
-#: src/routes/__root.tsx:418
+#: src/routes/__root.tsx:424
 msgid "Real-time"
 msgstr "रीयल-टाइम"
 
@@ -1541,16 +1541,16 @@ msgstr ""
 msgid "Side by side"
 msgstr ""
 
-#: src/routes/__root.tsx:383
+#: src/routes/__root.tsx:389
 msgid "Sign in to manage your configuration platform."
 msgstr ""
 
-#: src/routes/__root.tsx:450
+#: src/routes/__root.tsx:456
 msgid "Sign in with Google"
 msgstr "Google से साइन इन करें"
 
 #: src/routes/__root.tsx:176
-#: src/routes/__root.tsx:354
+#: src/routes/__root.tsx:360
 msgid "Sign out"
 msgstr "साइन आउट"
 
@@ -1705,7 +1705,7 @@ msgstr ""
 msgid "Track all configuration changes for SOC2 compliance."
 msgstr ""
 
-#: src/routes/__root.tsx:346
+#: src/routes/__root.tsx:352
 msgid "Try a different account"
 msgstr ""
 
@@ -1815,7 +1815,7 @@ msgstr ""
 msgid "Value served when rule matches"
 msgstr ""
 
-#: src/routes/__root.tsx:410
+#: src/routes/__root.tsx:416
 msgid "Versioned"
 msgstr ""
 
@@ -1869,6 +1869,6 @@ msgstr ""
 msgid "You're all set!"
 msgstr ""
 
-#: src/routes/__root.tsx:338
+#: src/routes/__root.tsx:344
 msgid "Your account is not authorized to access this portal. Contact the project owner to request access."
 msgstr ""
