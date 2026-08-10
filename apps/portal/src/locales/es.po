@@ -881,7 +881,7 @@ msgstr ""
 msgid "Google Chat"
 msgstr ""
 
-#: src/components/webhook-preview.tsx:138
+#: src/components/webhook-preview.tsx:195
 #: src/routes/api-keys.tsx:67
 msgid "Hide"
 msgstr ""
@@ -1254,7 +1254,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: src/components/webhook-preview.tsx:128
+#: src/components/webhook-preview.tsx:178
 msgid "Preview payload"
 msgstr ""
 
@@ -1405,7 +1405,7 @@ msgstr ""
 msgid "Rule {0}"
 msgstr ""
 
-#: src/components/webhook-preview.tsx:136
+#: src/components/webhook-preview.tsx:187
 msgid "Sample payload"
 msgstr ""
 
