@@ -11,7 +11,7 @@
         "id": "intro",
         "type": "modal",
         "title": "🔑 Connect your app with an API key",
-        "description": "API keys let your app fetch config values from the portal. Each environment gets its own key.\n\nExample flow:\n1. Generate a key for 'production'\n2. Add it to your app: SDK.init({ clientId: 'cid_xxx' })\n3. Fetch flags: const darkMode = config.get('feature.dark_mode')",
+        "description": "API keys let your app fetch config values from the portal. Each environment gets its own key.\n\n**Example flow:**\n1. Generate a key for `production`\n2. Add it to your app: `SDK.init({ clientId: 'cid_xxx' })`\n3. Fetch flags: `const darkMode = config.get('feature.dark_mode')`",
         "actions": [
           { "label": "Generate a key" },
           { "label": "Skip", "dismiss": true }
@@ -30,7 +30,7 @@
         "id": "done",
         "type": "modal",
         "title": "✅ Ready to integrate",
-        "description": "Copy the key and use it in your app's SDK initialization.\n\nSecurity tip: Never expose production keys in client-side code. Use the key server-side or in your mobile app's secure storage.",
+        "description": "Copy the key and use it in your app's SDK initialization.\n\n> **Security tip:** Never expose production keys in client-side code. Use the key server-side or in your mobile app's secure storage.",
         "actions": [{ "label": "Got it", "dismiss": true }]
       }
     ]

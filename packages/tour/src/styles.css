@@ -90,3 +90,13 @@
   border-color: hsl(221 83% 53%);
   color: hsl(221 83% 53%);
 }
+
+/* Markdown rendering */
+.tour-md { display: flex; flex-direction: column; gap: 4px; }
+.tour-md-line { display: block; }
+.tour-md-list { margin: 4px 0; padding-left: 18px; }
+.tour-md-list li { margin: 2px 0; }
+.tour-md-blockquote { border-left: 3px solid var(--tour-muted, hsl(0 0% 80%)); padding-left: 10px; margin: 4px 0; color: var(--tour-muted, hsl(0 0% 45%)); font-style: italic; }
+.tour-md-code { background: var(--tour-hover, hsl(0 0% 95%)); padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.9em; }
+.tour-md-link { color: hsl(221 83% 53%); text-decoration: underline; text-underline-offset: 2px; }
+.tour-md-link:hover { opacity: 0.8; }
