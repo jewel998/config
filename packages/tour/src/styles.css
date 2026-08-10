@@ -24,7 +24,7 @@
 
 .tour-modal-image { width: 100%; border-radius: 8px; margin-bottom: 16px; }
 .tour-modal-title { font-size: 18px; font-weight: 600; margin: 0 0 8px; }
-.tour-modal-description { font-size: 14px; color: var(--tour-muted, hsl(0 0% 45%)); margin: 0 0 20px; line-height: 1.5; }
+.tour-modal-description { font-size: 14px; color: var(--tour-muted, hsl(0 0% 45%)); margin: 0 0 20px; line-height: 1.5; white-space: pre-line; }
 .tour-modal-footer { display: flex; align-items: center; justify-content: space-between; }
 .tour-modal-actions { display: flex; gap: 8px; }
 
@@ -44,7 +44,7 @@
 }
 
 .tour-popover-title { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
-.tour-popover-description { font-size: 13px; color: var(--tour-muted, hsl(0 0% 45%)); margin: 0 0 12px; line-height: 1.4; }
+.tour-popover-description { font-size: 13px; color: var(--tour-muted, hsl(0 0% 45%)); margin: 0 0 12px; line-height: 1.4; white-space: pre-line; }
 .tour-popover-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .tour-popover-actions { display: flex; gap: 6px; }
 
