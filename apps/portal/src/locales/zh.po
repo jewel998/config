@@ -13,11 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/routes/__root.tsx:322
+#: src/routes/__root.tsx:335
 msgid "Access Denied"
 msgstr "访问被拒绝"
 
-#: src/routes/__root.tsx:452
+#: src/routes/__root.tsx:465
 msgid "Access is by request only. Rights of Admission Reserved."
 msgstr ""
 
@@ -161,7 +161,7 @@ msgstr ""
 
 #: src/components/audit-log-viewer.tsx:141
 #: src/components/command-palette.tsx:105
-#: src/routes/__root.tsx:225
+#: src/routes/__root.tsx:226
 #: src/routes/api-keys.tsx:356
 msgid "API Keys"
 msgstr "API 密钥"
@@ -188,7 +188,7 @@ msgstr ""
 msgid "Attribute"
 msgstr ""
 
-#: src/routes/__root.tsx:226
+#: src/routes/__root.tsx:227
 msgid "Audit"
 msgstr ""
 
@@ -241,7 +241,7 @@ msgstr ""
 msgid "Change Details"
 msgstr ""
 
-#: src/routes/__root.tsx:100
+#: src/routes/__root.tsx:101
 msgid "Change language"
 msgstr ""
 
@@ -295,7 +295,7 @@ msgstr ""
 msgid "Conditions"
 msgstr ""
 
-#: src/routes/__root.tsx:189
+#: src/routes/__root.tsx:190
 msgid "Config"
 msgstr "配置"
 
@@ -315,11 +315,11 @@ msgstr ""
 msgid "Config key (e.g. feature.enabled)"
 msgstr ""
 
-#: src/routes/__root.tsx:367
+#: src/routes/__root.tsx:380
 msgid "Config Portal"
 msgstr "配置门户"
 
-#: src/routes/__root.tsx:400
+#: src/routes/__root.tsx:413
 msgid "Config publishing"
 msgstr ""
 
@@ -334,7 +334,7 @@ msgstr ""
 
 #: src/components/audit-log-viewer.tsx:139
 #: src/components/command-palette.tsx:89
-#: src/routes/__root.tsx:223
+#: src/routes/__root.tsx:224
 #: src/routes/configs.tsx:313
 msgid "Configs"
 msgstr "配置项"
@@ -650,7 +650,7 @@ msgid "Environment updated"
 msgstr ""
 
 #: src/components/webhook-form-modal.tsx:288
-#: src/routes/__root.tsx:389
+#: src/routes/__root.tsx:402
 #: src/routes/environments.tsx:165
 #: src/routes/settings.tsx:293
 msgid "Environments"
@@ -820,7 +820,7 @@ msgstr ""
 msgid "Feature Flags"
 msgstr ""
 
-#: src/routes/__root.tsx:408
+#: src/routes/__root.tsx:421
 msgid "Firebase sync"
 msgstr ""
 
@@ -837,7 +837,7 @@ msgid "Fresh"
 msgstr ""
 
 #: src/components/command-palette.tsx:157
-#: src/routes/__root.tsx:169
+#: src/routes/__root.tsx:170
 msgid "GDPR & Privacy"
 msgstr ""
 
@@ -995,7 +995,7 @@ msgstr ""
 msgid "More actions"
 msgstr ""
 
-#: src/routes/__root.tsx:384
+#: src/routes/__root.tsx:397
 msgid "Multi-project scoping"
 msgstr ""
 
@@ -1185,7 +1185,7 @@ msgstr ""
 msgid "Pending Invites"
 msgstr ""
 
-#: src/routes/__root.tsx:392
+#: src/routes/__root.tsx:405
 msgid "Per-env overrides"
 msgstr ""
 
@@ -1210,7 +1210,7 @@ msgid "Potential PII detected in config value"
 msgstr ""
 
 #: src/components/command-palette.tsx:123
-#: src/routes/__root.tsx:163
+#: src/routes/__root.tsx:164
 #: src/routes/preferences.tsx:348
 #: src/routes/preferences.tsx:356
 msgid "Preferences"
@@ -1291,7 +1291,7 @@ msgstr ""
 msgid "Project Settings"
 msgstr "项目设置"
 
-#: src/routes/__root.tsx:381
+#: src/routes/__root.tsx:394
 msgid "Projects"
 msgstr "项目"
 
@@ -1299,11 +1299,11 @@ msgstr "项目"
 msgid "Projects group environments and configurations together."
 msgstr ""
 
-#: src/routes/__root.tsx:441
+#: src/routes/__root.tsx:454
 msgid "Protected by Firebase Authentication."
 msgstr ""
 
-#: src/routes/__root.tsx:405
+#: src/routes/__root.tsx:418
 msgid "Real-time"
 msgstr "实时"
 
@@ -1449,7 +1449,7 @@ msgstr ""
 #: src/components/audit-log-viewer.tsx:140
 #: src/components/command-palette.tsx:133
 #: src/components/segment-manager.tsx:83
-#: src/routes/__root.tsx:224
+#: src/routes/__root.tsx:225
 #: src/routes/segments.tsx:42
 msgid "Segments"
 msgstr ""
@@ -1510,7 +1510,7 @@ msgstr ""
 msgid "Send Invite"
 msgstr ""
 
-#: src/routes/__root.tsx:230
+#: src/routes/__root.tsx:231
 msgid "Settings"
 msgstr "设置"
 
@@ -1541,16 +1541,16 @@ msgstr ""
 msgid "Side by side"
 msgstr ""
 
-#: src/routes/__root.tsx:370
+#: src/routes/__root.tsx:383
 msgid "Sign in to manage your configuration platform."
 msgstr ""
 
-#: src/routes/__root.tsx:437
+#: src/routes/__root.tsx:450
 msgid "Sign in with Google"
 msgstr "使用 Google 登录"
 
-#: src/routes/__root.tsx:175
-#: src/routes/__root.tsx:341
+#: src/routes/__root.tsx:176
+#: src/routes/__root.tsx:354
 msgid "Sign out"
 msgstr "退出登录"
 
@@ -1622,7 +1622,7 @@ msgid "Targeting rules saved"
 msgstr ""
 
 #: src/components/audit-log-viewer.tsx:143
-#: src/routes/__root.tsx:227
+#: src/routes/__root.tsx:228
 msgid "Team"
 msgstr ""
 
@@ -1697,7 +1697,7 @@ msgstr ""
 msgid "Timezone"
 msgstr "时区"
 
-#: src/routes/__root.tsx:74
+#: src/routes/__root.tsx:75
 msgid "Toggle theme"
 msgstr ""
 
@@ -1705,7 +1705,7 @@ msgstr ""
 msgid "Track all configuration changes for SOC2 compliance."
 msgstr ""
 
-#: src/routes/__root.tsx:333
+#: src/routes/__root.tsx:346
 msgid "Try a different account"
 msgstr ""
 
@@ -1815,7 +1815,7 @@ msgstr ""
 msgid "Value served when rule matches"
 msgstr ""
 
-#: src/routes/__root.tsx:397
+#: src/routes/__root.tsx:410
 msgid "Versioned"
 msgstr ""
 
@@ -1869,6 +1869,6 @@ msgstr ""
 msgid "You're all set!"
 msgstr ""
 
-#: src/routes/__root.tsx:325
+#: src/routes/__root.tsx:338
 msgid "Your account is not authorized to access this portal. Contact the project owner to request access."
 msgstr ""

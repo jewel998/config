@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import type {
+  StepCondition,
   TourFlow,
   TourProviderProps,
   TourState,
@@ -27,7 +28,7 @@ interface TourContextValue {
   goTo: (stepId: string) => void;
   dismiss: () => void;
   startFlow: (flowId: string) => void;
-  reset: (flowId: string) => void;
+  reset: (flowId?: string) => void;
 }
 
 const TourContext = createContext<TourContextValue | null>(null);
@@ -54,8 +55,27 @@ function loadState(): Partial<TourState> {
 function saveState(state: TourState) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch {
-    /* ignore */
+  } catch {}
+}
+
+// ─── Condition Evaluation ─────────────────────────────────────
+
+function evaluateCondition(
+  condition: StepCondition,
+  context: Record<string, unknown>,
+): boolean {
+  const value = context[condition.key];
+  const op = condition.op ?? "exists";
+
+  switch (op) {
+    case "exists":
+      return !!value;
+    case "equals":
+      return value === condition.value;
+    case "not_equals":
+      return value !== condition.value;
+    default:
+      return false;
   }
 }
 
@@ -64,8 +84,9 @@ function saveState(state: TourState) {
 export function TourProvider({
   flows,
   children,
+  currentPath = "",
   onNavigate,
-  getCurrentPath,
+  context = {},
 }: TourProviderProps) {
   const [state, setState] = useState<TourState>(() => {
     const saved = loadState();
@@ -78,21 +99,32 @@ export function TourProvider({
   });
 
   const waitCleanupRef = useRef<(() => void) | null>(null);
+  const currentPathRef = useRef(currentPath);
+  currentPathRef.current = currentPath;
 
   // Persist state
   useEffect(() => {
     saveState(state);
   }, [state]);
 
-  // Auto-trigger flows on first visit
+  // ─── Auto-trigger flows based on context conditions ─────────
+
   useEffect(() => {
     if (state.activeFlowId || state.dismissed) return;
+
     for (const flow of flows) {
       if (!flow.trigger) continue;
-      if (
-        flow.trigger.type === "first-visit" &&
-        !state.completedFlows.includes(flow.id)
-      ) {
+      if (state.completedFlows.includes(flow.id)) continue;
+
+      let shouldTrigger = false;
+
+      if (flow.trigger.type === "first-visit") {
+        shouldTrigger = true;
+      } else if (flow.trigger.type === "context" && flow.trigger.condition) {
+        shouldTrigger = evaluateCondition(flow.trigger.condition, context);
+      }
+
+      if (shouldTrigger) {
         setState((s) => ({
           ...s,
           activeFlowId: flow.id,
@@ -102,71 +134,101 @@ export function TourProvider({
         break;
       }
     }
-  }, [flows, state.activeFlowId, state.dismissed, state.completedFlows]);
+  }, [
+    flows,
+    state.activeFlowId,
+    state.dismissed,
+    state.completedFlows,
+    context,
+  ]);
+
+  // ─── Resolve current flow/step (with skipIf/showIf) ─────────
 
   const currentFlow = useMemo(
     () => flows.find((f) => f.id === state.activeFlowId) ?? null,
     [flows, state.activeFlowId],
   );
 
-  const currentStep = useMemo(
-    () => currentFlow?.steps[state.currentStepIndex] ?? null,
-    [currentFlow, state.currentStepIndex],
-  );
+  const resolvedStepIndex = useMemo(() => {
+    if (!currentFlow) return state.currentStepIndex;
+    let idx = state.currentStepIndex;
+
+    // Skip steps that have skipIf=true or showIf=false
+    while (idx < currentFlow.steps.length) {
+      const step = currentFlow.steps[idx];
+      if (step.skipIf && evaluateCondition(step.skipIf, context)) {
+        idx++;
+        continue;
+      }
+      if (step.showIf && !evaluateCondition(step.showIf, context)) {
+        idx++;
+        continue;
+      }
+      break;
+    }
+    return idx;
+  }, [currentFlow, state.currentStepIndex, context]);
+
+  const currentStep = useMemo(() => {
+    if (!currentFlow || resolvedStepIndex >= currentFlow.steps.length)
+      return null;
+    return currentFlow.steps[resolvedStepIndex];
+  }, [currentFlow, resolvedStepIndex]);
 
   const totalSteps = currentFlow?.steps.length ?? 0;
 
-  // ─── WaitFor Engine ───────────────────────────────────────
+  // ─── Page check ─────────────────────────────────────────────
+
+  const isOnCorrectPage = useMemo(() => {
+    if (!currentStep?.page) return true;
+    return currentPath.startsWith(currentStep.page);
+  }, [currentStep, currentPath]);
+
+  // ─── WaitFor Engine ─────────────────────────────────────────
 
   useEffect(() => {
-    // Cleanup previous wait
     waitCleanupRef.current?.();
     waitCleanupRef.current = null;
 
-    if (!currentStep?.waitFor) return;
-    const condition = currentStep.waitFor;
+    if (!currentStep?.waitFor || !isOnCorrectPage) return;
 
     const advance = () => {
       waitCleanupRef.current?.();
       waitCleanupRef.current = null;
-      setState((s) => {
-        const nextIdx = s.currentStepIndex + 1;
-        const flow = flows.find((f) => f.id === s.activeFlowId);
-        if (!flow || nextIdx >= flow.steps.length) {
-          return {
-            ...s,
-            activeFlowId: null,
-            currentStepIndex: 0,
-            completedFlows: [...s.completedFlows, s.activeFlowId!],
-          };
-        }
-        return { ...s, currentStepIndex: nextIdx };
-      });
+      advanceStep();
     };
 
-    waitCleanupRef.current = setupWait(condition, advance, getCurrentPath);
+    waitCleanupRef.current = setupWait(
+      currentStep.waitFor,
+      advance,
+      currentPathRef,
+    );
 
     return () => {
       waitCleanupRef.current?.();
       waitCleanupRef.current = null;
     };
-  }, [
-    currentStep,
-    state.currentStepIndex,
-    state.activeFlowId,
-    flows,
-    getCurrentPath,
-  ]);
+  }, [currentStep, isOnCorrectPage, resolvedStepIndex, state.activeFlowId]);
 
-  // ─── Page check: hide step if on wrong page ────────────────
+  // ─── Route-change detection (reactive via prop) ─────────────
 
-  const isOnCorrectPage = useMemo(() => {
-    if (!currentStep?.page) return true;
-    if (!getCurrentPath) return true;
-    return getCurrentPath().startsWith(currentStep.page);
-  }, [currentStep, getCurrentPath]);
+  const prevPathRef = useRef(currentPath);
+  useEffect(() => {
+    if (prevPathRef.current === currentPath) return;
+    prevPathRef.current = currentPath;
 
-  // ─── Handle action steps (auto-navigate) ───────────────────
+    // Check if current waitFor is route-change and matches
+    if (
+      currentStep?.waitFor?.type === "route-change" &&
+      currentPath.startsWith(currentStep.waitFor.path)
+    ) {
+      waitCleanupRef.current?.();
+      waitCleanupRef.current = null;
+      advanceStep();
+    }
+  }, [currentPath]);
+
+  // ─── Auto-navigate for action steps ─────────────────────────
 
   useEffect(() => {
     if (
@@ -179,9 +241,9 @@ export function TourProvider({
     }
   }, [currentStep, onNavigate]);
 
-  // ─── Actions ───────────────────────────────────────────────
+  // ─── Actions ────────────────────────────────────────────────
 
-  const next = useCallback(() => {
+  function advanceStep() {
     setState((s) => {
       const flow = flows.find((f) => f.id === s.activeFlowId);
       if (!flow) return s;
@@ -196,7 +258,9 @@ export function TourProvider({
       }
       return { ...s, currentStepIndex: nextIdx };
     });
-  }, [flows]);
+  }
+
+  const next = useCallback(() => advanceStep(), [flows]);
 
   const prev = useCallback(() => {
     setState((s) => ({
@@ -236,10 +300,15 @@ export function TourProvider({
     }));
   }, []);
 
-  const reset = useCallback((flowId: string) => {
+  const reset = useCallback((flowId?: string) => {
     setState((s) => ({
       ...s,
-      completedFlows: s.completedFlows.filter((id) => id !== flowId),
+      activeFlowId: null,
+      currentStepIndex: 0,
+      dismissed: false,
+      completedFlows: flowId
+        ? s.completedFlows.filter((id) => id !== flowId)
+        : [],
     }));
   }, []);
 
@@ -264,7 +333,7 @@ export function TourProvider({
 function setupWait(
   condition: WaitCondition,
   onMet: () => void,
-  getCurrentPath?: () => string,
+  currentPathRef: React.RefObject<string>,
 ): () => void {
   switch (condition.type) {
     case "delay": {
@@ -286,9 +355,8 @@ function setupWait(
     }
 
     case "element-visible": {
-      // Check immediately
       if (document.querySelector(condition.selector)) {
-        onMet();
+        setTimeout(onMet, 100); // Small delay to let DOM settle
         return () => {};
       }
       const observer = new MutationObserver(() => {
@@ -303,7 +371,7 @@ function setupWait(
 
     case "element-hidden": {
       if (!document.querySelector(condition.selector)) {
-        onMet();
+        setTimeout(onMet, 100);
         return () => {};
       }
       const observer = new MutationObserver(() => {
@@ -317,18 +385,14 @@ function setupWait(
     }
 
     case "route-change": {
-      if (getCurrentPath?.().startsWith(condition.path)) {
-        onMet();
+      // Route changes are handled reactively via currentPath prop
+      // This is a fallback check in case the effect fires after path changed
+      if (currentPathRef.current?.startsWith(condition.path)) {
+        setTimeout(onMet, 100);
         return () => {};
       }
-      // Poll for route changes (works with any router)
-      const interval = setInterval(() => {
-        if (getCurrentPath?.().startsWith(condition.path)) {
-          onMet();
-          clearInterval(interval);
-        }
-      }, 200);
-      return () => clearInterval(interval);
+      // The actual route-change detection happens in the useEffect above
+      return () => {};
     }
 
     case "event": {
