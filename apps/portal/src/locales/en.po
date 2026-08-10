@@ -57,7 +57,7 @@ msgstr "Add"
 msgid "Add a deployment target for your project."
 msgstr "Add a deployment target for your project."
 
-#: src/components/config-form-modal.tsx:218
+#: src/components/config-form-modal.tsx:224
 msgid "Add a new configuration entry."
 msgstr "Add a new configuration entry."
 
@@ -73,7 +73,7 @@ msgstr "Add an environment"
 msgid "Add condition"
 msgstr "Add condition"
 
-#: src/components/config-form-modal.tsx:209
+#: src/components/config-form-modal.tsx:215
 #: src/routes/configs.tsx:347
 msgid "Add Config"
 msgstr "Add Config"
@@ -83,7 +83,7 @@ msgid "Add environments like production, staging, or development."
 msgstr "Add environments like production, staging, or development."
 
 #: src/components/rbac-manager.tsx:76
-#: src/routes/team.tsx:197
+#: src/routes/team.tsx:203
 msgid "Add Member"
 msgstr "Add Member"
 
@@ -139,11 +139,11 @@ msgstr "Allowed domains (comma-separated, e.g. example.com, app.example.com)"
 msgid "Allowed domains (comma-separated)"
 msgstr "Allowed domains (comma-separated)"
 
-#: src/components/config-form-modal.tsx:391
+#: src/components/config-form-modal.tsx:397
 msgid "Allowed values (comma-separated)"
 msgstr "Allowed values (comma-separated)"
 
-#: src/components/config-form-modal.tsx:240
+#: src/components/config-form-modal.tsx:246
 msgid "Alphanumeric, dots, and underscores only."
 msgstr "Alphanumeric, dots, and underscores only."
 
@@ -209,11 +209,11 @@ msgstr "Available Variables"
 msgid "Before"
 msgstr "Before"
 
-#: src/components/config-form-modal.tsx:412
+#: src/components/config-form-modal.tsx:418
 msgid "Boolean values are constrained to true/false by default."
 msgstr "Boolean values are constrained to true/false by default."
 
-#: src/components/config-form-modal.tsx:462
+#: src/components/config-form-modal.tsx:468
 #: src/components/date-picker-schedule.tsx:140
 #: src/components/environment-form.tsx:95
 #: src/components/pii-warning.tsx:57
@@ -237,7 +237,7 @@ msgstr "Cancel"
 msgid "Cannot add self as prerequisite (circular dependency)."
 msgstr "Cannot add self as prerequisite (circular dependency)."
 
-#: src/routes/team.tsx:117
+#: src/routes/team.tsx:118
 msgid "Cannot remove the last admin"
 msgstr "Cannot remove the last admin"
 
@@ -256,6 +256,10 @@ msgstr "changed"
 #: src/components/lifecycle-state-badge.tsx:54
 msgid "Changed"
 msgstr "Changed"
+
+#: src/components/config-form-modal.tsx:164
+msgid "Changes will affect live users. Are you sure you want to continue?"
+msgstr "Changes will affect live users. Are you sure you want to continue?"
 
 #: src/components/date-picker-schedule.tsx:231
 msgid "Clear"
@@ -303,7 +307,7 @@ msgstr "Conditions"
 msgid "Config"
 msgstr "Config"
 
-#: src/components/config-form-modal.tsx:176
+#: src/components/config-form-modal.tsx:182
 msgid "Config created"
 msgstr "Config created"
 
@@ -315,7 +319,7 @@ msgstr "Config deleted"
 msgid "Config Differences"
 msgstr "Config Differences"
 
-#: src/components/config-form-modal.tsx:229
+#: src/components/config-form-modal.tsx:235
 msgid "Config key (e.g. feature.enabled)"
 msgstr "Config key (e.g. feature.enabled)"
 
@@ -327,7 +331,7 @@ msgstr "Config Portal"
 msgid "Config publishing"
 msgstr "Config publishing"
 
-#: src/components/config-form-modal.tsx:176
+#: src/components/config-form-modal.tsx:182
 msgid "Config updated"
 msgstr "Config updated"
 
@@ -371,6 +375,10 @@ msgstr "Confirm Sync"
 msgid "Confirm?"
 msgstr "Confirm?"
 
+#: src/components/config-form-modal.tsx:165
+msgid "Continue"
+msgstr "Continue"
+
 #: src/components/copy-button.tsx:26
 #: src/routes/api-keys.tsx:77
 msgid "Copied to clipboard"
@@ -385,7 +393,7 @@ msgstr "Copied!"
 msgid "Copy"
 msgstr "Copy"
 
-#: src/components/config-form-modal.tsx:454
+#: src/components/config-form-modal.tsx:460
 #: src/components/onboarding-stepper.tsx:183
 #: src/components/onboarding-stepper.tsx:209
 #: src/components/segment-manager.tsx:194
@@ -396,7 +404,7 @@ msgstr "Copy"
 msgid "Create"
 msgstr "Create"
 
-#: src/components/config-form-modal.tsx:216
+#: src/components/config-form-modal.tsx:222
 msgid "Create a copy with a new key."
 msgstr "Create a copy with a new key."
 
@@ -558,11 +566,11 @@ msgstr "Display Name"
 msgid "Duplicate"
 msgstr "Duplicate"
 
-#: src/components/config-form-modal.tsx:207
+#: src/components/config-form-modal.tsx:213
 msgid "Duplicate Config"
 msgstr "Duplicate Config"
 
-#: src/components/config-form-modal.tsx:383
+#: src/components/config-form-modal.tsx:389
 msgid "e.g. ^https?://"
 msgstr "e.g. ^https?://"
 
@@ -570,7 +578,7 @@ msgstr "e.g. ^https?://"
 msgid "e.g. production, staging"
 msgstr "e.g. production, staging"
 
-#: src/components/config-form-modal.tsx:394
+#: src/components/config-form-modal.tsx:400
 msgid "e.g. small, medium, large"
 msgstr "e.g. small, medium, large"
 
@@ -591,7 +599,7 @@ msgstr "e.g., Slack #deployments"
 msgid "Edit"
 msgstr "Edit"
 
-#: src/components/config-form-modal.tsx:205
+#: src/components/config-form-modal.tsx:211
 msgid "Edit Config"
 msgstr "Edit Config"
 
@@ -615,7 +623,7 @@ msgstr "Email address"
 msgid "Enable"
 msgstr "Enable"
 
-#: src/components/config-form-modal.tsx:295
+#: src/components/config-form-modal.tsx:301
 msgid "Enter a JSON array"
 msgstr "Enter a JSON array"
 
@@ -623,7 +631,7 @@ msgstr "Enter a JSON array"
 msgid "Enter email address..."
 msgstr "Enter email address..."
 
-#: src/components/config-form-modal.tsx:294
+#: src/components/config-form-modal.tsx:300
 msgid "Enter valid JSON"
 msgstr "Enter valid JSON"
 
@@ -692,7 +700,7 @@ msgstr "Export failed"
 msgid "Exporting..."
 msgstr "Exporting..."
 
-#: src/routes/team.tsx:169
+#: src/routes/team.tsx:175
 msgid "Failed to add member"
 msgstr "Failed to add member"
 
@@ -760,7 +768,7 @@ msgstr "Failed to delete webhook"
 msgid "Failed to generate API key"
 msgstr "Failed to generate API key"
 
-#: src/routes/team.tsx:144
+#: src/routes/team.tsx:150
 msgid "Failed to remove member"
 msgstr "Failed to remove member"
 
@@ -768,7 +776,7 @@ msgstr "Failed to remove member"
 msgid "Failed to revoke API key"
 msgstr "Failed to revoke API key"
 
-#: src/components/config-form-modal.tsx:180
+#: src/components/config-form-modal.tsx:186
 msgid "Failed to save config"
 msgstr "Failed to save config"
 
@@ -788,7 +796,7 @@ msgstr "Failed to save prerequisites"
 msgid "Failed to save rules"
 msgstr "Failed to save rules"
 
-#: src/routes/team.tsx:178
+#: src/routes/team.tsx:184
 msgid "Failed to send invite"
 msgstr "Failed to send invite"
 
@@ -804,7 +812,7 @@ msgstr "Failed to sync configs"
 msgid "Failed to update environment"
 msgstr "Failed to update environment"
 
-#: src/routes/team.tsx:108
+#: src/routes/team.tsx:109
 msgid "Failed to update role"
 msgstr "Failed to update role"
 
@@ -881,7 +889,7 @@ msgstr "Hide"
 msgid "Hide identical"
 msgstr "Hide identical"
 
-#: src/components/config-form-modal.tsx:431
+#: src/components/config-form-modal.tsx:437
 msgid "Hide Preview"
 msgstr "Hide Preview"
 
@@ -897,23 +905,23 @@ msgstr "I understand, save anyway"
 msgid "identical"
 msgstr "identical"
 
-#: src/components/config-form-modal.tsx:145
+#: src/components/config-form-modal.tsx:140
 msgid "Invalid regex pattern"
 msgstr "Invalid regex pattern"
 
-#: src/components/config-form-modal.tsx:195
+#: src/components/config-form-modal.tsx:201
 msgid "Invalid value"
 msgstr "Invalid value"
 
-#: src/routes/team.tsx:177
+#: src/routes/team.tsx:183
 msgid "Invite sent"
 msgstr "Invite sent"
 
-#: src/components/config-form-modal.tsx:404
+#: src/components/config-form-modal.tsx:410
 msgid "JSON and array values are validated for correct syntax automatically."
 msgstr "JSON and array values are validated for correct syntax automatically."
 
-#: src/components/config-form-modal.tsx:226
+#: src/components/config-form-modal.tsx:232
 #: src/routes/configs.tsx:519
 msgid "Key"
 msgstr "Key"
@@ -975,23 +983,23 @@ msgstr "Manage feature flags and configuration values."
 msgid "Manage project configuration and team access."
 msgstr "Manage project configuration and team access."
 
-#: src/routes/team.tsx:187
+#: src/routes/team.tsx:193
 msgid "Manage project members and their roles."
 msgstr "Manage project members and their roles."
 
-#: src/components/config-form-modal.tsx:364
+#: src/components/config-form-modal.tsx:370
 msgid "Max value"
 msgstr "Max value"
 
-#: src/routes/team.tsx:166
+#: src/routes/team.tsx:172
 msgid "Member added"
 msgstr "Member added"
 
-#: src/routes/team.tsx:141
+#: src/routes/team.tsx:147
 msgid "Member removed"
 msgstr "Member removed"
 
-#: src/routes/team.tsx:208
+#: src/routes/team.tsx:214
 msgid "Members"
 msgstr "Members"
 
@@ -1003,7 +1011,7 @@ msgstr "Message Template"
 msgid "Microsoft Teams"
 msgstr "Microsoft Teams"
 
-#: src/components/config-form-modal.tsx:352
+#: src/components/config-form-modal.tsx:358
 msgid "Min value"
 msgstr "Min value"
 
@@ -1090,11 +1098,11 @@ msgstr "No environments yet"
 msgid "No environments yet."
 msgstr "No environments yet."
 
-#: src/components/config-form-modal.tsx:368
+#: src/components/config-form-modal.tsx:374
 msgid "No maximum"
 msgstr "No maximum"
 
-#: src/components/config-form-modal.tsx:356
+#: src/components/config-form-modal.tsx:362
 msgid "No minimum"
 msgstr "No minimum"
 
@@ -1151,7 +1159,7 @@ msgstr "None configured"
 msgid "Not set"
 msgstr "Not set"
 
-#: src/components/config-form-modal.tsx:307
+#: src/components/config-form-modal.tsx:313
 msgid "Numeric value"
 msgstr "Numeric value"
 
@@ -1163,7 +1171,7 @@ msgstr "Operation failed"
 msgid "Operator"
 msgstr "Operator"
 
-#: src/components/config-form-modal.tsx:343
+#: src/components/config-form-modal.tsx:349
 msgid "optional"
 msgstr "optional"
 
@@ -1181,7 +1189,7 @@ msgstr "Overwrite existing data?"
 
 #: src/components/rbac-manager.tsx:128
 #: src/routes/settings.tsx:562
-#: src/routes/team.tsx:264
+#: src/routes/team.tsx:270
 msgid "Owner"
 msgstr "Owner"
 
@@ -1193,11 +1201,11 @@ msgstr "Pause"
 msgid "Paused"
 msgstr "Paused"
 
-#: src/routes/team.tsx:313
+#: src/routes/team.tsx:319
 msgid "Pending"
 msgstr "Pending"
 
-#: src/routes/team.tsx:293
+#: src/routes/team.tsx:299
 msgid "Pending Invites"
 msgstr "Pending Invites"
 
@@ -1257,6 +1265,7 @@ msgstr "Priority"
 msgid "Production"
 msgstr "Production"
 
+#: src/components/config-form-modal.tsx:163
 #: src/components/environment-form.tsx:78
 msgid "Production environment"
 msgstr "Production environment"
@@ -1323,22 +1332,27 @@ msgstr "Protected by Firebase Authentication."
 msgid "Real-time"
 msgstr "Real-time"
 
-#: src/components/config-form-modal.tsx:380
+#: src/components/config-form-modal.tsx:386
 msgid "Regex pattern"
 msgstr "Regex pattern"
 
 #: src/components/date-picker-schedule.tsx:140
 #: src/components/schedule-ui.tsx:73
+#: src/routes/team.tsx:125
 msgid "Remove"
 msgstr "Remove"
+
+#: src/routes/team.tsx:124
+msgid "Remove {memberName} from this project? They will lose access immediately."
+msgstr "Remove {memberName} from this project? They will lose access immediately."
 
 #: src/components/rule-builder.tsx:358
 msgid "Remove group"
 msgstr "Remove group"
 
-#: src/routes/team.tsx:120
-msgid "Remove this member from the project?"
-msgstr "Remove this member from the project?"
+#: src/routes/team.tsx:123
+msgid "Remove member?"
+msgstr "Remove member?"
 
 #: src/components/prerequisite-ui.tsx:54
 msgid "Required value"
@@ -1369,7 +1383,7 @@ msgstr "Revoke key"
 msgid "Revoked"
 msgstr "Revoked"
 
-#: src/routes/team.tsx:105
+#: src/routes/team.tsx:106
 msgid "Role updated"
 msgstr "Role updated"
 
@@ -1494,7 +1508,7 @@ msgstr "Select a project to manage GDPR compliance."
 msgid "Select a project to manage segments."
 msgstr "Select a project to manage segments."
 
-#: src/routes/team.tsx:67
+#: src/routes/team.tsx:68
 msgid "Select a project to manage team access."
 msgstr "Select a project to manage team access."
 
@@ -1542,7 +1556,7 @@ msgstr "Show"
 msgid "Show identical"
 msgstr "Show identical"
 
-#: src/components/config-form-modal.tsx:433
+#: src/components/config-form-modal.tsx:439
 msgid "Show Preview"
 msgstr "Show Preview"
 
@@ -1602,7 +1616,7 @@ msgstr "State change"
 msgid "Storing personal data in config values may violate GDPR. Acknowledge to proceed."
 msgstr "Storing personal data in config values may violate GDPR. Acknowledge to proceed."
 
-#: src/components/config-form-modal.tsx:316
+#: src/components/config-form-modal.tsx:322
 msgid "String value"
 msgstr "String value"
 
@@ -1647,11 +1661,11 @@ msgid "Team"
 msgstr "Team"
 
 #: src/components/command-palette.tsx:149
-#: src/routes/team.tsx:186
+#: src/routes/team.tsx:192
 msgid "Team & Access"
 msgstr "Team & Access"
 
-#: src/routes/team.tsx:190
+#: src/routes/team.tsx:196
 msgid "Team guide"
 msgstr "Team guide"
 
@@ -1701,10 +1715,6 @@ msgstr "Theme"
 msgid "This is a production environment. Changes will affect live users."
 msgstr "This is a production environment. Changes will affect live users."
 
-#: src/components/config-form-modal.tsx:100
-msgid "This is a production environment. Changes will affect live users. Continue?"
-msgstr "This is a production environment. Changes will affect live users. Continue?"
-
 #: src/routes/configs.tsx:360
 msgid "This is a production environment. You have read-only access."
 msgstr "This is a production environment. You have read-only access."
@@ -1733,7 +1743,7 @@ msgstr "Track all configuration changes for SOC2 compliance."
 msgid "Try a different account"
 msgstr "Try a different account"
 
-#: src/components/config-form-modal.tsx:250
+#: src/components/config-form-modal.tsx:256
 #: src/routes/configs.tsx:522
 msgid "Type"
 msgstr "Type"
@@ -1759,11 +1769,11 @@ msgstr "Unlock"
 msgid "Unpin"
 msgstr "Unpin"
 
-#: src/components/config-form-modal.tsx:452
+#: src/components/config-form-modal.tsx:458
 msgid "Update"
 msgstr "Update"
 
-#: src/components/config-form-modal.tsx:214
+#: src/components/config-form-modal.tsx:220
 msgid "Update the configuration value."
 msgstr "Update the configuration value."
 
@@ -1806,32 +1816,32 @@ msgstr "User ID to delete"
 msgid "User ID to export"
 msgstr "User ID to export"
 
-#: src/components/config-form-modal.tsx:341
+#: src/components/config-form-modal.tsx:347
 msgid "Validation Rules"
 msgstr "Validation Rules"
 
 #: src/components/config-detail-panel.tsx:207
-#: src/components/config-form-modal.tsx:272
+#: src/components/config-form-modal.tsx:278
 #: src/components/override-manager.tsx:46
 #: src/components/rule-builder.tsx:307
 #: src/routes/configs.tsx:525
 msgid "Value"
 msgstr "Value"
 
-#: src/components/config-form-modal.tsx:142
+#: src/components/config-form-modal.tsx:137
 msgid "Value does not match pattern: {validationRegex}"
 msgstr "Value does not match pattern: {validationRegex}"
 
-#: src/components/config-form-modal.tsx:131
+#: src/components/config-form-modal.tsx:126
 msgid "Value must be at least {validationMin}"
 msgstr "Value must be at least {validationMin}"
 
-#: src/components/config-form-modal.tsx:134
+#: src/components/config-form-modal.tsx:129
 msgid "Value must be at most {validationMax}"
 msgstr "Value must be at most {validationMax}"
 
 #. placeholder {0}: allowed.join(", ")
-#: src/components/config-form-modal.tsx:154
+#: src/components/config-form-modal.tsx:149
 msgid "Value must be one of: {0}"
 msgstr "Value must be one of: {0}"
 
@@ -1877,11 +1887,11 @@ msgstr "What does this segment represent?"
 msgid "Write"
 msgstr "Write"
 
-#: src/routes/team.tsx:269
+#: src/routes/team.tsx:275
 msgid "You"
 msgstr "You"
 
-#: src/routes/team.tsx:83
+#: src/routes/team.tsx:84
 msgid "You cannot change your own role"
 msgstr "You cannot change your own role"
 

@@ -35,6 +35,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
 import { db } from "@/lib/firebase";
 import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
+import { confirm as confirmDialog } from "@/lib/confirm";
 import type { RBACRole } from "@/lib/types";
 
 const TeamPage = () => {
@@ -117,7 +118,15 @@ const TeamPage = () => {
       toast.error(t`Cannot remove the last admin`);
       return;
     }
-    if (!confirm(t`Remove this member from the project?`)) return;
+    const memberName =
+      profiles[userId]?.displayName || profiles[userId]?.email || userId;
+    const ok = await confirmDialog({
+      title: t`Remove member?`,
+      description: t`Remove ${memberName} from this project? They will lose access immediately.`,
+      confirmLabel: t`Remove`,
+      variant: "destructive",
+    });
+    if (!ok) return;
     try {
       const newRoles = { ...roles };
       delete newRoles[userId];
@@ -125,8 +134,6 @@ const TeamPage = () => {
         authorizedUsers: arrayRemove(userId),
         roles: newRoles,
       });
-      const memberName =
-        profiles[userId]?.displayName || profiles[userId]?.email || userId;
       await writeAuditEntry(
         selectedProjectId,
         buildAuditEntry({

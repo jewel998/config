@@ -4,6 +4,8 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { confirm } from "@/lib/confirm";
+
 import { ResponsiveModal } from "@/components/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,14 +96,7 @@ export const ConfigFormModal = ({
     }
   };
 
-  const handleSubmit = () => {
-    if (isProductionEnv) {
-      const confirmed = window.confirm(
-        t`This is a production environment. Changes will affect live users. Continue?`,
-      );
-      if (!confirmed) return;
-    }
-
+  const handleSubmit = async () => {
     const fieldErrors: { key?: string; value?: string } = {};
 
     const keyResult = configKeySchema.safeParse(key);
@@ -160,6 +155,17 @@ export const ConfigFormModal = ({
     if (fieldErrors.key || fieldErrors.value) {
       setErrors(fieldErrors);
       return;
+    }
+
+    // Confirm for production AFTER validation passes
+    if (isProductionEnv) {
+      const ok = await confirm({
+        title: t`Production environment`,
+        description: t`Changes will affect live users. Are you sure you want to continue?`,
+        confirmLabel: t`Continue`,
+        variant: "destructive",
+      });
+      if (!ok) return;
     }
 
     setErrors({});
