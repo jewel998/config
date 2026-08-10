@@ -1,0 +1,38 @@
+[
+  {
+    "id": "tour-api-keys",
+    "name": "API Keys Guide",
+    "trigger": {
+      "type": "context",
+      "condition": { "key": "needsApiKey", "op": "exists" }
+    },
+    "steps": [
+      {
+        "id": "intro",
+        "type": "modal",
+        "title": "🔑 Get your API key",
+        "description": "API keys let your app connect to Config Portal and fetch configs in real-time. Let's generate one.",
+        "actions": [
+          { "label": "Show me" },
+          { "label": "Skip", "dismiss": true }
+        ]
+      },
+      {
+        "id": "nav-api-keys",
+        "type": "tooltip",
+        "target": "[data-tour='nav-api-keys']",
+        "title": "Go to API Keys",
+        "description": "Click here to manage your SDK keys.",
+        "position": "bottom",
+        "waitFor": { "type": "route-change", "path": "/api-keys" }
+      },
+      {
+        "id": "done",
+        "type": "modal",
+        "title": "✅ You're connected!",
+        "description": "Use this key in your app's SDK to fetch config values. Check the docs for integration guides.",
+        "actions": [{ "label": "Got it", "dismiss": true }]
+      }
+    ]
+  }
+]

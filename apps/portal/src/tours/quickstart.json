@@ -1,7 +1,7 @@
 [
   {
-    "id": "create-project",
-    "name": "Create Your First Project",
+    "id": "onboarding-welcome",
+    "name": "Welcome",
     "trigger": {
       "type": "context",
       "condition": { "key": "hasProject", "op": "equals", "value": false }
@@ -11,18 +11,18 @@
         "id": "welcome",
         "type": "modal",
         "title": "👋 Welcome to Config Portal",
-        "description": "Let's get you set up. First, we'll create a project to group your configs.",
+        "description": "Manage feature flags and remote configuration for your apps — completely free. Let's get started by creating your first project.",
         "actions": [
-          { "label": "Create project" },
-          { "label": "Skip", "dismiss": true }
+          { "label": "Create my first project" },
+          { "label": "I'll explore on my own", "dismiss": true }
         ]
       },
       {
-        "id": "click-project-switcher",
+        "id": "project-switcher",
         "type": "spotlight",
         "target": "[data-tour='project-switcher']",
         "title": "Create a project",
-        "description": "Click here to create your first project. Projects group configs by app or service.",
+        "description": "A project groups all your configs for one app or service. Click here to get started.",
         "position": "bottom",
         "waitFor": {
           "type": "click",
@@ -32,8 +32,8 @@
     ]
   },
   {
-    "id": "create-environment",
-    "name": "Create an Environment",
+    "id": "onboarding-environment",
+    "name": "Set Up Environment",
     "trigger": {
       "type": "context",
       "condition": { "key": "needsEnvironment", "op": "exists" }
@@ -42,27 +42,27 @@
       {
         "id": "intro",
         "type": "modal",
-        "title": "🌍 Set up an environment",
-        "description": "Environments separate your dev, staging, and production configs. Let's create one.",
+        "title": "🌍 Nice! Now add an environment",
+        "description": "Environments let you have different config values for development, staging, and production.",
         "actions": [
-          { "label": "Go to Settings" },
+          { "label": "Take me to Settings" },
           { "label": "Later", "dismiss": true }
         ]
       },
       {
-        "id": "nav-to-settings",
+        "id": "nav-settings",
         "type": "tooltip",
         "target": "[data-tour='nav-settings']",
-        "title": "Go to Settings",
-        "description": "Click Settings to manage environments.",
+        "title": "Open Settings",
+        "description": "Click here to create an environment.",
         "position": "bottom",
         "waitFor": { "type": "route-change", "path": "/settings" }
       }
     ]
   },
   {
-    "id": "create-first-config",
-    "name": "Create Your First Config",
+    "id": "onboarding-config",
+    "name": "Create First Config",
     "trigger": {
       "type": "context",
       "condition": { "key": "needsConfig", "op": "exists" }
@@ -71,28 +71,29 @@
       {
         "id": "intro",
         "type": "modal",
-        "title": "🚀 Create your first config",
-        "description": "You have a project and environment ready. Let's add your first feature flag.",
+        "title": "🚀 Ready to create your first config",
+        "description": "You have a project and environment set up. Now let's add a feature flag or config value.",
         "actions": [
           { "label": "Let's go" },
           { "label": "Skip", "dismiss": true }
         ]
       },
       {
-        "id": "nav-to-configs",
+        "id": "nav-configs",
         "type": "tooltip",
         "target": "[data-tour='nav-configs']",
         "title": "Go to Configs",
-        "description": "Navigate to the Configs tab.",
+        "description": "Click the Configs tab to manage your flags.",
         "position": "bottom",
+        "page": "/settings",
         "waitFor": { "type": "route-change", "path": "/configs" }
       },
       {
-        "id": "click-add",
+        "id": "add-config",
         "type": "spotlight",
         "target": "[data-tour='add-config-btn']",
-        "title": "Add a config",
-        "description": "Click here to create a feature flag or config value.",
+        "title": "Create a config",
+        "description": "Click here to add your first feature flag.",
         "position": "bottom",
         "page": "/configs",
         "waitFor": {
@@ -103,8 +104,8 @@
       {
         "id": "done",
         "type": "modal",
-        "title": "🎉 You're all set!",
-        "description": "Your config is ready. Grab an API key from the API Keys tab to integrate the SDK.",
+        "title": "🎉 Awesome!",
+        "description": "Your first config is created. You can now target users, schedule changes, set up rollouts, and more from the expanded config panel.",
         "actions": [{ "label": "Done", "dismiss": true }]
       }
     ]

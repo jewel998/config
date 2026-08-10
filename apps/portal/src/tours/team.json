@@ -1,0 +1,28 @@
+[
+  {
+    "id": "tour-team",
+    "name": "Team Guide",
+    "trigger": { "type": "manual" },
+    "steps": [
+      {
+        "id": "intro",
+        "type": "modal",
+        "title": "🤝 Team & Access",
+        "description": "Invite your teammates and control who can view, edit, or manage your project's configs.",
+        "actions": [
+          { "label": "Show me" },
+          { "label": "Close", "dismiss": true }
+        ]
+      },
+      {
+        "id": "nav-team",
+        "type": "tooltip",
+        "target": "[data-tour='nav-team']",
+        "title": "Open Team",
+        "description": "Click here to manage members and roles.",
+        "position": "bottom",
+        "waitFor": { "type": "route-change", "path": "/team" }
+      }
+    ]
+  }
+]

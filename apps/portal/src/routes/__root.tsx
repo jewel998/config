@@ -58,10 +58,18 @@ import { useProjectStore } from "@/stores/project-store";
 import { useProjects } from "@/hooks/use-projects";
 import { TourProvider, TourRenderer } from "@jewel998/tour";
 import type { TourFlow } from "@jewel998/tour";
-import tourFlowsJson from "@/tours/quickstart.json";
+import quickstartFlows from "@/tours/quickstart.json";
+import apiKeyFlows from "@/tours/api-keys.json";
+import segmentFlows from "@/tours/segments.json";
+import teamFlows from "@/tours/team.json";
 import { cn } from "@/lib/utils";
 
-const tourFlows = tourFlowsJson as TourFlow[];
+const tourFlows = [
+  ...quickstartFlows,
+  ...apiKeyFlows,
+  ...segmentFlows,
+  ...teamFlows,
+] as TourFlow[];
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
@@ -273,6 +281,7 @@ const AuthenticatedLayout = () => {
       hasEnvironment,
       needsEnvironment: hasProject && !hasEnvironment,
       needsConfig: hasProject && hasEnvironment,
+      needsApiKey: hasProject && hasEnvironment,
     }),
     [hasProject, hasEnvironment],
   );
