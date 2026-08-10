@@ -1,7 +1,12 @@
 import { useLingui } from "@lingui/react";
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import {
+  createRootRoute,
+  Link,
+  Outlet,
+  useNavigate,
+} from "@tanstack/react-router";
 import {
   Globe,
   History,
@@ -50,7 +55,12 @@ import { useTheme } from "@/lib/theme";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
 import { useProjects } from "@/hooks/use-projects";
+import { TourProvider, TourRenderer } from "@jewel998/tour";
+import type { TourFlow } from "@jewel998/tour";
+import quickstartFlow from "@/tours/quickstart.json";
 import { cn } from "@/lib/utils";
+
+const tourFlows = [quickstartFlow] as TourFlow[];
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
@@ -240,6 +250,7 @@ const TabNav = () => {
 const AuthenticatedLayout = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const { data: projects } = useProjects();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (
@@ -252,7 +263,13 @@ const AuthenticatedLayout = () => {
   }, [projects, selectedProjectId]);
 
   return (
-    <>
+    <TourProvider
+      flows={tourFlows}
+      onNavigate={(path) => navigate({ to: path })}
+      getCurrentPath={() =>
+        window.location.pathname.replace("/config/portal", "")
+      }
+    >
       <div className="flex min-h-screen flex-col">
         <a
           href="#main-content"
@@ -261,8 +278,6 @@ const AuthenticatedLayout = () => {
           Skip to content
         </a>
         <TopBar />
-        {/* Always render TabNav container to avoid CLS when project gets selected.
-            The nav collapses to 0 height when hidden via CSS instead of unmounting. */}
         <div
           className={cn(
             "overflow-hidden transition-[max-height] duration-150",
@@ -280,9 +295,10 @@ const AuthenticatedLayout = () => {
           </ErrorBoundary>
         </main>
       </div>
+      <TourRenderer />
       <CommandPalette />
       <Toaster richColors position="bottom-right" />
-    </>
+    </TourProvider>
   );
 };
 
