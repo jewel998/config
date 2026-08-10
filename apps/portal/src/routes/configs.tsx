@@ -336,6 +336,7 @@ const ConfigsPage = () => {
                 setShowForm(true);
               }}
               disabled={!envId || !canEdit}
+              data-tour="add-config-btn"
             >
               <Plus className="h-4 w-4" />
               <Trans>Add Config</Trans>
@@ -426,21 +427,23 @@ const ConfigsPage = () => {
 
       {/* Config Form Modal */}
       {showForm && envId && selectedProjectId && (
-        <ConfigFormModal
-          open={showForm}
-          onOpenChange={(open) => {
-            setShowForm(open);
-            if (!open) {
-              setEditingConfig(null);
-              setDuplicatingConfig(null);
-            }
-          }}
-          projectId={selectedProjectId}
-          environmentId={envId}
-          editingConfig={editingConfig}
-          duplicateFrom={duplicatingConfig}
-          isProductionEnv={isProductionEnv}
-        />
+        <div data-tour="config-form-modal">
+          <ConfigFormModal
+            open={showForm}
+            onOpenChange={(open) => {
+              setShowForm(open);
+              if (!open) {
+                setEditingConfig(null);
+                setDuplicatingConfig(null);
+              }
+            }}
+            projectId={selectedProjectId}
+            environmentId={envId}
+            editingConfig={editingConfig}
+            duplicateFrom={duplicatingConfig}
+            isProductionEnv={isProductionEnv}
+          />
+        </div>
       )}
 
       {/* Table */}
