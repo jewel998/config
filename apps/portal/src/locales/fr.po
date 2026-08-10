@@ -13,11 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/routes/__root.tsx:301
+#: src/routes/__root.tsx:310
 msgid "Access Denied"
 msgstr "Accès refusé"
 
-#: src/routes/__root.tsx:431
+#: src/routes/__root.tsx:440
 msgid "Access is by request only. Rights of Admission Reserved."
 msgstr ""
 
@@ -161,7 +161,7 @@ msgstr ""
 
 #: src/components/audit-log-viewer.tsx:141
 #: src/components/command-palette.tsx:105
-#: src/routes/__root.tsx:211
+#: src/routes/__root.tsx:216
 #: src/routes/api-keys.tsx:356
 msgid "API Keys"
 msgstr "Clés API"
@@ -188,7 +188,7 @@ msgstr ""
 msgid "Attribute"
 msgstr ""
 
-#: src/routes/__root.tsx:212
+#: src/routes/__root.tsx:217
 msgid "Audit"
 msgstr ""
 
@@ -241,7 +241,7 @@ msgstr ""
 msgid "Change Details"
 msgstr ""
 
-#: src/routes/__root.tsx:90
+#: src/routes/__root.tsx:95
 msgid "Change language"
 msgstr ""
 
@@ -295,7 +295,7 @@ msgstr ""
 msgid "Conditions"
 msgstr ""
 
-#: src/routes/__root.tsx:179
+#: src/routes/__root.tsx:184
 msgid "Config"
 msgstr "Config"
 
@@ -315,11 +315,11 @@ msgstr ""
 msgid "Config key (e.g. feature.enabled)"
 msgstr ""
 
-#: src/routes/__root.tsx:346
+#: src/routes/__root.tsx:355
 msgid "Config Portal"
 msgstr "Portail de configuration"
 
-#: src/routes/__root.tsx:379
+#: src/routes/__root.tsx:388
 msgid "Config publishing"
 msgstr ""
 
@@ -334,7 +334,7 @@ msgstr ""
 
 #: src/components/audit-log-viewer.tsx:139
 #: src/components/command-palette.tsx:89
-#: src/routes/__root.tsx:209
+#: src/routes/__root.tsx:214
 #: src/routes/configs.tsx:313
 msgid "Configs"
 msgstr "Configurations"
@@ -650,7 +650,7 @@ msgid "Environment updated"
 msgstr ""
 
 #: src/components/webhook-form-modal.tsx:288
-#: src/routes/__root.tsx:368
+#: src/routes/__root.tsx:377
 #: src/routes/environments.tsx:165
 #: src/routes/settings.tsx:293
 msgid "Environments"
@@ -719,7 +719,7 @@ msgstr ""
 msgid "Failed to create segment"
 msgstr ""
 
-#: src/hooks/use-webhook-mutations.ts:66
+#: src/hooks/use-webhook-mutations.ts:67
 msgid "Failed to create webhook"
 msgstr ""
 
@@ -744,7 +744,7 @@ msgstr ""
 msgid "Failed to delete segment"
 msgstr ""
 
-#: src/hooks/use-webhook-mutations.ts:111
+#: src/hooks/use-webhook-mutations.ts:114
 msgid "Failed to delete webhook"
 msgstr ""
 
@@ -812,7 +812,7 @@ msgstr ""
 msgid "Failed to update segment"
 msgstr ""
 
-#: src/hooks/use-webhook-mutations.ts:93
+#: src/hooks/use-webhook-mutations.ts:96
 msgid "Failed to update webhook"
 msgstr ""
 
@@ -820,7 +820,7 @@ msgstr ""
 msgid "Feature Flags"
 msgstr ""
 
-#: src/routes/__root.tsx:387
+#: src/routes/__root.tsx:396
 msgid "Firebase sync"
 msgstr ""
 
@@ -837,7 +837,7 @@ msgid "Fresh"
 msgstr ""
 
 #: src/components/command-palette.tsx:157
-#: src/routes/__root.tsx:159
+#: src/routes/__root.tsx:164
 msgid "GDPR & Privacy"
 msgstr ""
 
@@ -995,7 +995,7 @@ msgstr ""
 msgid "More actions"
 msgstr ""
 
-#: src/routes/__root.tsx:363
+#: src/routes/__root.tsx:372
 msgid "Multi-project scoping"
 msgstr ""
 
@@ -1185,7 +1185,7 @@ msgstr ""
 msgid "Pending Invites"
 msgstr ""
 
-#: src/routes/__root.tsx:371
+#: src/routes/__root.tsx:380
 msgid "Per-env overrides"
 msgstr ""
 
@@ -1210,7 +1210,7 @@ msgid "Potential PII detected in config value"
 msgstr ""
 
 #: src/components/command-palette.tsx:123
-#: src/routes/__root.tsx:153
+#: src/routes/__root.tsx:158
 #: src/routes/preferences.tsx:348
 #: src/routes/preferences.tsx:356
 msgid "Preferences"
@@ -1291,7 +1291,7 @@ msgstr ""
 msgid "Project Settings"
 msgstr "Paramètres du projet"
 
-#: src/routes/__root.tsx:360
+#: src/routes/__root.tsx:369
 msgid "Projects"
 msgstr "Projets"
 
@@ -1299,11 +1299,11 @@ msgstr "Projets"
 msgid "Projects group environments and configurations together."
 msgstr ""
 
-#: src/routes/__root.tsx:420
+#: src/routes/__root.tsx:429
 msgid "Protected by Firebase Authentication."
 msgstr ""
 
-#: src/routes/__root.tsx:384
+#: src/routes/__root.tsx:393
 msgid "Real-time"
 msgstr "Temps réel"
 
@@ -1449,7 +1449,7 @@ msgstr ""
 #: src/components/audit-log-viewer.tsx:140
 #: src/components/command-palette.tsx:133
 #: src/components/segment-manager.tsx:83
-#: src/routes/__root.tsx:210
+#: src/routes/__root.tsx:215
 #: src/routes/segments.tsx:42
 msgid "Segments"
 msgstr ""
@@ -1510,7 +1510,7 @@ msgstr ""
 msgid "Send Invite"
 msgstr ""
 
-#: src/routes/__root.tsx:216
+#: src/routes/__root.tsx:221
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -1541,16 +1541,16 @@ msgstr ""
 msgid "Side by side"
 msgstr ""
 
-#: src/routes/__root.tsx:349
+#: src/routes/__root.tsx:358
 msgid "Sign in to manage your configuration platform."
 msgstr ""
 
-#: src/routes/__root.tsx:416
+#: src/routes/__root.tsx:425
 msgid "Sign in with Google"
 msgstr "Se connecter avec Google"
 
-#: src/routes/__root.tsx:165
-#: src/routes/__root.tsx:320
+#: src/routes/__root.tsx:170
+#: src/routes/__root.tsx:329
 msgid "Sign out"
 msgstr "Se déconnecter"
 
@@ -1622,7 +1622,7 @@ msgid "Targeting rules saved"
 msgstr ""
 
 #: src/components/audit-log-viewer.tsx:143
-#: src/routes/__root.tsx:213
+#: src/routes/__root.tsx:218
 msgid "Team"
 msgstr ""
 
@@ -1697,7 +1697,7 @@ msgstr ""
 msgid "Timezone"
 msgstr "Fuseau horaire"
 
-#: src/routes/__root.tsx:64
+#: src/routes/__root.tsx:69
 msgid "Toggle theme"
 msgstr ""
 
@@ -1705,7 +1705,7 @@ msgstr ""
 msgid "Track all configuration changes for SOC2 compliance."
 msgstr ""
 
-#: src/routes/__root.tsx:312
+#: src/routes/__root.tsx:321
 msgid "Try a different account"
 msgstr ""
 
@@ -1815,7 +1815,7 @@ msgstr ""
 msgid "Value served when rule matches"
 msgstr ""
 
-#: src/routes/__root.tsx:376
+#: src/routes/__root.tsx:385
 msgid "Versioned"
 msgstr ""
 
@@ -1823,16 +1823,16 @@ msgstr ""
 msgid "View changes"
 msgstr ""
 
-#: src/hooks/use-webhook-mutations.ts:65
+#: src/hooks/use-webhook-mutations.ts:66
 msgid "Webhook created"
 msgstr ""
 
-#: src/hooks/use-webhook-mutations.ts:110
+#: src/hooks/use-webhook-mutations.ts:113
 msgid "Webhook deleted"
 msgstr ""
 
-#: src/hooks/use-webhook-mutations.ts:92
-#: src/hooks/use-webhook-mutations.ts:135
+#: src/hooks/use-webhook-mutations.ts:95
+#: src/hooks/use-webhook-mutations.ts:138
 msgid "Webhook updated"
 msgstr ""
 
@@ -1869,6 +1869,6 @@ msgstr ""
 msgid "You're all set!"
 msgstr ""
 
-#: src/routes/__root.tsx:304
+#: src/routes/__root.tsx:313
 msgid "Your account is not authorized to access this portal. Contact the project owner to request access."
 msgstr ""
