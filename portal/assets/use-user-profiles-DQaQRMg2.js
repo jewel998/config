@@ -1,0 +1,1 @@
+import{h as e,m as t}from"./vendor-firebase-CF6mNYZx.js";import{gt as n,k as r}from"./index-DPFFUWwx.js";var i=i=>n({queryKey:[`userProfiles`,i],queryFn:async()=>{if(i.length===0)return{};let n={},a=i.map(async i=>{try{let a=await e(t(r,`users`,i));a.exists()&&(n[i]={uid:i,...a.data()})}catch{}});return await Promise.all(a),n},enabled:i.length>0});export{i as t};
