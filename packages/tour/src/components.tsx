@@ -146,7 +146,7 @@ function TourSpotlight({
         style={{
           position: "fixed",
           inset: 0,
-          zIndex: 9998,
+          zIndex: 999998,
           pointerEvents: hasWaitFor ? "none" : "auto",
         }}
         onClick={hasWaitFor ? undefined : onDismiss}
@@ -289,7 +289,7 @@ function getPopoverPosition(
   const gap = 12;
   const base: React.CSSProperties = {
     position: "fixed",
-    zIndex: 9999,
+    zIndex: 99999,
     maxWidth: POPOVER_WIDTH,
   };
 

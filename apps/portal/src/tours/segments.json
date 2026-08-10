@@ -1,0 +1,28 @@
+[
+  {
+    "id": "tour-segments",
+    "name": "Segments Guide",
+    "trigger": { "type": "manual" },
+    "steps": [
+      {
+        "id": "intro",
+        "type": "modal",
+        "title": "👥 Audience Segments",
+        "description": "Segments let you define reusable audience groups (e.g., 'Beta users', 'Enterprise plan') and target configs to them.",
+        "actions": [
+          { "label": "Learn more" },
+          { "label": "Close", "dismiss": true }
+        ]
+      },
+      {
+        "id": "nav-segments",
+        "type": "tooltip",
+        "target": "[data-tour='nav-segments']",
+        "title": "Open Segments",
+        "description": "Click here to create and manage audience segments.",
+        "position": "bottom",
+        "waitFor": { "type": "route-change", "path": "/segments" }
+      }
+    ]
+  }
+]
