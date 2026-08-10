@@ -19,10 +19,10 @@
       },
       {
         "id": "nav-api-keys",
-        "type": "tooltip",
+        "type": "spotlight",
         "target": "[data-tour='nav-api-keys']",
         "title": "Open API Keys",
-        "description": "Click here to generate and manage your SDK keys. Each key is scoped to one environment.",
+        "description": "Click **API Keys** to generate your SDK key.",
         "position": "bottom",
         "waitFor": { "type": "route-change", "path": "/api-keys" }
       },

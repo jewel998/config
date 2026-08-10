@@ -8,7 +8,7 @@
         "id": "intro",
         "type": "modal",
         "title": "🤝 Collaborate with your team",
-        "description": "Invite teammates with the right level of access:\n\n• Viewer — can see configs and audit log, can't change anything\n• Editor — can create/edit configs, segments, targeting rules\n• Admin — full control: manage environments, API keys, team, webhooks\n\nUse case: Give your product manager 'viewer' access to check feature flags, and your backend engineer 'editor' to manage configs.",
+        "description": "Invite teammates with the right level of access:\n\n- **Viewer** — see configs and audit log, can't change anything\n- **Editor** — create/edit configs, segments, targeting rules\n- **Admin** — full control: environments, API keys, team, webhooks\n\n> Give your PM *viewer* access, your backend engineer *editor*.",
         "actions": [
           { "label": "Go to Team" },
           { "label": "Close", "dismiss": true }
@@ -16,10 +16,10 @@
       },
       {
         "id": "nav-team",
-        "type": "tooltip",
+        "type": "spotlight",
         "target": "[data-tour='nav-team']",
         "title": "Open Team settings",
-        "description": "Add members by email. They'll get an invite to join this project.",
+        "description": "Click **Team** to manage members and invites.",
         "position": "bottom",
         "waitFor": { "type": "route-change", "path": "/team" }
       }

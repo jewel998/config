@@ -8,7 +8,7 @@
         "id": "intro",
         "type": "modal",
         "title": "👥 Target users with Segments",
-        "description": "Segments are reusable audience groups. Define a segment once, use it across multiple configs.\n\nExamples:\n• 'Beta Users' → plan equals 'pro'\n• 'EU Users' → country in [DE, FR, ES, IT]\n• 'Internal' → email ends with '@yourcompany.com'\n\nWhen you add a targeting rule to a config, you can target an entire segment instead of writing conditions each time.",
+        "description": "Segments are reusable audience groups. Define once, use across multiple configs.\n\n**Examples:**\n- *Beta Users* → plan equals `pro`\n- *EU Users* → country in [DE, FR, ES, IT]\n- *Internal* → email ends with `@yourcompany.com`",
         "actions": [
           { "label": "Show me" },
           { "label": "Close", "dismiss": true }
@@ -16,18 +16,18 @@
       },
       {
         "id": "nav-segments",
-        "type": "tooltip",
+        "type": "spotlight",
         "target": "[data-tour='nav-segments']",
-        "title": "Manage Segments",
-        "description": "Create and edit audience segments here. You'll see which configs use each segment.",
+        "title": "Open Segments",
+        "description": "Click **Segments** to create audience groups.",
         "position": "bottom",
         "waitFor": { "type": "route-change", "path": "/segments" }
       },
       {
         "id": "usage",
         "type": "modal",
-        "title": "💡 How segments work in practice",
-        "description": "1. Create a segment: 'Premium Users' (plan = pro)\n2. Go to any config → Targeting Rules\n3. Add rule: operator 'in_segment', value 'Premium Users'\n4. That config value now only applies to premium users\n\nBonus: The usage indicator shows how many configs reference each segment, so you know the impact of changes.",
+        "title": "💡 How to use segments",
+        "description": "1. Create a segment: *Premium Users* (plan = pro)\n2. Go to any config → **Targeting Rules**\n3. Add rule: operator `in_segment`, value *Premium Users*\n4. That config now only applies to premium users\n\n> The usage indicator shows how many configs reference each segment.",
         "actions": [{ "label": "Got it", "dismiss": true }]
       }
     ]

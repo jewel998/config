@@ -881,7 +881,7 @@ msgstr "Go to Environments"
 msgid "Google Chat"
 msgstr "Google Chat"
 
-#: src/components/webhook-preview.tsx:138
+#: src/components/webhook-preview.tsx:195
 #: src/routes/api-keys.tsx:67
 msgid "Hide"
 msgstr "Hide"
@@ -1254,7 +1254,7 @@ msgstr "Prerequisites saved"
 msgid "Preview"
 msgstr "Preview"
 
-#: src/components/webhook-preview.tsx:128
+#: src/components/webhook-preview.tsx:178
 msgid "Preview payload"
 msgstr "Preview payload"
 
@@ -1405,7 +1405,7 @@ msgstr "Rollout updated"
 msgid "Rule {0}"
 msgstr "Rule {0}"
 
-#: src/components/webhook-preview.tsx:136
+#: src/components/webhook-preview.tsx:187
 msgid "Sample payload"
 msgstr "Sample payload"
 
