@@ -11,6 +11,7 @@ import { AddMemberModal } from "@/components/add-member-modal";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
+import { PageTourButton } from "@/components/page-tour-button";
 import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -185,15 +186,18 @@ const TeamPage = () => {
         title={<Trans>Team & Access</Trans>}
         description={<Trans>Manage project members and their roles.</Trans>}
         actions={
-          isAdmin ? (
-            <Button
-              className="gap-2 rounded-full"
-              onClick={() => setShowModal(true)}
-            >
-              <Plus className="h-4 w-4" />
-              <Trans>Add Member</Trans>
-            </Button>
-          ) : undefined
+          <>
+            <PageTourButton flowId="tour-team" label={t`Team guide`} />
+            {isAdmin && (
+              <Button
+                className="gap-2 rounded-full"
+                onClick={() => setShowModal(true)}
+              >
+                <Plus className="h-4 w-4" />
+                <Trans>Add Member</Trans>
+              </Button>
+            )}
+          </>
         }
       />
 

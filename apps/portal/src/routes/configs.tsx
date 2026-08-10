@@ -35,6 +35,7 @@ import { EmptyState } from "@/components/empty-state";
 import { Kbd } from "@/components/kbd";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
+import { PageTourButton } from "@/components/page-tour-button";
 import { ValuePreview } from "@/components/value-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -316,6 +317,10 @@ const ConfigsPage = () => {
         }
         actions={
           <>
+            <PageTourButton
+              flowId="onboarding-config"
+              label={t`Configs guide`}
+            />
             <Link to="/compare">
               <Button
                 variant="outline"

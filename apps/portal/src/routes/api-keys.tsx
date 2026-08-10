@@ -18,6 +18,7 @@ import { DateDisplay } from "@/components/date-display";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
+import { PageTourButton } from "@/components/page-tour-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -359,6 +360,9 @@ const ApiKeysPage = () => {
             Manage client IDs for this environment. Use these keys to
             authenticate SDK requests.
           </Trans>
+        }
+        actions={
+          <PageTourButton flowId="tour-api-keys" label={t`API Keys guide`} />
         }
       />
 
