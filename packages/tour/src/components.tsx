@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTour } from "./context.js";
+import { SafeMarkdown } from "./safe-markdown.js";
 import type {
   ModalStep,
   Position,
@@ -88,7 +89,9 @@ function TourModal({
         )}
         <h2 className="tour-modal-title">{step.title}</h2>
         {step.description && (
-          <p className="tour-modal-description">{step.description}</p>
+          <div className="tour-modal-description">
+            <SafeMarkdown text={step.description} />
+          </div>
         )}
         <div className="tour-modal-footer">
           <span className="tour-progress">
@@ -183,7 +186,9 @@ function TourSpotlight({
       >
         <h3 className="tour-popover-title">{step.title}</h3>
         {step.description && (
-          <p className="tour-popover-description">{step.description}</p>
+          <div className="tour-popover-description">
+            <SafeMarkdown text={step.description} />
+          </div>
         )}
         <div className="tour-popover-footer">
           <span className="tour-progress">
@@ -237,7 +242,9 @@ function TourTooltip({
     >
       <h3 className="tour-popover-title">{step.title}</h3>
       {step.description && (
-        <p className="tour-popover-description">{step.description}</p>
+        <div className="tour-popover-description">
+          <SafeMarkdown text={step.description} />
+        </div>
       )}
       <div className="tour-popover-footer">
         <span className="tour-progress">
