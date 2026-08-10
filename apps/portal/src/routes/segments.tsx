@@ -7,6 +7,7 @@ import { t } from "@lingui/core/macro";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
+import { PageTourButton } from "@/components/page-tour-button";
 import { SegmentManager } from "@/components/segment-manager";
 import {
   useSegments,
@@ -42,6 +43,9 @@ const SegmentsPage = () => {
         title={<Trans>Segments</Trans>}
         description={
           <Trans>Define reusable audience groups for targeting rules.</Trans>
+        }
+        actions={
+          <PageTourButton flowId="tour-segments" label={t`Segments guide`} />
         }
       />
       <SegmentManager
