@@ -277,43 +277,56 @@ function useElementRect(selector: string) {
   return rect;
 }
 
-// ─── Popover Positioning (viewport-relative for fixed) ────────
+// ─── Popover Positioning (viewport-clamped) ───────────────────
+
+const POPOVER_WIDTH = 320;
+const POPOVER_MARGIN = 12;
 
 function getPopoverPosition(
   rect: DOMRect,
   position: Position,
 ): React.CSSProperties {
   const gap = 12;
-  const base: React.CSSProperties = { position: "fixed", zIndex: 9999 };
+  const base: React.CSSProperties = {
+    position: "fixed",
+    zIndex: 9999,
+    maxWidth: POPOVER_WIDTH,
+  };
+
+  // Clamp horizontal center to keep popover within viewport
+  const centerX = rect.left + rect.width / 2;
+  const clampedLeft = Math.max(
+    POPOVER_MARGIN,
+    Math.min(
+      centerX - POPOVER_WIDTH / 2,
+      window.innerWidth - POPOVER_WIDTH - POPOVER_MARGIN,
+    ),
+  );
 
   switch (position) {
     case "top":
       return {
         ...base,
         bottom: `${window.innerHeight - rect.top + gap}px`,
-        left: `${rect.left + rect.width / 2}px`,
-        transform: "translateX(-50%)",
+        left: `${clampedLeft}px`,
       };
     case "bottom":
       return {
         ...base,
         top: `${rect.bottom + gap}px`,
-        left: `${rect.left + rect.width / 2}px`,
-        transform: "translateX(-50%)",
+        left: `${clampedLeft}px`,
       };
     case "left":
       return {
         ...base,
-        top: `${rect.top + rect.height / 2}px`,
+        top: `${Math.max(POPOVER_MARGIN, rect.top + rect.height / 2 - 40)}px`,
         right: `${window.innerWidth - rect.left + gap}px`,
-        transform: "translateY(-50%)",
       };
     case "right":
       return {
         ...base,
-        top: `${rect.top + rect.height / 2}px`,
+        top: `${Math.max(POPOVER_MARGIN, rect.top + rect.height / 2 - 40)}px`,
         left: `${rect.right + gap}px`,
-        transform: "translateY(-50%)",
       };
   }
 }
