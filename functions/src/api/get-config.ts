@@ -21,11 +21,9 @@ export const getConfig = onRequest(
   async (req, res) => {
     // Only allow GET (CDN-cacheable) and POST (SDK compatibility)
     if (req.method !== "GET" && req.method !== "POST") {
-      res
-        .status(405)
-        .json({
-          error: { code: "METHOD_NOT_ALLOWED", message: "Use GET or POST" },
-        });
+      res.status(405).json({
+        error: { code: "METHOD_NOT_ALLOWED", message: "Use GET or POST" },
+      });
       return;
     }
 
@@ -36,11 +34,9 @@ export const getConfig = onRequest(
       null;
 
     if (!clientId) {
-      res
-        .status(400)
-        .json({
-          error: { code: "MISSING_CLIENT_ID", message: "clientId is required" },
-        });
+      res.status(400).json({
+        error: { code: "MISSING_CLIENT_ID", message: "clientId is required" },
+      });
       return;
     }
 
@@ -57,14 +53,12 @@ export const getConfig = onRequest(
       .get();
 
     if (clientIdSnapshot.empty) {
-      res
-        .status(401)
-        .json({
-          error: {
-            code: "INVALID_CLIENT_ID",
-            message: "Invalid or revoked clientId",
-          },
-        });
+      res.status(401).json({
+        error: {
+          code: "INVALID_CLIENT_ID",
+          message: "Invalid or revoked clientId",
+        },
+      });
       return;
     }
 
@@ -92,51 +86,74 @@ export const getConfig = onRequest(
             (d) => requestDomain === d || requestDomain.endsWith(`.${d}`),
           );
           if (!isAllowed) {
-            res
-              .status(403)
-              .json({
-                error: {
-                  code: "DOMAIN_NOT_ALLOWED",
-                  message: `Origin ${requestDomain} is not in allowedDomains`,
-                },
-              });
+            res.status(403).json({
+              error: {
+                code: "DOMAIN_NOT_ALLOWED",
+                message: `Origin ${requestDomain} is not in allowedDomains`,
+              },
+            });
             return;
           }
         }
       }
     }
 
-    // 3. Fetch all configs for the environment
-    const configsSnapshot = await db
+    // 3. Extract optional key filter
+    const requestedKeys: string[] | undefined =
+      (req.query.keys as string)
+        ?.split(",")
+        .map((k) => k.trim())
+        .filter(Boolean) ??
+      (req.body?.data?.keys as string[] | undefined) ??
+      undefined;
+
+    // 4. Fetch configs for the environment
+    const configsRef = db
       .collection("projects")
       .doc(projectId)
       .collection("environments")
       .doc(environmentId)
-      .collection("configs")
-      .get();
+      .collection("configs");
+
+    // If specific keys requested, fetch only those (cheaper Firestore reads)
+    let configsSnapshot;
+    if (
+      requestedKeys &&
+      requestedKeys.length > 0 &&
+      requestedKeys.length <= 10
+    ) {
+      // Firestore 'in' query supports up to 30 items, but we cap at 10 for sanity
+      const docs = await Promise.all(
+        requestedKeys.map((key) => configsRef.doc(key).get()),
+      );
+      configsSnapshot = docs.filter((d) => d.exists);
+    } else {
+      // Batch mode: fetch all
+      const snapshot = await configsRef.get();
+      configsSnapshot = snapshot.docs;
+    }
 
     const data: Record<string, unknown> = {};
     let latestUpdate = "";
 
-    for (const doc of configsSnapshot.docs) {
+    for (const doc of configsSnapshot) {
       const configData = doc.data();
+      if (!configData) continue;
       data[doc.id] = configData.value;
       if (configData.updatedAt > latestUpdate) {
         latestUpdate = configData.updatedAt;
       }
     }
 
-    // 4. Set CDN cache headers for cheap delivery
-    // Cache for 60s at CDN, 30s in browser — config changes are near-real-time
-    // To get instant propagation, users can call SDK.refresh() which bypasses cache
+    // 5. Set CDN cache headers for cheap delivery
     res.set("Cache-Control", "public, max-age=30, s-maxage=60");
     res.set("X-Config-Project", projectId);
     res.set("X-Config-Environment", environmentId);
 
-    // 5. Return in the format the SDK expects
+    // 6. Return in the format the SDK expects
     res.status(200).json({
       data,
-      version: String(configsSnapshot.size),
+      version: String(Object.keys(data).length),
       timestamp: latestUpdate || new Date().toISOString(),
     });
   },
