@@ -3,6 +3,7 @@ import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
 import { Copy, HelpCircle, Pencil, Plus, Settings, Trash2 } from "lucide-react";
 import { marked } from "marked";
+import { renderMarkdownSafe } from "@/lib/safe-html";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -138,7 +139,7 @@ const DescriptionSection = ({
               <div
                 className="prose prose-sm dark:prose-invert min-h-32 rounded-lg border p-4"
                 dangerouslySetInnerHTML={{
-                  __html: marked(description || "") as string,
+                  __html: renderMarkdownSafe(description || ""),
                 }}
               />
             )}
@@ -155,7 +156,7 @@ const DescriptionSection = ({
           <div
             className="prose prose-sm dark:prose-invert"
             dangerouslySetInnerHTML={{
-              __html: marked(currentDescription) as string,
+              __html: renderMarkdownSafe(currentDescription),
             }}
           />
         ) : (
