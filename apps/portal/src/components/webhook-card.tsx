@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 
 import { WebhookDeliveryLog } from "@/components/webhook-delivery-log";
+import { WebhookPreview } from "@/components/webhook-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useTestWebhook } from "@/hooks/use-test-webhook";
@@ -167,9 +168,12 @@ export const WebhookCard = ({
         </div>
       )}
 
-      {/* Delivery log */}
+      {/* Expanded: delivery log + preview */}
       {expanded && (
-        <WebhookDeliveryLog projectId={projectId} webhookId={webhook.id} />
+        <div className="space-y-3 pt-1 border-t">
+          <WebhookPreview webhook={webhook} />
+          <WebhookDeliveryLog projectId={projectId} webhookId={webhook.id} />
+        </div>
       )}
     </div>
   );

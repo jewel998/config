@@ -110,7 +110,7 @@ export function TourProvider({
   // ─── Auto-trigger flows based on context conditions ─────────
 
   useEffect(() => {
-    if (state.activeFlowId || state.dismissed) return;
+    if (state.activeFlowId) return;
 
     for (const flow of flows) {
       if (!flow.trigger) continue;
@@ -134,13 +134,7 @@ export function TourProvider({
         break;
       }
     }
-  }, [
-    flows,
-    state.activeFlowId,
-    state.dismissed,
-    state.completedFlows,
-    context,
-  ]);
+  }, [flows, state.activeFlowId, state.completedFlows, context]);
 
   // ─── Resolve current flow/step (with skipIf/showIf) ─────────
 
@@ -287,7 +281,9 @@ export function TourProvider({
       ...s,
       activeFlowId: null,
       currentStepIndex: 0,
-      dismissed: true,
+      completedFlows: s.activeFlowId
+        ? [...s.completedFlows, s.activeFlowId]
+        : s.completedFlows,
     }));
   }, []);
 
