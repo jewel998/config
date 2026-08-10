@@ -147,10 +147,9 @@ function TourSpotlight({
           position: "fixed",
           inset: 0,
           zIndex: 9998,
-          pointerEvents: "auto",
-          // The magic: a huge box-shadow creates the overlay, the element itself is transparent
+          pointerEvents: hasWaitFor ? "none" : "auto",
         }}
-        onClick={onDismiss}
+        onClick={hasWaitFor ? undefined : onDismiss}
       >
         <div
           style={{

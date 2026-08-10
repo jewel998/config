@@ -13,11 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/routes/__root.tsx:335
+#: src/routes/__root.tsx:341
 msgid "Access Denied"
 msgstr "Access Denied"
 
-#: src/routes/__root.tsx:465
+#: src/routes/__root.tsx:471
 msgid "Access is by request only. Rights of Admission Reserved."
 msgstr "Access is by request only. Rights of Admission Reserved."
 
@@ -315,11 +315,11 @@ msgstr "Config Differences"
 msgid "Config key (e.g. feature.enabled)"
 msgstr "Config key (e.g. feature.enabled)"
 
-#: src/routes/__root.tsx:380
+#: src/routes/__root.tsx:386
 msgid "Config Portal"
 msgstr "Config Portal"
 
-#: src/routes/__root.tsx:413
+#: src/routes/__root.tsx:419
 msgid "Config publishing"
 msgstr "Config publishing"
 
@@ -650,7 +650,7 @@ msgid "Environment updated"
 msgstr "Environment updated"
 
 #: src/components/webhook-form-modal.tsx:288
-#: src/routes/__root.tsx:402
+#: src/routes/__root.tsx:408
 #: src/routes/environments.tsx:165
 #: src/routes/settings.tsx:293
 msgid "Environments"
@@ -820,7 +820,7 @@ msgstr "Failed to update webhook"
 msgid "Feature Flags"
 msgstr "Feature Flags"
 
-#: src/routes/__root.tsx:421
+#: src/routes/__root.tsx:427
 msgid "Firebase sync"
 msgstr "Firebase sync"
 
@@ -995,7 +995,7 @@ msgstr "Min value"
 msgid "More actions"
 msgstr "More actions"
 
-#: src/routes/__root.tsx:397
+#: src/routes/__root.tsx:403
 msgid "Multi-project scoping"
 msgstr "Multi-project scoping"
 
@@ -1185,7 +1185,7 @@ msgstr "Pending"
 msgid "Pending Invites"
 msgstr "Pending Invites"
 
-#: src/routes/__root.tsx:405
+#: src/routes/__root.tsx:411
 msgid "Per-env overrides"
 msgstr "Per-env overrides"
 
@@ -1291,7 +1291,7 @@ msgstr "Project not found."
 msgid "Project Settings"
 msgstr "Project Settings"
 
-#: src/routes/__root.tsx:394
+#: src/routes/__root.tsx:400
 msgid "Projects"
 msgstr "Projects"
 
@@ -1299,11 +1299,11 @@ msgstr "Projects"
 msgid "Projects group environments and configurations together."
 msgstr "Projects group environments and configurations together."
 
-#: src/routes/__root.tsx:454
+#: src/routes/__root.tsx:460
 msgid "Protected by Firebase Authentication."
 msgstr "Protected by Firebase Authentication."
 
-#: src/routes/__root.tsx:418
+#: src/routes/__root.tsx:424
 msgid "Real-time"
 msgstr "Real-time"
 
@@ -1541,16 +1541,16 @@ msgstr "Showing {0}–{1} of {2}"
 msgid "Side by side"
 msgstr "Side by side"
 
-#: src/routes/__root.tsx:383
+#: src/routes/__root.tsx:389
 msgid "Sign in to manage your configuration platform."
 msgstr "Sign in to manage your configuration platform."
 
-#: src/routes/__root.tsx:450
+#: src/routes/__root.tsx:456
 msgid "Sign in with Google"
 msgstr "Sign in with Google"
 
 #: src/routes/__root.tsx:176
-#: src/routes/__root.tsx:354
+#: src/routes/__root.tsx:360
 msgid "Sign out"
 msgstr "Sign out"
 
@@ -1705,7 +1705,7 @@ msgstr "Toggle theme"
 msgid "Track all configuration changes for SOC2 compliance."
 msgstr "Track all configuration changes for SOC2 compliance."
 
-#: src/routes/__root.tsx:346
+#: src/routes/__root.tsx:352
 msgid "Try a different account"
 msgstr "Try a different account"
 
@@ -1815,7 +1815,7 @@ msgstr "Value must be one of: {0}"
 msgid "Value served when rule matches"
 msgstr "Value served when rule matches"
 
-#: src/routes/__root.tsx:410
+#: src/routes/__root.tsx:416
 msgid "Versioned"
 msgstr "Versioned"
 
@@ -1869,6 +1869,6 @@ msgstr "You have view-only access to this project."
 msgid "You're all set!"
 msgstr "You're all set!"
 
-#: src/routes/__root.tsx:338
+#: src/routes/__root.tsx:344
 msgid "Your account is not authorized to access this portal. Contact the project owner to request access."
 msgstr "Your account is not authorized to access this portal. Contact the project owner to request access."
