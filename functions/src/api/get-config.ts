@@ -261,7 +261,6 @@ export const getConfig = onRequest(
     // ═══════════════════════════════════════════════════════════
     // CLIENT EVALUATION MODE (opt-in)
     // Return full flag data + segments for local SDK evaluation.
-    // Same as previous behavior — backward compatible.
     // ═══════════════════════════════════════════════════════════
     const data: Record<string, unknown> = {};
 
@@ -269,38 +268,27 @@ export const getConfig = onRequest(
       const configData = doc.data();
       if (!configData) continue;
 
-      const hasAdvancedFeatures =
-        configData.targetingRules?.length > 0 ||
-        configData.rolloutPercentage != null ||
-        configData.overrides != null ||
-        configData.schedule != null ||
-        configData.prerequisites?.length > 0;
-
-      if (hasAdvancedFeatures) {
-        data[doc.id] = {
-          key: doc.id,
-          value: configData.value,
-          valueType: configData.valueType ?? "string",
-          version: configData.version ?? "1",
-          lifecycleState: configData.lifecycleState ?? "active",
-          ...(configData.targetingRules && {
-            targetingRules: configData.targetingRules,
-          }),
-          ...(configData.rolloutPercentage != null && {
-            rolloutPercentage: configData.rolloutPercentage,
-          }),
-          ...(configData.rolloutValue !== undefined && {
-            rolloutValue: configData.rolloutValue,
-          }),
-          ...(configData.overrides && { overrides: configData.overrides }),
-          ...(configData.schedule && { schedule: configData.schedule }),
-          ...(configData.prerequisites && {
-            prerequisites: configData.prerequisites,
-          }),
-        };
-      } else {
-        data[doc.id] = configData.value;
-      }
+      data[doc.id] = {
+        key: doc.id,
+        value: configData.value,
+        valueType: configData.valueType ?? "string",
+        version: configData.version ?? "1",
+        lifecycleState: configData.lifecycleState ?? "active",
+        ...(configData.targetingRules && {
+          targetingRules: configData.targetingRules,
+        }),
+        ...(configData.rolloutPercentage != null && {
+          rolloutPercentage: configData.rolloutPercentage,
+        }),
+        ...(configData.rolloutValue !== undefined && {
+          rolloutValue: configData.rolloutValue,
+        }),
+        ...(configData.overrides && { overrides: configData.overrides }),
+        ...(configData.schedule && { schedule: configData.schedule }),
+        ...(configData.prerequisites && {
+          prerequisites: configData.prerequisites,
+        }),
+      };
 
       if (configData.updatedAt > latestUpdate) {
         latestUpdate = configData.updatedAt;
