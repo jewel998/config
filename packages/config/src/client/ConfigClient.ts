@@ -214,12 +214,14 @@ export const buildConfigClient = (
           source: "refresh",
         });
       } catch (error) {
+        // Errors are emitted via the event system — never thrown to consumers.
+        // This prevents SDK errors from appearing in consumer's Sentry/error tracking.
+        // Consumers can listen: config.on("fetchError", (e) => { ... })
         events.emit("fetchError", {
           error: error as Error,
           retryCount: retry.maxRetries,
           willRetry: false,
         });
-        throw error;
       }
     },
 
