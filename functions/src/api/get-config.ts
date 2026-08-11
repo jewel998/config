@@ -2,19 +2,49 @@ import { onRequest } from "firebase-functions/v2/https";
 import { getFirestore } from "firebase-admin/firestore";
 
 /**
- * GET /getConfig?clientId=cid_xxx
+ * GET  /api/getConfig?clientId=cid_xxx
+ * POST /api/getConfig  { data: { clientId: "cid_xxx", keys?: ["a","b"] } }
  *
- * The cheapest possible config delivery:
- * - Single Firestore read per cache miss
- * - CDN-cached for 60s (configurable via Cache-Control)
- * - No auth overhead beyond clientId lookup
- * - Supports domain validation via allowedDomains
+ * Config delivery API for the @jewel998/config SDK.
+ *
+ * Security:
+ *   - clientId validated against Firestore (must be active)
+ *   - Optional domain validation (allowedDomains on environment)
+ *   - Read-only: cannot modify configs via this endpoint
  *
  * Cost model:
- *   - Cloud Function invocation: only on cache miss ($0.40 / million)
- *   - Firestore reads: 2 per invocation (clientId doc + configs collection)
- *   - CDN egress: included in Firebase Hosting free tier
- *   - With 60s cache: 10,000 SDK polls/hour = ~60 function calls/hour
+ *   - CDN-cached for 60s → most requests never hit the function
+ *   - Cloud Function: only on cache miss ($0.40 / million invocations)
+ *   - Firestore reads: 2 per invocation (clientId lookup + configs)
+ *   - With 60s CDN: 10K polls/hour = ~60 function calls/hour = FREE tier
+ *
+ * Rate Limiting (optional — enable if needed):
+ *   To add rate limiting, uncomment the section below and create a
+ *   Firestore collection `rateLimits/{clientId}` with fields:
+ *     - count: number (requests in current window)
+ *     - windowStart: timestamp (start of current window)
+ *
+ *   // --- RATE LIMITING (uncomment to enable) ---
+ *   // const RATE_LIMIT = 100; // requests per minute
+ *   // const WINDOW_MS = 60_000;
+ *   // const rateLimitRef = db.collection("rateLimits").doc(clientId);
+ *   // const rateLimitDoc = await rateLimitRef.get();
+ *   // const now = Date.now();
+ *   // if (rateLimitDoc.exists) {
+ *   //   const { count, windowStart } = rateLimitDoc.data()!;
+ *   //   if (now - windowStart < WINDOW_MS && count >= RATE_LIMIT) {
+ *   //     res.status(429).json({ error: { code: "RATE_LIMITED", message: "Too many requests" } });
+ *   //     return;
+ *   //   }
+ *   //   if (now - windowStart >= WINDOW_MS) {
+ *   //     await rateLimitRef.set({ count: 1, windowStart: now });
+ *   //   } else {
+ *   //     await rateLimitRef.update({ count: count + 1 });
+ *   //   }
+ *   // } else {
+ *   //   await rateLimitRef.set({ count: 1, windowStart: now });
+ *   // }
+ *   // --- END RATE LIMITING ---
  */
 export const getConfig = onRequest(
   { cors: true, maxInstances: 10 },
