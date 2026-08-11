@@ -6,26 +6,26 @@ Implement server-side evaluation of targeting rules, segments, and rollouts in t
 
 ## Tasks
 
-- [ ] 1. Server-Side Evaluation Engine (Cloud Function)
-  - [ ] 1.1 Create rollout hash utility
+- [x] 1. Server-Side Evaluation Engine (Cloud Function)
+  - [x] 1.1 Create rollout hash utility
     - Create `functions/src/api/rollout-hash.ts` with `computeRolloutBucket(userId: string, flagKey: string): number` using the same deterministic hash as the SDK rollout plugin
     - Export `isInRollout(userId: string, flagKey: string, percentage: number): boolean`
     - Ensure identical bucketing behavior between server and client for consistency
     - _Requirements: 8.1, 8.2_
-  - [ ] 1.2 Create server evaluator module
+  - [x] 1.2 Create server evaluator module
     - Create `functions/src/api/server-evaluator.ts` with the full evaluation pipeline
     - Implement `evaluateConfigsForContext(configs, segments, context)` as the main entry point returning `Record<string, unknown>` + `warnings[]`
     - Implement pipeline steps in order: archived → prerequisites → overrides → schedule → targeting → rollout → default value
     - Each step is a pure function: `(config, segments, context, helpers) → { resolved, value?, warning? }`
     - _Requirements: 1.3, 1.4, 7.1, 7.2, 7.3, 7.4, 7.5, 8.1, 8.3_
-  - [ ] 1.3 Implement targeting evaluation with segment resolution
+  - [x] 1.3 Implement targeting evaluation with segment resolution
     - Within the server evaluator, implement `evaluateTargetingRules(config, segments, context)` that sorts rules by priority and evaluates conditions
     - Support standard predicates (equals, contains, in_list, etc.) against context attributes
     - Support `in_segment` / `not_in_segment` predicates by resolving segment conditions against context
     - Support `_segment` attribute with array value — check if user is in ANY listed segment (OR logic)
     - If referenced segment does not exist, treat predicate as non-matching
     - _Requirements: 1.2, 1.3, 7.1, 7.2, 7.3, 7.4, 7.5_
-  - [ ] 1.4 Update `getConfig` API to support dual evaluation modes
+  - [x] 1.4 Update `getConfig` API to support dual evaluation modes
     - Modify `functions/src/api/get-config.ts` to extract `evaluationMode` from request body (default: `"server"`)
     - Extract `context` from request body when mode is "server"
     - Validate context object structure and reject payloads > 10KB with 413 status
@@ -35,54 +35,54 @@ Implement server-side evaluation of targeting rules, segments, and rollouts in t
     - Keep `Cache-Control: public, max-age=30, s-maxage=60` for client mode
     - _Requirements: 1.1, 1.4, 1.5, 1.6, 2.1, 2.2, 2.3, 2.4, 9.1, 9.2, 10.1, 10.2_
 
-- [ ] 2. SDK Dual-Mode Support
-  - [ ] 2.1 Add `evaluationMode` to SDK types
+- [x] 2. SDK Dual-Mode Support
+  - [x] 2.1 Add `evaluationMode` to SDK types
     - Add `EvaluationMode = "server" | "client"` type to `packages/config/src/types.ts`
     - Add `evaluationMode?: EvaluationMode` to `CreateConfigOptions` (default: `"server"`)
     - Add `evaluationMode` and `context` fields to `GetConfigRequest` interface
     - Add `warnings?: EvaluationWarning[]` to `GetConfigResponse`
     - _Requirements: 3.1, 4.1_
-  - [ ] 2.2 Update HTTP transport to send context
+  - [x] 2.2 Update HTTP transport to send context
     - Modify `packages/config/src/transport/HttpTransport.ts` to accept evaluation mode and context getter
     - When `evaluationMode` is "server": include `evaluationMode` and `context` in the request body
     - When `evaluationMode` is "client": include `evaluationMode: "client"` only (no context sent)
     - _Requirements: 3.2, 4.1, 4.4_
-  - [ ] 2.3 Update `createConfig` to handle server mode
+  - [x] 2.3 Update `createConfig` to handle server mode
     - In `packages/config/src/createConfig.ts`: detect evaluation mode
     - **Server mode:** do NOT register targeting/rollout/schedule plugins (values are pre-resolved from API)
     - **Server mode:** pass context getter to transport
     - **Client mode:** preserve existing behavior (register plugins, evaluate locally)
     - Pass evaluationMode through to ConfigClient builder
     - _Requirements: 3.1, 3.3, 3.4_
-  - [ ] 2.4 Update ConfigClient for server-mode `setContext` behavior
+  - [x] 2.4 Update ConfigClient for server-mode `setContext` behavior
     - In `packages/config/src/client/ConfigClient.ts`: when `evaluationMode` is "server" and `setContext()` is called, trigger a `refresh()` to re-fetch resolved values for the new context
     - In server mode, `getValue` returns the cached resolved value directly (no local plugin pipeline)
     - In client mode, preserve existing behavior (context updates trigger local re-evaluation)
     - _Requirements: 3.5, 4.1_
-  - [ ] 2.5 Update batch/projected fetchers to pass context
+  - [x] 2.5 Update batch/projected fetchers to pass context
     - Modify `packages/config/src/fetch/batchFetcher.ts` to include context and evaluationMode in the transport request body
     - Modify `packages/config/src/fetch/projectedFetcher.ts` similarly
     - _Requirements: 3.2, 4.1_
 
-- [ ] 3. Auto-Context Helpers
-  - [ ] 3.1 Create `autoContext()` utility
+- [x] 3. Auto-Context Helpers
+  - [x] 3.1 Create `autoContext()` utility
     - Create `packages/config/src/context/autoContext.ts` exporting `autoContext(): EvaluationContext`
     - Detect: `browser` (UA parsing), `browserVersion`, `os`, `device` (desktop/mobile/tablet via screen width + touch), `screenWidth`, `screenHeight`, `locale` (navigator.language), `timezone` (Intl)
     - Keep implementation lightweight — no heavy UA parsing library (use simple regex on navigator.userAgent)
     - Ensure tree-shakeability: exported as a standalone function, not auto-included
     - _Requirements: 5.1, 5.2, 5.3_
-  - [ ] 3.2 Create `mergeContext()` utility
+  - [x] 3.2 Create `mergeContext()` utility
     - Create `mergeContext(auto: EvaluationContext, user: EvaluationContext): EvaluationContext` in the same file
     - Deep-merge attributes objects with user values taking precedence
     - If user provides `userId`, use it; otherwise auto-context doesn't set userId
     - _Requirements: 5.4_
-  - [ ] 3.3 Export new utilities from package entry
+  - [x] 3.3 Export new utilities from package entry
     - Add `autoContext` and `mergeContext` to the SDK's public exports in `packages/config/src/index.ts`
     - Ensure they're listed in package.json exports map if applicable
     - _Requirements: 5.1, 5.3_
 
-- [ ] 4. Portal — Segment Targeting UI
-  - [ ] 4.1 Create `SegmentTargetingRule` component
+- [x] 4. Portal — Segment Targeting UI
+  - [x] 4.1 Create `SegmentTargetingRule` component
     - Create `apps/portal/src/components/segment-targeting-rule.tsx`
     - Segment multi-select dropdown populated from project's segments collection
     - Value input field (type depends on config's valueType)
@@ -90,13 +90,13 @@ Implement server-side evaluation of targeting rules, segments, and rollouts in t
     - Display selected segments as color badges/chips
     - Visual layout: [Segments badges] → [value] (intuitive cause-effect)
     - _Requirements: 6.1, 6.3, 6.5_
-  - [ ] 4.2 Update `RuleBuilder` to support segment-based rules
+  - [x] 4.2 Update `RuleBuilder` to support segment-based rules
     - Modify `apps/portal/src/components/rule-builder.tsx` to detect segment-based rules (using `isSegmentRule()` helper)
     - Render segment-based rules with `SegmentTargetingRule` component
     - Render condition-based rules with the existing predicate UI
     - Add rule type selector when adding a new rule: "Condition-based" or "Segment-based"
     - _Requirements: 6.2, 6.4_
-  - [ ] 4.3 Add conversion helpers for segment rules
+  - [x] 4.3 Add conversion helpers for segment rules
     - Add `toStorageRule()` and `isSegmentRule()` helper functions to `apps/portal/src/lib/types.ts` or a new `apps/portal/src/lib/segment-targeting.ts`
     - `toStorageRule()`: converts segment IDs + value into a standard TargetingRule with `_segment` predicate
     - `isSegmentRule()`: detects if a TargetingRule uses the segment pattern
