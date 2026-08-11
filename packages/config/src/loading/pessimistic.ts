@@ -1,4 +1,4 @@
-import { InitializationError, TimeoutError } from "../errors/index";
+import { TimeoutError } from "../errors/index";
 import { withRetry } from "../retry/RetryEngine";
 import type { LoadingContext, LoadingResult } from "../types";
 import { DEFAULT_CACHE_TTL } from "../types";
@@ -22,12 +22,17 @@ export const executePessimistic = async (
 
     return { initialData: data, status: "ready" };
   } catch (error) {
-    if (error instanceof TimeoutError) {
-      throw error;
-    }
-    throw new InitializationError(
-      "Failed to fetch config after all retries",
-      error as Error,
-    );
+    // On failure: fall back to cached data instead of throwing.
+    // This prevents SDK errors from hitting the consumer's error tracking.
+    // The error is communicated via the "fetchError" event instead.
+    ctx.events.emit("fetchError", {
+      error: error as Error,
+      retryCount: ctx.retry.maxRetries,
+      willRetry: false,
+    });
+
+    // Try cache as fallback
+    const cached = ctx.cache.get<Record<string, unknown>>("__all__");
+    return { initialData: cached ?? {}, status: "ready" };
   }
 };
