@@ -7,6 +7,7 @@ import { createProjectedFetcher } from "./fetch/projectedFetcher";
 import { executeDeferred } from "./loading/deferred";
 import { executeOptimistic } from "./loading/optimistic";
 import { executePessimistic } from "./loading/pessimistic";
+import type { EvaluationContext } from "./plugins/types";
 import { createHttpTransport } from "./transport/HttpTransport";
 import type {
   ConfigClient,
@@ -44,11 +45,17 @@ export function createConfig(
   const retry = { ...DEFAULT_RETRY, ...options.retry };
   const timeout = options.timeout ?? DEFAULT_TIMEOUT;
   const baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
+  const evaluationMode = options.evaluationMode ?? "server";
 
-  // 4. Create internal modules
+  // 4. Maintain a mutable context reference for server mode
+  let currentContext: EvaluationContext = options.context ?? {};
+
+  // 5. Create internal modules
   const transport = createHttpTransport({
     baseUrl,
     clientId: options.clientId,
+    evaluationMode,
+    getContext: () => currentContext,
   });
   const events = new TypedEventEmitter();
   const fetcher =
@@ -56,7 +63,7 @@ export function createConfig(
       ? createBatchFetcher(transport)
       : createProjectedFetcher(transport);
 
-  // 5. Create loading context
+  // 6. Create loading context
   const context: LoadingContext = {
     clientId: options.clientId,
     fetcher,
@@ -67,7 +74,10 @@ export function createConfig(
     granularity,
   };
 
-  // 6. Execute strategy
+  // 7. In server mode, plugins are not needed (API resolves everything)
+  const plugins = evaluationMode === "client" ? options.plugins : undefined;
+
+  // 8. Execute strategy
   if (strategy === "pessimistic") {
     return executePessimistic(context).then((result) => {
       const client = buildConfigClient({
@@ -78,9 +88,13 @@ export function createConfig(
         retry,
         granularity,
         isDeferred: false,
-        plugins: options.plugins,
+        plugins,
         context: options.context,
         consentAware: options.consentAware,
+        evaluationMode,
+        onContextChange: (ctx) => {
+          currentContext = ctx;
+        },
       });
       events.emit("ready", {
         loadingStrategy: "pessimistic",
@@ -100,9 +114,13 @@ export function createConfig(
       retry,
       granularity,
       isDeferred: true,
-      plugins: options.plugins,
+      plugins,
       context: options.context,
       consentAware: options.consentAware,
+      evaluationMode,
+      onContextChange: (ctx) => {
+        currentContext = ctx;
+      },
     });
     events.emit("ready", {
       loadingStrategy: "deferred",
@@ -121,9 +139,13 @@ export function createConfig(
     retry,
     granularity,
     isDeferred: false,
-    plugins: options.plugins,
+    plugins,
     context: options.context,
     consentAware: options.consentAware,
+    evaluationMode,
+    onContextChange: (ctx) => {
+      currentContext = ctx;
+    },
   });
   events.emit("ready", {
     loadingStrategy: "optimistic",

@@ -1,5 +1,11 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { getFirestore } from "firebase-admin/firestore";
+import {
+  evaluateConfigsForContext,
+  type ConfigDoc,
+  type SegmentDoc,
+  type UserContext,
+} from "./server-evaluator";
 
 /**
  * GET  /api/getConfig?clientId=cid_xxx
@@ -128,7 +134,32 @@ export const getConfig = onRequest(
       }
     }
 
-    // 3. Extract optional key filter
+    // 3. Extract evaluation mode and context
+    const evaluationMode: string =
+      (req.body?.data?.evaluationMode as string) ??
+      (req.query.evaluationMode as string) ??
+      "server";
+
+    const userContext: UserContext | null =
+      evaluationMode === "server"
+        ? ((req.body?.data?.context as UserContext) ?? null)
+        : null;
+
+    // Reject oversized context payloads (> 10KB)
+    if (userContext) {
+      const contextSize = JSON.stringify(userContext).length;
+      if (contextSize > 10240) {
+        res.status(413).json({
+          error: {
+            code: "CONTEXT_TOO_LARGE",
+            message: "Context payload exceeds 10KB limit",
+          },
+        });
+        return;
+      }
+    }
+
+    // 4. Extract optional key filter
     const requestedKeys: string[] | undefined =
       (req.query.keys as string)
         ?.split(",")
@@ -137,7 +168,7 @@ export const getConfig = onRequest(
       (req.body?.data?.keys as string[] | undefined) ??
       undefined;
 
-    // 4. Fetch configs for the environment
+    // 5. Fetch configs for the environment
     const configsRef = db
       .collection("projects")
       .doc(projectId)
@@ -145,34 +176,99 @@ export const getConfig = onRequest(
       .doc(environmentId)
       .collection("configs");
 
-    // If specific keys requested, fetch only those (cheaper Firestore reads)
     let configsSnapshot;
     if (
       requestedKeys &&
       requestedKeys.length > 0 &&
       requestedKeys.length <= 10
     ) {
-      // Firestore 'in' query supports up to 30 items, but we cap at 10 for sanity
       const docs = await Promise.all(
         requestedKeys.map((key) => configsRef.doc(key).get()),
       );
       configsSnapshot = docs.filter((d) => d.exists);
     } else {
-      // Batch mode: fetch all
       const snapshot = await configsRef.get();
       configsSnapshot = snapshot.docs;
     }
 
-    const data: Record<string, unknown> = {};
+    // 6. Fetch segments (needed for both modes)
+    const segmentsSnapshot = await db
+      .collection("projects")
+      .doc(projectId)
+      .collection("segments")
+      .get();
+
+    const segments: Record<string, SegmentDoc> = {};
+    for (const doc of segmentsSnapshot.docs) {
+      const segData = doc.data();
+      segments[doc.id] = {
+        id: doc.id,
+        name: segData.name ?? "",
+        conditions: segData.conditions ?? [],
+      };
+    }
+
+    // Track latest update for version/timestamp
     let latestUpdate = "";
+
+    // ═══════════════════════════════════════════════════════════
+    // SERVER EVALUATION MODE (default)
+    // Evaluate targeting, rollout, segments server-side.
+    // Return only resolved values — no business logic exposed.
+    // ═══════════════════════════════════════════════════════════
+    if (evaluationMode === "server") {
+      const configs: ConfigDoc[] = [];
+
+      for (const doc of configsSnapshot) {
+        const d = doc.data();
+        if (!d) continue;
+        configs.push({
+          key: doc.id,
+          value: d.value,
+          valueType: d.valueType ?? "string",
+          version: d.version ?? "1",
+          lifecycleState: d.lifecycleState ?? "active",
+          targetingRules: d.targetingRules,
+          rolloutPercentage: d.rolloutPercentage,
+          rolloutValue: d.rolloutValue,
+          overrides: d.overrides,
+          schedule: d.schedule,
+          prerequisites: d.prerequisites,
+        });
+        if (d.updatedAt > latestUpdate) latestUpdate = d.updatedAt;
+      }
+
+      const { data, warnings } = evaluateConfigsForContext(
+        configs,
+        segments,
+        userContext,
+      );
+
+      // Private cache — varies by context, not CDN-cacheable
+      res.set("Cache-Control", "private, max-age=30");
+      res.set("X-Config-Project", projectId);
+      res.set("X-Config-Environment", environmentId);
+
+      res.status(200).json({
+        data,
+        version: String(Object.keys(data).length),
+        timestamp: latestUpdate || new Date().toISOString(),
+        ...(warnings.length > 0 && { warnings }),
+      });
+      return;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // CLIENT EVALUATION MODE (opt-in)
+    // Return full flag data + segments for local SDK evaluation.
+    // Same as previous behavior — backward compatible.
+    // ═══════════════════════════════════════════════════════════
+    const data: Record<string, unknown> = {};
 
     for (const doc of configsSnapshot) {
       const configData = doc.data();
       if (!configData) continue;
 
-      // Return full flag data if the config has advanced features (targeting, rollout, etc.)
-      // This enables client-side evaluation via SDK plugins.
-      // Simple configs (no rules) still return just the value for backward compatibility.
       const hasAdvancedFeatures =
         configData.targetingRules?.length > 0 ||
         configData.rolloutPercentage != null ||
@@ -211,24 +307,11 @@ export const getConfig = onRequest(
       }
     }
 
-    // 5. Fetch segments for client-side evaluation of "in_segment" operator
-    const segmentsSnapshot = await db
-      .collection("projects")
-      .doc(projectId)
-      .collection("segments")
-      .get();
-
-    const segments: Record<string, unknown> = {};
-    for (const doc of segmentsSnapshot.docs) {
-      segments[doc.id] = { id: doc.id, ...doc.data() };
-    }
-
-    // 6. Set CDN cache headers for cheap delivery
+    // Public cache — CDN-cacheable (same response for all consumers)
     res.set("Cache-Control", "public, max-age=30, s-maxage=60");
     res.set("X-Config-Project", projectId);
     res.set("X-Config-Environment", environmentId);
 
-    // 7. Return in the format the SDK expects
     res.status(200).json({
       data,
       segments,

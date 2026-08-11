@@ -7,6 +7,9 @@ import type { EvaluationContext, EvaluationPlugin } from "./plugins/types.js";
 /** Loading strategy for SDK initialization */
 export type LoadingStrategy = "optimistic" | "pessimistic" | "deferred";
 
+/** Evaluation mode for the SDK */
+export type EvaluationMode = "server" | "client";
+
 /** Fetch granularity for remote config retrieval */
 export type FetchGranularity = "batch" | "projected";
 
@@ -23,6 +26,15 @@ export const DEFAULT_TIMEOUT = 10_000;
 export interface CreateConfigOptions {
   /** Required. The clientId token generated in the Portal. */
   clientId: string;
+
+  /**
+   * Evaluation mode.
+   * - "server" (default): SDK sends context to API, API evaluates targeting/rollout/segments
+   *   and returns only resolved values. No plugins needed client-side.
+   * - "client": API returns full flag data + segments, SDK evaluates locally via plugins.
+   *   Use this for backend services that need local evaluation without per-request API calls.
+   */
+  evaluationMode?: EvaluationMode;
 
   /**
    * Loading strategy for initialization.
@@ -51,7 +63,7 @@ export interface CreateConfigOptions {
   /** Cloud Function base URL (override for testing/custom deployments) */
   baseUrl?: string;
 
-  /** Evaluation plugins to register (tree-shakeable pipeline steps) */
+  /** Evaluation plugins to register (tree-shakeable pipeline steps). Only used in "client" mode. */
   plugins?: EvaluationPlugin[];
 
   /** Evaluation context for plugin pipeline (can be updated post-init via setContext) */
@@ -217,12 +229,25 @@ export interface HttpTransport {
 export interface GetConfigRequest {
   clientId: string;
   keys?: string[];
+  evaluationMode?: EvaluationMode;
+  context?: {
+    userId?: string;
+    attributes?: Record<string, string | number | boolean | string[]>;
+  };
+}
+
+export interface EvaluationWarning {
+  key: string;
+  reason: "evaluation_error" | "segment_not_found" | "prerequisite_failed";
+  message: string;
 }
 
 export interface GetConfigResponse {
   data: Record<string, unknown>;
+  segments?: Record<string, unknown>;
   version: string;
   timestamp: string;
+  warnings?: EvaluationWarning[];
 }
 
 // ═══════════════════════════════════════════════════════════════

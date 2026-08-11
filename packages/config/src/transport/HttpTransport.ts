@@ -1,11 +1,14 @@
 /// <reference lib="dom" />
 
 import { AuthenticationError, ConfigError } from "../errors/index";
-import type { HttpTransport } from "../types";
+import type { EvaluationContext } from "../plugins/types";
+import type { EvaluationMode, HttpTransport } from "../types";
 
 export interface TransportConfig {
   baseUrl: string;
   clientId: string;
+  evaluationMode?: EvaluationMode;
+  getContext?: () => EvaluationContext;
 }
 
 export const createHttpTransport = (
@@ -17,16 +20,34 @@ export const createHttpTransport = (
   ): Promise<T> {
     const url = `${config.baseUrl}/${endpoint}`;
 
+    const requestData: Record<string, unknown> = {
+      clientId: config.clientId,
+      ...body,
+    };
+
+    // Include evaluationMode in every request
+    if (config.evaluationMode) {
+      requestData.evaluationMode = config.evaluationMode;
+    }
+
+    // In server mode, include the current context for server-side evaluation
+    if (config.evaluationMode === "server" && config.getContext) {
+      const ctx = config.getContext();
+      if (ctx && (ctx.userId || ctx.attributes)) {
+        requestData.context = {
+          ...(ctx.userId && { userId: ctx.userId }),
+          ...(ctx.attributes && { attributes: ctx.attributes }),
+        };
+      }
+    }
+
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        data: {
-          clientId: config.clientId,
-          ...body,
-        },
+        data: requestData,
       }),
     });
 

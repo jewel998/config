@@ -69,7 +69,7 @@ msgstr ""
 msgid "Add an environment"
 msgstr ""
 
-#: src/components/rule-builder.tsx:349
+#: src/components/rule-builder.tsx:398
 msgid "Add condition"
 msgstr ""
 
@@ -87,11 +87,11 @@ msgstr ""
 msgid "Add Member"
 msgstr ""
 
-#: src/components/rule-builder.tsx:375
+#: src/components/rule-builder.tsx:424
 msgid "Add OR group"
 msgstr ""
 
-#: src/components/rule-builder.tsx:157
+#: src/components/rule-builder.tsx:189
 msgid "Add Rule"
 msgstr ""
 
@@ -121,6 +121,10 @@ msgstr ""
 
 #: src/components/audit-log-viewer.tsx:138
 msgid "All resources"
+msgstr ""
+
+#: src/components/segment-targeting-rule.tsx:136
+msgid "All segments selected"
 msgstr ""
 
 #: src/routes/configs.tsx:394
@@ -188,7 +192,7 @@ msgstr ""
 msgid "Are you sure you want to delete \"{0}\"? This action cannot be undone."
 msgstr ""
 
-#: src/components/rule-builder.tsx:252
+#: src/components/rule-builder.tsx:301
 msgid "Attribute"
 msgstr ""
 
@@ -298,7 +302,7 @@ msgstr ""
 msgid "Compare Environments"
 msgstr ""
 
-#: src/components/rule-builder.tsx:225
+#: src/components/rule-builder.tsx:274
 #: src/components/segment-edit-modal.tsx:118
 msgid "Conditions"
 msgstr ""
@@ -550,7 +554,7 @@ msgstr ""
 msgid "Diff configs between environments and sync changes."
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:281
+#: src/components/config-detail-panel.tsx:282
 msgid "Discard"
 msgstr ""
 
@@ -582,7 +586,7 @@ msgstr ""
 msgid "e.g. small, medium, large"
 msgstr ""
 
-#: src/components/rule-builder.tsx:264
+#: src/components/rule-builder.tsx:313
 msgid "e.g., plan, country, email"
 msgstr ""
 
@@ -784,15 +788,15 @@ msgstr ""
 msgid "Failed to save description"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:350
+#: src/components/config-detail-panel.tsx:351
 msgid "Failed to save overrides"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:433
+#: src/components/config-detail-panel.tsx:434
 msgid "Failed to save prerequisites"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:267
+#: src/components/config-detail-panel.tsx:268
 msgid "Failed to save rules"
 msgstr ""
 
@@ -820,7 +824,7 @@ msgstr ""
 msgid "Failed to update rollout"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:388
+#: src/components/config-detail-panel.tsx:389
 msgid "Failed to update schedule"
 msgstr ""
 
@@ -1128,11 +1132,15 @@ msgstr ""
 msgid "No scheduled changes."
 msgstr ""
 
+#: src/components/segment-targeting-rule.tsx:141
+msgid "No segments available. Create segments first in the Segments section."
+msgstr ""
+
 #: src/components/segment-manager.tsx:99
 msgid "No segments defined."
 msgstr ""
 
-#: src/components/rule-builder.tsx:165
+#: src/components/rule-builder.tsx:198
 msgid "No targeting rules. All users receive the default value."
 msgstr ""
 
@@ -1168,7 +1176,7 @@ msgstr ""
 msgid "Operation failed"
 msgstr ""
 
-#: src/components/rule-builder.tsx:272
+#: src/components/rule-builder.tsx:321
 msgid "Operator"
 msgstr ""
 
@@ -1176,11 +1184,11 @@ msgstr ""
 msgid "optional"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:323
+#: src/components/config-detail-panel.tsx:324
 msgid "Overrides"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:349
+#: src/components/config-detail-panel.tsx:350
 msgid "Overrides saved"
 msgstr ""
 
@@ -1241,12 +1249,12 @@ msgstr ""
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: src/components/config-detail-panel.tsx:404
+#: src/components/config-detail-panel.tsx:405
 #: src/components/prerequisite-ui.tsx:44
 msgid "Prerequisites"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:431
+#: src/components/config-detail-panel.tsx:432
 msgid "Prerequisites saved"
 msgstr ""
 
@@ -1262,7 +1270,8 @@ msgstr ""
 msgid "Previous page"
 msgstr ""
 
-#: src/components/rule-builder.tsx:192
+#: src/components/rule-builder.tsx:241
+#: src/components/segment-targeting-rule.tsx:63
 msgid "Priority"
 msgstr ""
 
@@ -1351,7 +1360,7 @@ msgstr ""
 msgid "Remove {memberName} from this project? They will lose access immediately."
 msgstr ""
 
-#: src/components/rule-builder.tsx:358
+#: src/components/rule-builder.tsx:407
 msgid "Remove group"
 msgstr ""
 
@@ -1367,8 +1376,12 @@ msgstr ""
 msgid "Resource categories"
 msgstr ""
 
-#: src/components/rule-builder.tsx:208
+#: src/components/rule-builder.tsx:257
 msgid "Return value"
+msgstr ""
+
+#: src/components/segment-targeting-rule.tsx:79
+msgid "Return value for matching segments"
 msgstr ""
 
 #. placeholder {0}: actions.size
@@ -1392,7 +1405,7 @@ msgstr ""
 msgid "Role updated"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:295
+#: src/components/config-detail-panel.tsx:296
 msgid "Rollout"
 msgstr ""
 
@@ -1401,7 +1414,7 @@ msgid "Rollout updated"
 msgstr ""
 
 #. placeholder {0}: ruleIdx + 1
-#: src/components/rule-builder.tsx:175
+#: src/components/rule-builder.tsx:224
 msgid "Rule {0}"
 msgstr ""
 
@@ -1417,17 +1430,17 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:273
+#: src/components/config-detail-panel.tsx:274
 msgid "Save rules"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:366
+#: src/components/config-detail-panel.tsx:367
 #: src/components/date-picker-schedule.tsx:222
 #: src/components/schedule-ui.tsx:82
 msgid "Schedule"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:387
+#: src/components/config-detail-panel.tsx:388
 msgid "Schedule updated"
 msgstr ""
 
@@ -1481,8 +1494,21 @@ msgstr ""
 msgid "Segment name is required."
 msgstr ""
 
+#: src/components/rule-builder.tsx:184
+msgid "Segment Rule"
+msgstr ""
+
+#. placeholder {0}: index + 1
+#: src/components/segment-targeting-rule.tsx:46
+msgid "Segment Rule {0}"
+msgstr ""
+
 #: src/routes/segments.tsx:74
 msgid "Segment updated"
+msgstr ""
+
+#: src/components/segment-targeting-rule.tsx:49
+msgid "Segment-based"
 msgstr ""
 
 #: src/components/audit-log-viewer.tsx:140
@@ -1650,17 +1676,21 @@ msgstr ""
 msgid "Target"
 msgstr ""
 
+#: src/components/segment-targeting-rule.tsx:94
+msgid "Target Segments"
+msgstr ""
+
 #: src/components/date-picker-schedule.tsx:147
 #: src/components/schedule-ui.tsx:79
 msgid "Target value"
 msgstr ""
 
 #: src/components/config-detail-panel.tsx:232
-#: src/components/rule-builder.tsx:148
+#: src/components/rule-builder.tsx:168
 msgid "Targeting Rules"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:264
+#: src/components/config-detail-panel.tsx:265
 msgid "Targeting rules saved"
 msgstr ""
 
@@ -1825,6 +1855,10 @@ msgstr ""
 msgid "User ID to export"
 msgstr ""
 
+#: src/components/segment-targeting-rule.tsx:96
+msgid "user must be in ANY selected segment"
+msgstr ""
+
 #: src/components/config-form-modal.tsx:347
 msgid "Validation Rules"
 msgstr ""
@@ -1832,7 +1866,7 @@ msgstr ""
 #: src/components/config-detail-panel.tsx:207
 #: src/components/config-form-modal.tsx:278
 #: src/components/override-manager.tsx:46
-#: src/components/rule-builder.tsx:307
+#: src/components/rule-builder.tsx:356
 #: src/routes/configs.tsx:525
 msgid "Value"
 msgstr ""
@@ -1854,8 +1888,12 @@ msgstr ""
 msgid "Value must be one of: {0}"
 msgstr ""
 
-#: src/components/rule-builder.tsx:217
+#: src/components/rule-builder.tsx:266
 msgid "Value served when rule matches"
+msgstr ""
+
+#: src/components/segment-targeting-rule.tsx:86
+msgid "Value served when user is in selected segments"
 msgstr ""
 
 #: src/routes/__root.tsx:425
