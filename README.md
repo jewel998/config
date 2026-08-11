@@ -94,6 +94,7 @@ import { rolloutPlugin } from "@jewel998/config/rollout";
 
 const config = createConfig({
   clientId: "cid_xxx",
+  evaluationMode: "client", // Opt-in: evaluate targeting locally
   plugins: [targetingPlugin(), rolloutPlugin()],
   context: {
     userId: "user_123",
@@ -104,6 +105,54 @@ const config = createConfig({
 // Targeting rules and rollout are evaluated locally — no extra network calls
 const showNewCheckout = config.getFlag("feature.checkout_v2");
 ```
+
+### 4. Server-Side Evaluation (default for frontend)
+
+The SDK defaults to **server evaluation mode** — you send user context, the API evaluates targeting rules and segments server-side, and returns only the resolved values. No business logic is exposed to the browser.
+
+```typescript
+import { createConfig, autoContext, mergeContext } from "@jewel998/config";
+
+const config = createConfig({
+  clientId: "cid_xxx",
+  // evaluationMode: "server" is the default — no need to specify
+  context: mergeContext(
+    autoContext(), // Detects: browser, OS, device, screen, locale, timezone
+    { userId: "user_123", attributes: { plan: "enterprise", country: "US" } },
+  ),
+});
+
+// Values are pre-resolved by the API — no plugins needed
+const darkMode = config.getFlag("feature.dark_mode"); // → true (if user matches targeting)
+const limit = config.getValue<number>("app.upload_limit", 10); // → 200 (enterprise plan)
+
+// When user context changes, SDK re-fetches resolved values
+config.setContext({
+  userId: "user_123",
+  attributes: { plan: "free" },
+});
+// Triggers re-fetch → values update → "updated" event fires
+```
+
+**`autoContext()`** detects common browser attributes automatically:
+
+| Attribute        | Example Value      |
+| ---------------- | ------------------ |
+| `browser`        | "Chrome"           |
+| `browserVersion` | "126.0.6478.126"   |
+| `os`             | "macOS"            |
+| `device`         | "desktop"          |
+| `screenWidth`    | 1920               |
+| `screenHeight`   | 1080               |
+| `locale`         | "en-US"            |
+| `timezone`       | "America/New_York" |
+
+**When to use which mode:**
+
+| Mode     | Use Case                                        |
+| -------- | ----------------------------------------------- |
+| `server` | Frontend apps — no business logic exposed       |
+| `client` | Backend services — local evaluation, no latency |
 
 ## Monorepo Structure
 
@@ -141,23 +190,63 @@ firebase deploy
 
 ## API Reference
 
-### GET /api/getConfig
+### POST /api/getConfig
 
-Fetch config values for an SDK client.
+Fetch config values for an SDK client. Supports two evaluation modes.
 
-**Query params:**
+**Request body:**
 
-- `clientId` (required) — API key from the portal
-- `keys` (optional) — Comma-separated list of specific keys to fetch
+```json
+{
+  "data": {
+    "clientId": "cid_xxx",
+    "evaluationMode": "server",
+    "context": {
+      "userId": "user_123",
+      "attributes": { "plan": "pro", "country": "US", "browser": "Chrome" }
+    },
+    "keys": ["feature.dark_mode", "app.limit"]
+  }
+}
+```
 
-**Response:**
+| Field                | Type     | Required | Description                                         |
+| -------------------- | -------- | -------- | --------------------------------------------------- |
+| `clientId`           | string   | Yes      | API key from the portal                             |
+| `evaluationMode`     | string   | No       | `"server"` (default) or `"client"`                  |
+| `context`            | object   | No       | User context for server-side targeting evaluation   |
+| `context.userId`     | string   | No       | User identifier (for rollouts and overrides)        |
+| `context.attributes` | object   | No       | Key-value pairs for targeting (plan, country, etc.) |
+| `keys`               | string[] | No       | Specific keys to fetch (omit for all)               |
+
+**Response (server mode) — only resolved values:**
 
 ```json
 {
   "data": {
     "feature.dark_mode": true,
-    "app.max_upload_mb": 10,
-    "app.name": "My App"
+    "app.limit": 200
+  },
+  "version": "3",
+  "timestamp": "2024-01-15T09:30:00.000Z",
+  "warnings": []
+}
+```
+
+**Response (client mode) — full flag data + segments for local evaluation:**
+
+```json
+{
+  "data": {
+    "feature.dark_mode": {
+      "key": "feature.dark_mode",
+      "value": false,
+      "valueType": "boolean",
+      "targetingRules": [{ "id": "...", "priority": 1, "value": true, "conditions": [...] }]
+    }
+  },
+  "segments": {
+    "seg_beta": { "id": "seg_beta", "name": "Beta Users", "conditions": [...] }
   },
   "version": "3",
   "timestamp": "2024-01-15T09:30:00.000Z"
@@ -168,6 +257,7 @@ Fetch config values for an SDK client.
 
 - `401` — Invalid or revoked clientId
 - `403` — Origin domain not in allowedDomains
+- `413` — Context payload exceeds 10KB limit
 - `429` — Rate limited (if enabled)
 
 ### Security Model

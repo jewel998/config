@@ -69,7 +69,7 @@ msgstr "Add a webhook to receive notifications when configs change."
 msgid "Add an environment"
 msgstr "Add an environment"
 
-#: src/components/rule-builder.tsx:398
+#: src/components/rule-builder.tsx:413
 msgid "Add condition"
 msgstr "Add condition"
 
@@ -87,11 +87,11 @@ msgstr "Add environments like production, staging, or development."
 msgid "Add Member"
 msgstr "Add Member"
 
-#: src/components/rule-builder.tsx:424
+#: src/components/rule-builder.tsx:439
 msgid "Add OR group"
 msgstr "Add OR group"
 
-#: src/components/rule-builder.tsx:189
+#: src/components/rule-builder.tsx:198
 msgid "Add Rule"
 msgstr "Add Rule"
 
@@ -192,7 +192,7 @@ msgstr "Apply template"
 msgid "Are you sure you want to delete \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete \"{0}\"? This action cannot be undone."
 
-#: src/components/rule-builder.tsx:301
+#: src/components/rule-builder.tsx:312
 msgid "Attribute"
 msgstr "Attribute"
 
@@ -302,7 +302,7 @@ msgstr "Compare"
 msgid "Compare Environments"
 msgstr "Compare Environments"
 
-#: src/components/rule-builder.tsx:274
+#: src/components/rule-builder.tsx:285
 #: src/components/segment-edit-modal.tsx:118
 msgid "Conditions"
 msgstr "Conditions"
@@ -586,7 +586,7 @@ msgstr "e.g. production, staging"
 msgid "e.g. small, medium, large"
 msgstr "e.g. small, medium, large"
 
-#: src/components/rule-builder.tsx:313
+#: src/components/rule-builder.tsx:324
 msgid "e.g., plan, country, email"
 msgstr "e.g., plan, country, email"
 
@@ -1140,7 +1140,7 @@ msgstr "No segments available. Create segments first in the Segments section."
 msgid "No segments defined."
 msgstr "No segments defined."
 
-#: src/components/rule-builder.tsx:198
+#: src/components/rule-builder.tsx:207
 msgid "No targeting rules. All users receive the default value."
 msgstr "No targeting rules. All users receive the default value."
 
@@ -1176,7 +1176,7 @@ msgstr "Numeric value"
 msgid "Operation failed"
 msgstr "Operation failed"
 
-#: src/components/rule-builder.tsx:321
+#: src/components/rule-builder.tsx:332
 msgid "Operator"
 msgstr "Operator"
 
@@ -1270,7 +1270,7 @@ msgstr "Preview payload"
 msgid "Previous page"
 msgstr "Previous page"
 
-#: src/components/rule-builder.tsx:241
+#: src/components/rule-builder.tsx:250
 #: src/components/segment-targeting-rule.tsx:63
 msgid "Priority"
 msgstr "Priority"
@@ -1360,7 +1360,7 @@ msgstr "Remove"
 msgid "Remove {memberName} from this project? They will lose access immediately."
 msgstr "Remove {memberName} from this project? They will lose access immediately."
 
-#: src/components/rule-builder.tsx:407
+#: src/components/rule-builder.tsx:422
 msgid "Remove group"
 msgstr "Remove group"
 
@@ -1376,7 +1376,7 @@ msgstr "Required value"
 msgid "Resource categories"
 msgstr "Resource categories"
 
-#: src/components/rule-builder.tsx:257
+#: src/components/rule-builder.tsx:268
 msgid "Return value"
 msgstr "Return value"
 
@@ -1414,7 +1414,7 @@ msgid "Rollout updated"
 msgstr "Rollout updated"
 
 #. placeholder {0}: ruleIdx + 1
-#: src/components/rule-builder.tsx:224
+#: src/components/rule-builder.tsx:233
 msgid "Rule {0}"
 msgstr "Rule {0}"
 
@@ -1494,7 +1494,7 @@ msgstr "Segment name"
 msgid "Segment name is required."
 msgstr "Segment name is required."
 
-#: src/components/rule-builder.tsx:184
+#: src/components/rule-builder.tsx:189
 msgid "Segment Rule"
 msgstr "Segment Rule"
 
@@ -1686,7 +1686,7 @@ msgid "Target value"
 msgstr "Target value"
 
 #: src/components/config-detail-panel.tsx:232
-#: src/components/rule-builder.tsx:168
+#: src/components/rule-builder.tsx:173
 msgid "Targeting Rules"
 msgstr "Targeting Rules"
 
@@ -1866,7 +1866,7 @@ msgstr "Validation Rules"
 #: src/components/config-detail-panel.tsx:207
 #: src/components/config-form-modal.tsx:278
 #: src/components/override-manager.tsx:46
-#: src/components/rule-builder.tsx:356
+#: src/components/rule-builder.tsx:369
 #: src/routes/configs.tsx:525
 msgid "Value"
 msgstr "Value"
@@ -1888,7 +1888,7 @@ msgstr "Value must be at most {validationMax}"
 msgid "Value must be one of: {0}"
 msgstr "Value must be one of: {0}"
 
-#: src/components/rule-builder.tsx:266
+#: src/components/rule-builder.tsx:277
 msgid "Value served when rule matches"
 msgstr "Value served when rule matches"
 

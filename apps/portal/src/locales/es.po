@@ -69,7 +69,7 @@ msgstr ""
 msgid "Add an environment"
 msgstr ""
 
-#: src/components/rule-builder.tsx:398
+#: src/components/rule-builder.tsx:413
 msgid "Add condition"
 msgstr ""
 
@@ -87,11 +87,11 @@ msgstr ""
 msgid "Add Member"
 msgstr ""
 
-#: src/components/rule-builder.tsx:424
+#: src/components/rule-builder.tsx:439
 msgid "Add OR group"
 msgstr ""
 
-#: src/components/rule-builder.tsx:189
+#: src/components/rule-builder.tsx:198
 msgid "Add Rule"
 msgstr ""
 
@@ -192,7 +192,7 @@ msgstr ""
 msgid "Are you sure you want to delete \"{0}\"? This action cannot be undone."
 msgstr ""
 
-#: src/components/rule-builder.tsx:301
+#: src/components/rule-builder.tsx:312
 msgid "Attribute"
 msgstr ""
 
@@ -302,7 +302,7 @@ msgstr ""
 msgid "Compare Environments"
 msgstr ""
 
-#: src/components/rule-builder.tsx:274
+#: src/components/rule-builder.tsx:285
 #: src/components/segment-edit-modal.tsx:118
 msgid "Conditions"
 msgstr ""
@@ -586,7 +586,7 @@ msgstr ""
 msgid "e.g. small, medium, large"
 msgstr ""
 
-#: src/components/rule-builder.tsx:313
+#: src/components/rule-builder.tsx:324
 msgid "e.g., plan, country, email"
 msgstr ""
 
@@ -1140,7 +1140,7 @@ msgstr ""
 msgid "No segments defined."
 msgstr ""
 
-#: src/components/rule-builder.tsx:198
+#: src/components/rule-builder.tsx:207
 msgid "No targeting rules. All users receive the default value."
 msgstr ""
 
@@ -1176,7 +1176,7 @@ msgstr ""
 msgid "Operation failed"
 msgstr ""
 
-#: src/components/rule-builder.tsx:321
+#: src/components/rule-builder.tsx:332
 msgid "Operator"
 msgstr ""
 
@@ -1270,7 +1270,7 @@ msgstr ""
 msgid "Previous page"
 msgstr ""
 
-#: src/components/rule-builder.tsx:241
+#: src/components/rule-builder.tsx:250
 #: src/components/segment-targeting-rule.tsx:63
 msgid "Priority"
 msgstr ""
@@ -1360,7 +1360,7 @@ msgstr ""
 msgid "Remove {memberName} from this project? They will lose access immediately."
 msgstr ""
 
-#: src/components/rule-builder.tsx:407
+#: src/components/rule-builder.tsx:422
 msgid "Remove group"
 msgstr ""
 
@@ -1376,7 +1376,7 @@ msgstr ""
 msgid "Resource categories"
 msgstr ""
 
-#: src/components/rule-builder.tsx:257
+#: src/components/rule-builder.tsx:268
 msgid "Return value"
 msgstr ""
 
@@ -1414,7 +1414,7 @@ msgid "Rollout updated"
 msgstr ""
 
 #. placeholder {0}: ruleIdx + 1
-#: src/components/rule-builder.tsx:224
+#: src/components/rule-builder.tsx:233
 msgid "Rule {0}"
 msgstr ""
 
@@ -1494,7 +1494,7 @@ msgstr ""
 msgid "Segment name is required."
 msgstr ""
 
-#: src/components/rule-builder.tsx:184
+#: src/components/rule-builder.tsx:189
 msgid "Segment Rule"
 msgstr ""
 
@@ -1686,7 +1686,7 @@ msgid "Target value"
 msgstr ""
 
 #: src/components/config-detail-panel.tsx:232
-#: src/components/rule-builder.tsx:168
+#: src/components/rule-builder.tsx:173
 msgid "Targeting Rules"
 msgstr ""
 
@@ -1866,7 +1866,7 @@ msgstr ""
 #: src/components/config-detail-panel.tsx:207
 #: src/components/config-form-modal.tsx:278
 #: src/components/override-manager.tsx:46
-#: src/components/rule-builder.tsx:356
+#: src/components/rule-builder.tsx:369
 #: src/routes/configs.tsx:525
 msgid "Value"
 msgstr ""
@@ -1888,7 +1888,7 @@ msgstr ""
 msgid "Value must be one of: {0}"
 msgstr ""
 
-#: src/components/rule-builder.tsx:266
+#: src/components/rule-builder.tsx:277
 msgid "Value served when rule matches"
 msgstr ""
 
