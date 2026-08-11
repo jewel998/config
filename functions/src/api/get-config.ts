@@ -169,20 +169,69 @@ export const getConfig = onRequest(
     for (const doc of configsSnapshot) {
       const configData = doc.data();
       if (!configData) continue;
-      data[doc.id] = configData.value;
+
+      // Return full flag data if the config has advanced features (targeting, rollout, etc.)
+      // This enables client-side evaluation via SDK plugins.
+      // Simple configs (no rules) still return just the value for backward compatibility.
+      const hasAdvancedFeatures =
+        configData.targetingRules?.length > 0 ||
+        configData.rolloutPercentage != null ||
+        configData.overrides != null ||
+        configData.schedule != null ||
+        configData.prerequisites?.length > 0;
+
+      if (hasAdvancedFeatures) {
+        data[doc.id] = {
+          key: doc.id,
+          value: configData.value,
+          valueType: configData.valueType ?? "string",
+          version: configData.version ?? "1",
+          lifecycleState: configData.lifecycleState ?? "active",
+          ...(configData.targetingRules && {
+            targetingRules: configData.targetingRules,
+          }),
+          ...(configData.rolloutPercentage != null && {
+            rolloutPercentage: configData.rolloutPercentage,
+          }),
+          ...(configData.rolloutValue !== undefined && {
+            rolloutValue: configData.rolloutValue,
+          }),
+          ...(configData.overrides && { overrides: configData.overrides }),
+          ...(configData.schedule && { schedule: configData.schedule }),
+          ...(configData.prerequisites && {
+            prerequisites: configData.prerequisites,
+          }),
+        };
+      } else {
+        data[doc.id] = configData.value;
+      }
+
       if (configData.updatedAt > latestUpdate) {
         latestUpdate = configData.updatedAt;
       }
     }
 
-    // 5. Set CDN cache headers for cheap delivery
+    // 5. Fetch segments for client-side evaluation of "in_segment" operator
+    const segmentsSnapshot = await db
+      .collection("projects")
+      .doc(projectId)
+      .collection("segments")
+      .get();
+
+    const segments: Record<string, unknown> = {};
+    for (const doc of segmentsSnapshot.docs) {
+      segments[doc.id] = { id: doc.id, ...doc.data() };
+    }
+
+    // 6. Set CDN cache headers for cheap delivery
     res.set("Cache-Control", "public, max-age=30, s-maxage=60");
     res.set("X-Config-Project", projectId);
     res.set("X-Config-Environment", environmentId);
 
-    // 6. Return in the format the SDK expects
+    // 7. Return in the format the SDK expects
     res.status(200).json({
       data,
+      segments,
       version: String(Object.keys(data).length),
       timestamp: latestUpdate || new Date().toISOString(),
     });
