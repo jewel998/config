@@ -271,32 +271,6 @@ export interface EventEmitterInterface {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// Legacy types (deprecated, kept for migration)
-// ═══════════════════════════════════════════════════════════════
-
-/** @deprecated Use CreateConfigOptions instead */
-export type ConfigScope = "tenant" | "project" | "environment";
-
-/** @deprecated Use LoadingStrategy instead */
-export type ConfigSourceMode = "offline" | "remote" | "hybrid";
-
-/** @deprecated Config definitions are no longer needed client-side */
-export interface ConfigDefinition<T = unknown> {
-  key: string;
-  defaultValue: T;
-  sourceMode: ConfigSourceMode;
-  scope: ConfigScope;
-  fallbackValue?: T;
-}
-
-/** @deprecated Scoping is handled by clientId */
-export interface ConfigResolveContext {
-  tenantId?: string;
-  projectId?: string;
-  environment?: string;
-}
-
-// ═══════════════════════════════════════════════════════════════
 // Portal/Management types (used by Cloud Functions and Portal)
 // ═══════════════════════════════════════════════════════════════
 
@@ -335,22 +309,4 @@ export interface ConfigRecord {
   publishedAt: string;
   updatedAt: string;
   updatedBy: string;
-}
-
-/** @deprecated Use ProjectRecord instead */
-export interface TenantRecord {
-  id: string;
-  name: string;
-  ownerId: string;
-  createdAt: string;
-}
-
-/** @deprecated Use ConfigRecord instead */
-export interface ConfigVersionRecord {
-  id: string;
-  projectId: string;
-  environmentId?: string;
-  version: string;
-  payload: Record<string, unknown>;
-  publishedAt?: string;
 }

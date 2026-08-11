@@ -50,31 +50,3 @@ export {
   TimeoutError,
 } from "./errors/index";
 export type { ConfigErrorCode } from "./errors/index";
-
-// ═══════════════════════════════════════════════════════════════
-// Deprecated API (kept for Phase 1 migration, remove in v1.0.0)
-// ═══════════════════════════════════════════════════════════════
-
-/** @deprecated Use createConfig() instead */
-export { createConfigClient } from "./client";
-export type {
-  ConfigClient as LegacyConfigClient,
-  ConfigClientOptions,
-} from "./client";
-
-/** @deprecated Tenant concept removed. Use ProjectRecord instead. */
-export type { TenantRecord } from "./types";
-
-/** @deprecated Use ConfigRecord instead */
-export type { ConfigVersionRecord } from "./types";
-
-/** @deprecated Scoping is handled by clientId */
-export type { ConfigResolveContext, ConfigDefinition } from "./types";
-
-/** @deprecated Use LoadingStrategy instead */
-export type { ConfigScope, ConfigSourceMode } from "./types";
-
-// Management (Portal only — still active)
-export { createConfigManager } from "./management/index";
-export type { ConfigManager, ConfigManagerOptions } from "./management/index";
-export type { ConfigManagerBackend } from "./management/manager";
