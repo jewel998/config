@@ -244,6 +244,7 @@ export const ConfigDetailPanel = ({
                 rules={localRules ?? targetingRules}
                 onSave={(rules) => setLocalRules(rules)}
                 disabled={!canEdit}
+                segments={segments}
               />
               {rulesDirty && canEdit && (
                 <div className="flex items-center gap-2">

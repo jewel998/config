@@ -8,6 +8,7 @@ import type {
   ConfigEventCallback,
   ConfigEventType,
   ConfigFetcher,
+  EvaluationMode,
   EventEmitterInterface,
   FetchGranularity,
   RetryConfig,
@@ -25,6 +26,8 @@ export interface ConfigClientInternals {
   plugins?: EvaluationPlugin[];
   context?: EvaluationContext;
   consentAware?: boolean;
+  evaluationMode?: EvaluationMode;
+  onContextChange?: (ctx: EvaluationContext) => void;
 }
 
 export const buildConfigClient = (
@@ -34,6 +37,8 @@ export const buildConfigClient = (
   const plugins = internals.plugins ?? [];
   let evalContext: EvaluationContext = internals.context ?? {};
   const consentAware = internals.consentAware ?? false;
+  const evaluationMode = internals.evaluationMode ?? "server";
+  const onContextChange = internals.onContextChange;
   let data = { ...internals.data };
   let batchFetchTriggered = false;
 
@@ -241,6 +246,14 @@ export const buildConfigClient = (
 
     setContext(newContext: EvaluationContext): void {
       evalContext = { ...newContext };
+      // Notify the transport layer of the context change
+      if (onContextChange) {
+        onContextChange(evalContext);
+      }
+      // In server mode, context change means we need fresh resolved values from the API
+      if (evaluationMode === "server") {
+        void client.refresh();
+      }
     },
   };
 

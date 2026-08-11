@@ -222,3 +222,60 @@ export type SectionId =
   | "overrides"
   | "schedule"
   | "prerequisites";
+
+// ═══════════════════════════════════════════════════════════════
+// Segment Targeting Helpers
+// ═══════════════════════════════════════════════════════════════
+
+/** A segment-based targeting rule for simplified UI display */
+export interface SegmentTargetingRuleUI {
+  id: string;
+  priority: number;
+  value: unknown;
+  segmentIds: string[];
+}
+
+/** Detects if a stored TargetingRule uses the segment-based pattern */
+export function isSegmentRule(rule: TargetingRule): boolean {
+  return (
+    rule.conditions.length === 1 &&
+    rule.conditions[0].predicates.length === 1 &&
+    rule.conditions[0].predicates[0].attribute === "_segment" &&
+    rule.conditions[0].predicates[0].operator === "in_segment"
+  );
+}
+
+/** Convert a UI segment rule into the standard storage format */
+export function toStorageRule(rule: SegmentTargetingRuleUI): TargetingRule {
+  return {
+    id: rule.id,
+    priority: rule.priority,
+    value: rule.value,
+    conditions: [
+      {
+        predicates: [
+          {
+            attribute: "_segment",
+            operator: "in_segment",
+            value: rule.segmentIds,
+          },
+        ],
+      },
+    ],
+  };
+}
+
+/** Extract segment IDs from a stored segment-based targeting rule */
+export function fromStorageRule(rule: TargetingRule): SegmentTargetingRuleUI {
+  const predicate = rule.conditions[0]?.predicates[0];
+  const segmentIds = Array.isArray(predicate?.value)
+    ? (predicate.value as string[])
+    : [String(predicate?.value ?? "")];
+
+  return {
+    id: rule.id,
+    priority: rule.priority,
+    value: rule.value,
+    segmentIds,
+  };
+}

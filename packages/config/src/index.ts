@@ -16,6 +16,8 @@ export type {
   ConfigRecord,
   CreateConfigOptions,
   EnvironmentRecord,
+  EvaluationMode,
+  EvaluationWarning,
   FetchGranularity,
   LoadingStrategy,
   ProjectRecord,
@@ -32,6 +34,9 @@ export type {
 } from "./plugins/types.js";
 
 export { PIPELINE_ORDER } from "./plugins/types.js";
+
+// Context helpers (tree-shakeable)
+export { autoContext, mergeContext } from "./context/autoContext";
 
 // Cache adapters
 export { memoryStorage } from "./cache/memoryStorage";
