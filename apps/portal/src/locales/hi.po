@@ -69,10 +69,6 @@ msgstr ""
 msgid "Add an environment"
 msgstr ""
 
-#: src/components/rule-builder.tsx:413
-msgid "Add condition"
-msgstr ""
-
 #: src/components/config-form-modal.tsx:215
 #: src/routes/configs.tsx:347
 msgid "Add Config"
@@ -85,14 +81,6 @@ msgstr ""
 #: src/components/rbac-manager.tsx:76
 #: src/routes/team.tsx:204
 msgid "Add Member"
-msgstr ""
-
-#: src/components/rule-builder.tsx:439
-msgid "Add OR group"
-msgstr ""
-
-#: src/components/rule-builder.tsx:198
-msgid "Add Rule"
 msgstr ""
 
 #: src/components/add-member-modal.tsx:64
@@ -123,10 +111,6 @@ msgstr ""
 msgid "All resources"
 msgstr ""
 
-#: src/components/segment-targeting-rule.tsx:136
-msgid "All segments selected"
-msgstr ""
-
 #: src/routes/configs.tsx:394
 msgid "All types"
 msgstr ""
@@ -153,6 +137,10 @@ msgstr ""
 
 #: src/components/add-member-modal.tsx:129
 msgid "An invite already exists for this email."
+msgstr ""
+
+#: src/components/rule-builder.tsx:589
+msgid "AND"
 msgstr ""
 
 #: src/routes/api-keys.tsx:69
@@ -191,10 +179,6 @@ msgstr ""
 #. placeholder {0}: deletingSegment?.name
 #: src/components/segment-manager.tsx:233
 msgid "Are you sure you want to delete \"{0}\"? This action cannot be undone."
-msgstr ""
-
-#: src/components/rule-builder.tsx:312
-msgid "Attribute"
 msgstr ""
 
 #: src/routes/__root.tsx:235
@@ -270,6 +254,10 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
+#: src/components/rule-builder.tsx:372
+msgid "Click a segment below to target it"
+msgstr ""
+
 #: src/components/gdpr-panel.tsx:90
 msgid "Click again to confirm permanent deletion."
 msgstr ""
@@ -307,7 +295,10 @@ msgstr ""
 msgid "Compare Environments"
 msgstr ""
 
-#: src/components/rule-builder.tsx:285
+#: src/components/rule-builder.tsx:472
+msgid "Condition"
+msgstr ""
+
 #: src/components/segment-edit-modal.tsx:118
 msgid "Conditions"
 msgstr ""
@@ -453,6 +444,11 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
+#: src/components/rule-builder.tsx:210
+#: src/components/rule-builder.tsx:277
+msgid "Custom Condition"
+msgstr ""
+
 #: src/components/webhook-form-modal.tsx:176
 msgid "Custom Template"
 msgstr ""
@@ -594,8 +590,8 @@ msgstr ""
 msgid "e.g. small, medium, large"
 msgstr ""
 
-#: src/components/rule-builder.tsx:324
-msgid "e.g., plan, country, email"
+#: src/components/rule-builder.tsx:531
+msgid "e.g., plan, country"
 msgstr ""
 
 #: src/routes/api-keys.tsx:122
@@ -604,6 +600,11 @@ msgstr ""
 
 #: src/components/webhook-form-modal.tsx:124
 msgid "e.g., Slack #deployments"
+msgstr ""
+
+#: src/components/rule-builder.tsx:422
+#: src/components/rule-builder.tsx:629
+msgid "e.g., true, \"premium\", 100"
 msgstr ""
 
 #: src/components/webhook-card.tsx:120
@@ -1152,15 +1153,11 @@ msgstr ""
 msgid "No scheduled changes."
 msgstr ""
 
-#: src/components/segment-targeting-rule.tsx:141
-msgid "No segments available. Create segments first in the Segments section."
-msgstr ""
-
 #: src/components/segment-manager.tsx:99
 msgid "No segments defined."
 msgstr ""
 
-#: src/components/rule-builder.tsx:207
+#: src/components/rule-builder.tsx:188
 msgid "No targeting rules. All users receive the default value."
 msgstr ""
 
@@ -1196,12 +1193,12 @@ msgstr ""
 msgid "Operation failed"
 msgstr ""
 
-#: src/components/rule-builder.tsx:332
-msgid "Operator"
-msgstr ""
-
 #: src/components/config-form-modal.tsx:349
 msgid "optional"
+msgstr ""
+
+#: src/components/rule-builder.tsx:614
+msgid "OR"
 msgstr ""
 
 #: src/components/config-detail-panel.tsx:324
@@ -1290,8 +1287,8 @@ msgstr ""
 msgid "Previous page"
 msgstr ""
 
-#: src/components/rule-builder.tsx:250
-#: src/components/segment-targeting-rule.tsx:63
+#: src/components/rule-builder.tsx:352
+#: src/components/rule-builder.tsx:486
 msgid "Priority"
 msgstr ""
 
@@ -1371,6 +1368,7 @@ msgid "Regex pattern"
 msgstr ""
 
 #: src/components/date-picker-schedule.tsx:140
+#: src/components/rule-builder.tsx:598
 #: src/components/schedule-ui.tsx:73
 #: src/routes/team.tsx:126
 msgid "Remove"
@@ -1378,10 +1376,6 @@ msgstr ""
 
 #: src/routes/team.tsx:125
 msgid "Remove {memberName} from this project? They will lose access immediately."
-msgstr ""
-
-#: src/components/rule-builder.tsx:422
-msgid "Remove group"
 msgstr ""
 
 #: src/routes/team.tsx:124
@@ -1394,14 +1388,6 @@ msgstr ""
 
 #: src/components/webhook-form-modal.tsx:264
 msgid "Resource categories"
-msgstr ""
-
-#: src/components/rule-builder.tsx:268
-msgid "Return value"
-msgstr ""
-
-#: src/components/segment-targeting-rule.tsx:79
-msgid "Return value for matching segments"
 msgstr ""
 
 #. placeholder {0}: actions.size
@@ -1433,8 +1419,9 @@ msgstr ""
 msgid "Rollout updated"
 msgstr ""
 
-#. placeholder {0}: ruleIdx + 1
-#: src/components/rule-builder.tsx:233
+#. placeholder {0}: index + 1
+#: src/components/rule-builder.tsx:335
+#: src/components/rule-builder.tsx:469
 msgid "Rule {0}"
 msgstr ""
 
@@ -1497,6 +1484,10 @@ msgstr ""
 msgid "Searching..."
 msgstr ""
 
+#: src/components/rule-builder.tsx:338
+msgid "Segment"
+msgstr ""
+
 #: src/routes/segments.tsx:59
 msgid "Segment created"
 msgstr ""
@@ -1514,21 +1505,8 @@ msgstr ""
 msgid "Segment name is required."
 msgstr ""
 
-#: src/components/rule-builder.tsx:189
-msgid "Segment Rule"
-msgstr ""
-
-#. placeholder {0}: index + 1
-#: src/components/segment-targeting-rule.tsx:46
-msgid "Segment Rule {0}"
-msgstr ""
-
 #: src/routes/segments.tsx:74
 msgid "Segment updated"
-msgstr ""
-
-#: src/components/segment-targeting-rule.tsx:49
-msgid "Segment-based"
 msgstr ""
 
 #: src/components/audit-log-viewer.tsx:140
@@ -1597,6 +1575,11 @@ msgstr ""
 
 #: src/components/add-member-modal.tsx:142
 msgid "Send Invite"
+msgstr ""
+
+#: src/components/rule-builder.tsx:415
+#: src/components/rule-builder.tsx:622
+msgid "Serve value"
 msgstr ""
 
 #: src/routes/api-keys.tsx:110
@@ -1700,8 +1683,12 @@ msgstr ""
 msgid "Target"
 msgstr ""
 
-#: src/components/segment-targeting-rule.tsx:94
-msgid "Target Segments"
+#: src/components/rule-builder.tsx:201
+msgid "Target a Segment"
+msgstr ""
+
+#: src/components/rule-builder.tsx:267
+msgid "Target Segment"
 msgstr ""
 
 #: src/components/date-picker-schedule.tsx:147
@@ -1710,7 +1697,7 @@ msgid "Target value"
 msgstr ""
 
 #: src/components/config-detail-panel.tsx:232
-#: src/components/rule-builder.tsx:173
+#: src/components/rule-builder.tsx:176
 msgid "Targeting Rules"
 msgstr ""
 
@@ -1879,10 +1866,6 @@ msgstr ""
 msgid "User ID to export"
 msgstr ""
 
-#: src/components/segment-targeting-rule.tsx:96
-msgid "user must be in ANY selected segment"
-msgstr ""
-
 #: src/components/config-form-modal.tsx:347
 msgid "Validation Rules"
 msgstr ""
@@ -1890,7 +1873,6 @@ msgstr ""
 #: src/components/config-detail-panel.tsx:207
 #: src/components/config-form-modal.tsx:278
 #: src/components/override-manager.tsx:46
-#: src/components/rule-builder.tsx:369
 #: src/routes/configs.tsx:525
 msgid "Value"
 msgstr ""
@@ -1910,14 +1892,6 @@ msgstr ""
 #. placeholder {0}: allowed.join(", ")
 #: src/components/config-form-modal.tsx:149
 msgid "Value must be one of: {0}"
-msgstr ""
-
-#: src/components/rule-builder.tsx:277
-msgid "Value served when rule matches"
-msgstr ""
-
-#: src/components/segment-targeting-rule.tsx:86
-msgid "Value served when user is in selected segments"
 msgstr ""
 
 #: src/routes/__root.tsx:425
@@ -1952,6 +1926,14 @@ msgstr ""
 #: src/components/segment-edit-modal.tsx:107
 #: src/components/segment-manager.tsx:181
 msgid "What does this segment represent?"
+msgstr ""
+
+#: src/components/rule-builder.tsx:499
+msgid "When"
+msgstr ""
+
+#: src/components/rule-builder.tsx:365
+msgid "When user is in"
 msgstr ""
 
 #: src/routes/settings.tsx:126
