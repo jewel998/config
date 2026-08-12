@@ -1,0 +1,33 @@
+# Compliance & Security
+
+@jewel998/config is designed with security and compliance in mind. While we're not yet certified (SOC 2, ISO 27001), the architecture follows the guidelines and best practices of these frameworks.
+
+## Security Architecture
+
+| Layer              | Protection                                                  |
+| ------------------ | ----------------------------------------------------------- |
+| **Authentication** | Firebase Authentication (Google, email/password)            |
+| **Authorization**  | Per-project RBAC (Viewer, Editor, Admin)                    |
+| **API Security**   | Client/Server key separation, domain validation             |
+| **Data Isolation** | Per-project Firestore collections, no cross-project access  |
+| **Transport**      | HTTPS-only, TLS 1.3 via Firebase Hosting CDN                |
+| **Secrets**        | API keys are generated with cryptographic randomness        |
+| **Audit**          | Every mutation recorded with actor, timestamp, before/after |
+
+## Key Separation
+
+API keys are typed at creation:
+
+- **Client keys (`cid_`)** — For frontends. The API evaluates targeting server-side and returns only resolved values. Targeting rules, segment definitions, and rollout percentages are never exposed.
+- **Server keys (`svr_`)** — For backends. Returns full flag data for local evaluation. Should be stored in environment variables, never in client-side code.
+
+The API enforces this based on key prefix — no request parameter can override it.
+
+## Data Residency
+
+Your data lives in your own Firebase project. You choose the Firestore region. No data is sent to third-party servers (except webhook endpoints you configure).
+
+## Frameworks We Align With
+
+- [GDPR](/compliance/gdpr) — Data minimization, right to deletion, audit trails
+- [SOC 2](/compliance/soc2) — Access controls, audit logging, change management
