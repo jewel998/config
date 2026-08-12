@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@jewel998/config — Feature Flags That Scale With You</title>
+    <meta
+      name="description"
+      content="Free, self-hostable feature flags and remote configuration. Replace LaunchDarkly at $0/month. Segments, targeting, rollouts, audit logs, webhooks."
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Background video -->
+    <div class="bg">
+      <video class="bg-video" autoplay muted loop playsinline>
+        <source
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4"
+          type="video/mp4"
+        />
+      </video>
+    </div>
+
+    <div class="page">
+      <!-- Header -->
+      <header class="header anim" style="--d: 0s">
+        <a href="/config/" class="logo" aria-label="Home">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 28 28"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect x="3" y="3" width="10" height="10" rx="2" fill="#000" />
+            <rect
+              x="15"
+              y="3"
+              width="10"
+              height="10"
+              rx="2"
+              fill="#000"
+              opacity="0.6"
+            />
+            <rect
+              x="3"
+              y="15"
+              width="10"
+              height="10"
+              rx="2"
+              fill="#000"
+              opacity="0.6"
+            />
+            <rect
+              x="15"
+              y="15"
+              width="10"
+              height="10"
+              rx="2"
+              fill="#000"
+              opacity="0.3"
+            />
+          </svg>
+        </a>
+
+        <nav class="nav-pill" aria-label="Main navigation">
+          <a href="/config/" class="nav-link active">Home</a>
+          <a href="/config/portal/" class="nav-link">Portal</a>
+          <a href="/config/guide/getting-started.html" class="nav-link">Docs</a>
+          <a href="/config/comparison/" class="nav-link">Compare</a>
+        </nav>
+
+        <a href="/config/portal/" class="sign-in-btn">Open Portal</a>
+
+        <!-- Mobile burger -->
+        <button class="burger" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </header>
+
+      <!-- Mobile menu -->
+      <div class="mobile-overlay" hidden></div>
+      <div class="mobile-menu" hidden>
+        <a href="/config/" class="mobile-link active">Home</a>
+        <a href="/config/portal/" class="mobile-link">Portal</a>
+        <a href="/config/guide/getting-started.html" class="mobile-link"
+          >Docs</a
+        >
+        <a href="/config/comparison/" class="mobile-link">Compare</a>
+        <a href="/config/portal/" class="mobile-sign-in">Open Portal</a>
+      </div>
+
+      <!-- Hero -->
+      <main class="hero">
+        <!-- Trust row -->
+        <div class="trust anim" style="--d: 0.08s">
+          <div class="trust-avatar" style="--i: 0">
+            <div class="trust-ring"><i class="fa-brands fa-shopify"></i></div>
+          </div>
+          <div class="trust-avatar" style="--i: 1">
+            <div class="trust-ring"><i class="fa-brands fa-stripe"></i></div>
+          </div>
+          <div class="trust-avatar" style="--i: 2">
+            <div class="trust-ring"><i class="fa-brands fa-github"></i></div>
+          </div>
+          <div class="trust-pill">Built for teams shipping fast</div>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="headline anim" style="--d: 0.12s">
+          <span class="headline-line line1">Feature Flags</span>
+          <span class="headline-line line2">Without The Bill</span>
+        </h1>
+
+        <!-- Subhead -->
+        <p class="subhead anim" style="--d: 0.28s">
+          Ship features safely with segments, targeting rules, and percentage
+          rollouts. Self-hosted on Firebase free tier. $0/month forever.
+        </p>
+
+        <!-- CTA -->
+        <a
+          href="/config/guide/getting-started.html"
+          class="cta anim"
+          style="--d: 0.4s"
+        >
+          Get Started
+        </a>
+      </main>
+
+      <!-- Stats -->
+      <footer class="stats">
+        <div class="stat anim" style="--d: 0.5s">
+          <span class="stat-icon">&lt;</span>
+          <span
+            class="stat-value"
+            data-target="60"
+            data-suffix="ms"
+            data-decimals="0"
+            >0ms</span
+          >
+          <span class="stat-label">Response Time</span>
+        </div>
+        <div class="stat anim" style="--d: 0.58s">
+          <span class="stat-icon">$</span>
+          <span
+            class="stat-value"
+            data-target="0"
+            data-suffix="/mo"
+            data-decimals="0"
+            >$0/mo</span
+          >
+          <span class="stat-label">Infrastructure Cost</span>
+        </div>
+        <div class="stat anim" style="--d: 0.66s">
+          <span class="stat-icon">*</span>
+          <span
+            class="stat-value"
+            data-target="7"
+            data-suffix=""
+            data-decimals="0"
+            >0</span
+          >
+          <span class="stat-label">Languages Supported</span>
+        </div>
+        <div class="stat anim" style="--d: 0.74s">
+          <span class="stat-icon">#</span>
+          <span
+            class="stat-value"
+            data-target="100"
+            data-suffix="%"
+            data-decimals="0"
+            >0%</span
+          >
+          <span class="stat-label">Open Source</span>
+        </div>
+      </footer>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
