@@ -6,7 +6,12 @@ export default defineConfig({
     "A free, self-hostable feature flag and remote configuration platform for startups.",
   base: "/config/",
   themeConfig: {
+    siteTitle: "Docs",
+    // Override the default title link to go to the landing page
+    logoLink: "https://jewel998.github.io/config/",
+    // Link the site title to the landing page (not VitePress index)
     nav: [
+      { text: "Home", link: "https://jewel998.github.io/config/" },
       { text: "Guide", link: "/guide/getting-started" },
       { text: "Features", link: "/features/segments" },
       { text: "API", link: "/api/" },
