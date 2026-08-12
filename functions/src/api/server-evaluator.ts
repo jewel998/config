@@ -32,7 +32,11 @@ export interface ConfigDoc {
   rolloutValue?: unknown;
   overrides?: Record<string, unknown>;
   schedule?: { targetValue: unknown; activateAt: string };
-  prerequisites?: Array<{ flagKey: string; requiredValue: unknown }>;
+  prerequisites?: Array<{
+    flagKey: string;
+    operator?: string;
+    requiredValue: unknown;
+  }>;
 }
 
 export interface SegmentDoc {
@@ -135,7 +139,8 @@ function evaluatePipeline(
       }
       // Evaluate prerequisite (without recursing into its own prerequisites to avoid loops)
       const prereqValue = resolveSimpleValue(prereqConfig, segments, context);
-      if (prereqValue !== prereq.requiredValue) {
+      const op = prereq.operator ?? "equals";
+      if (!evaluatePrerequisiteOp(prereqValue, op, prereq.requiredValue)) {
         // Prerequisite not met — return default value
         return { value: config.value };
       }
@@ -225,6 +230,39 @@ function resolveSimpleValue(
   }
 
   return config.value;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Prerequisite Operator Evaluation
+// ═══════════════════════════════════════════════════════════════
+
+function evaluatePrerequisiteOp(
+  actual: unknown,
+  operator: string,
+  expected: unknown,
+): boolean {
+  switch (operator) {
+    case "equals":
+      // eslint-disable-next-line eqeqeq
+      return actual == expected || String(actual) === String(expected);
+
+    case "not_equals":
+      // eslint-disable-next-line eqeqeq
+      return actual != expected && String(actual) !== String(expected);
+
+    case "greater_than":
+      return Number(actual) > Number(expected);
+
+    case "less_than":
+      return Number(actual) < Number(expected);
+
+    case "contains":
+      return String(actual ?? "").includes(String(expected));
+
+    default:
+      // Fallback: strict equality (backward compat for rules without operator)
+      return actual === expected || String(actual) === String(expected);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════

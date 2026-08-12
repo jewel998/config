@@ -47,6 +47,7 @@ msgid "Activity"
 msgstr ""
 
 #: src/components/add-member-modal.tsx:115
+#: src/components/prerequisite-ui.tsx:192
 #: src/components/rbac-manager.tsx:101
 #: src/components/webhook-settings.tsx:86
 #: src/routes/settings.tsx:303
@@ -107,7 +108,7 @@ msgstr ""
 msgid "All ages"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:172
+#: src/components/prerequisite-ui.tsx:267
 msgid "All available flags are already added as prerequisites."
 msgstr ""
 
@@ -226,7 +227,7 @@ msgstr ""
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/components/prerequisite-ui.tsx:115
+#: src/components/prerequisite-ui.tsx:201
 msgid "Cannot add self as prerequisite (circular dependency)."
 msgstr ""
 
@@ -562,7 +563,7 @@ msgstr ""
 msgid "Diff configs between environments and sync changes."
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:283
+#: src/components/config-detail-panel.tsx:288
 msgid "Discard"
 msgstr ""
 
@@ -598,33 +599,33 @@ msgstr ""
 msgid "e.g., \"premium\", \"dark\""
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:251
-msgid "e.g., \"value\""
-msgstr ""
-
-#: src/components/prerequisite-ui.tsx:250
 #: src/components/rule-builder.tsx:362
 msgid "e.g., [\"a\",\"b\"]"
+msgstr ""
+
+#: src/components/prerequisite-ui.tsx:347
+msgid "e.g., [\"item1\", \"item2\"]"
 msgstr ""
 
 #: src/components/rule-builder.tsx:362
 msgid "e.g., {\"key\": \"val\"}"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:248
-msgid "e.g., {\"key\":\"val\"}"
+#: src/components/prerequisite-ui.tsx:345
+msgid "e.g., {\"key\": \"value\"}"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:236
-msgid "e.g., 100"
-msgstr ""
-
+#: src/components/prerequisite-ui.tsx:333
 #: src/components/rule-builder.tsx:349
 msgid "e.g., 100, 0.5"
 msgstr ""
 
 #: src/components/rule-builder.tsx:623
 msgid "e.g., plan, country"
+msgstr ""
+
+#: src/components/prerequisite-ui.tsx:348
+msgid "e.g., premium, dark-mode"
 msgstr ""
 
 #: src/routes/api-keys.tsx:122
@@ -749,10 +750,10 @@ msgstr ""
 msgid "Failed to add member"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:136
-#: src/components/config-detail-panel.tsx:153
-#: src/components/config-detail-panel.tsx:168
-#: src/components/config-detail-panel.tsx:183
+#: src/components/config-detail-panel.tsx:141
+#: src/components/config-detail-panel.tsx:158
+#: src/components/config-detail-panel.tsx:173
+#: src/components/config-detail-panel.tsx:188
 #: src/routes/configs.tsx:251
 msgid "Failed to apply template"
 msgstr ""
@@ -829,15 +830,15 @@ msgstr ""
 msgid "Failed to save description"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:352
+#: src/components/config-detail-panel.tsx:357
 msgid "Failed to save overrides"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:433
+#: src/components/config-detail-panel.tsx:438
 msgid "Failed to save prerequisites"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:269
+#: src/components/config-detail-panel.tsx:274
 msgid "Failed to save rules"
 msgstr ""
 
@@ -865,7 +866,7 @@ msgstr ""
 msgid "Failed to update rollout"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:390
+#: src/components/config-detail-panel.tsx:395
 msgid "Failed to update schedule"
 msgstr ""
 
@@ -1073,10 +1074,6 @@ msgstr ""
 msgid "Multi-project scoping"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:141
-msgid "must be"
-msgstr ""
-
 #: src/components/segment-edit-modal.tsx:82
 #: src/components/segment-manager.tsx:166
 #: src/components/webhook-form-modal.tsx:121
@@ -1164,7 +1161,7 @@ msgstr ""
 msgid "No overrides configured."
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:122
+#: src/components/prerequisite-ui.tsx:210
 msgid "No prerequisites configured."
 msgstr ""
 
@@ -1229,11 +1226,11 @@ msgstr ""
 msgid "OR"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:325
+#: src/components/config-detail-panel.tsx:330
 msgid "Overrides"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:351
+#: src/components/config-detail-panel.tsx:356
 msgid "Overrides saved"
 msgstr ""
 
@@ -1294,12 +1291,12 @@ msgstr ""
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: src/components/config-detail-panel.tsx:406
-#: src/components/prerequisite-ui.tsx:62
+#: src/components/config-detail-panel.tsx:411
+#: src/components/prerequisite-ui.tsx:108
 msgid "Prerequisites"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:431
+#: src/components/config-detail-panel.tsx:436
 msgid "Prerequisites saved"
 msgstr ""
 
@@ -1435,7 +1432,7 @@ msgstr ""
 msgid "Role updated"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:297
+#: src/components/config-detail-panel.tsx:302
 msgid "Rollout"
 msgstr ""
 
@@ -1461,17 +1458,17 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:275
+#: src/components/config-detail-panel.tsx:280
 msgid "Save rules"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:368
+#: src/components/config-detail-panel.tsx:373
 #: src/components/date-picker-schedule.tsx:222
 #: src/components/schedule-ui.tsx:82
 msgid "Schedule"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:389
+#: src/components/config-detail-panel.tsx:394
 msgid "Schedule updated"
 msgstr ""
 
@@ -1545,11 +1542,11 @@ msgstr ""
 msgid "Segments guide"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:199
+#: src/components/prerequisite-ui.tsx:296
 msgid "Select a flag first"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:75
+#: src/components/prerequisite-ui.tsx:129
 msgid "Select a flag..."
 msgstr ""
 
@@ -1728,12 +1725,12 @@ msgstr ""
 msgid "Target value"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:232
+#: src/components/config-detail-panel.tsx:237
 #: src/components/rule-builder.tsx:183
 msgid "Targeting Rules"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:266
+#: src/components/config-detail-panel.tsx:271
 msgid "Targeting rules saved"
 msgstr ""
 
@@ -1755,10 +1752,10 @@ msgstr ""
 msgid "Team Members"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:135
-#: src/components/config-detail-panel.tsx:152
-#: src/components/config-detail-panel.tsx:167
-#: src/components/config-detail-panel.tsx:182
+#: src/components/config-detail-panel.tsx:140
+#: src/components/config-detail-panel.tsx:157
+#: src/components/config-detail-panel.tsx:172
+#: src/components/config-detail-panel.tsx:187
 #: src/routes/configs.tsx:250
 msgid "Template applied"
 msgstr ""
@@ -1902,7 +1899,7 @@ msgstr ""
 msgid "Validation Rules"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:207
+#: src/components/config-detail-panel.tsx:212
 #: src/components/config-form-modal.tsx:278
 #: src/components/override-manager.tsx:46
 #: src/routes/configs.tsx:525
