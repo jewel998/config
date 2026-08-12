@@ -312,20 +312,26 @@ const TypedValueInput = ({
   disabled?: boolean;
 }) => {
   if (valueType === "boolean") {
+    const current = String(value) === "true";
     return (
-      <Select
-        value={String(value)}
-        onValueChange={(v) => onChange(v === "true")}
-        disabled={disabled}
-      >
-        <SelectTrigger className="h-9 text-sm">
-          <SelectValue placeholder={t`Select value`} />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="true">true</SelectItem>
-          <SelectItem value="false">false</SelectItem>
-        </SelectContent>
-      </Select>
+      <div className="flex gap-1 rounded-full border p-1 w-fit">
+        <button
+          type="button"
+          disabled={disabled}
+          className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${current ? "bg-emerald-600 text-white shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+          onClick={() => onChange(true)}
+        >
+          true
+        </button>
+        <button
+          type="button"
+          disabled={disabled}
+          className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${!current ? "bg-rose-600 text-white shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+          onClick={() => onChange(false)}
+        >
+          false
+        </button>
+      </div>
     );
   }
 

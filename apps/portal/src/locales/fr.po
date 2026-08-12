@@ -139,7 +139,7 @@ msgstr ""
 msgid "An invite already exists for this email."
 msgstr ""
 
-#: src/components/rule-builder.tsx:675
+#: src/components/rule-builder.tsx:681
 msgid "AND"
 msgstr ""
 
@@ -254,7 +254,7 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
-#: src/components/rule-builder.tsx:459
+#: src/components/rule-builder.tsx:465
 msgid "Click a segment below to target it"
 msgstr ""
 
@@ -295,7 +295,7 @@ msgstr ""
 msgid "Compare Environments"
 msgstr ""
 
-#: src/components/rule-builder.tsx:560
+#: src/components/rule-builder.tsx:566
 msgid "Condition"
 msgstr ""
 
@@ -590,23 +590,23 @@ msgstr ""
 msgid "e.g. small, medium, large"
 msgstr ""
 
-#: src/components/rule-builder.tsx:369
+#: src/components/rule-builder.tsx:375
 msgid "e.g., \"premium\", \"dark\""
 msgstr ""
 
-#: src/components/rule-builder.tsx:356
+#: src/components/rule-builder.tsx:362
 msgid "e.g., [\"a\",\"b\"]"
 msgstr ""
 
-#: src/components/rule-builder.tsx:356
+#: src/components/rule-builder.tsx:362
 msgid "e.g., {\"key\": \"val\"}"
 msgstr ""
 
-#: src/components/rule-builder.tsx:343
+#: src/components/rule-builder.tsx:349
 msgid "e.g., 100, 0.5"
 msgstr ""
 
-#: src/components/rule-builder.tsx:617
+#: src/components/rule-builder.tsx:623
 msgid "e.g., plan, country"
 msgstr ""
 
@@ -1208,7 +1208,7 @@ msgstr ""
 msgid "optional"
 msgstr ""
 
-#: src/components/rule-builder.tsx:700
+#: src/components/rule-builder.tsx:706
 msgid "OR"
 msgstr ""
 
@@ -1298,8 +1298,8 @@ msgstr ""
 msgid "Previous page"
 msgstr ""
 
-#: src/components/rule-builder.tsx:439
-#: src/components/rule-builder.tsx:572
+#: src/components/rule-builder.tsx:445
+#: src/components/rule-builder.tsx:578
 msgid "Priority"
 msgstr ""
 
@@ -1379,7 +1379,7 @@ msgid "Regex pattern"
 msgstr ""
 
 #: src/components/date-picker-schedule.tsx:140
-#: src/components/rule-builder.tsx:684
+#: src/components/rule-builder.tsx:690
 #: src/components/schedule-ui.tsx:73
 #: src/routes/team.tsx:126
 msgid "Remove"
@@ -1431,8 +1431,8 @@ msgid "Rollout updated"
 msgstr ""
 
 #. placeholder {0}: index + 1
-#: src/components/rule-builder.tsx:419
-#: src/components/rule-builder.tsx:557
+#: src/components/rule-builder.tsx:425
+#: src/components/rule-builder.tsx:563
 msgid "Rule {0}"
 msgstr ""
 
@@ -1495,7 +1495,7 @@ msgstr ""
 msgid "Searching..."
 msgstr ""
 
-#: src/components/rule-builder.tsx:425
+#: src/components/rule-builder.tsx:431
 msgid "Segment"
 msgstr ""
 
@@ -1584,16 +1584,12 @@ msgstr ""
 msgid "Select project"
 msgstr ""
 
-#: src/components/rule-builder.tsx:322
-msgid "Select value"
-msgstr ""
-
 #: src/components/add-member-modal.tsx:142
 msgid "Send Invite"
 msgstr ""
 
-#: src/components/rule-builder.tsx:502
-#: src/components/rule-builder.tsx:708
+#: src/components/rule-builder.tsx:508
+#: src/components/rule-builder.tsx:714
 msgid "Serve value"
 msgstr ""
 
@@ -1943,11 +1939,11 @@ msgstr ""
 msgid "What does this segment represent?"
 msgstr ""
 
-#: src/components/rule-builder.tsx:585
+#: src/components/rule-builder.tsx:591
 msgid "When"
 msgstr ""
 
-#: src/components/rule-builder.tsx:452
+#: src/components/rule-builder.tsx:458
 msgid "When user is in"
 msgstr ""
 
