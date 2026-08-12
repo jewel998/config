@@ -47,7 +47,7 @@ msgid "Activity"
 msgstr ""
 
 #: src/components/add-member-modal.tsx:115
-#: src/components/prerequisite-ui.tsx:192
+#: src/components/prerequisite-ui.tsx:193
 #: src/components/rbac-manager.tsx:101
 #: src/components/webhook-settings.tsx:86
 #: src/routes/settings.tsx:303
@@ -108,7 +108,7 @@ msgstr ""
 msgid "All ages"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:267
+#: src/components/prerequisite-ui.tsx:271
 msgid "All available flags are already added as prerequisites."
 msgstr ""
 
@@ -227,7 +227,7 @@ msgstr ""
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/components/prerequisite-ui.tsx:201
+#: src/components/prerequisite-ui.tsx:202
 msgid "Cannot add self as prerequisite (circular dependency)."
 msgstr ""
 
@@ -603,7 +603,7 @@ msgstr ""
 msgid "e.g., [\"a\",\"b\"]"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:347
+#: src/components/prerequisite-ui.tsx:351
 msgid "e.g., [\"item1\", \"item2\"]"
 msgstr ""
 
@@ -611,11 +611,11 @@ msgstr ""
 msgid "e.g., {\"key\": \"val\"}"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:345
+#: src/components/prerequisite-ui.tsx:349
 msgid "e.g., {\"key\": \"value\"}"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:333
+#: src/components/prerequisite-ui.tsx:337
 #: src/components/rule-builder.tsx:349
 msgid "e.g., 100, 0.5"
 msgstr ""
@@ -624,7 +624,7 @@ msgstr ""
 msgid "e.g., plan, country"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:348
+#: src/components/prerequisite-ui.tsx:352
 msgid "e.g., premium, dark-mode"
 msgstr ""
 
@@ -1161,7 +1161,7 @@ msgstr ""
 msgid "No overrides configured."
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:210
+#: src/components/prerequisite-ui.tsx:211
 msgid "No prerequisites configured."
 msgstr ""
 
@@ -1292,7 +1292,7 @@ msgid "Preferences"
 msgstr "Preferencias"
 
 #: src/components/config-detail-panel.tsx:411
-#: src/components/prerequisite-ui.tsx:108
+#: src/components/prerequisite-ui.tsx:109
 msgid "Prerequisites"
 msgstr ""
 
@@ -1542,11 +1542,11 @@ msgstr ""
 msgid "Segments guide"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:296
+#: src/components/prerequisite-ui.tsx:300
 msgid "Select a flag first"
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:129
+#: src/components/prerequisite-ui.tsx:130
 msgid "Select a flag..."
 msgstr ""
 
