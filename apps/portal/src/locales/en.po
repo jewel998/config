@@ -107,6 +107,10 @@ msgstr "All actions"
 msgid "All ages"
 msgstr "All ages"
 
+#: src/components/prerequisite-ui.tsx:172
+msgid "All available flags are already added as prerequisites."
+msgstr "All available flags are already added as prerequisites."
+
 #: src/components/audit-log-viewer.tsx:138
 msgid "All resources"
 msgstr "All resources"
@@ -222,7 +226,7 @@ msgstr "Boolean values are constrained to true/false by default."
 msgid "Cancel"
 msgstr "Cancel"
 
-#: src/components/prerequisite-ui.tsx:63
+#: src/components/prerequisite-ui.tsx:115
 msgid "Cannot add self as prerequisite (circular dependency)."
 msgstr "Cannot add self as prerequisite (circular dependency)."
 
@@ -594,6 +598,11 @@ msgstr "e.g. small, medium, large"
 msgid "e.g., \"premium\", \"dark\""
 msgstr "e.g., \"premium\", \"dark\""
 
+#: src/components/prerequisite-ui.tsx:251
+msgid "e.g., \"value\""
+msgstr "e.g., \"value\""
+
+#: src/components/prerequisite-ui.tsx:250
 #: src/components/rule-builder.tsx:362
 msgid "e.g., [\"a\",\"b\"]"
 msgstr "e.g., [\"a\",\"b\"]"
@@ -601,6 +610,14 @@ msgstr "e.g., [\"a\",\"b\"]"
 #: src/components/rule-builder.tsx:362
 msgid "e.g., {\"key\": \"val\"}"
 msgstr "e.g., {\"key\": \"val\"}"
+
+#: src/components/prerequisite-ui.tsx:248
+msgid "e.g., {\"key\":\"val\"}"
+msgstr "e.g., {\"key\":\"val\"}"
+
+#: src/components/prerequisite-ui.tsx:236
+msgid "e.g., 100"
+msgstr "e.g., 100"
 
 #: src/components/rule-builder.tsx:349
 msgid "e.g., 100, 0.5"
@@ -816,7 +833,7 @@ msgstr "Failed to save description"
 msgid "Failed to save overrides"
 msgstr "Failed to save overrides"
 
-#: src/components/config-detail-panel.tsx:435
+#: src/components/config-detail-panel.tsx:433
 msgid "Failed to save prerequisites"
 msgstr "Failed to save prerequisites"
 
@@ -871,10 +888,6 @@ msgstr "Feature guide"
 #: src/routes/__root.tsx:436
 msgid "Firebase sync"
 msgstr "Firebase sync"
-
-#: src/components/prerequisite-ui.tsx:50
-msgid "Flag key"
-msgstr "Flag key"
 
 #: src/components/webhook-form-modal.tsx:150
 msgid "Format"
@@ -1060,6 +1073,10 @@ msgstr "More actions"
 msgid "Multi-project scoping"
 msgstr "Multi-project scoping"
 
+#: src/components/prerequisite-ui.tsx:141
+msgid "must be"
+msgstr "must be"
+
 #: src/components/segment-edit-modal.tsx:82
 #: src/components/segment-manager.tsx:166
 #: src/components/webhook-form-modal.tsx:121
@@ -1147,7 +1164,7 @@ msgstr "No minimum"
 msgid "No overrides configured."
 msgstr "No overrides configured."
 
-#: src/components/prerequisite-ui.tsx:67
+#: src/components/prerequisite-ui.tsx:122
 msgid "No prerequisites configured."
 msgstr "No prerequisites configured."
 
@@ -1278,11 +1295,11 @@ msgid "Preferences"
 msgstr "Preferences"
 
 #: src/components/config-detail-panel.tsx:406
-#: src/components/prerequisite-ui.tsx:44
+#: src/components/prerequisite-ui.tsx:62
 msgid "Prerequisites"
 msgstr "Prerequisites"
 
-#: src/components/config-detail-panel.tsx:433
+#: src/components/config-detail-panel.tsx:431
 msgid "Prerequisites saved"
 msgstr "Prerequisites saved"
 
@@ -1392,10 +1409,6 @@ msgstr "Remove {memberName} from this project? They will lose access immediately
 #: src/routes/team.tsx:124
 msgid "Remove member?"
 msgstr "Remove member?"
-
-#: src/components/prerequisite-ui.tsx:54
-msgid "Required value"
-msgstr "Required value"
 
 #: src/components/webhook-form-modal.tsx:264
 msgid "Resource categories"
@@ -1531,6 +1544,14 @@ msgstr "Segments"
 #: src/routes/segments.tsx:48
 msgid "Segments guide"
 msgstr "Segments guide"
+
+#: src/components/prerequisite-ui.tsx:199
+msgid "Select a flag first"
+msgstr "Select a flag first"
+
+#: src/components/prerequisite-ui.tsx:75
+msgid "Select a flag..."
+msgstr "Select a flag..."
 
 #: src/routes/compare.tsx:272
 msgid "Select a project to compare environments."
