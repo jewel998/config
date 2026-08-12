@@ -45,7 +45,15 @@ export function createConfig(
   const retry = { ...DEFAULT_RETRY, ...options.retry };
   const timeout = options.timeout ?? DEFAULT_TIMEOUT;
   const baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
-  const evaluationMode = options.evaluationMode ?? "server";
+
+  // Auto-detect evaluation mode from key prefix:
+  // cid_ = client key → server evaluates (frontend)
+  // svr_ = server key → client evaluates locally (backend)
+  const evaluationMode: "server" | "client" = options.clientId.startsWith(
+    "svr_",
+  )
+    ? "client"
+    : "server";
 
   // 4. Maintain a mutable context reference for server mode
   let currentContext: EvaluationContext = options.context ?? {};

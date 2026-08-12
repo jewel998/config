@@ -71,6 +71,7 @@ export interface ApiKey {
   token: string;
   label: string;
   status: "active" | "revoked";
+  type: "client" | "server";
   createdBy: string;
   createdAt: string;
   revokedAt: string | null;

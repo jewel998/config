@@ -15,12 +15,15 @@ import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
 
 export type { ApiKey };
 
-const generateToken = (): string => {
+type ApiKeyType = "client" | "server";
+
+const generateToken = (type: ApiKeyType): string => {
+  const prefix = type === "server" ? "svr_" : "cid_";
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const bytes = new Uint8Array(20);
   crypto.getRandomValues(bytes);
-  return "cid_" + Array.from(bytes, (b) => chars[b % chars.length]).join("");
+  return prefix + Array.from(bytes, (b) => chars[b % chars.length]).join("");
 };
 
 export const useApiKeys = (
@@ -55,16 +58,19 @@ export const useGenerateApiKey = () => {
       projectId,
       environmentId,
       label,
+      keyType = "client",
     }: {
       projectId: string;
       environmentId: string;
       label?: string;
+      keyType?: ApiKeyType;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      const token = generateToken();
+      const token = generateToken(keyType);
       const data: ApiKey = {
         token,
         status: "active",
+        type: keyType,
         label: label ?? "",
         createdAt: new Date().toISOString(),
         revokedAt: null,
