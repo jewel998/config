@@ -249,11 +249,12 @@ export const getConfig = onRequest(
       res.set("X-Config-Project", projectId);
       res.set("X-Config-Environment", environmentId);
 
+      // Never expose warnings to client keys — they could reveal internal
+      // flag names, prerequisite relationships, or segment structure.
       res.status(200).json({
         data,
         version: String(Object.keys(data).length),
         timestamp: latestUpdate || new Date().toISOString(),
-        ...(warnings.length > 0 && { warnings }),
       });
       return;
     }
