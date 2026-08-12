@@ -3,196 +3,467 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@jewel998/config — Feature Flags That Scale With You</title>
+    <title>@jewel998/config — Feature Flags Without The Bill</title>
     <meta
       name="description"
-      content="Free, self-hostable feature flags and remote configuration. Replace LaunchDarkly at $0/month. Segments, targeting, rollouts, audit logs, webhooks."
+      content="Free, self-hosted feature flags with segments, targeting, rollouts, and audit trails. Replace LaunchDarkly at $0/month. Runs on Firebase free tier."
     />
-
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link
-      href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      rel="stylesheet"
-    />
-
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <!-- Background video -->
-    <div class="bg">
-      <video class="bg-video" autoplay muted loop playsinline>
+    <!-- ═══════════════════════════════════════════════════════════
+       SECTION 1: Hero (Full viewport with video)
+       ═══════════════════════════════════════════════════════════ -->
+    <section class="hero-section">
+      <video class="hero-video" autoplay muted loop playsinline>
         <source
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4"
           type="video/mp4"
         />
       </video>
-    </div>
 
-    <div class="page">
-      <!-- Header -->
-      <header class="header anim" style="--d: 0s">
-        <a href="/config/" class="logo" aria-label="Home">
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 28 28"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect x="3" y="3" width="10" height="10" rx="2" fill="#000" />
-            <rect
-              x="15"
-              y="3"
-              width="10"
-              height="10"
-              rx="2"
-              fill="#000"
-              opacity="0.6"
-            />
-            <rect
-              x="3"
-              y="15"
-              width="10"
-              height="10"
-              rx="2"
-              fill="#000"
-              opacity="0.6"
-            />
-            <rect
-              x="15"
-              y="15"
-              width="10"
-              height="10"
-              rx="2"
-              fill="#000"
-              opacity="0.3"
-            />
-          </svg>
-        </a>
-
-        <nav class="nav-pill" aria-label="Main navigation">
-          <a href="/config/" class="nav-link active">Home</a>
-          <a href="/config/portal/" class="nav-link">Portal</a>
-          <a href="/config/guide/getting-started.html" class="nav-link">Docs</a>
-          <a href="/config/comparison/" class="nav-link">Compare</a>
-        </nav>
-
-        <a href="/config/portal/" class="sign-in-btn">Open Portal</a>
-
-        <!-- Mobile burger -->
-        <button class="burger" aria-label="Open menu" aria-expanded="false">
-          <span></span><span></span><span></span>
-        </button>
-      </header>
+      <!-- Navbar -->
+      <nav class="navbar">
+        <div class="nav-bar liquid-glass">
+          <a href="/config/" class="nav-logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="2" width="9" height="9" rx="2" fill="#fff" />
+              <rect
+                x="13"
+                y="2"
+                width="9"
+                height="9"
+                rx="2"
+                fill="#fff"
+                opacity="0.6"
+              />
+              <rect
+                x="2"
+                y="13"
+                width="9"
+                height="9"
+                rx="2"
+                fill="#fff"
+                opacity="0.6"
+              />
+              <rect
+                x="13"
+                y="13"
+                width="9"
+                height="9"
+                rx="2"
+                fill="#fff"
+                opacity="0.3"
+              />
+            </svg>
+            <span>config</span>
+          </a>
+          <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#compare">Compare</a>
+            <a href="/config/guide/getting-started.html">Docs</a>
+            <a href="/config/portal/">Portal</a>
+          </div>
+          <a href="/config/portal/" class="nav-cta">Open Portal</a>
+          <button class="nav-burger" aria-label="Menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </nav>
 
       <!-- Mobile menu -->
       <div class="mobile-overlay" hidden></div>
-      <div class="mobile-menu" hidden>
-        <a href="/config/" class="mobile-link active">Home</a>
-        <a href="/config/portal/" class="mobile-link">Portal</a>
-        <a href="/config/guide/getting-started.html" class="mobile-link"
-          >Docs</a
-        >
-        <a href="/config/comparison/" class="mobile-link">Compare</a>
-        <a href="/config/portal/" class="mobile-sign-in">Open Portal</a>
+      <div class="mobile-sheet" hidden>
+        <a href="#features">Features</a>
+        <a href="#compare">Compare</a>
+        <a href="/config/guide/getting-started.html">Docs</a>
+        <a href="/config/portal/">Portal</a>
+        <a href="/config/portal/" class="mobile-cta">Open Portal</a>
       </div>
 
-      <!-- Hero -->
-      <main class="hero">
-        <!-- Trust row -->
-        <div class="trust anim" style="--d: 0.08s">
-          <div class="trust-avatar" style="--i: 0">
-            <div class="trust-ring"><i class="fa-brands fa-shopify"></i></div>
+      <!-- Hero content -->
+      <div class="hero-content">
+        <div class="hero-grid">
+          <div class="hero-left">
+            <h1 class="hero-heading" data-animate="chars">
+              Ship features<br />without the risk.
+            </h1>
+            <p class="hero-sub fade-in" data-delay="800">
+              Free, self-hosted feature flags with segments, targeting,
+              rollouts, and audit trails. Replace LaunchDarkly at $0/month.
+            </p>
+            <div class="hero-buttons fade-in" data-delay="1200">
+              <a href="/config/guide/getting-started.html" class="btn-primary"
+                >Get Started</a
+              >
+              <a href="/config/portal/" class="btn-glass liquid-glass"
+                >Open Portal</a
+              >
+            </div>
           </div>
-          <div class="trust-avatar" style="--i: 1">
-            <div class="trust-ring"><i class="fa-brands fa-stripe"></i></div>
+          <div class="hero-right fade-in" data-delay="1400">
+            <div class="hero-tag liquid-glass">
+              Segments. Targeting. Rollouts.
+            </div>
           </div>
-          <div class="trust-avatar" style="--i: 2">
-            <div class="trust-ring"><i class="fa-brands fa-github"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+       SECTION 2: Features
+       ═══════════════════════════════════════════════════════════ -->
+    <section class="section section-alt" id="features">
+      <div class="container">
+        <div class="section-header scroll-reveal">
+          <h2>Everything you need to ship with confidence</h2>
+          <p>Enterprise-grade feature management on Firebase's free tier.</p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card liquid-glass scroll-reveal">
+            <div class="feature-icon">🎯</div>
+            <h3>Segments & Targeting</h3>
+            <p>
+              Create reusable audience groups. Target by plan, country, device,
+              or any attribute.
+            </p>
           </div>
-          <div class="trust-pill">Built for teams shipping fast</div>
+          <div class="feature-card liquid-glass scroll-reveal">
+            <div class="feature-icon">📊</div>
+            <h3>Percentage Rollouts</h3>
+            <p>
+              Gradually release to 5%, 20%, 50% of users with deterministic
+              bucketing.
+            </p>
+          </div>
+          <div class="feature-card liquid-glass scroll-reveal">
+            <div class="feature-icon">🔒</div>
+            <h3>Secure by Default</h3>
+            <p>
+              Client keys never expose targeting rules. Server evaluates, client
+              receives values only.
+            </p>
+          </div>
+          <div class="feature-card liquid-glass scroll-reveal">
+            <div class="feature-icon">👥</div>
+            <h3>Team Collaboration</h3>
+            <p>
+              Viewer, Editor, Admin roles per project. Full audit trail of every
+              change.
+            </p>
+          </div>
+          <div class="feature-card liquid-glass scroll-reveal">
+            <div class="feature-icon">🔔</div>
+            <h3>Webhook Notifications</h3>
+            <p>
+              Slack, Discord, Teams, Google Chat, or custom HTTP. Filter by
+              event and environment.
+            </p>
+          </div>
+          <div class="feature-card liquid-glass scroll-reveal">
+            <div class="feature-icon">⚡</div>
+            <h3>Zero Cost</h3>
+            <p>
+              Runs on Firebase free tier. No per-seat pricing, no usage
+              surprises. $0/month forever.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+       SECTION 3: Comparison
+       ═══════════════════════════════════════════════════════════ -->
+    <section class="section" id="compare">
+      <div class="container">
+        <div class="section-header scroll-reveal">
+          <h2>How we compare</h2>
+          <p>Feature-for-feature against the market leaders.</p>
+        </div>
+        <div class="compare-wrapper scroll-reveal">
+          <div class="compare-table-scroll">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th class="highlight">@jewel998/config</th>
+                  <th>LaunchDarkly</th>
+                  <th>ConfigCat</th>
+                  <th>Flagsmith</th>
+                  <th>Firebase RC</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Segments</td>
+                  <td class="highlight">✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                  <td>❌</td>
+                </tr>
+                <tr>
+                  <td>Targeting Rules</td>
+                  <td class="highlight">✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                  <td>⚠️</td>
+                </tr>
+                <tr>
+                  <td>Percentage Rollouts</td>
+                  <td class="highlight">✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                </tr>
+                <tr>
+                  <td>Prerequisites</td>
+                  <td class="highlight">✅</td>
+                  <td>✅</td>
+                  <td>❌</td>
+                  <td>❌</td>
+                  <td>❌</td>
+                </tr>
+                <tr>
+                  <td>Audit Log + Diffs</td>
+                  <td class="highlight">✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                  <td>❌</td>
+                </tr>
+                <tr>
+                  <td>Webhooks (multi-provider)</td>
+                  <td class="highlight">✅</td>
+                  <td>✅</td>
+                  <td>⚠️</td>
+                  <td>⚠️</td>
+                  <td>❌</td>
+                </tr>
+                <tr>
+                  <td>RBAC per Project</td>
+                  <td class="highlight">✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                  <td>❌</td>
+                </tr>
+                <tr>
+                  <td>Server-Side Evaluation</td>
+                  <td class="highlight">✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                  <td>✅</td>
+                  <td>❌</td>
+                </tr>
+                <tr>
+                  <td>Self-Hosted</td>
+                  <td class="highlight">✅</td>
+                  <td>❌</td>
+                  <td>❌</td>
+                  <td>✅</td>
+                  <td>❌</td>
+                </tr>
+                <tr>
+                  <td>Open Source</td>
+                  <td class="highlight">✅</td>
+                  <td>❌</td>
+                  <td>❌</td>
+                  <td>✅</td>
+                  <td>❌</td>
+                </tr>
+                <tr class="row-cost">
+                  <td>Monthly Cost</td>
+                  <td class="highlight">$0</td>
+                  <td>$500+</td>
+                  <td>$100+</td>
+                  <td>$45+</td>
+                  <td>Free*</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="compare-note">
+            *Firebase Remote Config is free but lacks segments, audit, RBAC, and
+            webhooks.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+       SECTION 4: Use Cases
+       ═══════════════════════════════════════════════════════════ -->
+    <section class="section section-alt" id="usecases">
+      <div class="container">
+        <div class="section-header scroll-reveal">
+          <h2>Built for teams that ship fast</h2>
+        </div>
+        <div class="usecases-grid">
+          <div class="usecase-card liquid-glass scroll-reveal">
+            <h3>Startups</h3>
+            <span class="usecase-tagline">Ship fearlessly on day one</span>
+            <p>
+              Roll out features to beta users, target by plan tier, kill
+              switches for instant rollback. Zero infrastructure cost.
+            </p>
+          </div>
+          <div class="usecase-card liquid-glass scroll-reveal">
+            <h3>Growing Teams</h3>
+            <span class="usecase-tagline"
+              >Collaborate without stepping on toes</span
+            >
+            <p>
+              RBAC ensures devs can't touch production API keys. Audit log shows
+              exactly who changed what. Webhooks keep Slack informed.
+            </p>
+          </div>
+          <div class="usecase-card liquid-glass scroll-reveal">
+            <h3>Regulated Industries</h3>
+            <span class="usecase-tagline"
+              >Compliance without the price tag</span
+            >
+            <p>
+              GDPR data deletion tools, full audit trails, environment
+              separation. Self-hosted means your data stays on your
+              infrastructure.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+       SECTION 5: Get Started / Resources
+       ═══════════════════════════════════════════════════════════ -->
+    <section class="section" id="resources">
+      <div class="container">
+        <div class="section-header scroll-reveal">
+          <h2>Get started in 5 minutes</h2>
         </div>
 
-        <!-- Headline -->
-        <h1 class="headline anim" style="--d: 0.12s">
-          <span class="headline-line line1">Feature Flags</span>
-          <span class="headline-line line2">Without The Bill</span>
-        </h1>
+        <div class="resources-grid scroll-reveal">
+          <a
+            href="/config/guide/getting-started.html"
+            class="resource-card liquid-glass"
+          >
+            <span class="resource-icon">📖</span>
+            <h3>Quick Start Guide</h3>
+            <p>Install the SDK and fetch your first flag</p>
+          </a>
+          <a href="/config/api/" class="resource-card liquid-glass">
+            <span class="resource-icon">⚙️</span>
+            <h3>API Reference</h3>
+            <p>SDK methods, context helpers, evaluation modes</p>
+          </a>
+          <a
+            href="/config/features/segments.html"
+            class="resource-card liquid-glass"
+          >
+            <span class="resource-icon">📚</span>
+            <h3>Feature Docs</h3>
+            <p>Segments, targeting, rollouts, prerequisites, webhooks</p>
+          </a>
+        </div>
 
-        <!-- Subhead -->
-        <p class="subhead anim" style="--d: 0.28s">
-          Ship features safely with segments, targeting rules, and percentage
-          rollouts. Self-hosted on Firebase free tier. $0/month forever.
-        </p>
+        <div class="code-block scroll-reveal">
+          <div class="code-header">
+            <span class="code-dot"></span>
+            <span class="code-dot"></span>
+            <span class="code-dot"></span>
+            <span class="code-title">app.ts</span>
+          </div>
+          <pre><code><span class="ck">import</span> { createConfig, autoContext, mergeContext } <span class="ck">from</span> <span class="cs">"@jewel998/config"</span>;
 
-        <!-- CTA -->
-        <a
-          href="/config/guide/getting-started.html"
-          class="cta anim"
-          style="--d: 0.4s"
-        >
-          Get Started
-        </a>
-      </main>
+<span class="ck">const</span> config = <span class="cf">createConfig</span>({
+  clientId: <span class="cs">"cid_xxx"</span>,
+  context: <span class="cf">mergeContext</span>(<span class="cf">autoContext</span>(), {
+    userId: <span class="cs">"user_123"</span>,
+    attributes: { plan: <span class="cs">"pro"</span> },
+  }),
+});
 
-      <!-- Stats -->
-      <footer class="stats">
-        <div class="stat anim" style="--d: 0.5s">
-          <span class="stat-icon">&lt;</span>
-          <span
-            class="stat-value"
-            data-target="60"
-            data-suffix="ms"
-            data-decimals="0"
-            >0ms</span
-          >
-          <span class="stat-label">Response Time</span>
+<span class="ck">const</span> darkMode = config.<span class="cf">getFlag</span>(<span class="cs">"feature.dark_mode"</span>); <span class="cc">// → true</span></code></pre>
         </div>
-        <div class="stat anim" style="--d: 0.58s">
-          <span class="stat-icon">$</span>
-          <span
-            class="stat-value"
-            data-target="0"
-            data-suffix="/mo"
-            data-decimals="0"
-            >$0/mo</span
-          >
-          <span class="stat-label">Infrastructure Cost</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+       Footer
+       ═══════════════════════════════════════════════════════════ -->
+    <footer class="footer">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="2" width="9" height="9" rx="2" fill="#fff" />
+              <rect
+                x="13"
+                y="2"
+                width="9"
+                height="9"
+                rx="2"
+                fill="#fff"
+                opacity="0.6"
+              />
+              <rect
+                x="2"
+                y="13"
+                width="9"
+                height="9"
+                rx="2"
+                fill="#fff"
+                opacity="0.6"
+              />
+              <rect
+                x="13"
+                y="13"
+                width="9"
+                height="9"
+                rx="2"
+                fill="#fff"
+                opacity="0.3"
+              />
+            </svg>
+            <span>config</span>
+          </div>
+          <p>© 2024 Jyotirmoy Barman. All rights reserved.</p>
+          <p class="footer-license">Licensed under Elastic License 2.0</p>
         </div>
-        <div class="stat anim" style="--d: 0.66s">
-          <span class="stat-icon">*</span>
-          <span
-            class="stat-value"
-            data-target="7"
-            data-suffix=""
-            data-decimals="0"
-            >0</span
-          >
-          <span class="stat-label">Languages Supported</span>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="/config/portal/">Portal</a>
+          <a href="/config/guide/getting-started.html">Docs</a>
+          <a href="#compare">Compare</a>
+          <a href="/config/api/">API Reference</a>
         </div>
-        <div class="stat anim" style="--d: 0.74s">
-          <span class="stat-icon">#</span>
-          <span
-            class="stat-value"
-            data-target="100"
-            data-suffix="%"
-            data-decimals="0"
-            >0%</span
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="/config/guide/getting-started.html">Getting Started</a>
+          <a href="https://github.com/jewel998/config">GitHub</a>
+          <a href="https://github.com/jewel998/config/blob/main/CONTRIBUTING.md"
+            >Contributing</a
           >
-          <span class="stat-label">Open Source</span>
         </div>
-      </footer>
-    </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="https://github.com/jewel998/config/blob/main/LICENSE"
+            >License</a
+          >
+          <a href="/config/compliance/">Compliance</a>
+          <a href="/config/compliance/gdpr.html">GDPR</a>
+        </div>
+      </div>
+    </footer>
 
     <script src="main.js"></script>
   </body>
