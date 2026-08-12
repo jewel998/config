@@ -107,6 +107,10 @@ msgstr ""
 msgid "All ages"
 msgstr ""
 
+#: src/components/prerequisite-ui.tsx:172
+msgid "All available flags are already added as prerequisites."
+msgstr ""
+
 #: src/components/audit-log-viewer.tsx:138
 msgid "All resources"
 msgstr ""
@@ -222,7 +226,7 @@ msgstr ""
 msgid "Cancel"
 msgstr "取消"
 
-#: src/components/prerequisite-ui.tsx:63
+#: src/components/prerequisite-ui.tsx:115
 msgid "Cannot add self as prerequisite (circular dependency)."
 msgstr ""
 
@@ -594,12 +598,25 @@ msgstr ""
 msgid "e.g., \"premium\", \"dark\""
 msgstr ""
 
+#: src/components/prerequisite-ui.tsx:251
+msgid "e.g., \"value\""
+msgstr ""
+
+#: src/components/prerequisite-ui.tsx:250
 #: src/components/rule-builder.tsx:362
 msgid "e.g., [\"a\",\"b\"]"
 msgstr ""
 
 #: src/components/rule-builder.tsx:362
 msgid "e.g., {\"key\": \"val\"}"
+msgstr ""
+
+#: src/components/prerequisite-ui.tsx:248
+msgid "e.g., {\"key\":\"val\"}"
+msgstr ""
+
+#: src/components/prerequisite-ui.tsx:236
+msgid "e.g., 100"
 msgstr ""
 
 #: src/components/rule-builder.tsx:349
@@ -816,7 +833,7 @@ msgstr ""
 msgid "Failed to save overrides"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:435
+#: src/components/config-detail-panel.tsx:433
 msgid "Failed to save prerequisites"
 msgstr ""
 
@@ -870,10 +887,6 @@ msgstr ""
 
 #: src/routes/__root.tsx:436
 msgid "Firebase sync"
-msgstr ""
-
-#: src/components/prerequisite-ui.tsx:50
-msgid "Flag key"
 msgstr ""
 
 #: src/components/webhook-form-modal.tsx:150
@@ -1060,6 +1073,10 @@ msgstr ""
 msgid "Multi-project scoping"
 msgstr ""
 
+#: src/components/prerequisite-ui.tsx:141
+msgid "must be"
+msgstr ""
+
 #: src/components/segment-edit-modal.tsx:82
 #: src/components/segment-manager.tsx:166
 #: src/components/webhook-form-modal.tsx:121
@@ -1147,7 +1164,7 @@ msgstr ""
 msgid "No overrides configured."
 msgstr ""
 
-#: src/components/prerequisite-ui.tsx:67
+#: src/components/prerequisite-ui.tsx:122
 msgid "No prerequisites configured."
 msgstr ""
 
@@ -1278,11 +1295,11 @@ msgid "Preferences"
 msgstr "偏好设置"
 
 #: src/components/config-detail-panel.tsx:406
-#: src/components/prerequisite-ui.tsx:44
+#: src/components/prerequisite-ui.tsx:62
 msgid "Prerequisites"
 msgstr ""
 
-#: src/components/config-detail-panel.tsx:433
+#: src/components/config-detail-panel.tsx:431
 msgid "Prerequisites saved"
 msgstr ""
 
@@ -1391,10 +1408,6 @@ msgstr ""
 
 #: src/routes/team.tsx:124
 msgid "Remove member?"
-msgstr ""
-
-#: src/components/prerequisite-ui.tsx:54
-msgid "Required value"
 msgstr ""
 
 #: src/components/webhook-form-modal.tsx:264
@@ -1530,6 +1543,14 @@ msgstr ""
 
 #: src/routes/segments.tsx:48
 msgid "Segments guide"
+msgstr ""
+
+#: src/components/prerequisite-ui.tsx:199
+msgid "Select a flag first"
+msgstr ""
+
+#: src/components/prerequisite-ui.tsx:75
+msgid "Select a flag..."
 msgstr ""
 
 #: src/routes/compare.tsx:272

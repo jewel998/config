@@ -417,9 +417,7 @@ export const ConfigDetailPanel = ({
               <PrerequisiteUI
                 prerequisites={prerequisites}
                 currentFlagKey={config.key}
-                allFlagKeys={allConfigs
-                  .map((c) => c.key)
-                  .filter((k) => k !== config.key)}
+                allConfigs={allConfigs.filter((c) => c.key !== config.key)}
                 onSave={(newPrerequisites) => {
                   setPrerequisites.mutate(
                     {
