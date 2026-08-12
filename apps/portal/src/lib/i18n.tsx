@@ -5,9 +5,10 @@ import { messages as enMessages } from "../locales/en.po";
 import { messages as esMessages } from "../locales/es.po";
 import { messages as frMessages } from "../locales/fr.po";
 import { messages as hiMessages } from "../locales/hi.po";
+import { messages as jaMessages } from "../locales/ja.po";
 import { messages as zhMessages } from "../locales/zh.po";
 
-export type SupportedLocale = "en" | "es" | "fr" | "ar" | "zh" | "hi";
+export type SupportedLocale = "en" | "es" | "fr" | "ar" | "zh" | "hi" | "ja";
 
 export const localeNames: Record<SupportedLocale, string> = {
   en: "English",
@@ -16,6 +17,7 @@ export const localeNames: Record<SupportedLocale, string> = {
   ar: "العربية",
   zh: "中文",
   hi: "हिन्दी",
+  ja: "日本語",
 };
 
 export const rtlLocales: SupportedLocale[] = ["ar"];
@@ -32,6 +34,7 @@ const catalogs: Record<SupportedLocale, Record<string, string>> = {
   ar: arMessages as Record<string, string>,
   zh: zhMessages as Record<string, string>,
   hi: hiMessages as Record<string, string>,
+  ja: jaMessages as Record<string, string>,
 };
 
 export const getStoredLocale = (): SupportedLocale => {
