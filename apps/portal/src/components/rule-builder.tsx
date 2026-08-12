@@ -19,6 +19,7 @@ import {
   OPERATOR_VALUE_PLACEHOLDERS,
 } from "@/lib/config-templates";
 import type {
+  ConfigValueType,
   PredicateOperator,
   Segment,
   SegmentTargetingRuleUI,
@@ -47,6 +48,7 @@ interface RuleBuilderProps {
   onSave: (rules: TargetingRule[]) => void;
   disabled?: boolean;
   segments?: Segment[];
+  valueType?: ConfigValueType;
 }
 
 export const RuleBuilder = ({
@@ -54,6 +56,7 @@ export const RuleBuilder = ({
   onSave,
   disabled,
   segments = [],
+  valueType,
 }: RuleBuilderProps) => {
   // ═══════════════════════════════════════════════════════════
   // Actions
@@ -227,6 +230,7 @@ export const RuleBuilder = ({
                 segments={segments}
                 index={ruleIdx}
                 disabled={disabled}
+                valueType={valueType}
                 onChange={(updated: SegmentTargetingRuleUI) => {
                   onSave(
                     rules.map((r) =>
@@ -241,6 +245,7 @@ export const RuleBuilder = ({
                 rule={rule}
                 index={ruleIdx}
                 disabled={disabled}
+                valueType={valueType}
                 onRemove={() => removeRule(rule.id)}
                 onUpdateRule={(updates) => updateRule(rule.id, updates)}
                 onAddGroup={() => addGroup(rule.id)}
@@ -292,6 +297,81 @@ export const RuleBuilder = ({
 };
 
 // ═══════════════════════════════════════════════════════════════
+// Typed Value Input — validates based on config's valueType
+// ═══════════════════════════════════════════════════════════════
+
+const TypedValueInput = ({
+  value,
+  onChange,
+  valueType,
+  disabled,
+}: {
+  value: unknown;
+  onChange: (val: unknown) => void;
+  valueType?: ConfigValueType;
+  disabled?: boolean;
+}) => {
+  if (valueType === "boolean") {
+    return (
+      <Select
+        value={String(value)}
+        onValueChange={(v) => onChange(v === "true")}
+        disabled={disabled}
+      >
+        <SelectTrigger className="h-9 text-sm">
+          <SelectValue placeholder={t`Select value`} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="true">true</SelectItem>
+          <SelectItem value="false">false</SelectItem>
+        </SelectContent>
+      </Select>
+    );
+  }
+
+  if (valueType === "number") {
+    return (
+      <Input
+        type="number"
+        className="h-9 text-sm"
+        value={String(value ?? "")}
+        onChange={(e) => {
+          const num = Number(e.target.value);
+          onChange(Number.isNaN(num) ? e.target.value : num);
+        }}
+        disabled={disabled}
+        placeholder={t`e.g., 100, 0.5`}
+      />
+    );
+  }
+
+  if (valueType === "json" || valueType === "array") {
+    return (
+      <Input
+        className="h-9 text-sm font-mono"
+        value={String(value ?? "")}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        placeholder={
+          valueType === "array" ? t`e.g., ["a","b"]` : t`e.g., {"key": "val"}`
+        }
+      />
+    );
+  }
+
+  // Default: string
+  return (
+    <Input
+      className="h-9 text-sm"
+      value={String(value ?? "")}
+      onChange={(e) => onChange(e.target.value)}
+      disabled={disabled}
+      placeholder={t`e.g., "premium", "dark"`}
+    />
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
 // Segment Rule Card — clean, visual, segment-first
 // ═══════════════════════════════════════════════════════════════
 
@@ -300,6 +380,7 @@ const SegmentRuleCard = ({
   segments,
   index,
   disabled,
+  valueType,
   onChange,
   onRemove,
 }: {
@@ -307,6 +388,7 @@ const SegmentRuleCard = ({
   segments: Segment[];
   index: number;
   disabled?: boolean;
+  valueType?: ConfigValueType;
   onChange: (updated: SegmentTargetingRuleUI) => void;
   onRemove: () => void;
 }) => {
@@ -419,12 +501,11 @@ const SegmentRuleCard = ({
         <label className="text-xs font-medium text-muted-foreground">
           <Trans>Serve value</Trans>
         </label>
-        <Input
-          className="h-9 text-sm"
-          value={String(rule.value)}
-          onChange={(e) => onChange({ ...rule, value: e.target.value })}
+        <TypedValueInput
+          value={rule.value}
+          onChange={(val) => onChange({ ...rule, value: val })}
+          valueType={valueType}
           disabled={disabled}
-          placeholder={t`e.g., true, "premium", 100`}
         />
       </div>
     </div>
@@ -439,6 +520,7 @@ const ConditionRuleCard = ({
   rule,
   index,
   disabled,
+  valueType,
   onRemove,
   onUpdateRule,
   onAddGroup,
@@ -450,6 +532,7 @@ const ConditionRuleCard = ({
   rule: TargetingRule;
   index: number;
   disabled?: boolean;
+  valueType?: ConfigValueType;
   onRemove: () => void;
   onUpdateRule: (updates: Partial<TargetingRule>) => void;
   onAddGroup: () => void;
@@ -624,12 +707,11 @@ const ConditionRuleCard = ({
         <label className="text-xs font-medium text-muted-foreground">
           <Trans>Serve value</Trans>
         </label>
-        <Input
-          className="h-9 text-sm"
-          value={String(rule.value)}
-          onChange={(e) => onUpdateRule({ value: e.target.value })}
+        <TypedValueInput
+          value={rule.value}
+          onChange={(val) => onUpdateRule({ value: val })}
+          valueType={valueType}
           disabled={disabled}
-          placeholder={t`e.g., true, "premium", 100`}
         />
       </div>
     </div>
