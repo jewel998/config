@@ -84,9 +84,7 @@ describe("prerequisitePlugin", () => {
       const plugin = prerequisitePlugin();
       const flag = makeFlag({
         value: "my-default",
-        prerequisites: [
-          { flagKey: "feature.prereq1", requiredValue: true },
-        ],
+        prerequisites: [{ flagKey: "feature.prereq1", requiredValue: true }],
       });
       const context: EvaluationContext = { userId: "user-1" };
       const helpers = makeHelpers({
@@ -115,21 +113,20 @@ describe("prerequisitePlugin", () => {
       expect(result).toEqual({ resolved: true, value: 42 });
     });
 
-    it("uses strict equality — type mismatch means unmet", () => {
+    it("uses string-coerced equality — '1' equals 1", () => {
       const plugin = prerequisitePlugin();
       const flag = makeFlag({
         value: "default",
-        prerequisites: [
-          { flagKey: "feature.prereq", requiredValue: 1 },
-        ],
+        prerequisites: [{ flagKey: "feature.prereq", requiredValue: 1 }],
       });
       const context: EvaluationContext = {};
       const helpers = makeHelpers({
-        evaluateFlag: () => "1", // string "1" !== number 1
+        evaluateFlag: () => "1", // string "1" coerces to match number 1
       });
 
       const result = plugin.evaluate(flag, context, helpers);
-      expect(result).toEqual({ resolved: true, value: "default" });
+      // equals operator coerces to string: "1" === "1" → met
+      expect(result).toEqual({ resolved: false });
     });
 
     it("short-circuits on first unmet prerequisite", () => {
