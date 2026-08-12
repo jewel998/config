@@ -107,9 +107,14 @@ export interface ConfigFlagExtended extends ConfigEntry {
   };
   prerequisites?: Array<{
     flagKey: string;
+    operator?: PrerequisiteOperator;
     requiredValue: unknown;
   }>;
 }
+
+/** Supported operators for prerequisite comparisons */
+export type PrerequisiteOperator =
+  "equals" | "not_equals" | "greater_than" | "less_than" | "contains";
 
 /** Targeting rule for the portal */
 export interface TargetingRule {

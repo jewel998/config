@@ -41,8 +41,11 @@ import type {
 
 const EMPTY_RULES: TargetingRule[] = [];
 const EMPTY_OVERRIDES: Record<string, unknown> = {};
-const EMPTY_PREREQUISITES: Array<{ flagKey: string; requiredValue: unknown }> =
-  [];
+const EMPTY_PREREQUISITES: Array<{
+  flagKey: string;
+  operator: import("@/lib/types").PrerequisiteOperator;
+  requiredValue: unknown;
+}> = [];
 
 interface SectionHeaderProps {
   id: SectionId;
@@ -111,7 +114,9 @@ export const ConfigDetailPanel = ({
   const rolloutValue = config.rolloutValue;
   const overrides = config.overrides ?? EMPTY_OVERRIDES;
   const schedule = config.schedule ?? null;
-  const prerequisites = config.prerequisites ?? EMPTY_PREREQUISITES;
+  const prerequisites = (config.prerequisites ?? EMPTY_PREREQUISITES).map(
+    (p) => ({ ...p, operator: p.operator ?? ("equals" as const) }),
+  );
 
   const toggle = (id: SectionId) =>
     setOpenSection(openSection === id ? null : id);
