@@ -134,11 +134,11 @@ export const getConfig = onRequest(
       }
     }
 
-    // 3. Extract evaluation mode and context
-    const evaluationMode: string =
-      (req.body?.data?.evaluationMode as string) ??
-      (req.query.evaluationMode as string) ??
-      "server";
+    // 3. Determine evaluation mode from key prefix (enforced, not client-controlled)
+    // cid_ = client key → always server-evaluate, never expose rules/segments
+    // svr_ = server key → return full flag data for local SDK evaluation
+    const isServerKey = clientId.startsWith("svr_");
+    const evaluationMode = isServerKey ? "client" : "server";
 
     const userContext: UserContext | null =
       evaluationMode === "server"

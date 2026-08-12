@@ -28,15 +28,6 @@ export interface CreateConfigOptions {
   clientId: string;
 
   /**
-   * Evaluation mode.
-   * - "server" (default): SDK sends context to API, API evaluates targeting/rollout/segments
-   *   and returns only resolved values. No plugins needed client-side.
-   * - "client": API returns full flag data + segments, SDK evaluates locally via plugins.
-   *   Use this for backend services that need local evaluation without per-request API calls.
-   */
-  evaluationMode?: EvaluationMode;
-
-  /**
    * Loading strategy for initialization.
    * - "optimistic" (default): Sync return, background fetch
    * - "pessimistic": Async, blocks until fetch completes
@@ -63,10 +54,13 @@ export interface CreateConfigOptions {
   /** Cloud Function base URL (override for testing/custom deployments) */
   baseUrl?: string;
 
-  /** Evaluation plugins to register (tree-shakeable pipeline steps). Only used in "client" mode. */
+  /**
+   * Evaluation plugins to register (tree-shakeable pipeline steps).
+   * Only used with server keys (svr_). Client keys (cid_) receive pre-resolved values.
+   */
   plugins?: EvaluationPlugin[];
 
-  /** Evaluation context for plugin pipeline (can be updated post-init via setContext) */
+  /** Evaluation context for targeting (can be updated post-init via setContext) */
   context?: EvaluationContext;
 
   /** Enable consent-aware mode (GDPR): if true and context.consentGranted !== true, returns defaults */
@@ -229,7 +223,6 @@ export interface HttpTransport {
 export interface GetConfigRequest {
   clientId: string;
   keys?: string[];
-  evaluationMode?: EvaluationMode;
   context?: {
     userId?: string;
     attributes?: Record<string, string | number | boolean | string[]>;

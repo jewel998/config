@@ -16,7 +16,6 @@ export type {
   ConfigRecord,
   CreateConfigOptions,
   EnvironmentRecord,
-  EvaluationMode,
   EvaluationWarning,
   FetchGranularity,
   LoadingStrategy,

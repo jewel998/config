@@ -85,7 +85,7 @@ config.on("updated", ({ keys }) => {
 });
 ```
 
-### 3. Advanced: Targeting & Rollout (client-side evaluation)
+### 3. Backend: Full Flag Data (server key)
 
 ```typescript
 import { createConfig } from "@jewel998/config";
@@ -93,8 +93,7 @@ import { targetingPlugin } from "@jewel998/config/targeting";
 import { rolloutPlugin } from "@jewel998/config/rollout";
 
 const config = createConfig({
-  clientId: "cid_xxx",
-  evaluationMode: "client", // Opt-in: evaluate targeting locally
+  clientId: "svr_xxx", // Server key → full flag data for local evaluation
   plugins: [targetingPlugin(), rolloutPlugin()],
   context: {
     userId: "user_123",
@@ -106,16 +105,15 @@ const config = createConfig({
 const showNewCheckout = config.getFlag("feature.checkout_v2");
 ```
 
-### 4. Server-Side Evaluation (default for frontend)
+### 4. Frontend: Server-Side Evaluation (client key)
 
-The SDK defaults to **server evaluation mode** — you send user context, the API evaluates targeting rules and segments server-side, and returns only the resolved values. No business logic is exposed to the browser.
+With a client key (`cid_`), the SDK sends user context to the API. The API evaluates targeting rules, segments, and rollouts server-side, and returns only the resolved values. No business logic is exposed to the browser.
 
 ```typescript
 import { createConfig, autoContext, mergeContext } from "@jewel998/config";
 
 const config = createConfig({
-  clientId: "cid_xxx",
-  // evaluationMode: "server" is the default — no need to specify
+  clientId: "cid_xxx", // Client key → API evaluates, returns resolved values only
   context: mergeContext(
     autoContext(), // Detects: browser, OS, device, screen, locale, timezone
     { userId: "user_123", attributes: { plan: "enterprise", country: "US" } },
@@ -123,8 +121,8 @@ const config = createConfig({
 });
 
 // Values are pre-resolved by the API — no plugins needed
-const darkMode = config.getFlag("feature.dark_mode"); // → true (if user matches targeting)
-const limit = config.getValue<number>("app.upload_limit", 10); // → 200 (enterprise plan)
+const darkMode = config.getFlag("feature.dark_mode"); // → true
+const limit = config.getValue<number>("app.upload_limit", 10); // → 200
 
 // When user context changes, SDK re-fetches resolved values
 config.setContext({
@@ -134,25 +132,14 @@ config.setContext({
 // Triggers re-fetch → values update → "updated" event fires
 ```
 
-**`autoContext()`** detects common browser attributes automatically:
+### API Key Types
 
-| Attribute        | Example Value      |
-| ---------------- | ------------------ |
-| `browser`        | "Chrome"           |
-| `browserVersion` | "126.0.6478.126"   |
-| `os`             | "macOS"            |
-| `device`         | "desktop"          |
-| `screenWidth`    | 1920               |
-| `screenHeight`   | 1080               |
-| `locale`         | "en-US"            |
-| `timezone`       | "America/New_York" |
+| Key Prefix | Type   | Behavior                                                    |
+| ---------- | ------ | ----------------------------------------------------------- |
+| `cid_`     | Client | For frontend. API evaluates targeting, returns only values. |
+| `svr_`     | Server | For backend. API returns full flag data for local eval.     |
 
-**When to use which mode:**
-
-| Mode     | Use Case                                        |
-| -------- | ----------------------------------------------- |
-| `server` | Frontend apps — no business logic exposed       |
-| `client` | Backend services — local evaluation, no latency |
+The API **enforces** the mode based on key prefix. A frontend consumer physically cannot get targeting rules or segment definitions — even if they try to override it in the request.
 
 ## Monorepo Structure
 

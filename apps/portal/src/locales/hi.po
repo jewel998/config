@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/routes/api-keys.tsx:160
+msgid "<0>Client keys</0> (<1>cid_</1>) — for frontend apps. Returns only resolved values.<2/><3>Server keys</3> (<4>svr_</4>) — for backend services. Returns full flag data for local evaluation."
+msgstr ""
+
 #: src/routes/__root.tsx:350
 msgid "Access Denied"
 msgstr "पहुँच अस्वीकृत"
@@ -155,22 +159,22 @@ msgstr ""
 msgid "An invite already exists for this email."
 msgstr ""
 
-#: src/routes/api-keys.tsx:114
+#: src/routes/api-keys.tsx:115
 msgid "API key generated"
 msgstr ""
 
-#: src/routes/api-keys.tsx:130
+#: src/routes/api-keys.tsx:131
 msgid "API key revoked"
 msgstr ""
 
 #: src/components/audit-log-viewer.tsx:141
 #: src/components/command-palette.tsx:105
 #: src/routes/__root.tsx:234
-#: src/routes/api-keys.tsx:357
+#: src/routes/api-keys.tsx:381
 msgid "API Keys"
 msgstr "API कुंजियाँ"
 
-#: src/routes/api-keys.tsx:365
+#: src/routes/api-keys.tsx:389
 msgid "API Keys guide"
 msgstr ""
 
@@ -229,7 +233,7 @@ msgstr ""
 #: src/components/template-bar.tsx:119
 #: src/components/webhook-form-modal.tsx:328
 #: src/components/webhook-settings.tsx:167
-#: src/routes/api-keys.tsx:203
+#: src/routes/api-keys.tsx:221
 #: src/routes/compare.tsx:605
 #: src/routes/configs.tsx:817
 #: src/routes/environments.tsx:254
@@ -402,7 +406,7 @@ msgstr ""
 #: src/components/onboarding-stepper.tsx:209
 #: src/components/segment-manager.tsx:194
 #: src/components/webhook-form-modal.tsx:321
-#: src/routes/api-keys.tsx:192
+#: src/routes/api-keys.tsx:210
 #: src/routes/environments.tsx:241
 #: src/routes/settings.tsx:313
 msgid "Create"
@@ -486,8 +490,8 @@ msgstr ""
 #: src/components/segment-manager.tsx:252
 #: src/components/webhook-card.tsx:128
 #: src/components/webhook-settings.tsx:174
-#: src/routes/api-keys.tsx:308
-#: src/routes/api-keys.tsx:313
+#: src/routes/api-keys.tsx:332
+#: src/routes/api-keys.tsx:337
 #: src/routes/configs.tsx:650
 #: src/routes/configs.tsx:659
 #: src/routes/configs.tsx:718
@@ -752,7 +756,7 @@ msgstr ""
 msgid "Failed to delete environment"
 msgstr ""
 
-#: src/routes/api-keys.tsx:296
+#: src/routes/api-keys.tsx:320
 msgid "Failed to delete key"
 msgstr ""
 
@@ -768,7 +772,7 @@ msgstr ""
 msgid "Failed to delete webhook"
 msgstr ""
 
-#: src/routes/api-keys.tsx:119
+#: src/routes/api-keys.tsx:120
 msgid "Failed to generate API key"
 msgstr ""
 
@@ -776,7 +780,7 @@ msgstr ""
 msgid "Failed to remove member"
 msgstr ""
 
-#: src/routes/api-keys.tsx:133
+#: src/routes/api-keys.tsx:134
 msgid "Failed to revoke API key"
 msgstr ""
 
@@ -869,7 +873,7 @@ msgstr ""
 msgid "GDPR Compliance"
 msgstr ""
 
-#: src/routes/api-keys.tsx:172
+#: src/routes/api-keys.tsx:174
 msgid "Generate Key"
 msgstr "कुंजी बनाएँ"
 
@@ -931,15 +935,11 @@ msgstr ""
 msgid "Key"
 msgstr ""
 
-#: src/routes/api-keys.tsx:293
+#: src/routes/api-keys.tsx:317
 msgid "Key deleted permanently"
 msgstr ""
 
-#: src/routes/api-keys.tsx:159
-msgid "Keys are prefixed with <0>cid_</0> and contain 20 random characters."
-msgstr ""
-
-#: src/routes/api-keys.tsx:179
+#: src/routes/api-keys.tsx:197
 msgid "Label (optional)"
 msgstr ""
 
@@ -968,7 +968,7 @@ msgstr ""
 msgid "Lock"
 msgstr ""
 
-#: src/routes/api-keys.tsx:359
+#: src/routes/api-keys.tsx:383
 msgid "Manage client IDs for this environment. Use these keys to authenticate SDK requests."
 msgstr ""
 
@@ -1063,7 +1063,7 @@ msgstr ""
 msgid "No activity yet"
 msgstr ""
 
-#: src/routes/api-keys.tsx:210
+#: src/routes/api-keys.tsx:228
 msgid "No API keys yet. Generate one to get started."
 msgstr "अभी तक कोई API कुंजी नहीं। शुरू करने के लिए एक बनाएँ।"
 
@@ -1389,15 +1389,15 @@ msgstr ""
 msgid "Review {0} changes"
 msgstr ""
 
-#: src/routes/api-keys.tsx:273
+#: src/routes/api-keys.tsx:297
 msgid "Revoke"
 msgstr "रद्द करें"
 
-#: src/routes/api-keys.tsx:278
+#: src/routes/api-keys.tsx:302
 msgid "Revoke key"
 msgstr ""
 
-#: src/routes/api-keys.tsx:251
+#: src/routes/api-keys.tsx:275
 msgid "Revoked"
 msgstr ""
 
@@ -1527,7 +1527,7 @@ msgstr ""
 msgid "Select a project to compare environments."
 msgstr ""
 
-#: src/routes/api-keys.tsx:336
+#: src/routes/api-keys.tsx:360
 msgid "Select a project to manage API keys."
 msgstr ""
 
@@ -1563,7 +1563,7 @@ msgstr ""
 msgid "Select a source and target environment to see the diff."
 msgstr ""
 
-#: src/routes/api-keys.tsx:346
+#: src/routes/api-keys.tsx:370
 msgid "Select an environment from the top bar to manage API keys."
 msgstr ""
 

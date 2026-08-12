@@ -105,10 +105,11 @@ const EnvironmentKeys = ({
   const user = useAuthStore((s) => s.user);
   const [showLabelInput, setShowLabelInput] = useState(false);
   const [label, setLabel] = useState("");
+  const [keyType, setKeyType] = useState<"client" | "server">("client");
 
   const handleGenerate = () => {
     generateKey.mutate(
-      { projectId, environmentId, label: label.trim() || undefined },
+      { projectId, environmentId, label: label.trim() || undefined, keyType },
       {
         onSuccess: () => {
           toast.success(t`API key generated`);
@@ -157,8 +158,13 @@ const EnvironmentKeys = ({
           <CardTitle className="text-base">{environmentName}</CardTitle>
           <p className="mt-1 text-xs text-muted-foreground">
             <Trans>
-              Keys are prefixed with <code className="font-mono">cid_</code> and
-              contain 20 random characters.
+              <strong>Client keys</strong> (
+              <code className="font-mono">cid_</code>) — for frontend apps.
+              Returns only resolved values.
+              <br />
+              <strong>Server keys</strong> (
+              <code className="font-mono">svr_</code>) — for backend services.
+              Returns full flag data for local evaluation.
             </Trans>
           </p>
         </div>
@@ -175,6 +181,22 @@ const EnvironmentKeys = ({
       <CardContent className="space-y-4">
         {showLabelInput && (
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-1 rounded-full border p-0.5">
+              <button
+                type="button"
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${keyType === "client" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                onClick={() => setKeyType("client")}
+              >
+                Client
+              </button>
+              <button
+                type="button"
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${keyType === "server" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                onClick={() => setKeyType("server")}
+              >
+                Server
+              </button>
+            </div>
             <Input
               placeholder={t`Label (optional)`}
               value={label}
@@ -226,6 +248,12 @@ const EnvironmentKeys = ({
                       className="rounded-full text-xs"
                     >
                       {key.status}
+                    </Badge>
+                    <Badge
+                      variant="outline"
+                      className={`rounded-full text-xs ${key.token.startsWith("svr_") ? "border-amber-500/50 text-amber-600 dark:text-amber-400" : "border-blue-500/50 text-blue-600 dark:text-blue-400"}`}
+                    >
+                      {key.token.startsWith("svr_") ? "Server" : "Client"}
                     </Badge>
                     {key.createdBy === user?.uid && (
                       <Tooltip>

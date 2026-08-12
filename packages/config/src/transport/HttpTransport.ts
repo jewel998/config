@@ -2,12 +2,13 @@
 
 import { AuthenticationError, ConfigError } from "../errors/index";
 import type { EvaluationContext } from "../plugins/types";
-import type { EvaluationMode, HttpTransport } from "../types";
+import type { HttpTransport } from "../types";
 
 export interface TransportConfig {
   baseUrl: string;
   clientId: string;
-  evaluationMode?: EvaluationMode;
+  /** Internal mode (auto-detected from key prefix). Controls whether context is sent. */
+  evaluationMode?: "server" | "client";
   getContext?: () => EvaluationContext;
 }
 
@@ -25,12 +26,7 @@ export const createHttpTransport = (
       ...body,
     };
 
-    // Include evaluationMode in every request
-    if (config.evaluationMode) {
-      requestData.evaluationMode = config.evaluationMode;
-    }
-
-    // In server mode, include the current context for server-side evaluation
+    // In server mode (cid_ key), include the current context for server-side evaluation
     if (config.evaluationMode === "server" && config.getContext) {
       const ctx = config.getContext();
       if (ctx && (ctx.userId || ctx.attributes)) {
