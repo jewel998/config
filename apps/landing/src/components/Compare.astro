@@ -1,0 +1,62 @@
+---
+---
+<section class="sec" id="compare">
+  <div class="wrap">
+    <header class="sec-hdr">
+      <span class="sec-eyebrow">Comparison</span>
+      <h2>Same features. Zero cost.</h2>
+      <p>Everything the $500/month platforms offer — running on your own Firebase, for free.</p>
+    </header>
+
+    <div class="cmp glass-card">
+      <div class="cmp-scroll">
+        <table class="cmp-table">
+          <thead><tr><th>Feature</th><th class="hl">config</th><th>LaunchDarkly</th><th>ConfigCat</th><th>Flagsmith</th><th>Firebase RC</th></tr></thead>
+          <tbody>
+            <tr><td>Segments</td><td class="hl"><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic n"></span></td></tr>
+            <tr><td>Targeting Rules</td><td class="hl"><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic p"></span></td></tr>
+            <tr><td>Rollouts</td><td class="hl"><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic y"></span></td></tr>
+            <tr><td>Prerequisites</td><td class="hl"><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic n"></span></td><td><span class="ic n"></span></td><td><span class="ic n"></span></td></tr>
+            <tr><td>Audit + Diffs</td><td class="hl"><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic n"></span></td></tr>
+            <tr><td>Webhooks</td><td class="hl"><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic p"></span></td><td><span class="ic p"></span></td><td><span class="ic n"></span></td></tr>
+            <tr><td>RBAC</td><td class="hl"><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic y"></span></td><td><span class="ic n"></span></td></tr>
+            <tr><td>Self-Hosted</td><td class="hl"><span class="ic y"></span></td><td><span class="ic n"></span></td><td><span class="ic n"></span></td><td><span class="ic y"></span></td><td><span class="ic n"></span></td></tr>
+            <tr><td>Open Source</td><td class="hl"><span class="ic y"></span></td><td><span class="ic n"></span></td><td><span class="ic n"></span></td><td><span class="ic y"></span></td><td><span class="ic n"></span></td></tr>
+            <tr class="cost-row"><td>Monthly Cost</td><td class="hl">$0</td><td>$500+</td><td>$100+</td><td>$45+</td><td>Free*</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="cmp-note">*Firebase Remote Config is free but lacks segments, audit, RBAC, and webhooks. @jewel998/config runs on your own Firebase project.</p>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .cmp { border-radius: 18px; overflow: hidden; }
+  .cmp-scroll { overflow-x: auto; }
+  .cmp-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 560px; }
+  .cmp-table th, .cmp-table td { padding: 12px 14px; text-align: center; border-bottom: 1px solid rgba(255,255,255,.04); }
+  .cmp-table th { font-weight: 600; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: .06em; background: rgba(255,255,255,.015); }
+  .cmp-table th:first-child, .cmp-table td:first-child { text-align: left; font-weight: 500; }
+  .cmp-table .hl { background: rgba(99,102,241,.05); font-weight: 600; }
+  .cmp-table th.hl { color: #a5b4fc; }
+  .cmp-table tbody tr:last-child td { border-bottom: none; }
+  .cost-row td { font-weight: 600; font-size: 14px; }
+  .cost-row .hl { color: #4ade80; }
+  .cmp-note { padding: 12px 16px; font-size: 12px; color: #6b7280; border-top: 1px solid rgba(255,255,255,.04); }
+
+  .ic { display: inline-block; width: 18px; height: 18px; border-radius: 50%; position: relative; }
+  .ic.y { background: rgba(34,197,94,.12); border: 1.5px solid rgba(34,197,94,.4); }
+  .ic.y::after { content: ""; position: absolute; top: 5px; left: 4px; width: 8px; height: 5px; border-left: 2px solid #22c55e; border-bottom: 2px solid #22c55e; transform: rotate(-45deg); }
+  .ic.n { background: rgba(239,68,68,.08); border: 1.5px solid rgba(239,68,68,.3); }
+  .ic.n::before, .ic.n::after { content: ""; position: absolute; top: 50%; left: 50%; width: 8px; height: 1.5px; background: #ef4444; border-radius: 1px; }
+  .ic.n::before { transform: translate(-50%,-50%) rotate(45deg); }
+  .ic.n::after { transform: translate(-50%,-50%) rotate(-45deg); }
+  .ic.p { background: rgba(251,191,36,.08); border: 1.5px solid rgba(251,191,36,.35); }
+  .ic.p::after { content: ""; position: absolute; top: 50%; left: 50%; width: 7px; height: 1.5px; background: #fbbf24; border-radius: 1px; transform: translate(-50%,-50%); }
+
+  @media (max-width: 767px) {
+    .cmp-table { font-size: 12px; min-width: 500px; }
+    .cmp-table th, .cmp-table td { padding: 10px 10px; }
+  }
+</style>

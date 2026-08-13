@@ -1,0 +1,75 @@
+---
+---
+<section class="sec sec-alt" id="usecases">
+  <div class="glow-orb glow-orb-purple"></div>
+  <div class="wrap">
+    <header class="sec-hdr">
+      <span class="sec-eyebrow" style="color: #a78bfa">Who it's for</span>
+      <h2>Built for teams that ship fast</h2>
+      <p>From day-one startups to regulated enterprises — feature flags adapt to how you work.</p>
+    </header>
+    <div class="uc-grid">
+      <div class="uc glass-card">
+        <div class="uc-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3>Startups</h3>
+        <span class="uc-tag">Ship fearlessly on day one</span>
+        <p>Roll out features to beta users, target by plan tier, instant kill switches for rollback. Zero infrastructure cost — Firebase free tier handles it all.</p>
+        <div class="uc-example">
+          <code>getFlag("feature.onboarding_v2")</code>
+          <span>→ 50% rollout to new signups</span>
+        </div>
+      </div>
+      <div class="uc glass-card">
+        <div class="uc-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3>Growing Teams</h3>
+        <span class="uc-tag">Collaborate without stepping on toes</span>
+        <p>RBAC ensures devs can't touch production API keys. Full audit log shows who changed what, when. Slack webhooks keep everyone informed in real-time.</p>
+        <div class="uc-example">
+          <code>Role: editor → can't revoke keys</code>
+          <span>→ separation of concerns built-in</span>
+        </div>
+      </div>
+      <div class="uc glass-card">
+        <div class="uc-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Regulated Industries</h3>
+        <span class="uc-tag">Compliance without the price tag</span>
+        <p>GDPR data deletion tools, immutable audit trails, environment separation, consent-aware mode. Self-hosted means your data never leaves your infrastructure.</p>
+        <div class="uc-example">
+          <code>consentAware: true</code>
+          <span>→ no personalization without consent</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .uc-grid { display: grid; gap: 18px; grid-template-columns: 1fr; }
+  @media(min-width:768px) { .uc-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .uc { padding: 30px; border-radius: 20px; transition: transform .4s cubic-bezier(.16,1,.3,1), border-color .3s, box-shadow .4s; display: flex; flex-direction: column; }
+  .uc:hover { transform: translateY(-6px); border-color: rgba(255,255,255,.14); box-shadow: 0 24px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08); }
+
+  .uc-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); margin-bottom: 16px; color: rgba(255,255,255,.7); }
+
+  .uc h3 { font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 5px; }
+  .uc-tag { display: block; font-size: 13px; color: #a78bfa; font-weight: 500; margin-bottom: 12px; }
+  .uc p { font-size: 13.5px; color: #9ca3af; line-height: 1.65; margin-bottom: 16px; flex: 1; }
+
+  .uc-example { padding: 10px 14px; border-radius: 8px; background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.05); }
+  .uc-example code { display: block; font-family: "SF Mono","Fira Code",monospace; font-size: 11px; color: rgba(255,255,255,.6); margin-bottom: 3px; }
+  .uc-example span { font-size: 11px; color: rgba(255,255,255,.3); }
+
+  @media (max-width: 767px) {
+    .uc { padding: 22px; }
+    .uc h3 { font-size: 16px; }
+    .uc-tag { font-size: 12px; }
+    .uc p { font-size: 13px; }
+  }
+</style>

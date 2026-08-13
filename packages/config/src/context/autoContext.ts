@@ -6,26 +6,34 @@
 import type { EvaluationContext } from "../plugins/types.js";
 
 /**
- * Automatically detect common browser/device attributes.
- * Returns an EvaluationContext populated with:
- * - browser, browserVersion, os, device, screenWidth, screenHeight, locale, timezone
+ * Automatically detect browser/device attributes and merge with user-provided context.
  *
- * Usage:
- *   import { autoContext, mergeContext } from "@jewel998/config";
- *   const config = createConfig({
- *     clientId: "cid_xxx",
- *     context: mergeContext(autoContext(), { userId: "user-123", attributes: { plan: "pro" } }),
- *   });
+ * Can be called two ways:
+ * 1. No args: returns auto-detected context only
+ *    `autoContext()`
+ *
+ * 2. With user attributes: auto-detects AND merges your attributes (yours win on conflict)
+ *    `autoContext({ userId: "user_123", plan: "pro", country: "US" })`
+ *
+ * @example
+ * ```ts
+ * const flags = initFlags({
+ *   clientId: "cid_xxx",
+ *   context: autoContext({ userId: "user_123", plan: "pro" }),
+ * });
+ * ```
  */
-export function autoContext(): EvaluationContext {
-  if (typeof window === "undefined" || typeof navigator === "undefined") {
-    return { attributes: {} };
-  }
+export function autoContext(user?: {
+  userId?: string;
+  [key: string]: string | number | boolean | string[] | undefined;
+}): EvaluationContext {
+  const detected: EvaluationContext = {
+    attributes: {},
+  };
 
-  const ua = navigator.userAgent;
-
-  return {
-    attributes: {
+  if (typeof window !== "undefined" && typeof navigator !== "undefined") {
+    const ua = navigator.userAgent;
+    detected.attributes = {
       browser: detectBrowser(ua),
       browserVersion: detectBrowserVersion(ua),
       os: detectOS(ua),
@@ -34,6 +42,23 @@ export function autoContext(): EvaluationContext {
       screenHeight: window.screen?.height ?? 0,
       locale: navigator.language ?? "en",
       timezone: getTimezone(),
+    };
+  }
+
+  if (!user) return detected;
+
+  // Extract userId from the user object, rest goes to attributes
+  const { userId, ...attrs } = user;
+  const userAttrs: Record<string, string | number | boolean | string[]> = {};
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v !== undefined) userAttrs[k] = v;
+  }
+
+  return {
+    userId,
+    attributes: {
+      ...(detected.attributes ?? {}),
+      ...userAttrs,
     },
   };
 }

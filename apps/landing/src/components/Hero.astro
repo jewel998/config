@@ -1,0 +1,164 @@
+---
+import HeroBackground from "./HeroBackground";
+---
+<section class="hero">
+  <div class="aurora">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+  <HeroBackground client:load />
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/config/" class="nav-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="9" height="9" rx="2" fill="#fff"/><rect x="13" y="2" width="9" height="9" rx="2" fill="#fff" opacity=".6"/><rect x="2" y="13" width="9" height="9" rx="2" fill="#fff" opacity=".6"/><rect x="13" y="13" width="9" height="9" rx="2" fill="#fff" opacity=".3"/></svg>
+        <span>config</span>
+      </a>
+      <div class="nav-links">
+        <a href="#story">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#compare">Compare</a>
+        <a href="/config/guide/getting-started.html">Docs</a>
+      </div>
+      <a href="/config/portal/" class="nav-cta">Open Portal</a>
+      <button class="burger" aria-label="Menu" id="burgerBtn"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="mob-nav" id="mobNav" hidden>
+    <a href="#story">How It Works</a>
+    <a href="#features">Features</a>
+    <a href="#compare">Compare</a>
+    <a href="/config/guide/getting-started.html">Docs</a>
+    <a href="/config/portal/" class="mob-nav-cta">Open Portal</a>
+  </div>
+
+  <script>
+    const burger = document.getElementById('burgerBtn');
+    const mobNav = document.getElementById('mobNav');
+    if (burger && mobNav) {
+      burger.addEventListener('click', () => {
+        const open = mobNav.hidden;
+        mobNav.hidden = !open;
+        burger.setAttribute('aria-expanded', String(open));
+      });
+      mobNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { mobNav.hidden = true; burger.setAttribute('aria-expanded', 'false'); }));
+    }
+  </script>
+
+  <div class="hero-body">
+    <div class="hero-center">
+      <div class="pill"><span class="pill-dot"></span> Open Source · Self-Hosted · $0/month</div>
+      <h1>Feature flags that<br/>scale with you.</h1>
+      <p class="hero-sub">Ship features safely with segments, targeting rules, and percentage rollouts. Enterprise-grade feature management running on Firebase's free tier.</p>
+      <div class="hero-ctas">
+        <a href="/config/guide/getting-started.html" class="btn-solid">Start Building</a>
+        <a href="/config/portal/" class="btn-outline">Open Portal</a>
+      </div>
+      <!-- Code preview -->
+      <div class="hero-code">
+        <pre><code><span class="ck">const</span> flags = <span class="cf">initConfig</span>({"{"} 
+  clientId: <span class="cs">"cid_xxx"</span>,
+  defaults: {"{"} <span class="cs">"feature.dark_mode"</span>: false {"}"}, 
+  context: <span class="cf">autoContext</span>({"{"} userId: <span class="cs">"user_123"</span>, plan: <span class="cs">"pro"</span> {"}"}),
+{"}"})
+
+flags.<span class="cf">get</span>(<span class="cs">"feature.dark_mode"</span>)   <span class="cc">// → false (instant)</span>
+<span class="cc">// ...API responds...</span>
+flags.<span class="cf">get</span>(<span class="cs">"feature.dark_mode"</span>)   <span class="cc">// → true (resolved)</span></code></pre>
+      </div>
+      <!-- Stats row -->
+      <div class="hero-stats">
+        <div class="hero-stat"><strong>&lt;60ms</strong><span>Response time</span></div>
+        <div class="hero-stat"><strong>7</strong><span>Languages</span></div>
+        <div class="hero-stat"><strong>$0</strong><span>Monthly cost</span></div>
+        <div class="hero-stat"><strong>100%</strong><span>Open source</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .hero { position: relative; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; overflow: hidden; background: #050508; }
+
+  .aurora { position: absolute; inset: 0; filter: blur(90px) saturate(1.4); opacity: .3; pointer-events: none; }
+  .blob { position: absolute; border-radius: 50%; animation: drift 14s ease-in-out infinite; }
+  .b1 { width: 50vw; height: 50vw; max-width: 550px; max-height: 550px; background: radial-gradient(circle, #4f46e5, transparent 70%); top: -8%; left: -8%; }
+  .b2 { width: 38vw; height: 38vw; max-width: 460px; max-height: 460px; background: radial-gradient(circle, #7c3aed, transparent 70%); top: 35%; right: -4%; animation-delay: -5s; animation-duration: 17s; }
+  .b3 { width: 32vw; height: 32vw; max-width: 400px; max-height: 400px; background: radial-gradient(circle, #06b6d4, transparent 70%); bottom: 0; left: 28%; animation-delay: -9s; animation-duration: 20s; }
+  @keyframes drift { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(25px,-18px) scale(1.04); } 66% { transform: translate(-18px,18px) scale(.96); } }
+
+  .nav { position: relative; z-index: 10; padding: 20px 20px 0; }
+  @media(min-width:768px) { .nav { padding: 20px 40px 0; } }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 10px 18px; border-radius: 14px; max-width: 1140px; margin: 0 auto; background: rgba(255,255,255,.03); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,.06); }
+  .nav-logo { display: flex; align-items: center; gap: 9px; font-size: 17px; font-weight: 600; letter-spacing: -.03em; }
+  .nav-links { display: none; gap: 28px; }
+  @media(min-width:768px) { .nav-links { display: flex; } }
+  .nav-links a { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.55); transition: color .2s; }
+  .nav-links a:hover { color: #fff; }
+  .nav-cta { display: none; align-items: center; padding: 7px 18px; border-radius: 9px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,.9); color: #000; transition: background .2s, transform .2s; }
+  @media(min-width:768px) { .nav-cta { display: inline-flex; } }
+  .nav-cta:hover { background: #fff; transform: translateY(-1px); }
+
+  /* Burger */
+  .burger { display: grid; place-items: center; width: 36px; height: 36px; border: none; background: rgba(255,255,255,.06); border-radius: 8px; cursor: pointer; padding: 0; }
+  @media(min-width:768px) { .burger { display: none; } }
+  .burger span { display: block; width: 16px; height: 1.5px; background: #fff; border-radius: 2px; grid-area: 1/1; transition: transform .2s, opacity .2s; }
+  .burger span:nth-child(1) { transform: translateY(-4.5px); }
+  .burger span:nth-child(3) { transform: translateY(4.5px); }
+
+  /* Mobile nav */
+  .mob-nav { position: absolute; top: 70px; left: 20px; right: 20px; z-index: 20; background: rgba(15,15,20,.96); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 2px; }
+  .mob-nav[hidden] { display: none; }
+  .mob-nav a { display: block; padding: 12px 14px; font-size: 14px; font-weight: 500; border-radius: 8px; color: rgba(255,255,255,.7); transition: background .15s; }
+  .mob-nav a:hover { background: rgba(255,255,255,.04); }
+  .mob-nav-cta { margin-top: 6px; background: rgba(255,255,255,.9) !important; color: #000 !important; text-align: center; font-weight: 600 !important; border-radius: 8px !important; }
+
+  .hero-body { position: relative; z-index: 2; flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px 20px; }
+  .hero-center { max-width: 720px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+
+  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px; border-radius: 999px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); font-size: 12px; font-weight: 500; color: rgba(255,255,255,.55); margin-bottom: 28px; }
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,.6); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+
+  h1 { font-size: clamp(34px, 5.5vw, 62px); font-weight: 700; letter-spacing: -.045em; line-height: 1.1; margin-bottom: 18px; }
+  .hero-sub { font-size: clamp(14px, 1.4vw, 16px); color: rgba(255,255,255,.48); max-width: 520px; line-height: 1.7; margin-bottom: 30px; }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 36px; }
+
+  /* Hero code snippet */
+  .hero-code { width: 100%; max-width: 440px; background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.06); border-radius: 12px; padding: 16px 20px; margin-bottom: 36px; text-align: left; }
+  .hero-code pre { margin: 0; font-size: 12px; line-height: 1.8; font-family: "SF Mono", "Fira Code", "JetBrains Mono", monospace; color: rgba(255,255,255,.7); overflow-x: auto; }
+  .hero-code code { color: rgba(255,255,255,.7); }
+  .ck { color: #c084fc; }
+  .cs { color: #86efac; }
+  .cf { color: #93c5fd; }
+  .cc { color: rgba(255,255,255,.25); }
+
+  /* Hero stats */
+  .hero-stats { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+  .hero-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .hero-stat strong { font-size: 18px; font-weight: 700; letter-spacing: -.02em; }
+  .hero-stat span { font-size: 11px; color: rgba(255,255,255,.35); }
+
+  @media(min-width: 640px) { .hero-stats { gap: 40px; } }
+
+  @media (max-width: 767px) {
+    h1 { font-size: 30px; }
+    .hero-sub { font-size: 14px; }
+    .hero-ctas { flex-direction: column; align-items: stretch; }
+    .btn-solid, .btn-outline { text-align: center; justify-content: center; }
+    .hero-code { padding: 12px 14px; }
+    .hero-code pre { font-size: 10.5px; }
+    .hero-stats { gap: 16px; }
+    .hero-stat strong { font-size: 16px; }
+    .pill { font-size: 11px; padding: 4px 12px; }
+    .nav-inner { padding: 8px 12px; }
+  }
+
+  .btn-solid { display: inline-flex; padding: 12px 30px; border-radius: 11px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,.92); color: #000; border: 1px solid rgba(255,255,255,.3); box-shadow: 0 4px 14px rgba(255,255,255,.12), inset 0 1px 0 rgba(255,255,255,.5); transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s, background .2s; }
+  .btn-solid:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,255,255,.18), inset 0 1px 0 rgba(255,255,255,.7); }
+
+  .btn-outline { display: inline-flex; padding: 12px 30px; border-radius: 11px; font-size: 14px; font-weight: 500; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(8px); box-shadow: 0 4px 14px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.06); transition: transform .3s cubic-bezier(.16,1,.3,1), border-color .2s, background .2s; }
+  .btn-outline:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.25); transform: translateY(-2px); }
+</style>
