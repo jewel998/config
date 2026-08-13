@@ -5,54 +5,55 @@ export default defineConfig({
   description:
     "A free, self-hostable feature flag and remote configuration platform for startups.",
   base: "/config/",
+  sitemap: { hostname: "https://jewel998.github.io/config" },
   themeConfig: {
     siteTitle: "Docs",
-    // Override the default title link to go to the landing page
     logoLink: "https://jewel998.github.io/config/",
-    // Link the site title to the landing page (not VitePress index)
     nav: [
       { text: "Home", link: "https://jewel998.github.io/config/" },
       { text: "Guide", link: "/guide/getting-started" },
       { text: "Features", link: "/features/segments" },
       { text: "API", link: "/api/" },
-      { text: "Compliance", link: "/compliance/" },
       { text: "Portal", link: "https://jewel998.github.io/config/portal/" },
     ],
     sidebar: [
       {
-        text: "Guide",
+        text: "Getting Started",
         items: [
-          { text: "Getting Started", link: "/guide/getting-started" },
+          { text: "Quick Start", link: "/guide/getting-started" },
+          { text: "Self-Hosting Guide", link: "/guide/self-hosting" },
           { text: "Configuration Scopes", link: "/guide/scopes" },
-          { text: "Storage Adapters", link: "/guide/storage" },
-          { text: "Remote Providers", link: "/guide/remote-providers" },
         ],
       },
       {
-        text: "Features",
+        text: "Core Features",
         items: [
           { text: "Segments", link: "/features/segments" },
           { text: "Targeting Rules", link: "/features/targeting" },
           { text: "Percentage Rollouts", link: "/features/rollouts" },
           { text: "Prerequisites", link: "/features/prerequisites" },
           { text: "Scheduling", link: "/features/scheduling" },
+        ],
+      },
+      {
+        text: "Platform",
+        items: [
           { text: "Environments", link: "/features/environments" },
-          { text: "Team Collaboration", link: "/features/team" },
+          { text: "Team & RBAC", link: "/features/team" },
           { text: "Audit Log", link: "/features/audit-log" },
           { text: "Webhooks", link: "/features/webhooks" },
         ],
       },
       {
-        text: "API Reference",
+        text: "SDK Reference",
         items: [
-          { text: "SDK Reference", link: "/api/" },
-          { text: "Storage", link: "/api/storage" },
-          { text: "Remote Providers", link: "/api/remote" },
-          { text: "Webhooks", link: "/api/webhooks" },
+          { text: "initConfig", link: "/api/" },
+          { text: "Storage Adapters", link: "/guide/storage" },
+          { text: "Webhook API", link: "/api/webhooks" },
         ],
       },
       {
-        text: "Compliance",
+        text: "Compliance & Security",
         items: [
           { text: "Overview", link: "/compliance/" },
           { text: "GDPR", link: "/compliance/gdpr" },
@@ -60,7 +61,7 @@ export default defineConfig({
         ],
       },
       {
-        text: "Comparison",
+        text: "Compare",
         items: [{ text: "vs. Competitors", link: "/comparison/" }],
       },
     ],
