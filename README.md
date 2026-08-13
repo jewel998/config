@@ -1,77 +1,51 @@
 # @jewel998/config
 
-A free, self-hostable feature flag and remote configuration platform for startups and small teams. Replace expensive services like LaunchDarkly and ConfigCat with a platform you control — running entirely on Firebase's free tier.
+A free, self-hostable feature flag and remote configuration platform. Deploy to your own Firebase project. Replace LaunchDarkly at $0/month.
 
 ## Features
 
 - **Feature flags** — Boolean, string, number, JSON, array value types
 - **Targeting rules** — Serve different values based on user attributes (plan, country, etc.)
-- **Percentage rollouts** — Gradually roll out features to a % of users
-- **Segments** — Reusable audience groups for targeting
+- **Segments** — Reusable audience groups with one-click targeting
+- **Percentage rollouts** — Gradually roll out features with deterministic bucketing
+- **Prerequisites** — Flag dependencies with operator support (equals, greater_than, etc.)
 - **Scheduling** — Schedule config changes for a future date/time
-- **Prerequisites** — Flag dependencies (require flag A before flag B takes effect)
 - **Environments** — Separate dev/staging/production configs
 - **Audit log** — Track every change with actor, timestamp, and diff viewer
 - **Webhooks** — Notify Slack, Discord, Google Chat, MS Teams, or custom endpoints
 - **RBAC** — Viewer, Editor, Admin roles per project
-- **SDK** — JavaScript/TypeScript SDK with local evaluation, caching, and plugins
-- **Self-hosted** — Runs on Firebase free tier ($0/month for startups)
+- **Server-side evaluation** — Client keys never expose targeting rules or segments
+- **SDK** — Optimistic defaults, auto-context detection, instant reads
+- **Self-hosted** — Runs entirely on Firebase free tier ($0/month)
+- **7 languages** — English, Spanish, French, Arabic, Chinese, Hindi, Japanese
 
-## Architecture
+## Self-Hosting
 
-```
-┌─────────────────────────────────────────────────────┐
-│ Your App (Browser / Node.js)                        │
-│                                                     │
-│  import { createConfig } from "@jewel998/config"    │
-│  const config = createConfig({ clientId: "..." })   │
-│  config.getFlag("feature.dark_mode") → true         │
-└──────────────────────┬──────────────────────────────┘
-                       │ GET /api/getConfig?clientId=x
-                       ▼
-┌──────────────────────────────────────────────────────┐
-│ Firebase Hosting CDN (60s cache → $0 per request)    │
-└──────────────────────┬───────────────────────────────┘
-                       │ cache miss
-                       ▼
-┌──────────────────────────────────────────────────────┐
-│ Cloud Function: getConfig                            │
-│ - Validates clientId                                 │
-│ - Reads configs from Firestore                      │
-│ - Returns { data: { key: value }, version, ts }     │
-└──────────────────────────────────────────────────────┘
-                       │
-                       ▼
-┌──────────────────────────────────────────────────────┐
-│ Firestore (configs, environments, projects)          │
-└──────────────────────────────────────────────────────┘
-                       ▲
-                       │ manage via
-┌──────────────────────┴───────────────────────────────┐
-│ Config Portal (React SPA)                            │
-│ - Create/edit feature flags                          │
-│ - Set targeting rules, rollouts, schedules           │
-│ - Manage team, environments, API keys                │
-│ - View audit log with diff viewer                    │
-└──────────────────────────────────────────────────────┘
+```bash
+# 1. Clone
+git clone https://github.com/jewel998/config && cd config
+
+# 2. Connect your Firebase project
+firebase use --add your-project-id
+
+# 3. Install and deploy
+pnpm install && firebase deploy
 ```
 
-## Quick Start
+That's it. Portal, API, and hosting — all on your Firebase project.
 
-### 1. Install the SDK
+## SDK Quick Start
 
 ```bash
 npm install @jewel998/config
 ```
 
-### 2. Initialize in your app
-
 ```typescript
 import { initConfig, autoContext } from "@jewel998/config";
 
 const flags = initConfig({
-  clientId: "cid_your_key_here", // Get this from your Portal → API Keys
-  baseUrl: "https://your-project.web.app/api", // Your self-hosted Firebase URL
+  clientId: "cid_xxx", // From your Portal → API Keys
+  baseUrl: "https://your-project.web.app/api", // Your Firebase URL
   defaults: {
     "feature.dark_mode": false,
     "app.upload_limit": 50,
@@ -79,24 +53,25 @@ const flags = initConfig({
   context: autoContext({ userId: "user_123", plan: "pro" }),
 });
 
-// Instantly returns default (false) — no loading state
-const darkMode = flags.get("feature.dark_mode");
+// Instant — returns default value, no loading state
+flags.get("feature.dark_mode"); // → false
 
-// After the API responds, returns the resolved value
+// After API responds, returns resolved value
 flags.on("updated", () => {
-  flags.get("feature.dark_mode"); // → true (from your targeting rules)
-});
-
-// Read a typed value
-const maxUpload = config.getValue<number>("app.max_upload_mb", 10);
-
-// Listen for real-time updates
-config.on("updated", ({ keys }) => {
-  console.log("Configs changed:", keys);
+  flags.get("feature.dark_mode"); // → true (matched targeting rule)
 });
 ```
 
-### 3. Backend: Full Flag Data (server key)
+### API Key Types
+
+| Prefix | Type   | Behavior                                                                                                            |
+| ------ | ------ | ------------------------------------------------------------------------------------------------------------------- |
+| `cid_` | Client | For frontend. API evaluates targeting server-side, returns only values. Targeting rules and segments never exposed. |
+| `svr_` | Server | For backend. API returns full flag data + segments for local evaluation via plugins.                                |
+
+The API enforces the mode based on key prefix — cannot be overridden.
+
+### Server Key (Backend)
 
 ```typescript
 import { createConfig } from "@jewel998/config";
@@ -104,134 +79,86 @@ import { targetingPlugin } from "@jewel998/config/targeting";
 import { rolloutPlugin } from "@jewel998/config/rollout";
 
 const config = createConfig({
-  clientId: "svr_xxx", // Server key → full flag data for local evaluation
+  clientId: "svr_xxx",
+  baseUrl: "https://your-project.web.app/api",
   plugins: [targetingPlugin(), rolloutPlugin()],
-  context: {
-    userId: "user_123",
-    attributes: { plan: "pro", country: "US" },
-  },
+  context: { userId: "user_123", attributes: { plan: "pro", country: "US" } },
 });
 
-// Targeting rules and rollout are evaluated locally — no extra network calls
-const showNewCheckout = config.getFlag("feature.checkout_v2");
+config.getFlag("feature.checkout_v2"); // Evaluated locally — no round-trip
 ```
 
-### 4. Frontend: Server-Side Evaluation (client key)
-
-With a client key (`cid_`), the SDK sends user context to the API. The API evaluates targeting rules, segments, and rollouts server-side, and returns only the resolved values. No business logic is exposed to the browser.
-
-```typescript
-import { createConfig, autoContext, mergeContext } from "@jewel998/config";
-
-const config = createConfig({
-  clientId: "cid_xxx", // Client key → API evaluates, returns resolved values only
-  context: mergeContext(
-    autoContext(), // Detects: browser, OS, device, screen, locale, timezone
-    { userId: "user_123", attributes: { plan: "enterprise", country: "US" } },
-  ),
-});
-
-// Values are pre-resolved by the API — no plugins needed
-const darkMode = config.getFlag("feature.dark_mode"); // → true
-const limit = config.getValue<number>("app.upload_limit", 10); // → 200
-
-// When user context changes, SDK re-fetches resolved values
-config.setContext({
-  userId: "user_123",
-  attributes: { plan: "free" },
-});
-// Triggers re-fetch → values update → "updated" event fires
-```
-
-### API Key Types
-
-| Key Prefix | Type   | Behavior                                                    |
-| ---------- | ------ | ----------------------------------------------------------- |
-| `cid_`     | Client | For frontend. API evaluates targeting, returns only values. |
-| `svr_`     | Server | For backend. API returns full flag data for local eval.     |
-
-The API **enforces** the mode based on key prefix. A frontend consumer physically cannot get targeting rules or segment definitions — even if they try to override it in the request.
-
-## Monorepo Structure
+## Architecture
 
 ```
-apps/
-  portal/      — Admin portal (React + Vite + TanStack Router)
-  docs/        — Documentation site (VitePress)
-packages/
-  config/      — SDK (@jewel998/config)
-  tour/        — Declarative tour framework (@jewel998/tour)
-functions/     — Firebase Cloud Functions (API + webhooks)
-```
-
-## Development
-
-```bash
-# Install dependencies
-pnpm install
-
-# Start the portal dev server
-pnpm --filter @jewel998/config-portal run dev
-
-# Build the SDK
-pnpm --filter @jewel998/config run build
-
-# Run SDK tests
-pnpm --filter @jewel998/config run test
-
-# Deploy Cloud Functions
-firebase deploy --only functions
-
-# Deploy everything
-firebase deploy
+┌─────────────────────────────────────────────────────┐
+│ Your App                                            │
+│                                                     │
+│  import { initConfig } from "@jewel998/config"      │
+│  const flags = initConfig({ clientId, baseUrl })    │
+│  flags.get("feature.dark_mode") → true              │
+└──────────────────────┬──────────────────────────────┘
+                       │ POST /api/getConfig
+                       ▼
+┌──────────────────────────────────────────────────────┐
+│ Your Firebase Hosting (CDN cached)                   │
+└──────────────────────┬───────────────────────────────┘
+                       │ cache miss
+                       ▼
+┌──────────────────────────────────────────────────────┐
+│ Your Cloud Function: getConfig                       │
+│ - Validates clientId (cid_ or svr_)                 │
+│ - cid_: evaluates targeting server-side             │
+│ - svr_: returns full flag data for local eval       │
+└──────────────────────┬───────────────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────────────┐
+│ Your Firestore (configs, segments, projects)         │
+└──────────────────────────────────────────────────────┘
+                       ▲
+                       │
+┌──────────────────────┴───────────────────────────────┐
+│ Your Portal (React SPA on Firebase Hosting)          │
+│ - Create/edit feature flags and segments             │
+│ - Set targeting rules, rollouts, schedules           │
+│ - Manage team, environments, API keys                │
+│ - View audit log with diff viewer                    │
+│ - Configure webhook notifications                    │
+└──────────────────────────────────────────────────────┘
 ```
 
 ## API Reference
 
 ### POST /api/getConfig
 
-Fetch config values for an SDK client. Supports two evaluation modes.
+The SDK calls this endpoint. Mode is determined by the API key prefix.
 
-**Request body:**
+**Request:**
 
 ```json
 {
   "data": {
     "clientId": "cid_xxx",
-    "evaluationMode": "server",
     "context": {
       "userId": "user_123",
-      "attributes": { "plan": "pro", "country": "US", "browser": "Chrome" }
-    },
-    "keys": ["feature.dark_mode", "app.limit"]
+      "attributes": { "plan": "pro", "country": "US" }
+    }
   }
 }
 ```
 
-| Field                | Type     | Required | Description                                         |
-| -------------------- | -------- | -------- | --------------------------------------------------- |
-| `clientId`           | string   | Yes      | API key from the portal                             |
-| `evaluationMode`     | string   | No       | `"server"` (default) or `"client"`                  |
-| `context`            | object   | No       | User context for server-side targeting evaluation   |
-| `context.userId`     | string   | No       | User identifier (for rollouts and overrides)        |
-| `context.attributes` | object   | No       | Key-value pairs for targeting (plan, country, etc.) |
-| `keys`               | string[] | No       | Specific keys to fetch (omit for all)               |
-
-**Response (server mode) — only resolved values:**
+**Response (cid\_ key) — resolved values only:**
 
 ```json
 {
-  "data": {
-    "feature.dark_mode": true,
-    "app.limit": 200
-  },
+  "data": { "feature.dark_mode": true, "app.upload_limit": 200 },
   "version": "3",
-  "timestamp": "2024-01-15T09:30:00.000Z",
-  "warnings": []
+  "timestamp": "2025-01-15T09:30:00.000Z"
 }
 ```
 
-**Response (client mode) — full flag data + segments for local evaluation:**
+**Response (svr\_ key) — full flag data + segments:**
 
 ```json
 {
@@ -239,46 +166,65 @@ Fetch config values for an SDK client. Supports two evaluation modes.
     "feature.dark_mode": {
       "key": "feature.dark_mode",
       "value": false,
-      "valueType": "boolean",
-      "targetingRules": [{ "id": "...", "priority": 1, "value": true, "conditions": [...] }]
+      "targetingRules": [...]
     }
   },
-  "segments": {
-    "seg_beta": { "id": "seg_beta", "name": "Beta Users", "conditions": [...] }
-  },
+  "segments": { "seg_beta": { "id": "...", "conditions": [...] } },
   "version": "3",
-  "timestamp": "2024-01-15T09:30:00.000Z"
+  "timestamp": "2025-01-15T09:30:00.000Z"
 }
 ```
 
-**Errors:**
+**Errors:** `401` Invalid key · `403` Domain not allowed · `413` Context too large
 
-- `401` — Invalid or revoked clientId
-- `403` — Origin domain not in allowedDomains
-- `413` — Context payload exceeds 10KB limit
-- `429` — Rate limited (if enabled)
+## Monorepo Structure
 
-### Security Model
+```
+apps/
+  portal/      — Admin portal (React + Vite + TanStack Router)
+  landing/     — Marketing site (Astro + React)
+  docs/        — Documentation (VitePress)
+packages/
+  config/      — SDK (@jewel998/config)
+  tour/        — Tour framework (@jewel998/tour)
+functions/     — Firebase Cloud Functions (API + webhooks)
+```
 
-- **Client-side SDK keys** are public (visible in browser). This is industry standard.
-- Security is provided by: read-only API, domain validation, CDN caching.
-- **Never put sensitive data in config values** — flags are meant to control features, not store secrets.
+## Development
 
-### Rate Limiting (Optional)
+```bash
+pnpm install                                    # Install deps
+pnpm --filter @jewel998/config-portal run dev   # Portal dev server
+pnpm --filter @jewel998/config-landing run dev  # Landing page dev
+pnpm --filter @jewel998/config run test         # SDK tests (210 passing)
+firebase deploy                                 # Deploy everything
+```
 
-Rate limiting is not enabled by default. To add it, see the commented section in `functions/src/api/get-config.ts`. It uses a Firestore counter per clientId with a configurable window (default: 100 req/min).
+## Upgrades
+
+When new versions are released, pull the latest and redeploy:
+
+```bash
+git pull origin main
+pnpm install
+firebase deploy
+```
+
+Migration guides are provided for breaking changes. Your data stays in your Firestore.
 
 ## Cost
 
-Running entirely on Firebase free tier:
-
-| Component       | Free Tier      | Typical Startup Usage   | Monthly Cost |
-| --------------- | -------------- | ----------------------- | ------------ |
-| Cloud Functions | 2M invocations | ~1,500 (with CDN cache) | $0           |
-| Firestore reads | 50K/day        | ~3,000/day              | $0           |
-| Hosting/CDN     | 10GB bandwidth | ~100MB                  | $0           |
-| **Total**       |                |                         | **$0**       |
+| Component       | Firebase Free Tier | Typical Usage | Monthly Cost |
+| --------------- | ------------------ | ------------- | ------------ |
+| Cloud Functions | 2M invocations     | ~1,500/month  | $0           |
+| Firestore       | 50K reads/day      | ~3,000/day    | $0           |
+| Hosting/CDN     | 10GB bandwidth     | ~100MB        | $0           |
+| **Total**       |                    |               | **$0**       |
 
 ## License
 
-MIT
+[Elastic License 2.0](./LICENSE) — Use, modify, and self-host freely. Cannot be provided as a managed service to third parties.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for setup instructions, commit conventions, and PR guidelines.
