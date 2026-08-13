@@ -42,6 +42,15 @@ export interface InitConfigOptions {
    * @example "https://your-project.web.app/api"
    */
   baseUrl?: string;
+
+  /**
+   * Polling interval in milliseconds for version checks.
+   * The SDK periodically calls /api/version (lightweight ~100 bytes)
+   * and only re-fetches full data when the version changes.
+   *
+   * Default: 300000 (5 minutes). Set to 0 to disable polling.
+   */
+  pollInterval?: number;
 }
 
 export interface Flags {
@@ -89,14 +98,75 @@ export interface Flags {
  */
 export function initConfig(options: InitConfigOptions): Flags {
   const defaults = options.defaults ?? {};
+  const pollInterval = options.pollInterval ?? 300_000; // 5 minutes default
+  const baseUrl = options.baseUrl ?? "https://jewel998-config.web.app/api";
 
   // Create the underlying config client (optimistic strategy = instant return + background fetch)
   const client: ConfigClient = createConfig({
     clientId: options.clientId,
     loadingStrategy: "optimistic",
     context: options.context,
-    baseUrl: options.baseUrl,
+    baseUrl,
   });
+
+  // Version-based polling: check /api/version periodically, delta-fetch on change
+  let cachedVersion: string | null = null;
+  let pollTimer: ReturnType<typeof setInterval> | null = null;
+
+  async function checkVersion(): Promise<void> {
+    try {
+      const res = await fetch(
+        `${baseUrl}/getVersion?clientId=${options.clientId}`,
+        {
+          headers: cachedVersion
+            ? { "If-None-Match": `"${cachedVersion}"` }
+            : {},
+        },
+      );
+
+      // 304 = version unchanged, no action needed
+      if (res.status === 304) return;
+      if (!res.ok) return;
+
+      const { version, changedKeys } = (await res.json()) as {
+        version: string;
+        changedKeys: string[];
+      };
+
+      // First check — just store version, no refetch (initial fetch already happened)
+      if (cachedVersion === null) {
+        cachedVersion = version;
+        return;
+      }
+
+      // Version changed — need to refresh
+      if (version !== cachedVersion) {
+        cachedVersion = version;
+        // If we know which keys changed, we could delta-fetch in the future
+        // For now, full refresh (still efficient with CDN + deduplication)
+        await client.refresh();
+      }
+    } catch {
+      // Silently ignore polling errors — cache continues to work
+    }
+  }
+
+  // Start polling if interval > 0
+  if (pollInterval > 0 && typeof window !== "undefined") {
+    // Initial version check after first fetch completes
+    client.on("ready", () => {
+      void checkVersion();
+    });
+
+    pollTimer = setInterval(checkVersion, pollInterval);
+
+    // Also check on tab visibility change (user returns to tab)
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        void checkVersion();
+      }
+    });
+  }
 
   return {
     get<T = unknown>(key: string): T {
@@ -108,7 +178,6 @@ export function initConfig(options: InitConfigOptions): Flags {
     flag(key: string): boolean {
       const resolved = client.getFlag(key);
       if (resolved) return true;
-      // If not resolved yet, check defaults
       const val = client.getValue(key);
       if (val !== undefined) return val === true;
       return defaults[key] === true;
@@ -116,7 +185,6 @@ export function initConfig(options: InitConfigOptions): Flags {
 
     all(): Record<string, unknown> {
       const resolved = client.getAll();
-      // Merge: resolved values override defaults
       return { ...defaults, ...resolved };
     },
 
