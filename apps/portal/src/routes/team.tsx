@@ -152,18 +152,27 @@ const TeamPage = () => {
     }
   };
 
-  const handleAddUser = async (uid: string, role: RBACRole) => {
+  const handleAddUser = async (
+    uid: string,
+    role: RBACRole,
+    displayName?: string,
+  ) => {
     try {
       await updateDoc(doc(db, "projects", selectedProjectId), {
         [`roles.${uid}`]: role,
         authorizedUsers: [...authorizedUsers, uid],
       });
+      const memberName =
+        displayName ||
+        profiles[uid]?.displayName ||
+        profiles[uid]?.email ||
+        uid;
       await writeAuditEntry(
         selectedProjectId,
         buildAuditEntry({
           actorId: user!.uid,
           action: "create",
-          resourcePath: `team/members/${uid}`,
+          resourcePath: `team/members/${memberName}`,
           newValue: { role },
         }),
       );

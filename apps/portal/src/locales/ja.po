@@ -78,7 +78,7 @@ msgid "Add environments like production, staging, or development."
 msgstr "Add environments like production, staging, or development."
 
 #: src/components/rbac-manager.tsx:76
-#: src/routes/team.tsx:204
+#: src/routes/team.tsx:205
 msgid "Add Member"
 msgstr "メンバーを追加"
 
@@ -744,7 +744,7 @@ msgstr "Export failed"
 msgid "Exporting..."
 msgstr "Exporting..."
 
-#: src/routes/team.tsx:176
+#: src/routes/team.tsx:177
 msgid "Failed to add member"
 msgstr "Failed to add member"
 
@@ -840,7 +840,7 @@ msgstr "Failed to save prerequisites"
 msgid "Failed to save rules"
 msgstr "Failed to save rules"
 
-#: src/routes/team.tsx:185
+#: src/routes/team.tsx:186
 msgid "Failed to send invite"
 msgstr "Failed to send invite"
 
@@ -962,7 +962,7 @@ msgstr "Invalid regex pattern"
 msgid "Invalid value"
 msgstr "Invalid value"
 
-#: src/routes/team.tsx:184
+#: src/routes/team.tsx:185
 msgid "Invite sent"
 msgstr "Invite sent"
 
@@ -1032,7 +1032,7 @@ msgstr "Manage keys for this environment. Use these to authenticate SDK requests
 msgid "Manage project configuration and team access."
 msgstr "Manage project configuration and team access."
 
-#: src/routes/team.tsx:194
+#: src/routes/team.tsx:195
 msgid "Manage project members and their roles."
 msgstr "Manage project members and their roles."
 
@@ -1040,7 +1040,7 @@ msgstr "Manage project members and their roles."
 msgid "Max value"
 msgstr "Max value"
 
-#: src/routes/team.tsx:173
+#: src/routes/team.tsx:174
 msgid "Member added"
 msgstr "Member added"
 
@@ -1048,7 +1048,7 @@ msgstr "Member added"
 msgid "Member removed"
 msgstr "Member removed"
 
-#: src/routes/team.tsx:215
+#: src/routes/team.tsx:216
 msgid "Members"
 msgstr "メンバー"
 
@@ -1238,7 +1238,7 @@ msgstr "Overwrite existing data?"
 
 #: src/components/rbac-manager.tsx:128
 #: src/routes/settings.tsx:562
-#: src/routes/team.tsx:271
+#: src/routes/team.tsx:272
 msgid "Owner"
 msgstr "Owner"
 
@@ -1250,11 +1250,11 @@ msgstr "Pause"
 msgid "Paused"
 msgstr "Paused"
 
-#: src/routes/team.tsx:320
+#: src/routes/team.tsx:321
 msgid "Pending"
 msgstr "Pending"
 
-#: src/routes/team.tsx:300
+#: src/routes/team.tsx:301
 msgid "Pending Invites"
 msgstr "Pending Invites"
 
@@ -1738,11 +1738,11 @@ msgid "Team"
 msgstr "チーム"
 
 #: src/components/command-palette.tsx:149
-#: src/routes/team.tsx:193
+#: src/routes/team.tsx:194
 msgid "Team & Access"
 msgstr "Team & Access"
 
-#: src/routes/team.tsx:197
+#: src/routes/team.tsx:198
 msgid "Team guide"
 msgstr "Team guide"
 
@@ -1967,7 +1967,7 @@ msgstr "ユーザーが次に属する場合"
 msgid "Write"
 msgstr "Write"
 
-#: src/routes/team.tsx:276
+#: src/routes/team.tsx:277
 msgid "You"
 msgstr "You"
 
