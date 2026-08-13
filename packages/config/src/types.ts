@@ -51,7 +51,12 @@ export interface CreateConfigOptions {
   /** Timeout for pessimistic loading (ms). Default: 10000 */
   timeout?: number;
 
-  /** Cloud Function base URL (override for testing/custom deployments) */
+  /**
+   * Your self-hosted API URL. Points to your Firebase deployment.
+   * Default: https://jewel998-config.web.app/api (demo instance)
+   *
+   * @example "https://your-project.web.app/api"
+   */
   baseUrl?: string;
 
   /**

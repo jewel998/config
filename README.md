@@ -67,14 +67,25 @@ npm install @jewel998/config
 ### 2. Initialize in your app
 
 ```typescript
-import { createConfig } from "@jewel998/config";
+import { initConfig, autoContext } from "@jewel998/config";
 
-const config = createConfig({
-  clientId: "cid_your_key_here", // Get this from Portal → API Keys
+const flags = initConfig({
+  clientId: "cid_your_key_here", // Get this from your Portal → API Keys
+  baseUrl: "https://your-project.web.app/api", // Your self-hosted Firebase URL
+  defaults: {
+    "feature.dark_mode": false,
+    "app.upload_limit": 50,
+  },
+  context: autoContext({ userId: "user_123", plan: "pro" }),
 });
 
-// Read a feature flag
-const darkMode = config.getFlag("feature.dark_mode");
+// Instantly returns default (false) — no loading state
+const darkMode = flags.get("feature.dark_mode");
+
+// After the API responds, returns the resolved value
+flags.on("updated", () => {
+  flags.get("feature.dark_mode"); // → true (from your targeting rules)
+});
 
 // Read a typed value
 const maxUpload = config.getValue<number>("app.max_upload_mb", 10);

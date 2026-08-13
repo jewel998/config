@@ -35,7 +35,12 @@ export interface InitConfigOptions {
   /** User context for targeting evaluation. Use autoContext() to auto-detect browser info. */
   context?: EvaluationContext;
 
-  /** Override the API base URL (for testing or custom deployments). */
+  /**
+   * Your self-hosted API URL. Points to your Firebase deployment.
+   * Default: https://jewel998-config.web.app/api (demo instance)
+   *
+   * @example "https://your-project.web.app/api"
+   */
   baseUrl?: string;
 }
 

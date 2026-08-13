@@ -2,25 +2,59 @@
 
 The `@jewel998/config` SDK provides a simple interface for fetching and evaluating feature flags and remote configuration.
 
-## createConfig
+## initConfig (Recommended)
 
-The main entry point for initializing the SDK.
+The primary entry point. Returns a `Flags` instance that immediately serves default values, then resolves to real values from your self-hosted API.
+
+```ts
+import { initConfig, autoContext } from "@jewel998/config";
+
+const flags = initConfig({
+  clientId: "cid_xxx",
+  baseUrl: "https://your-project.web.app/api", // Your Firebase deployment
+  defaults: {
+    "feature.dark_mode": false,
+    "app.upload_limit": 50,
+  },
+  context: autoContext({ userId: "user_123", plan: "pro" }),
+});
+
+flags.get("feature.dark_mode"); // → false (instant, from defaults)
+// ...API responds...
+flags.get("feature.dark_mode"); // → true (resolved from server)
+```
+
+## InitConfigOptions
+
+| Property   | Type                  | Default                               | Description                                            |
+| ---------- | --------------------- | ------------------------------------- | ------------------------------------------------------ |
+| `clientId` | `string`              | (required)                            | API key from your Portal (cid_ or svr_)                |
+| `baseUrl`  | `string`              | `https://jewel998-config.web.app/api` | Your self-hosted Firebase API URL                      |
+| `defaults` | `Record<string, any>` | `{}`                                  | Fallback values returned instantly before API responds |
+| `context`  | `EvaluationContext`   | `{}`                                  | User context for targeting. Use `autoContext()`        |
+
+## Flags Interface
+
+| Method       | Signature                          | Description                                    |
+| ------------ | ---------------------------------- | ---------------------------------------------- |
+| `get`        | `<T>(key: string) => T`            | Get a flag value (default until resolved)      |
+| `flag`       | `(key: string) => boolean`         | Get a boolean flag (false if missing)          |
+| `all`        | `() => Record<string, unknown>`    | Get all values (defaults merged with resolved) |
+| `setContext` | `(ctx: EvaluationContext) => void` | Update user context (triggers re-fetch)        |
+| `refresh`    | `() => Promise<void>`              | Force re-fetch from API                        |
+| `on`         | `(event, callback) => void`        | Subscribe to events                            |
+| `off`        | `(event, callback) => void`        | Unsubscribe                                    |
+
+## createConfig (Advanced)
+
+Lower-level entry point with full control over loading strategy, plugins, and caching.
 
 ```ts
 import { createConfig } from "@jewel998/config";
 
-// Server mode (default) — API evaluates targeting, returns resolved values
 const config = createConfig({
   clientId: "cid_xxx",
-  context: { userId: "user_123", attributes: { plan: "pro" } },
-});
-
-// Client mode — full flag data returned, evaluate locally with plugins
-const config = await createConfig({
-  clientId: "cid_xxx",
-  evaluationMode: "client",
-  loadingStrategy: "pessimistic",
-  plugins: [targetingPlugin(), rolloutPlugin()],
+  baseUrl: "https://your-project.web.app/api",
   context: { userId: "user_123", attributes: { plan: "pro" } },
 });
 ```
