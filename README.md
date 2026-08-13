@@ -214,12 +214,16 @@ Migration guides are provided for breaking changes. Your data stays in your Fire
 
 ## Cost
 
-| Component       | Firebase Free Tier | Typical Usage | Monthly Cost |
-| --------------- | ------------------ | ------------- | ------------ |
-| Cloud Functions | 2M invocations     | ~1,500/month  | $0           |
-| Firestore       | 50K reads/day      | ~3,000/day    | $0           |
-| Hosting/CDN     | 10GB bandwidth     | ~100MB        | $0           |
-| **Total**       |                    |               | **$0**       |
+The SDK polls a lightweight version endpoint (100 bytes) every 5 minutes. CDN absorbs 99%+ of these requests. Full config fetches only happen on init or version change.
+
+| Scale                | Monthly Cost | Notes                                         |
+| -------------------- | ------------ | --------------------------------------------- |
+| 1–1,000 users        | **$0**       | Well within Firebase Spark (free) tier        |
+| 1,000–50,000 users   | **$0**       | CDN handles most version polls at edge        |
+| 50,000–100,000 users | **$0–5**     | May slightly exceed free function invocations |
+| 100,000+ users       | **$5–15**    | Blaze plan with minimal overage               |
+
+Firebase free tier: 2M function invocations/month, 50K Firestore reads/day, 10GB bandwidth.
 
 ## License
 
