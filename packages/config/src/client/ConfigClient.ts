@@ -42,6 +42,13 @@ export const buildConfigClient = (
   let data = { ...internals.data };
   let batchFetchTriggered = false;
 
+  // ── Request deduplication & debouncing ──
+  let inflightRefresh: Promise<void> | null = null;
+  let lastFetchTime = 0;
+  let contextDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  const MIN_FETCH_INTERVAL = 30_000; // Don't re-fetch within 30s
+  const CONTEXT_DEBOUNCE_MS = 100; // Batch rapid setContext calls
+
   const triggerDeferredFetch = (): void => {
     if (!isDeferred || batchFetchTriggered) {
       return;
@@ -207,27 +214,34 @@ export const buildConfigClient = (
     },
 
     async refresh(): Promise<void> {
-      try {
-        const result = await withRetry(() => fetcher.fetchAll(), retry);
-        cache.set("__all__", result, DEFAULT_CACHE_TTL);
-        for (const [key, value] of Object.entries(result)) {
-          cache.set(key, value, DEFAULT_CACHE_TTL);
+      // Deduplication: if a refresh is already in-flight, reuse it
+      if (inflightRefresh) return inflightRefresh;
+
+      inflightRefresh = (async () => {
+        try {
+          const result = await withRetry(() => fetcher.fetchAll(), retry);
+          cache.set("__all__", result, DEFAULT_CACHE_TTL);
+          for (const [key, value] of Object.entries(result)) {
+            cache.set(key, value, DEFAULT_CACHE_TTL);
+          }
+          data = { ...data, ...result };
+          lastFetchTime = Date.now();
+          events.emit("updated", {
+            keys: Object.keys(result),
+            source: "refresh",
+          });
+        } catch (error) {
+          events.emit("fetchError", {
+            error: error as Error,
+            retryCount: retry.maxRetries,
+            willRetry: false,
+          });
+        } finally {
+          inflightRefresh = null;
         }
-        data = { ...data, ...result };
-        events.emit("updated", {
-          keys: Object.keys(result),
-          source: "refresh",
-        });
-      } catch (error) {
-        // Errors are emitted via the event system — never thrown to consumers.
-        // This prevents SDK errors from appearing in consumer's Sentry/error tracking.
-        // Consumers can listen: config.on("fetchError", (e) => { ... })
-        events.emit("fetchError", {
-          error: error as Error,
-          retryCount: retry.maxRetries,
-          willRetry: false,
-        });
-      }
+      })();
+
+      return inflightRefresh;
     },
 
     on<E extends ConfigEventType>(
@@ -250,9 +264,16 @@ export const buildConfigClient = (
       if (onContextChange) {
         onContextChange(evalContext);
       }
-      // In server mode, context change means we need fresh resolved values from the API
+      // In server mode, context change means we need fresh resolved values.
+      // Debounce rapid setContext calls (e.g., form typing, navigation)
       if (evaluationMode === "server") {
-        void client.refresh();
+        if (contextDebounceTimer) clearTimeout(contextDebounceTimer);
+        contextDebounceTimer = setTimeout(() => {
+          contextDebounceTimer = null;
+          // Skip if we fetched very recently (stale check)
+          if (Date.now() - lastFetchTime < MIN_FETCH_INTERVAL) return;
+          void client.refresh();
+        }, CONTEXT_DEBOUNCE_MS);
       }
     },
   };
