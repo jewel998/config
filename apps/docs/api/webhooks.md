@@ -1,8 +1,26 @@
 # Webhooks
 
-Webhooks allow you to receive real-time HTTP notifications when resources change in your project. You can configure multiple webhooks with different formats, filters, and delivery targets.
+Webhooks deliver real-time HTTP notifications when configuration changes occur in your project. Configure endpoints for Slack, Discord, Google Chat, Microsoft Teams, or any custom HTTP endpoint.
 
-## Supported Providers
+## Overview
+
+When any change happens in the portal (config created, targeting rule updated, flag deleted), the system:
+
+1. Writes an audit log entry
+2. Evaluates all active webhooks against their filters
+3. Formats the payload according to the webhook's configured format
+4. Dispatches HTTP POST requests to matching endpoints
+5. Logs the delivery result (success/failure)
+
+## Setup
+
+1. Go to **Settings** → **Webhooks** in the portal
+2. Click **Add Webhook**
+3. Enter: name, HTTPS URL, format, and filters
+4. Click **Send Test** to verify the endpoint
+5. Save
+
+## Supported Formats
 
 | Format        | Description                          | Content-Type     |
 | ------------- | ------------------------------------ | ---------------- |
@@ -253,3 +271,45 @@ Each webhook can be configured with filters to limit which events trigger a deli
 - Deliveries time out after 10 seconds.
 - Failed deliveries are logged but not retried automatically.
 - Each project supports up to 10 webhooks.
+- Up to 20 delivery log entries are kept per webhook (oldest pruned).
+
+## HTTP Headers
+
+Every webhook delivery includes these headers:
+
+| Header                | Value                       |
+| --------------------- | --------------------------- |
+| `Content-Type`        | `application/json`          |
+| `X-Webhook-Id`        | The webhook's ID            |
+| `X-Webhook-Timestamp` | Unix epoch of dispatch time |
+
+## Delivery Log
+
+Each webhook keeps the last 20 delivery attempts visible in the portal:
+
+- **Timestamp** — When the delivery was attempted
+- **Status** — HTTP status code (or `null` if network failure)
+- **Duration** — Response time in milliseconds
+- **Success** — Whether a 2xx response was received
+- **Error** — Error message if delivery failed
+
+## Testing
+
+Click **Send Test** on any webhook in the portal. This dispatches a sample payload with `test: true` flag and logs the delivery result immediately.
+
+## Shared Constants
+
+The webhook format definitions, template variables, and sample events are exported from the SDK package for programmatic access:
+
+```typescript
+import {
+  WEBHOOK_FORMATS,
+  WEBHOOK_FORMAT_INFO,
+  TEMPLATE_VARIABLES,
+  WEBHOOK_EVENT_TYPES,
+  WEBHOOK_RESOURCE_CATEGORIES,
+  SAMPLE_WEBHOOK_EVENT,
+} from "@jewel998/config";
+```
+
+This allows custom tooling, documentation generators, or CI scripts to reference the same source of truth used by the portal and Cloud Functions.
