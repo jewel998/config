@@ -1,5 +1,7 @@
 # Webhooks
 
+<div v-pre>
+
 Get real-time notifications when configuration changes occur. Send alerts to Slack, Discord, Google Chat, Microsoft Teams, or any custom HTTP endpoint.
 
 ## Supported Providers
@@ -59,3 +61,5 @@ Each webhook keeps the last 20 delivery attempts showing:
 - 10-second timeout per dispatch
 - HTTPS URLs only
 - No automatic retries (failures are logged)
+
+</div>
