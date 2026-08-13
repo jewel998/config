@@ -1,0 +1,129 @@
+---
+import StoryInteractive from "./StoryInteractive";
+---
+
+<section class="story" id="story">
+  <div class="story-inner">
+    <div class="story-visual">
+      <StoryInteractive client:visible />
+    </div>
+
+    <div class="story-steps">
+      <div class="story-step" data-step="1">
+        <div class="step-content">
+          <span class="step-badge dev">Developer</span>
+          <h3>Emma creates a "New Checkout" flag</h3>
+          <p>Thursday morning. The team built a redesigned checkout flow and wants to validate it with enterprise customers first. Emma opens the portal, creates the flag, and assigns it to the "Enterprise US + DE" segment. No code changes needed — the SDK picks it up automatically.</p>
+          <div class="step-detail glass-card">
+            <code>feature.new_checkout → true</code>
+            <span>Only for Enterprise users in US and Germany</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-step" data-step="2">
+        <div class="step-content">
+          <span class="step-badge user">End User</span>
+          <h3>Sarah opens the app — new checkout appears</h3>
+          <p>Sarah works at Acme Corp (enterprise plan, based in New York). When her browser loads, the SDK sends her context: plan, country, tenant. The API resolves the targeting rule in 48ms and returns the result. Sarah sees the beautiful new checkout flow.</p>
+          <div class="step-detail glass-card">
+            <code>{"{"} plan: "enterprise", country: "US" {"}"} → matched</code>
+            <span>Resolved server-side. No rules exposed to the browser.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-step" data-step="3">
+        <div class="step-content">
+          <span class="step-badge user">End User</span>
+          <h3>Tom still sees the old checkout</h3>
+          <p>Tom is on the free plan. Same app, same codebase, same deployment. But when the API evaluates his context, it doesn't match any targeting rule — so he gets the default value. Zero if/else in the code. The SDK handles the branching.</p>
+          <div class="step-detail glass-card">
+            <code>{"{"} plan: "free", country: "US" {"}"} → not matched</code>
+            <span>Default: false. Tom sees the standard flow.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-step" data-step="4">
+        <div class="step-content">
+          <span class="step-badge tenant">Multi-Tenant</span>
+          <h3>Different orgs, different configurations</h3>
+          <p>Acme Corp (enterprise) gets AI assistant access and 500 MB uploads. StartupXYZ (pro) gets 200 MB but no AI yet. Tom's personal account gets the free tier defaults. Each tenant's SDK resolves their own config independently — full isolation between organizations.</p>
+          <div class="step-detail glass-card">
+            <code>Same flag, different values per tenant</code>
+            <span>No per-tenant deployment. Just targeting rules.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-step" data-step="5">
+        <div class="step-content">
+          <span class="step-badge dev">Developer</span>
+          <h3>Monday: gradual rollout to Pro users</h3>
+          <p>Enterprise went great over the weekend. Now Emma adds a 50% rollout for Pro users. The system uses deterministic hashing (MurmurHash3) — Priya gets it, but another Pro user doesn't. Same user always gets the same result, no session stickiness needed.</p>
+          <div class="step-detail glass-card">
+            <code>hash("new_checkout:priya_id") % 100 → 34 &lt; 50</code>
+            <span>Priya is in. Consistent across sessions and devices.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-step" data-step="6">
+        <div class="step-content">
+          <span class="step-badge kill">Emergency</span>
+          <h3>Bug found — killed in 2 seconds flat</h3>
+          <p>A payment edge case surfaces on Tuesday. Emma toggles the flag off in the portal. Within 2 seconds, every user's next request resolves to false. No deploy pipeline, no rollback, no hotfix branch. The old checkout is back for everyone instantly. Fix the bug, re-enable when ready.</p>
+          <div class="step-detail glass-card">
+            <code>feature.new_checkout → false (all users)</code>
+            <span>Propagation: &lt;2 seconds. Zero downtime.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .story { position: relative; background: #050508; }
+  .story-inner { display: flex; flex-direction: column; max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+  @media(min-width: 1024px) { .story-inner { flex-direction: row; } }
+
+  .story-visual { position: relative; padding: 60px 0; }
+  @media(min-width: 1024px) {
+    .story-visual { position: sticky; top: 80px; height: calc(100vh - 160px); width: 50%; display: flex; align-items: center; padding: 0; }
+  }
+  @media(max-width: 1023px) {
+    .story-visual { position: sticky; top: 0; z-index: 5; padding: 16px 0; background: #050508; }
+  }
+
+  .story-steps { display: flex; flex-direction: column; }
+  @media(min-width: 1024px) { .story-steps { width: 50%; padding-left: 48px; } }
+
+  .story-step { min-height: 100vh; display: flex; align-items: center; padding: 60px 0; opacity: .25; transition: opacity .6s ease; }
+  .story-step.active { opacity: 1; }
+
+  .step-content { max-width: 420px; }
+  .step-badge { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; padding: 4px 10px; border-radius: 6px; margin-bottom: 14px; }
+  .step-badge.dev { color: #93c5fd; background: rgba(59,130,246,.1); border: 1px solid rgba(59,130,246,.2); }
+  .step-badge.user { color: #a78bfa; background: rgba(139,92,246,.08); border: 1px solid rgba(139,92,246,.2); }
+  .step-badge.tenant { color: #fbbf24; background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.2); }
+  .step-badge.kill { color: #f87171; background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2); }
+
+  .step-content h3 { font-size: 21px; font-weight: 700; letter-spacing: -.03em; line-height: 1.3; margin-bottom: 12px; }
+  .step-content p { font-size: 14.5px; color: #9ca3af; line-height: 1.7; margin-bottom: 16px; }
+  .step-content code { background: rgba(255,255,255,.06); padding: 2px 7px; border-radius: 5px; font-size: 12.5px; font-family: "SF Mono", "Fira Code", monospace; }
+
+  .step-detail { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 12px; font-size: 13px; }
+  .step-detail code { background: none; padding: 0; color: #86efac; font-weight: 500; }
+  .step-detail span { color: rgba(255,255,255,.4); font-size: 12px; }
+
+  @media (max-width: 767px) {
+    .story-step { min-height: auto; padding: 40px 0; }
+    .step-content h3 { font-size: 18px; }
+    .step-content p { font-size: 13.5px; }
+  }
+  @media (max-width: 1023px) {
+    .story-step { min-height: 70vh; }
+  }
+</style>

@@ -1,0 +1,116 @@
+/* ═══════ Story Interactive ═══════ */
+.sim-screen { width: 100%; border-radius: 16px; background: rgba(10,10,14,.95); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.06); box-shadow: 0 12px 40px rgba(0,0,0,.5); overflow: hidden; }
+.sim-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: rgba(0,0,0,.5); border-bottom: 1px solid rgba(255,255,255,.04); }
+.sim-dots { display: flex; gap: 5px; }
+.sim-dots span { width: 8px; height: 8px; border-radius: 50%; }
+.sim-dots span:nth-child(1) { background: #ff5f57; }
+.sim-dots span:nth-child(2) { background: #febc2e; }
+.sim-dots span:nth-child(3) { background: #28c840; }
+.sim-title { font-size: 11px; color: rgba(255,255,255,.3); font-weight: 500; margin-left: 6px; letter-spacing: .01em; }
+.sim-body { padding: 18px; min-height: 200px; }
+
+/* Colors */
+.c-green { color: #4ade80 !important; }
+.c-red { color: #f87171 !important; }
+.c-dim { color: rgba(255,255,255,.35) !important; }
+
+/* Shared card */
+.sim-card { padding: 16px; border-radius: 12px; background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.06); }
+.sim-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.sim-fname { font-family: "SF Mono","Fira Code",monospace; font-size: 12px; font-weight: 600; color: rgba(255,255,255,.8); background: none; padding: 0; }
+.badge-on { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 6px; background: rgba(34,197,94,.1); color: #4ade80; border: 1px solid rgba(34,197,94,.2); text-transform: uppercase; letter-spacing: .04em; }
+.badge-off { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 6px; background: rgba(239,68,68,.1); color: #f87171; border: 1px solid rgba(239,68,68,.2); text-transform: uppercase; letter-spacing: .04em; }
+.sim-rows { display: flex; flex-direction: column; gap: 6px; }
+.sim-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; padding: 5px 0; color: rgba(255,255,255,.6); }
+.sim-lbl { font-size: 11px; color: rgba(255,255,255,.35); font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
+
+/* App view */
+.sim-appview { display: flex; flex-direction: column; gap: 12px; }
+.sim-userlabel { display: flex; align-items: center; gap: 7px; font-size: 12px; color: rgba(255,255,255,.45); background: rgba(255,255,255,.025); padding: 7px 11px; border-radius: 8px; border: 1px solid rgba(255,255,255,.05); width: fit-content; }
+.sim-mockui { padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,.06); }
+.sim-mockui.variant-new { background: rgba(99,102,241,.04); border-color: rgba(99,102,241,.15); }
+.sim-mockui.variant-old { background: rgba(255,255,255,.015); }
+.sim-mockui-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+.sim-mockui-bars { display: flex; gap: 5px; margin-bottom: 12px; }
+.sim-mockui-bars div { height: 7px; width: 55px; border-radius: 4px; background: rgba(255,255,255,.07); }
+.sim-mockui-bars .short { width: 30px; }
+.sim-mockui-btn { padding: 7px 14px; border-radius: 7px; font-size: 11px; font-weight: 600; width: fit-content; background: #6366f1; color: #fff; }
+.sim-mockui-btn.btn-muted { background: rgba(255,255,255,.07); color: rgba(255,255,255,.45); }
+.sim-resp { display: flex; align-items: center; gap: 10px; }
+.sim-resp code { font-size: 11px; font-family: "SF Mono",monospace; color: rgba(255,255,255,.5); background: rgba(255,255,255,.025); padding: 4px 8px; border-radius: 6px; }
+.sim-latency { font-size: 10px; color: rgba(255,255,255,.25); }
+
+/* Multi-tenant */
+.sim-tenants { display: flex; flex-direction: column; gap: 6px; }
+.sim-tenant-head { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.35); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+.sim-tenant-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 9px; background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.04); cursor: pointer; transition: border-color .2s, background .2s; }
+.sim-tenant-row:hover { background: rgba(255,255,255,.035); border-color: rgba(255,255,255,.08); }
+.sim-tenant-row.highlighted { border-color: rgba(99,102,241,.35); background: rgba(99,102,241,.05); }
+.sim-tenant-info { display: flex; flex-direction: column; gap: 1px; }
+.sim-tenant-name { font-size: 13px; font-weight: 600; }
+.sim-tenant-plan { font-size: 10px; color: rgba(255,255,255,.3); text-transform: capitalize; }
+.sim-tenant-vals { display: flex; gap: 8px; font-family: "SF Mono",monospace; font-size: 10px; }
+
+/* Rollout */
+.sim-rollout-bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,.06); overflow: hidden; margin-bottom: 6px; }
+.sim-rollout-fill { width: 50%; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #6366f1, #a78bfa); animation: fill .7s ease-out; }
+@keyframes fill { from { width: 0; } }
+.sim-rollout-txt { font-size: 12px; color: rgba(255,255,255,.5); margin-bottom: 4px; }
+
+/* Kill */
+.sim-killed { border-color: rgba(239,68,68,.15) !important; }
+.sim-kill-msg { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,.65); margin-bottom: 6px; }
+.sim-kill-msg code { font-family: "SF Mono",monospace; background: rgba(239,68,68,.06); padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+.sim-kill-time { font-size: 11px; color: rgba(255,255,255,.25); }
+
+/* Footer */
+.sim-footer { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,.04); background: rgba(0,0,0,.3); }
+.sim-ft-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,.25); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+.sim-ft-users { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+.sim-ft-btn { display: flex; flex-direction: column; gap: 1px; padding: 7px 11px; border-radius: 8px; border: 1px solid rgba(255,255,255,.06); background: rgba(255,255,255,.015); color: rgba(255,255,255,.55); cursor: pointer; transition: all .2s; font-family: inherit; text-align: left; }
+.sim-ft-btn:hover { border-color: rgba(255,255,255,.12); background: rgba(255,255,255,.03); }
+.sim-ft-btn.active { border-color: rgba(99,102,241,.45); background: rgba(99,102,241,.08); color: #fff; }
+.sim-ft-btn strong { font-size: 11px; font-weight: 600; }
+.sim-ft-btn small { font-size: 9px; color: rgba(255,255,255,.25); }
+.sim-ft-btn.active small { color: rgba(165,180,252,.5); }
+
+.sim-ft-flags { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 8px; }
+.sim-ft-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 9px; background: rgba(255,255,255,.02); border-radius: 6px; font-family: "SF Mono","Fira Code",monospace; font-size: 10px; }
+.sim-ft-row span:first-child { color: rgba(255,255,255,.35); }
+.sim-ft-row span:last-child { font-weight: 600; }
+
+.sim-ft-meta { display: flex; align-items: center; gap: 8px; }
+.sim-ft-badge { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px; background: rgba(34,197,94,.08); color: #4ade80; border: 1px solid rgba(34,197,94,.12); text-transform: uppercase; letter-spacing: .04em; }
+.sim-ft-time { font-size: 10px; color: rgba(255,255,255,.2); }
+
+
+/* ═══════ Copy Command ═══════ */
+.copy-cmd { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-family: "SF Mono","Fira Code",monospace; font-size: 11.5px; color: rgba(255,255,255,.65); background: rgba(255,255,255,.03); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,.06); cursor: pointer; transition: border-color .2s, background .2s; margin-top: 6px; overflow-x: auto; white-space: nowrap; }
+.copy-cmd:hover { border-color: rgba(255,255,255,.12); background: rgba(255,255,255,.05); }
+.copy-cmd code { background: none; padding: 0; border: none; font-size: inherit; color: inherit; }
+.copy-btn { display: flex; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; color: rgba(255,255,255,.3); padding: 2px; flex-shrink: 0; transition: color .2s; }
+.copy-cmd:hover .copy-btn { color: rgba(255,255,255,.6); }
+
+
+/* ═══════ Mobile Responsive ═══════ */
+@media (max-width: 767px) {
+  .sim-screen { border-radius: 12px; }
+  .sim-body { padding: 14px; min-height: 170px; }
+  .sim-ft-users { gap: 4px; }
+  .sim-ft-btn { padding: 6px 9px; }
+  .sim-ft-btn strong { font-size: 10px; }
+  .sim-ft-btn small { font-size: 8px; }
+  .sim-ft-flags { grid-template-columns: 1fr; gap: 3px; }
+  .sim-ft-row { padding: 4px 8px; font-size: 9.5px; }
+  .sim-fname { font-size: 11px; }
+  .sim-badge, .badge-on, .badge-off { font-size: 9px; padding: 2px 6px; }
+  .sim-row { font-size: 11px; }
+  .sim-userlabel { font-size: 11px; }
+  .sim-checkout { padding: 12px; }
+  .sim-checkout-header { font-size: 12px; }
+  .sim-mockui-btn { font-size: 10px; padding: 6px 12px; }
+  .sim-tenant-row { padding: 8px 10px; }
+  .sim-tenant-name { font-size: 12px; }
+  .sim-tenant-vals { gap: 6px; }
+  .sim-tenant-vals code { font-size: 10px; }
+}

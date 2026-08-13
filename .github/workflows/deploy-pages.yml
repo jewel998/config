@@ -35,6 +35,9 @@ jobs:
       - name: Build docs
         run: pnpm --filter @jewel998/config-docs run build
 
+      - name: Build landing
+        run: pnpm --filter @jewel998/config-landing run build
+
       - name: Build portal
         env:
           VITE_FIREBASE_API_KEY: AIzaSyC-6lmMSwZ-Y51FufvI0I5ikxDbQTGJCNs
@@ -50,10 +53,8 @@ jobs:
         run: |
           mkdir -p _site
           cp -r apps/docs/.vitepress/dist/* _site/
+          cp -r apps/landing/dist/* _site/
           cp -r apps/portal/dist _site/portal
-          cp apps/landing/index.html _site/index.html
-          cp apps/landing/styles.css _site/styles.css
-          cp apps/landing/main.js _site/main.js
           touch _site/.nojekyll
           cp _site/portal/index.html _site/portal/404.html
           cat > _site/404.html << 'HTMLEOF'

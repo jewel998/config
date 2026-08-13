@@ -1,8 +1,12 @@
 // ═══════════════════════════════════════════════════════════════
-// New API (v0.2.0+)
+// @jewel998/config SDK
 // ═══════════════════════════════════════════════════════════════
 
-// Entry point
+// Primary entry point
+export { initConfig } from "./initConfig";
+export type { InitConfigOptions, Flags } from "./initConfig";
+
+// Legacy (still works, use initConfig for new projects)
 export { createConfig } from "./createConfig";
 
 // Types
