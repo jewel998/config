@@ -24,6 +24,10 @@
       {
         "source": "/api/getConfig",
         "function": "getConfig"
+      },
+      {
+        "source": "/api/getVersion",
+        "function": "getVersion"
       }
     ],
     "headers": [

@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
+import { bumpConfigVersion } from "@/lib/bump-version";
 import {
   type ConfigEntry,
   configKeySchema,
@@ -100,6 +101,8 @@ export const useSetConfig = () => {
         },
         { merge: true },
       );
+
+      await bumpConfigVersion(projectId, environmentId, [key]);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -150,6 +153,8 @@ export const useDeleteConfig = () => {
           key,
         ),
       );
+
+      await bumpConfigVersion(projectId, environmentId, [key]);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
