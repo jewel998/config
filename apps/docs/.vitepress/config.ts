@@ -5,7 +5,7 @@ export default defineConfig({
   description:
     "A free, self-hostable feature flag and remote configuration platform for startups.",
   base: "/config/",
-  sitemap: { hostname: "https://jewel998.github.io/config" },
+  sitemap: { hostname: "https://jewel998.github.io/config/" },
   themeConfig: {
     siteTitle: "Docs",
     logoLink: "https://jewel998.github.io/config/",

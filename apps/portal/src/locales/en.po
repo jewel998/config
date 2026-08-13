@@ -46,7 +46,7 @@ msgstr "Active"
 msgid "Activity"
 msgstr "Activity"
 
-#: src/components/add-member-modal.tsx:115
+#: src/components/add-member-modal.tsx:144
 #: src/components/prerequisite-ui.tsx:193
 #: src/components/rbac-manager.tsx:101
 #: src/components/webhook-settings.tsx:86
@@ -80,11 +80,11 @@ msgid "Add environments like production, staging, or development."
 msgstr "Add environments like production, staging, or development."
 
 #: src/components/rbac-manager.tsx:76
-#: src/routes/team.tsx:205
+#: src/routes/team.tsx:213
 msgid "Add Member"
 msgstr "Add Member"
 
-#: src/components/add-member-modal.tsx:64
+#: src/components/add-member-modal.tsx:69
 msgid "Add Team Member"
 msgstr "Add Team Member"
 
@@ -140,7 +140,7 @@ msgstr "Allowed values (comma-separated)"
 msgid "Alphanumeric, dots, and underscores only."
 msgstr "Alphanumeric, dots, and underscores only."
 
-#: src/components/add-member-modal.tsx:129
+#: src/components/add-member-modal.tsx:164
 msgid "An invite already exists for this email."
 msgstr "An invite already exists for this email."
 
@@ -661,7 +661,7 @@ msgstr "Edit Webhook"
 msgid "Email"
 msgstr "Email"
 
-#: src/components/add-member-modal.tsx:70
+#: src/components/add-member-modal.tsx:80
 msgid "Email address"
 msgstr "Email address"
 
@@ -673,7 +673,7 @@ msgstr "Enable"
 msgid "Enter a JSON array"
 msgstr "Enter a JSON array"
 
-#: src/components/add-member-modal.tsx:75
+#: src/components/add-member-modal.tsx:86
 msgid "Enter email address..."
 msgstr "Enter email address..."
 
@@ -746,7 +746,7 @@ msgstr "Export failed"
 msgid "Exporting..."
 msgstr "Exporting..."
 
-#: src/routes/team.tsx:177
+#: src/routes/team.tsx:185
 msgid "Failed to add member"
 msgstr "Failed to add member"
 
@@ -842,7 +842,7 @@ msgstr "Failed to save prerequisites"
 msgid "Failed to save rules"
 msgstr "Failed to save rules"
 
-#: src/routes/team.tsx:186
+#: src/routes/team.tsx:194
 msgid "Failed to send invite"
 msgstr "Failed to send invite"
 
@@ -964,7 +964,7 @@ msgstr "Invalid regex pattern"
 msgid "Invalid value"
 msgstr "Invalid value"
 
-#: src/routes/team.tsx:185
+#: src/routes/team.tsx:193
 msgid "Invite sent"
 msgstr "Invite sent"
 
@@ -1034,7 +1034,7 @@ msgstr "Manage keys for this environment. Use these to authenticate SDK requests
 msgid "Manage project configuration and team access."
 msgstr "Manage project configuration and team access."
 
-#: src/routes/team.tsx:195
+#: src/routes/team.tsx:203
 msgid "Manage project members and their roles."
 msgstr "Manage project members and their roles."
 
@@ -1042,7 +1042,7 @@ msgstr "Manage project members and their roles."
 msgid "Max value"
 msgstr "Max value"
 
-#: src/routes/team.tsx:174
+#: src/routes/team.tsx:182
 msgid "Member added"
 msgstr "Member added"
 
@@ -1050,7 +1050,7 @@ msgstr "Member added"
 msgid "Member removed"
 msgstr "Member removed"
 
-#: src/routes/team.tsx:216
+#: src/routes/team.tsx:224
 msgid "Members"
 msgstr "Members"
 
@@ -1194,7 +1194,7 @@ msgstr "No team members yet."
 msgid "No timezone found."
 msgstr "No timezone found."
 
-#: src/components/add-member-modal.tsx:126
+#: src/components/add-member-modal.tsx:158
 msgid "No user found with this email. Send them an invite?"
 msgstr "No user found with this email. Send them an invite?"
 
@@ -1240,7 +1240,7 @@ msgstr "Overwrite existing data?"
 
 #: src/components/rbac-manager.tsx:128
 #: src/routes/settings.tsx:562
-#: src/routes/team.tsx:272
+#: src/routes/team.tsx:280
 msgid "Owner"
 msgstr "Owner"
 
@@ -1252,11 +1252,11 @@ msgstr "Pause"
 msgid "Paused"
 msgstr "Paused"
 
-#: src/routes/team.tsx:321
+#: src/routes/team.tsx:329
 msgid "Pending"
 msgstr "Pending"
 
-#: src/routes/team.tsx:301
+#: src/routes/team.tsx:309
 msgid "Pending Invites"
 msgstr "Pending Invites"
 
@@ -1477,7 +1477,7 @@ msgstr "Schedule updated"
 msgid "Scheduled Change"
 msgstr "Scheduled Change"
 
-#: src/components/add-member-modal.tsx:65
+#: src/components/add-member-modal.tsx:71
 msgid "Search by email to add an existing user, or send an invite."
 msgstr "Search by email to add an existing user, or send an invite."
 
@@ -1501,7 +1501,7 @@ msgstr "Search projects..."
 msgid "Search..."
 msgstr "Search..."
 
-#: src/components/add-member-modal.tsx:87
+#: src/components/add-member-modal.tsx:98
 msgid "Searching..."
 msgstr "Searching..."
 
@@ -1602,7 +1602,7 @@ msgstr "Select env"
 msgid "Select project"
 msgstr "Select project"
 
-#: src/components/add-member-modal.tsx:142
+#: src/components/add-member-modal.tsx:187
 msgid "Send Invite"
 msgstr "Send Invite"
 
@@ -1740,11 +1740,11 @@ msgid "Team"
 msgstr "Team"
 
 #: src/components/command-palette.tsx:149
-#: src/routes/team.tsx:194
+#: src/routes/team.tsx:202
 msgid "Team & Access"
 msgstr "Team & Access"
 
-#: src/routes/team.tsx:198
+#: src/routes/team.tsx:206
 msgid "Team guide"
 msgstr "Team guide"
 
@@ -1802,7 +1802,7 @@ msgstr "This is a production environment. You have read-only access."
 msgid "This template will replace existing configuration in the target section. This action cannot be undone."
 msgstr "This template will replace existing configuration in the target section. This action cannot be undone."
 
-#: src/components/add-member-modal.tsx:102
+#: src/components/add-member-modal.tsx:121
 msgid "This user is already a member of this project."
 msgstr "This user is already a member of this project."
 
@@ -1969,7 +1969,7 @@ msgstr "When user is in"
 msgid "Write"
 msgstr "Write"
 
-#: src/routes/team.tsx:277
+#: src/routes/team.tsx:285
 msgid "You"
 msgstr "You"
 
