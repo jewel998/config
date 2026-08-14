@@ -1,0 +1,57 @@
+name: Publish SDK to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g., 0.2.0). Leave empty to use package.json version."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: "https://registry.npmjs.org"
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Bump version (if specified)
+        if: inputs.version != ''
+        run: |
+          cd packages/config
+          npm version ${{ inputs.version }} --no-git-tag-version
+
+      - name: Build SDK
+        run: pnpm --filter @jewel998/config run build
+
+      - name: Run tests
+        run: pnpm --filter @jewel998/config run test
+
+      - name: Publish to npm
+        run: |
+          cd packages/config
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Commit version bump
+        if: inputs.version != ''
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add packages/config/package.json
+          git commit -m "chore: release @jewel998/config v${{ inputs.version }}"
+          git tag "v${{ inputs.version }}"
+          git push && git push --tags
