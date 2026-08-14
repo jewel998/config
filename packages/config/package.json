@@ -4,6 +4,13 @@
   "private": false,
   "type": "module",
   "sideEffects": false,
+  "description": "Free, self-hosted feature flags and remote configuration SDK",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jewel998/config.git",
+    "directory": "packages/config"
+  },
+  "license": "SEE LICENSE IN LICENSE",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
