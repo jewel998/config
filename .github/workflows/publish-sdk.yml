@@ -40,10 +40,14 @@ jobs:
       - name: Run tests
         run: pnpm --filter @jewel998/config run test
 
+      - name: Configure npm auth
+        run: echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > packages/config/.npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Publish to npm (Trusted Publisher + Provenance)
-        run: |
-          cd packages/config
-          npm publish --access public --provenance
+        working-directory: packages/config
+        run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
