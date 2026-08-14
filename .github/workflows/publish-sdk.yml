@@ -11,6 +11,7 @@ on:
 permissions:
   contents: write
   id-token: write
+  packages: write
 
 jobs:
   publish:
@@ -49,6 +50,15 @@ jobs:
       - name: Publish to npm (Trusted Publishing via OIDC)
         working-directory: packages/config
         run: npm publish --access public
+
+      - name: Publish to GitHub Packages
+        working-directory: packages/config
+        run: |
+          npm config set "//npm.pkg.github.com/:_authToken" "${{ secrets.GITHUB_TOKEN }}" --location project
+          npm config set "@jewel998:registry" "https://npm.pkg.github.com" --location project
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit version bump
         if: inputs.version != ''
