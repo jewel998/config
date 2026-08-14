@@ -65,6 +65,26 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get the previous tag
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$PREV_TAG" ]; then
+            # No previous tag, use all commits
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges)
+          else
+            CHANGELOG=$(git log "${PREV_TAG}..HEAD" --pretty=format:"- %s (%h)" --no-merges)
+          fi
+          # Write to file for the release step
+          echo "$CHANGELOG" > /tmp/changelog.md
+          # Also set as output (with delimiter for multiline)
+          {
+            echo "notes<<EOF"
+            echo "$CHANGELOG"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Commit version bump
         if: inputs.version != ''
         run: |
@@ -74,3 +94,15 @@ jobs:
           git commit -m "chore: release @jewel998/config v${{ inputs.version }}"
           git tag "v${{ inputs.version }}"
           git push && git push --tags
+
+      - name: Create GitHub Release with changelog
+        if: inputs.version != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ inputs.version }}"
+          name: "v${{ inputs.version }}"
+          body: |
+            ## Changelog
+
+            ${{ steps.changelog.outputs.notes }}
+          generate_release_notes: false
