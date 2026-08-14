@@ -43,7 +43,7 @@ jobs:
 
       - name: Publish to npm (Trusted Publishing via OIDC)
         working-directory: packages/config
-        run: npm publish --access public --provenance
+        run: npm publish --access public
 
       - name: Commit version bump
         if: inputs.version != ''
