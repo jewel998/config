@@ -28,3 +28,11 @@ packages/config/LICENSE
 .vscode/
 .idea/
 REVAMP.md
+
+# AI assistants
+.kiro/
+.claude/
+.claude*
+.cursorrules
+.cursor/
+.copilot/
