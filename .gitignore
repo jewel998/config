@@ -15,6 +15,10 @@ dist
 .vitepress/cache
 _site
 
+# Generated at publish time (copied from root)
+packages/config/README.md
+packages/config/LICENSE
+
 # Environment files
 .env
 .env.local

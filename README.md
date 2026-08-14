@@ -1,5 +1,12 @@
 # @jewel998/config
 
+[![npm version](https://img.shields.io/npm/v/@jewel998/config)](https://www.npmjs.com/package/@jewel998/config)
+[![npm downloads](https://img.shields.io/npm/dm/@jewel998/config)](https://www.npmjs.com/package/@jewel998/config)
+[![license](https://img.shields.io/npm/l/@jewel998/config)](./LICENSE)
+[![GitHub Actions](https://img.shields.io/github/actions/workflow/status/jewel998/config/publish-sdk.yml?label=publish)](https://github.com/jewel998/config/actions/workflows/publish-sdk.yml)
+[![GitHub stars](https://img.shields.io/github/stars/jewel998/config)](https://github.com/jewel998/config)
+[![Node.js](https://img.shields.io/node/v/@jewel998/config)](https://nodejs.org)
+
 A free, self-hostable feature flag and remote configuration platform. Deploy to your own Firebase project. Replace LaunchDarkly at $0/month.
 
 ## Features

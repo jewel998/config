@@ -44,6 +44,11 @@ jobs:
       - name: Build SDK
         run: pnpm --filter @jewel998/config run build
 
+      - name: Copy root README and LICENSE into package
+        run: |
+          cp README.md packages/config/README.md
+          cp LICENSE packages/config/LICENSE
+
       - name: Run tests
         run: pnpm --filter @jewel998/config run test
 
