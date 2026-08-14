@@ -5,7 +5,7 @@ import {
   type ConfigDoc,
   type SegmentDoc,
   type UserContext,
-} from "./server-evaluator";
+} from "./server-evaluator.js";
 
 /**
  * GET  /api/getConfig?clientId=cid_xxx
