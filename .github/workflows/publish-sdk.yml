@@ -15,6 +15,7 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment: npmjs
     steps:
       - uses: actions/checkout@v4
 
