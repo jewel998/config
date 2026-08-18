@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-QTnfLwEv.js";var t=e({RepositoryError:()=>n}),n=class extends Error{code;validationErrors;constructor(e,t,n){super(e),this.code=t,this.validationErrors=n,this.name=`RepositoryError`}};export{t as n,n as t};

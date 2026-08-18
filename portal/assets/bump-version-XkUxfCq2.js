@@ -1,1 +1,0 @@
-import{i as e}from"./auth-store-98lbBRoJ.js";import{m as t,v as n,w as r}from"./vendor-firebase-CwFbnhl_.js";async function i(i,a,o){await r(t(e,`projects`,i,`environments`,a),{configVersion:n(1),lastChangedKeys:o,lastChangedAt:new Date().toISOString()})}export{i as t};
