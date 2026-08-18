@@ -1,17 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  deleteDoc,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import { useMemo } from "react";
 
 import { db } from "@/lib/firebase";
-import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
 import { useAuthStore } from "@/stores/auth-store";
 import type { Environment } from "@/lib/types";
+import {
+  EnvironmentRepository,
+  type EnvironmentCreateInput,
+  type EnvironmentUpdateInput,
+} from "@/dao/environment.repository";
 
 export type { Environment };
 
@@ -39,6 +37,10 @@ export const useEnvironments = (projectId: string | null) => {
 export const useCreateEnvironment = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new EnvironmentRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
@@ -55,37 +57,15 @@ export const useCreateEnvironment = () => {
       isProduction?: boolean;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      const envCollection = collection(
-        db,
-        "projects",
-        projectId,
-        "environments",
-      );
-      await addDoc(envCollection, {
+      const ctx = { projectId };
+      const authUser = { uid: user.uid, email: user.email };
+      const input: EnvironmentCreateInput = {
         name: name.trim(),
-        projectId,
         allowedDomains,
-        color: color || undefined,
-        isProduction: isProduction || false,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
-      try {
-        await writeAuditEntry(
-          projectId,
-          buildAuditEntry({
-            actorId: user.uid,
-            action: "create",
-            resourcePath: `environments/${name.trim()}`,
-            newValue: {
-              name: name.trim(),
-              isProduction: isProduction || false,
-            },
-          }),
-        );
-      } catch {
-        /* best-effort */
-      }
+        color,
+        isProduction: isProduction ?? false,
+      };
+      await repo.create(input, ctx, authUser);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -101,31 +81,25 @@ export const useCreateEnvironment = () => {
 export const useDeleteEnvironment = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new EnvironmentRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
       projectId,
       envId,
-      envName,
+      envName: _envName,
     }: {
       projectId: string;
       envId: string;
       envName?: string;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      await deleteDoc(doc(db, "projects", projectId, "environments", envId));
-      try {
-        await writeAuditEntry(
-          projectId,
-          buildAuditEntry({
-            actorId: user.uid,
-            action: "delete",
-            resourcePath: `environments/${envName || envId}`,
-          }),
-        );
-      } catch {
-        /* best-effort */
-      }
+      const ctx = { projectId };
+      const authUser = { uid: user.uid, email: user.email };
+      await repo.delete(envId, ctx, authUser);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -141,12 +115,16 @@ export const useDeleteEnvironment = () => {
 export const useUpdateEnvironment = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new EnvironmentRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
       projectId,
       envId,
-      envName,
+      envName: _envName,
       data,
     }: {
       projectId: string;
@@ -160,21 +138,10 @@ export const useUpdateEnvironment = () => {
       }>;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      const envRef = doc(db, "projects", projectId, "environments", envId);
-      await updateDoc(envRef, { ...data, updatedAt: new Date().toISOString() });
-      try {
-        await writeAuditEntry(
-          projectId,
-          buildAuditEntry({
-            actorId: user.uid,
-            action: "update",
-            resourcePath: `environments/${envName || envId}`,
-            newValue: data,
-          }),
-        );
-      } catch {
-        /* best-effort */
-      }
+      const ctx = { projectId };
+      const authUser = { uid: user.uid, email: user.email };
+      const input: EnvironmentUpdateInput = { ...data };
+      await repo.update(envId, input, ctx, authUser);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({

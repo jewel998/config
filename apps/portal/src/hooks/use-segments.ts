@@ -1,17 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import { useMemo } from "react";
 
 import { db } from "@/lib/firebase";
-import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
 import type { Segment } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
+import {
+  SegmentRepository,
+  type SegmentCreateInput,
+  type SegmentUpdateInput,
+} from "@/dao/segment.repository";
 
 export const useSegments = (projectId: string | null) => {
   return useQuery({
@@ -29,6 +27,10 @@ export const useSegments = (projectId: string | null) => {
 export const useCreateSegment = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new SegmentRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
@@ -39,28 +41,15 @@ export const useCreateSegment = () => {
       segment: Omit<Segment, "id" | "createdAt" | "updatedAt" | "createdBy">;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      const data = {
-        ...segment,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        createdBy: user.uid,
+      const ctx = { projectId };
+      const authUser = { uid: user.uid, email: user.email };
+      const input: SegmentCreateInput = {
+        name: segment.name,
+        description: segment.description,
+        conditions: segment.conditions,
       };
-      const colRef = collection(db, "projects", projectId, "segments");
-      const docRef = await addDoc(colRef, data);
-      try {
-        await writeAuditEntry(
-          projectId,
-          buildAuditEntry({
-            actorId: user.uid,
-            action: "create",
-            resourcePath: `segments/${segment.name}`,
-            newValue: data,
-          }),
-        );
-      } catch {
-        /* best-effort */
-      }
-      return docRef.id;
+      const entity = await repo.create(input, ctx, authUser);
+      return entity.id;
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -76,13 +65,17 @@ export const useCreateSegment = () => {
 export const useUpdateSegment = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new SegmentRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
       projectId,
       segmentId,
       data,
-      oldData,
+      oldData: _oldData,
     }: {
       projectId: string;
       segmentId: string;
@@ -90,19 +83,13 @@ export const useUpdateSegment = () => {
       oldData?: Segment;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      const segmentName = data.name || oldData?.name || segmentId;
-      await writeAuditEntry(
-        projectId,
-        buildAuditEntry({
-          actorId: user.uid,
-          action: "update",
-          resourcePath: `segments/${segmentName}`,
-          oldValue: oldData,
-          newValue: data,
-        }),
-      );
-      const docRef = doc(db, "projects", projectId, "segments", segmentId);
-      await updateDoc(docRef, { ...data, updatedAt: new Date().toISOString() });
+      const ctx = { projectId };
+      const authUser = { uid: user.uid, email: user.email };
+      const input: SegmentUpdateInput = {};
+      if (data.name !== undefined) input.name = data.name;
+      if (data.description !== undefined) input.description = data.description;
+      if (data.conditions !== undefined) input.conditions = data.conditions;
+      await repo.update(segmentId, input, ctx, authUser);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -118,27 +105,25 @@ export const useUpdateSegment = () => {
 export const useDeleteSegment = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new SegmentRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
       projectId,
       segmentId,
-      segmentName,
+      segmentName: _segmentName,
     }: {
       projectId: string;
       segmentId: string;
       segmentName?: string;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      await writeAuditEntry(
-        projectId,
-        buildAuditEntry({
-          actorId: user.uid,
-          action: "delete",
-          resourcePath: `segments/${segmentName || segmentId}`,
-        }),
-      );
-      await deleteDoc(doc(db, "projects", projectId, "segments", segmentId));
+      const ctx = { projectId };
+      const authUser = { uid: user.uid, email: user.email };
+      await repo.delete(segmentId, ctx, authUser);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({

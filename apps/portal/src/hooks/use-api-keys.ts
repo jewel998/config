@@ -1,30 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import { useMemo } from "react";
 
 import { db } from "@/lib/firebase";
 import type { ApiKey } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
-import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
+import {
+  ApiKeyRepository,
+  type ApiKeyCreateInput,
+  type ApiKeyUpdateInput,
+} from "@/dao/api-key.repository";
 
 export type { ApiKey };
 
 type ApiKeyType = "client" | "server";
-
-const generateToken = (type: ApiKeyType): string => {
-  const prefix = type === "server" ? "svr_" : "cid_";
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const bytes = new Uint8Array(20);
-  crypto.getRandomValues(bytes);
-  return prefix + Array.from(bytes, (b) => chars[b % chars.length]).join("");
-};
 
 export const useApiKeys = (
   projectId: string | null,
@@ -52,6 +41,10 @@ export const useApiKeys = (
 export const useGenerateApiKey = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new ApiKeyRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
@@ -66,41 +59,23 @@ export const useGenerateApiKey = () => {
       keyType?: ApiKeyType;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      const token = generateToken(keyType);
-      const data: ApiKey = {
-        token,
-        status: "active",
-        type: keyType,
+      const ctx = { projectId, environmentId };
+      const authUser = { uid: user.uid, email: user.email };
+      const input: ApiKeyCreateInput = {
         label: label ?? "",
-        createdAt: new Date().toISOString(),
-        revokedAt: null,
-        createdBy: user.uid,
+        type: keyType,
       };
-      const docRef = doc(
-        db,
-        "projects",
-        projectId,
-        "environments",
-        environmentId,
-        "clientIds",
-        token,
-      );
-      await setDoc(docRef, data);
-      // Audit
-      try {
-        await writeAuditEntry(
-          projectId,
-          buildAuditEntry({
-            actorId: user.uid,
-            action: "create",
-            resourcePath: `environments/${environmentId}/apiKeys/${data.label || "Untitled"}`,
-            newValue: { label: data.label || "Untitled" },
-          }),
-        );
-      } catch {
-        /* best-effort */
-      }
-      return data;
+      const entity = await repo.create(input, ctx, authUser);
+      // Return as ApiKey for backward compat
+      return {
+        token: entity.token,
+        status: entity.status,
+        type: entity.type,
+        label: entity.label,
+        createdAt: entity.createdAt,
+        revokedAt: entity.revokedAt,
+        createdBy: entity.createdBy,
+      } as ApiKey;
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -116,13 +91,17 @@ export const useGenerateApiKey = () => {
 export const useRevokeApiKey = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new ApiKeyRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
       projectId,
       environmentId,
       token,
-      label,
+      label: _label,
     }: {
       projectId: string;
       environmentId: string;
@@ -130,32 +109,13 @@ export const useRevokeApiKey = () => {
       label?: string;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      const docRef = doc(
-        db,
-        "projects",
-        projectId,
-        "environments",
-        environmentId,
-        "clientIds",
-        token,
-      );
-      await updateDoc(docRef, {
+      const ctx = { projectId, environmentId };
+      const authUser = { uid: user.uid, email: user.email };
+      const input: ApiKeyUpdateInput = {
         status: "revoked",
         revokedAt: new Date().toISOString(),
-      });
-      try {
-        await writeAuditEntry(
-          projectId,
-          buildAuditEntry({
-            actorId: user.uid,
-            action: "update",
-            resourcePath: `environments/${environmentId}/apiKeys/${label || "API key"}`,
-            newValue: { status: "revoked" },
-          }),
-        );
-      } catch {
-        /* best-effort */
-      }
+      };
+      await repo.update(token, input, ctx, authUser);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -171,13 +131,17 @@ export const useRevokeApiKey = () => {
 export const useDeleteApiKey = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new ApiKeyRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
       projectId,
       environmentId,
       token,
-      label,
+      label: _label,
     }: {
       projectId: string;
       environmentId: string;
@@ -185,28 +149,9 @@ export const useDeleteApiKey = () => {
       label?: string;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      const docRef = doc(
-        db,
-        "projects",
-        projectId,
-        "environments",
-        environmentId,
-        "clientIds",
-        token,
-      );
-      await deleteDoc(docRef);
-      try {
-        await writeAuditEntry(
-          projectId,
-          buildAuditEntry({
-            actorId: user.uid,
-            action: "delete",
-            resourcePath: `environments/${environmentId}/apiKeys/${label || "API key"}`,
-          }),
-        );
-      } catch {
-        /* best-effort */
-      }
+      const ctx = { projectId, environmentId };
+      const authUser = { uid: user.uid, email: user.email };
+      await repo.delete(token, ctx, authUser);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({

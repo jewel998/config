@@ -1,22 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import { useMemo } from "react";
 
 import { db } from "@/lib/firebase";
-import { bumpConfigVersion } from "@/lib/bump-version";
 import {
   type ConfigEntry,
   configKeySchema,
   configValueSchema,
 } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
-import { writeAuditEntry, buildConfigAuditEntry } from "@/lib/audit";
+import {
+  ConfigRepository,
+  type ConfigCreateInput,
+  type ConfigUpdateInput,
+} from "@/dao/config.repository";
 
 export type { ConfigEntry };
 export { configKeySchema, configValueSchema };
@@ -50,6 +47,10 @@ export const useConfigs = (
 export const useSetConfig = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new ConfigRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
@@ -66,43 +67,10 @@ export const useSetConfig = () => {
       valueType: ConfigEntry["valueType"];
     }) => {
       if (!user) throw new Error("Not authenticated");
-
-      // Write audit entry for config creation/update
-      await writeAuditEntry(
-        projectId,
-        buildConfigAuditEntry({
-          actorId: user.uid,
-          action: "create",
-          environmentId,
-          configKey: key,
-          newValue: { key, value, valueType },
-        }),
-      );
-
-      const docRef = doc(
-        db,
-        "projects",
-        projectId,
-        "environments",
-        environmentId,
-        "configs",
-        key,
-      );
-      await setDoc(
-        docRef,
-        {
-          key,
-          value,
-          valueType,
-          version: "1",
-          publishedAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          updatedBy: user.uid,
-        },
-        { merge: true },
-      );
-
-      await bumpConfigVersion(projectId, environmentId, [key]);
+      const ctx = { projectId, environmentId };
+      const authUser = { uid: user.uid, email: user.email };
+      const input: ConfigCreateInput = { key, value, valueType };
+      await repo.create(input, ctx, authUser);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -118,6 +86,10 @@ export const useSetConfig = () => {
 export const useDeleteConfig = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new ConfigRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
@@ -130,31 +102,9 @@ export const useDeleteConfig = () => {
       key: string;
     }) => {
       if (!user) throw new Error("Not authenticated");
-
-      // Write audit entry for config deletion
-      await writeAuditEntry(
-        projectId,
-        buildConfigAuditEntry({
-          actorId: user.uid,
-          action: "delete",
-          environmentId,
-          configKey: key,
-        }),
-      );
-
-      await deleteDoc(
-        doc(
-          db,
-          "projects",
-          projectId,
-          "environments",
-          environmentId,
-          "configs",
-          key,
-        ),
-      );
-
-      await bumpConfigVersion(projectId, environmentId, [key]);
+      const ctx = { projectId, environmentId };
+      const authUser = { uid: user.uid, email: user.email };
+      await repo.delete(key, ctx, authUser);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -170,6 +120,10 @@ export const useDeleteConfig = () => {
 export const usePromoteConfigs = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new ConfigRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
@@ -186,49 +140,17 @@ export const usePromoteConfigs = () => {
       }>;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      const batch = configs.map(async (config) => {
-        const docRef = doc(
-          db,
-          "projects",
-          projectId,
-          "environments",
-          targetEnvId,
-          "configs",
-          config.key,
-        );
-        await setDoc(
-          docRef,
-          {
-            key: config.key,
-            value: config.value,
-            valueType: config.valueType,
-            version: "1",
-            publishedAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            updatedBy: user.uid,
-          },
-          { merge: true },
-        );
-      });
-      await Promise.all(batch);
+      const ctx = { projectId, environmentId: targetEnvId };
+      const authUser = { uid: user.uid, email: user.email };
 
-      // Single audit entry for the batch promote/template
-      try {
-        await writeAuditEntry(
-          projectId,
-          buildConfigAuditEntry({
-            actorId: user.uid,
-            action: "create",
-            environmentId: targetEnvId,
-            configKey: configs.map((c) => c.key).join(", "),
-            newValue: { configs: configs.map((c) => c.key) },
-          }),
-        );
-      } catch {
-        /* best-effort */
-      }
+      const inputs: ConfigCreateInput[] = configs.map((c) => ({
+        key: c.key,
+        value: c.value,
+        valueType: c.valueType,
+      }));
 
-      return configs.length;
+      const result = await repo.batchCreate(inputs, ctx, authUser);
+      return result.succeeded.length;
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -244,6 +166,10 @@ export const usePromoteConfigs = () => {
 export const useToggleConfigLock = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new ConfigRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
@@ -258,28 +184,10 @@ export const useToggleConfigLock = () => {
       locked: boolean;
     }) => {
       if (!user) throw new Error("Not authenticated");
-
-      await writeAuditEntry(
-        projectId,
-        buildConfigAuditEntry({
-          actorId: user.uid,
-          action: "update",
-          environmentId,
-          configKey: key,
-          newValue: { locked },
-        }),
-      );
-
-      const docRef = doc(
-        db,
-        "projects",
-        projectId,
-        "environments",
-        environmentId,
-        "configs",
-        key,
-      );
-      await updateDoc(docRef, { locked, updatedAt: new Date().toISOString() });
+      const ctx = { projectId, environmentId };
+      const authUser = { uid: user.uid, email: user.email };
+      const input: ConfigUpdateInput = { locked, _allowLockedOverride: true };
+      await repo.update(key, input, ctx, authUser);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({

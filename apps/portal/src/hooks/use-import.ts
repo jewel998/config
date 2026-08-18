@@ -4,7 +4,6 @@ import {
   doc,
   getDocs,
   onSnapshot,
-  setDoc,
   writeBatch,
 } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
@@ -15,13 +14,16 @@ import { writeAuditEntry, buildConfigAuditEntry } from "@/lib/audit";
 import type { ImportEntryFull } from "@/lib/import-types";
 import type { ImportJob, FailedRowDoc, ConflictStrategy } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
+import { useImportWizardStore } from "@/stores/import-wizard-store";
+import { ConfigRepository } from "@/dao/config.repository";
+import type { ConfigCreateInput } from "@/dao/config.repository";
 
 // ─── Constants ───────────────────────────────────────────────
 
 const MAX_BATCH_SIZE = 500;
 const FAILED_ROWS_PAGE_SIZE = 50;
 
-// ─── Import Configs (Direct Firestore Write) ─────────────────
+// ─── Import Configs (uses ConfigRepository.batchCreate) ──────
 
 interface ImportConfigsArgs {
   projectId: string;
@@ -41,6 +43,7 @@ interface ImportResult {
 export const useImportConfigs = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const setImportResult = useImportWizardStore((s) => s.setImportResult);
 
   return useMutation({
     mutationFn: async (args: ImportConfigsArgs): Promise<ImportResult> => {
@@ -53,7 +56,6 @@ export const useImportConfigs = () => {
         conflictStrategy,
         reviewDecisions,
       } = args;
-      const now = new Date().toISOString();
 
       // Load existing configs to detect conflicts
       const configsColRef = collection(
@@ -78,7 +80,6 @@ export const useImportConfigs = () => {
       for (const entry of entries) {
         const existing = existingConfigs.get(entry.key);
         if (existing) {
-          // Locked config — fail
           if (existing.locked) {
             failedEntries.push({ key: entry.key, reason: "config is locked" });
             continue;
@@ -106,97 +107,52 @@ export const useImportConfigs = () => {
         }
       }
 
-      // Batched writes (max 500 per batch)
-      let succeeded = 0;
-      for (let i = 0; i < toWrite.length; i += MAX_BATCH_SIZE) {
-        const batchEntries = toWrite.slice(i, i + MAX_BATCH_SIZE);
-        const batch = writeBatch(db);
+      // Convert entries to ConfigCreateInput for the repository
+      const createInputs: ConfigCreateInput[] = toWrite.map((entry) => ({
+        key: entry.key,
+        value: entry.value,
+        valueType: entry.valueType,
+        ...(entry.lifecycleState
+          ? { lifecycleState: entry.lifecycleState }
+          : {}),
+        ...(entry.targetingRules
+          ? { targetingRules: entry.targetingRules }
+          : {}),
+        ...(entry.rolloutPercentage !== undefined
+          ? { rolloutPercentage: entry.rolloutPercentage }
+          : {}),
+        ...(entry.rolloutValue !== undefined
+          ? { rolloutValue: entry.rolloutValue }
+          : {}),
+        ...(entry.overrides ? { overrides: entry.overrides } : {}),
+        ...(entry.schedule ? { schedule: entry.schedule } : {}),
+        ...(entry.prerequisites ? { prerequisites: entry.prerequisites } : {}),
+      }));
 
-        for (const entry of batchEntries) {
-          const configRef = doc(
-            db,
-            "projects",
-            projectId,
-            "environments",
-            environmentId,
-            "configs",
-            entry.key,
-          );
+      // Use ConfigRepository.batchCreate for the write operation
+      const repo = new ConfigRepository(db, queryClient);
+      const ctx = { projectId, environmentId };
+      const authUser = { uid: user.uid, email: user.email };
+      const batchResult = await repo.batchCreate(createInputs, ctx, authUser);
 
-          const data: Record<string, unknown> = {
-            key: entry.key,
-            value: entry.value,
-            valueType: entry.valueType,
-            version: "1",
-            publishedAt: now,
-            updatedAt: now,
-            updatedBy: user.uid,
-          };
-
-          // Advanced fields (only written if provided)
-          if (entry.lifecycleState) {
-            data.lifecycleState = entry.lifecycleState;
-            data.stateChangedAt = now;
-          }
-          if (entry.targetingRules) data.targetingRules = entry.targetingRules;
-          if (entry.rolloutPercentage !== undefined)
-            data.rolloutPercentage = entry.rolloutPercentage;
-          if (entry.rolloutValue !== undefined)
-            data.rolloutValue = entry.rolloutValue;
-          if (entry.overrides) data.overrides = entry.overrides;
-          if (entry.schedule) data.schedule = entry.schedule;
-          if (entry.prerequisites) data.prerequisites = entry.prerequisites;
-
-          batch.set(configRef, data, { merge: true });
-        }
-
-        try {
-          await batch.commit();
-          succeeded += batchEntries.length;
-        } catch (error) {
-          for (const entry of batchEntries) {
-            failedEntries.push({
-              key: entry.key,
-              reason: error instanceof Error ? error.message : "Write failed",
-            });
-          }
-        }
+      // Map failed results back to the expected format
+      for (const fail of batchResult.failed) {
+        const key = (fail.input as ConfigCreateInput).key ?? "unknown";
+        const reason = fail.errors.map((e) => e.message).join("; ");
+        failedEntries.push({ key, reason });
       }
 
-      // Bump config version
-      if (succeeded > 0) {
-        const changedKeys = toWrite.slice(0, succeeded).map((e) => e.key);
-        await bumpConfigVersion(projectId, environmentId, changedKeys);
-      }
-
-      // Write audit log
-      try {
-        await writeAuditEntry(
-          projectId,
-          buildConfigAuditEntry({
-            actorId: user.uid,
-            action: "create",
-            environmentId,
-            configKey: `bulk_import (${succeeded} entries)`,
-            newValue: {
-              total: entries.length,
-              succeeded,
-              failed: failedEntries.length,
-              skipped,
-              conflictStrategy,
-            },
-          }),
-        );
-      } catch {
-        /* best-effort audit */
-      }
-
-      return {
-        succeeded,
+      const result: ImportResult = {
+        succeeded: batchResult.succeeded.length,
         failed: failedEntries.length,
         skipped,
         failedEntries,
       };
+
+      // Store result in the Zustand store for ResultsStep
+      setImportResult(result);
+
+      return result;
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({

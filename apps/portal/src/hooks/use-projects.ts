@@ -4,16 +4,17 @@ import {
   query,
   where,
   getDocs,
-  addDoc,
-  updateDoc,
-  doc,
   limit as firestoreLimit,
 } from "firebase/firestore";
+import { useMemo } from "react";
 
 import { db } from "@/lib/firebase";
 import type { Project } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
-import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
+import {
+  ProjectRepository,
+  type ProjectCreateInput,
+} from "@/dao/project.repository";
 
 export type { Project };
 
@@ -44,33 +45,24 @@ export const useProjects = () => {
 export const useCreateProject = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new ProjectRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async (name: string) => {
       if (!user) throw new Error("Not authenticated");
-      const docRef = await addDoc(collection(db, "projects"), {
-        name: name.trim(),
-        ownerId: user.uid,
-        authorizedUsers: [user.uid],
-        roles: { [user.uid]: "admin" },
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
-      // Audit
-      try {
-        await writeAuditEntry(
-          docRef.id,
-          buildAuditEntry({
-            actorId: user.uid,
-            action: "create",
-            resourcePath: `project/${name.trim()}`,
-            newValue: { name: name.trim() },
-          }),
-        );
-      } catch {
-        /* best-effort */
-      }
-      return docRef.id;
+      // ProjectRepository needs a projectId in ctx for audit writing.
+      // For new projects, we use a temp value; the actual ID comes from Firestore.
+      // We'll use the repository's create which writes audit to projects/{projectId}/audit_log.
+      // Since the project doesn't exist yet, we pass a placeholder and
+      // the base repo will use it.
+      const ctx = { projectId: "new" };
+      const authUser = { uid: user.uid, email: user.email };
+      const input: ProjectCreateInput = { name };
+      const entity = await repo.create(input, ctx, authUser);
+      return entity.id;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
@@ -81,31 +73,23 @@ export const useCreateProject = () => {
 export const useDeleteProject = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
+  const repo = useMemo(
+    () => new ProjectRepository(db, queryClient),
+    [queryClient],
+  );
 
   return useMutation({
     mutationFn: async ({
       projectId,
-      projectName,
+      projectName: _projectName,
     }: {
       projectId: string;
       projectName?: string;
     }) => {
       if (!user) throw new Error("Not authenticated");
-      await updateDoc(doc(db, "projects", projectId), {
-        deletedAt: new Date().toISOString(),
-      });
-      try {
-        await writeAuditEntry(
-          projectId,
-          buildAuditEntry({
-            actorId: user.uid,
-            action: "delete",
-            resourcePath: `project/${projectName || projectId}`,
-          }),
-        );
-      } catch {
-        /* best-effort */
-      }
+      const ctx = { projectId };
+      const authUser = { uid: user.uid, email: user.email };
+      await repo.softDelete(projectId, ctx, authUser);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });

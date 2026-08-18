@@ -8,6 +8,14 @@ import type {
 export type WizardStep =
   "upload" | "preview" | "validate" | "confirm" | "results";
 
+/** Result shape stored in the wizard store after import completes */
+export interface ImportResult {
+  succeeded: number;
+  failed: number;
+  skipped: number;
+  failedEntries: Array<{ key: string; reason: string }>;
+}
+
 interface ImportWizardState {
   // State
   step: WizardStep;
@@ -17,6 +25,7 @@ interface ImportWizardState {
   conflictStrategy: ConflictStrategy | null;
   reviewDecisions: Record<string, "accept" | "reject">;
   jobId: string | null;
+  importResult: ImportResult | null;
 
   // Actions
   setStep: (step: WizardStep) => void;
@@ -26,6 +35,7 @@ interface ImportWizardState {
   setConflictStrategy: (strategy: ConflictStrategy) => void;
   setReviewDecision: (key: string, decision: "accept" | "reject") => void;
   setJobId: (id: string) => void;
+  setImportResult: (result: ImportResult) => void;
   reset: () => void;
 }
 
@@ -37,6 +47,7 @@ const initialState = {
   conflictStrategy: null as ConflictStrategy | null,
   reviewDecisions: {} as Record<string, "accept" | "reject">,
   jobId: null as string | null,
+  importResult: null as ImportResult | null,
 };
 
 export const useImportWizardStore = create<ImportWizardState>((set) => ({
@@ -58,6 +69,8 @@ export const useImportWizardStore = create<ImportWizardState>((set) => ({
     })),
 
   setJobId: (jobId) => set({ jobId }),
+
+  setImportResult: (importResult) => set({ importResult }),
 
   reset: () => set(initialState),
 }));

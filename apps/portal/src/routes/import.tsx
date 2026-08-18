@@ -696,18 +696,7 @@ function ConfirmStep() {
 
 function ResultsStep() {
   const store = useImportWizardStore();
-  const importMutation = useImportConfigs();
-  const result = importMutation.data;
-
-  if (importMutation.isPending) {
-    return (
-      <Card>
-        <CardContent className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin" />
-        </CardContent>
-      </Card>
-    );
-  }
+  const result = store.importResult;
 
   if (!result) {
     return (

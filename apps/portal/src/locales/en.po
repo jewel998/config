@@ -813,7 +813,7 @@ msgid "Exporting..."
 msgstr "Exporting..."
 
 #: src/routes/import.tsx:534
-#: src/routes/import.tsx:759
+#: src/routes/import.tsx:748
 msgid "Failed"
 msgstr "Failed"
 
@@ -852,7 +852,7 @@ msgstr "Failed to create project"
 msgid "Failed to create segment"
 msgstr "Failed to create segment"
 
-#: src/hooks/use-webhook-mutations.ts:67
+#: src/hooks/use-webhook-mutations.ts:63
 msgid "Failed to create webhook"
 msgstr "Failed to create webhook"
 
@@ -877,7 +877,7 @@ msgstr "Failed to delete project"
 msgid "Failed to delete segment"
 msgstr "Failed to delete segment"
 
-#: src/hooks/use-webhook-mutations.ts:114
+#: src/hooks/use-webhook-mutations.ts:150
 msgid "Failed to delete webhook"
 msgstr "Failed to delete webhook"
 
@@ -945,7 +945,7 @@ msgstr "Failed to update schedule"
 msgid "Failed to update segment"
 msgstr "Failed to update segment"
 
-#: src/hooks/use-webhook-mutations.ts:96
+#: src/hooks/use-webhook-mutations.ts:110
 msgid "Failed to update webhook"
 msgstr "Failed to update webhook"
 
@@ -1035,7 +1035,7 @@ msgstr "identical"
 msgid "Import"
 msgstr "Import"
 
-#: src/routes/import.tsx:734
+#: src/routes/import.tsx:723
 msgid "Import Complete"
 msgstr "Import Complete"
 
@@ -1075,7 +1075,7 @@ msgstr "JSON Template"
 #: src/routes/configs.tsx:519
 #: src/routes/import.tsx:423
 #: src/routes/import.tsx:549
-#: src/routes/import.tsx:777
+#: src/routes/import.tsx:766
 msgid "Key"
 msgstr "Key"
 
@@ -1255,7 +1255,7 @@ msgstr "No environments yet"
 msgid "No environments yet."
 msgstr "No environments yet."
 
-#: src/routes/import.tsx:716
+#: src/routes/import.tsx:705
 msgid "No import results available."
 msgstr "No import results available."
 
@@ -1333,7 +1333,7 @@ msgstr "Not set"
 msgid "Numeric value"
 msgstr "Numeric value"
 
-#: src/hooks/use-webhook-mutations.ts:48
+#: src/hooks/use-webhook-mutations.ts:182
 msgid "Operation failed"
 msgstr "Operation failed"
 
@@ -1522,7 +1522,7 @@ msgid "Real-time"
 msgstr "Real-time"
 
 #: src/routes/import.tsx:552
-#: src/routes/import.tsx:780
+#: src/routes/import.tsx:769
 msgid "Reason"
 msgstr "Reason"
 
@@ -1841,7 +1841,7 @@ msgstr "Sign out"
 msgid "Skip existing — keep current values"
 msgstr "Skip existing — keep current values"
 
-#: src/routes/import.tsx:765
+#: src/routes/import.tsx:754
 msgid "Skipped"
 msgstr "Skipped"
 
@@ -1869,7 +1869,7 @@ msgstr "Start configuring your environments with secrets and settings."
 msgid "Start Import"
 msgstr "Start Import"
 
-#: src/routes/import.tsx:803
+#: src/routes/import.tsx:792
 msgid "Start New Import"
 msgstr "Start New Import"
 
@@ -1885,7 +1885,7 @@ msgstr "Storing personal data in config values may violate GDPR. Acknowledge to 
 msgid "String value"
 msgstr "String value"
 
-#: src/routes/import.tsx:751
+#: src/routes/import.tsx:740
 msgid "Succeeded"
 msgstr "Succeeded"
 
@@ -2017,7 +2017,7 @@ msgid "Toggle theme"
 msgstr "Toggle theme"
 
 #: src/routes/import.tsx:517
-#: src/routes/import.tsx:743
+#: src/routes/import.tsx:732
 msgid "Total"
 msgstr "Total"
 
@@ -2156,16 +2156,16 @@ msgstr "Versioned"
 msgid "View changes"
 msgstr "View changes"
 
-#: src/hooks/use-webhook-mutations.ts:66
+#: src/hooks/use-webhook-mutations.ts:60
 msgid "Webhook created"
 msgstr "Webhook created"
 
-#: src/hooks/use-webhook-mutations.ts:113
+#: src/hooks/use-webhook-mutations.ts:147
 msgid "Webhook deleted"
 msgstr "Webhook deleted"
 
-#: src/hooks/use-webhook-mutations.ts:95
-#: src/hooks/use-webhook-mutations.ts:138
+#: src/hooks/use-webhook-mutations.ts:107
+#: src/hooks/use-webhook-mutations.ts:179
 msgid "Webhook updated"
 msgstr "Webhook updated"
 
