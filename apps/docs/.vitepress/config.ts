@@ -42,6 +42,7 @@ export default defineConfig({
           { text: "Team & RBAC", link: "/features/team" },
           { text: "Audit Log", link: "/features/audit-log" },
           { text: "Webhooks", link: "/features/webhooks" },
+          { text: "Import & Export", link: "/features/import-export" },
         ],
       },
       {

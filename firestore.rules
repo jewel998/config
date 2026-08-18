@@ -63,6 +63,19 @@ service cloud.firestore {
         }
       }
 
+      // Import Jobs — admin/editor read, Cloud Functions write only
+      match /import_jobs/{jobId} {
+        allow read: if request.auth != null
+          && (hasRole(projectId, 'admin') || hasRole(projectId, 'editor'));
+        allow create, update, delete: if false; // Only Cloud Functions (admin SDK) write here
+
+        match /failed_rows/{rowId} {
+          allow read: if request.auth != null
+            && (hasRole(projectId, 'admin') || hasRole(projectId, 'editor'));
+          allow create, update, delete: if false; // Only Cloud Functions (admin SDK) write here
+        }
+      }
+
       // Audit log — append-only, no modify/delete
       match /audit_log/{entryId} {
         allow read: if request.auth != null && isProjectMember(projectId);

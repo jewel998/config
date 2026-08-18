@@ -26,12 +26,15 @@ SOC 2 (System and Organization Controls 2) defines criteria for managing custome
 
 ### 3. Processing Integrity
 
-| Control                      | Implementation                                                          |
-| ---------------------------- | ----------------------------------------------------------------------- |
-| **Input Validation**         | Type-checked values (boolean, number, string, JSON) at the portal level |
-| **Deterministic Evaluation** | Same user + same context = same result (MurmurHash3 bucketing)          |
-| **Prerequisites**            | Flag dependencies prevent inconsistent states                           |
-| **Lifecycle States**         | Draft → Active → Stale → Archived prevents accidental use of old flags  |
+| Control                      | Implementation                                                                                          |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **Input Validation**         | Type-checked values (boolean, number, string, JSON, array) at portal and server level                   |
+| **Bulk Import Validation**   | Server-side DTO validation with 10 distinct error types, duplicate detection, and size limits           |
+| **Deterministic Evaluation** | Same user + same context = same result (MurmurHash3 bucketing)                                          |
+| **Prerequisites**            | Flag dependencies prevent inconsistent states                                                           |
+| **Lifecycle States**         | Draft → Active → Stale → Archived prevents accidental use of old flags                                  |
+| **Concurrency Control**      | Transactional guards prevent parallel imports to the same environment                                   |
+| **Batch Integrity**          | Batched writes (≤500 ops) with per-row failure isolation — partial failures don't corrupt other entries |
 
 ### 4. Confidentiality
 
@@ -44,13 +47,16 @@ SOC 2 (System and Organization Controls 2) defines criteria for managing custome
 
 ### 5. Privacy
 
-| Control               | Implementation                                                   |
-| --------------------- | ---------------------------------------------------------------- |
-| **Data Minimization** | API doesn't persist user context — evaluation is stateless       |
-| **Right to Deletion** | GDPR panel supports user data deletion                           |
-| **Consent Mode**      | SDK's `consentAware` option blocks personalization until consent |
-| **Audit Trail**       | Every data modification is logged with actor and timestamp       |
-| **No Telemetry**      | The SDK sends zero analytics or usage data to third parties      |
+| Control               | Implementation                                                                          |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| **Data Minimization** | API doesn't persist user context — evaluation is stateless                              |
+| **Right to Deletion** | GDPR panel supports user data deletion                                                  |
+| **Data Portability**  | Bulk export (full project or user-specific) with time-limited signed URLs               |
+| **Export Retention**  | Export files include lifecycle metadata for automated cleanup (7 days)                  |
+| **Consent Mode**      | SDK's `consentAware` option blocks personalization until consent                        |
+| **Audit Trail**       | Every data modification is logged with actor and timestamp                              |
+| **Import Audit**      | Bulk imports log all operations (import, retry, dismiss, overwrite) with old/new values |
+| **No Telemetry**      | The SDK sends zero analytics or usage data to third parties                             |
 
 ## Controls You Manage
 
@@ -72,3 +78,5 @@ If your organization pursues SOC 2 certification, @jewel998/config supports the 
 3. **API key inventory** — Documents authentication mechanisms
 4. **Environment separation** — Evidence of dev/staging/prod isolation
 5. **Webhook notifications** — Supports continuous monitoring requirements
+6. **Bulk import audit trail** — Records every bulk data operation with actor, counts, and conflict resolution strategy
+7. **Data export logs** — Documents who exported what data, when, and for what purpose (full vs user-specific)

@@ -285,3 +285,92 @@ export function fromStorageRule(rule: TargetingRule): SegmentTargetingRuleUI {
     segmentIds,
   };
 }
+
+// ═══════════════════════════════════════════════════════════════
+// Bulk Import/Export Types
+// ═══════════════════════════════════════════════════════════════
+
+/** A single entry to import */
+export interface ImportEntry {
+  key: string;
+  value: unknown;
+  valueType: ConfigValueType;
+}
+
+/** Raw entry from parsed file (may have missing/invalid fields) */
+export interface RawEntry {
+  key?: unknown;
+  value?: unknown;
+  valueType?: unknown;
+  [extra: string]: unknown;
+}
+
+/** Conflict resolution strategy */
+export type ConflictStrategy = "skip" | "overwrite" | "review";
+
+/** Import job status */
+export type ImportJobStatus =
+  "processing" | "completed" | "failed" | "resolved";
+
+/** Import job document from Firestore */
+export interface ImportJob {
+  id: string;
+  projectId: string;
+  environmentId: string;
+  status: ImportJobStatus;
+  totalRows: number;
+  processedRows: number;
+  succeededCount: number;
+  failedCount: number;
+  skippedCount: number;
+  dismissedCount: number;
+  conflictStrategy: ConflictStrategy;
+  createdBy: string;
+  createdAt: string;
+  completedAt?: string;
+  failureReason?: string;
+}
+
+/** Failed row document from Firestore */
+export interface FailedRowDoc {
+  id: string;
+  rowNumber: number;
+  key: string;
+  value: unknown;
+  valueType: string;
+  reason: string;
+  dismissed: boolean;
+  createdAt: string;
+}
+
+/** Validation result from client-side pre-validation */
+export interface FailedRow {
+  rowNumber: number;
+  entry: Partial<ImportEntry>;
+  reason: string;
+}
+
+export interface ConflictRow {
+  rowNumber: number;
+  entry: ImportEntry;
+  existingValue: unknown;
+  existingValueType: string;
+  isLocked: boolean;
+}
+
+export interface ValidationResult {
+  valid: ImportEntry[];
+  failed: FailedRow[];
+  conflicts: ConflictRow[];
+}
+
+/** CSV/JSON parser result */
+export interface ParseResult {
+  entries: RawEntry[];
+  errors: ParseError[];
+}
+
+export interface ParseError {
+  row: number;
+  message: string;
+}

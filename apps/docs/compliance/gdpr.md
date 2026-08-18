@@ -21,7 +21,19 @@ The portal includes a **GDPR Panel** (Settings → Privacy) that allows admins t
 
 These actions are themselves audit-logged as `data_deletion` events.
 
-### 3. Consent-Aware Mode
+### 3. Data Portability (Article 20)
+
+The platform provides a **bulk export** system that supports GDPR data portability:
+
+- **Full project export** — Export all configurations across all environments as a structured JSON file, including environment metadata, config entries, and segments.
+- **User-specific export** — Export only data associated with a specific userId (overrides and audit entries referencing the user as actor).
+- **Re-importable format** — The export JSON format is compatible with the bulk import system, enabling seamless data transfer between projects or platforms.
+- **Time-limited download** — Export files are generated as signed URLs valid for 24 hours, and files are automatically cleaned up after 7 days (data minimization).
+- **Audit-logged** — Every export action is recorded in the audit trail with the requesting user and export scope.
+
+See the [Import & Export documentation](/features/import-export) for full format specifications, examples, and API reference.
+
+### 4. Consent-Aware Mode
 
 The SDK supports a `consentAware` option:
 
@@ -42,7 +54,7 @@ config.setContext({ consentGranted: true, userId: "user_123" });
 
 When `consentAware: true` and `consentGranted !== true`, the SDK returns default values without sending any user context to the API.
 
-### 4. Audit Trail (Article 30)
+### 5. Audit Trail (Article 30)
 
 Every change is recorded with:
 
@@ -52,7 +64,7 @@ Every change is recorded with:
 
 This supports the GDPR requirement for records of processing activities.
 
-### 5. Access Controls (Article 32)
+### 6. Access Controls (Article 32)
 
 - Role-based access (Viewer/Editor/Admin) limits who can modify data
 - API keys are scoped per environment — no cross-environment access

@@ -8,250 +8,270 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiKeysRouteImport } from './routes/api-keys'
-import { Route as AuditRouteImport } from './routes/audit'
-import { Route as CompareRouteImport } from './routes/compare'
-import { Route as ConfigsRouteImport } from './routes/configs'
-import { Route as EnvironmentsRouteImport } from './routes/environments'
-import { Route as GdprRouteImport } from './routes/gdpr'
-import { Route as PreferencesRouteImport } from './routes/preferences'
-import { Route as SegmentsRouteImport } from './routes/segments'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as TeamRouteImport } from './routes/team'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as ApiKeysRouteImport } from "./routes/api-keys";
+import { Route as AuditRouteImport } from "./routes/audit";
+import { Route as CompareRouteImport } from "./routes/compare";
+import { Route as ConfigsRouteImport } from "./routes/configs";
+import { Route as EnvironmentsRouteImport } from "./routes/environments";
+import { Route as GdprRouteImport } from "./routes/gdpr";
+import { Route as ImportRouteImport } from "./routes/import";
+import { Route as PreferencesRouteImport } from "./routes/preferences";
+import { Route as SegmentsRouteImport } from "./routes/segments";
+import { Route as SettingsRouteImport } from "./routes/settings";
+import { Route as TeamRouteImport } from "./routes/team";
 
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ApiKeysRoute = ApiKeysRouteImport.update({
-  id: '/api-keys',
-  path: '/api-keys',
+  id: "/api-keys",
+  path: "/api-keys",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuditRoute = AuditRouteImport.update({
-  id: '/audit',
-  path: '/audit',
+  id: "/audit",
+  path: "/audit",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const CompareRoute = CompareRouteImport.update({
-  id: '/compare',
-  path: '/compare',
+  id: "/compare",
+  path: "/compare",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ConfigsRoute = ConfigsRouteImport.update({
-  id: '/configs',
-  path: '/configs',
+  id: "/configs",
+  path: "/configs",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const EnvironmentsRoute = EnvironmentsRouteImport.update({
-  id: '/environments',
-  path: '/environments',
+  id: "/environments",
+  path: "/environments",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const GdprRoute = GdprRouteImport.update({
-  id: '/gdpr',
-  path: '/gdpr',
+  id: "/gdpr",
+  path: "/gdpr",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
+const ImportRoute = ImportRouteImport.update({
+  id: "/import",
+  path: "/import",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const PreferencesRoute = PreferencesRouteImport.update({
-  id: '/preferences',
-  path: '/preferences',
+  id: "/preferences",
+  path: "/preferences",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const SegmentsRoute = SegmentsRouteImport.update({
-  id: '/segments',
-  path: '/segments',
+  id: "/segments",
+  path: "/segments",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
+  id: "/settings",
+  path: "/settings",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const TeamRoute = TeamRouteImport.update({
-  id: '/team',
-  path: '/team',
+  id: "/team",
+  path: "/team",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/api-keys': typeof ApiKeysRoute
-  '/audit': typeof AuditRoute
-  '/compare': typeof CompareRoute
-  '/configs': typeof ConfigsRoute
-  '/environments': typeof EnvironmentsRoute
-  '/gdpr': typeof GdprRoute
-  '/preferences': typeof PreferencesRoute
-  '/segments': typeof SegmentsRoute
-  '/settings': typeof SettingsRoute
-  '/team': typeof TeamRoute
+  "/": typeof IndexRoute;
+  "/api-keys": typeof ApiKeysRoute;
+  "/audit": typeof AuditRoute;
+  "/compare": typeof CompareRoute;
+  "/configs": typeof ConfigsRoute;
+  "/environments": typeof EnvironmentsRoute;
+  "/gdpr": typeof GdprRoute;
+  "/import": typeof ImportRoute;
+  "/preferences": typeof PreferencesRoute;
+  "/segments": typeof SegmentsRoute;
+  "/settings": typeof SettingsRoute;
+  "/team": typeof TeamRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/api-keys': typeof ApiKeysRoute
-  '/audit': typeof AuditRoute
-  '/compare': typeof CompareRoute
-  '/configs': typeof ConfigsRoute
-  '/environments': typeof EnvironmentsRoute
-  '/gdpr': typeof GdprRoute
-  '/preferences': typeof PreferencesRoute
-  '/segments': typeof SegmentsRoute
-  '/settings': typeof SettingsRoute
-  '/team': typeof TeamRoute
+  "/": typeof IndexRoute;
+  "/api-keys": typeof ApiKeysRoute;
+  "/audit": typeof AuditRoute;
+  "/compare": typeof CompareRoute;
+  "/configs": typeof ConfigsRoute;
+  "/environments": typeof EnvironmentsRoute;
+  "/gdpr": typeof GdprRoute;
+  "/import": typeof ImportRoute;
+  "/preferences": typeof PreferencesRoute;
+  "/segments": typeof SegmentsRoute;
+  "/settings": typeof SettingsRoute;
+  "/team": typeof TeamRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/api-keys': typeof ApiKeysRoute
-  '/audit': typeof AuditRoute
-  '/compare': typeof CompareRoute
-  '/configs': typeof ConfigsRoute
-  '/environments': typeof EnvironmentsRoute
-  '/gdpr': typeof GdprRoute
-  '/preferences': typeof PreferencesRoute
-  '/segments': typeof SegmentsRoute
-  '/settings': typeof SettingsRoute
-  '/team': typeof TeamRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/api-keys": typeof ApiKeysRoute;
+  "/audit": typeof AuditRoute;
+  "/compare": typeof CompareRoute;
+  "/configs": typeof ConfigsRoute;
+  "/environments": typeof EnvironmentsRoute;
+  "/gdpr": typeof GdprRoute;
+  "/import": typeof ImportRoute;
+  "/preferences": typeof PreferencesRoute;
+  "/segments": typeof SegmentsRoute;
+  "/settings": typeof SettingsRoute;
+  "/team": typeof TeamRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/api-keys'
-    | '/audit'
-    | '/compare'
-    | '/configs'
-    | '/environments'
-    | '/gdpr'
-    | '/preferences'
-    | '/segments'
-    | '/settings'
-    | '/team'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/api-keys"
+    | "/audit"
+    | "/compare"
+    | "/configs"
+    | "/environments"
+    | "/gdpr"
+    | "/import"
+    | "/preferences"
+    | "/segments"
+    | "/settings"
+    | "/team";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/api-keys'
-    | '/audit'
-    | '/compare'
-    | '/configs'
-    | '/environments'
-    | '/gdpr'
-    | '/preferences'
-    | '/segments'
-    | '/settings'
-    | '/team'
+    | "/"
+    | "/api-keys"
+    | "/audit"
+    | "/compare"
+    | "/configs"
+    | "/environments"
+    | "/gdpr"
+    | "/import"
+    | "/preferences"
+    | "/segments"
+    | "/settings"
+    | "/team";
   id:
-    | '__root__'
-    | '/'
-    | '/api-keys'
-    | '/audit'
-    | '/compare'
-    | '/configs'
-    | '/environments'
-    | '/gdpr'
-    | '/preferences'
-    | '/segments'
-    | '/settings'
-    | '/team'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/api-keys"
+    | "/audit"
+    | "/compare"
+    | "/configs"
+    | "/environments"
+    | "/gdpr"
+    | "/import"
+    | "/preferences"
+    | "/segments"
+    | "/settings"
+    | "/team";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  ApiKeysRoute: typeof ApiKeysRoute
-  AuditRoute: typeof AuditRoute
-  CompareRoute: typeof CompareRoute
-  ConfigsRoute: typeof ConfigsRoute
-  EnvironmentsRoute: typeof EnvironmentsRoute
-  GdprRoute: typeof GdprRoute
-  PreferencesRoute: typeof PreferencesRoute
-  SegmentsRoute: typeof SegmentsRoute
-  SettingsRoute: typeof SettingsRoute
-  TeamRoute: typeof TeamRoute
+  IndexRoute: typeof IndexRoute;
+  ApiKeysRoute: typeof ApiKeysRoute;
+  AuditRoute: typeof AuditRoute;
+  CompareRoute: typeof CompareRoute;
+  ConfigsRoute: typeof ConfigsRoute;
+  EnvironmentsRoute: typeof EnvironmentsRoute;
+  GdprRoute: typeof GdprRoute;
+  ImportRoute: typeof ImportRoute;
+  PreferencesRoute: typeof PreferencesRoute;
+  SegmentsRoute: typeof SegmentsRoute;
+  SettingsRoute: typeof SettingsRoute;
+  TeamRoute: typeof TeamRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api-keys': {
-      id: '/api-keys'
-      path: '/api-keys'
-      fullPath: '/api-keys'
-      preLoaderRoute: typeof ApiKeysRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/audit': {
-      id: '/audit'
-      path: '/audit'
-      fullPath: '/audit'
-      preLoaderRoute: typeof AuditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/compare': {
-      id: '/compare'
-      path: '/compare'
-      fullPath: '/compare'
-      preLoaderRoute: typeof CompareRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/configs': {
-      id: '/configs'
-      path: '/configs'
-      fullPath: '/configs'
-      preLoaderRoute: typeof ConfigsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/environments': {
-      id: '/environments'
-      path: '/environments'
-      fullPath: '/environments'
-      preLoaderRoute: typeof EnvironmentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/gdpr': {
-      id: '/gdpr'
-      path: '/gdpr'
-      fullPath: '/gdpr'
-      preLoaderRoute: typeof GdprRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/preferences': {
-      id: '/preferences'
-      path: '/preferences'
-      fullPath: '/preferences'
-      preLoaderRoute: typeof PreferencesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/segments': {
-      id: '/segments'
-      path: '/segments'
-      fullPath: '/segments'
-      preLoaderRoute: typeof SegmentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team': {
-      id: '/team'
-      path: '/team'
-      fullPath: '/team'
-      preLoaderRoute: typeof TeamRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api-keys": {
+      id: "/api-keys";
+      path: "/api-keys";
+      fullPath: "/api-keys";
+      preLoaderRoute: typeof ApiKeysRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/audit": {
+      id: "/audit";
+      path: "/audit";
+      fullPath: "/audit";
+      preLoaderRoute: typeof AuditRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/compare": {
+      id: "/compare";
+      path: "/compare";
+      fullPath: "/compare";
+      preLoaderRoute: typeof CompareRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/configs": {
+      id: "/configs";
+      path: "/configs";
+      fullPath: "/configs";
+      preLoaderRoute: typeof ConfigsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/environments": {
+      id: "/environments";
+      path: "/environments";
+      fullPath: "/environments";
+      preLoaderRoute: typeof EnvironmentsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/gdpr": {
+      id: "/gdpr";
+      path: "/gdpr";
+      fullPath: "/gdpr";
+      preLoaderRoute: typeof GdprRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/import": {
+      id: "/import";
+      path: "/import";
+      fullPath: "/import";
+      preLoaderRoute: typeof ImportRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/preferences": {
+      id: "/preferences";
+      path: "/preferences";
+      fullPath: "/preferences";
+      preLoaderRoute: typeof PreferencesRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/segments": {
+      id: "/segments";
+      path: "/segments";
+      fullPath: "/segments";
+      preLoaderRoute: typeof SegmentsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/settings": {
+      id: "/settings";
+      path: "/settings";
+      fullPath: "/settings";
+      preLoaderRoute: typeof SettingsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/team": {
+      id: "/team";
+      path: "/team";
+      fullPath: "/team";
+      preLoaderRoute: typeof TeamRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
@@ -263,11 +283,12 @@ const rootRouteChildren: RootRouteChildren = {
   ConfigsRoute: ConfigsRoute,
   EnvironmentsRoute: EnvironmentsRoute,
   GdprRoute: GdprRoute,
+  ImportRoute: ImportRoute,
   PreferencesRoute: PreferencesRoute,
   SegmentsRoute: SegmentsRoute,
   SettingsRoute: SettingsRoute,
   TeamRoute: TeamRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();

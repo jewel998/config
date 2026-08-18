@@ -29,5 +29,13 @@ Your data lives in your own Firebase project. You choose the Firestore region. N
 
 ## Frameworks We Align With
 
-- [GDPR](/compliance/gdpr) — Data minimization, right to deletion, audit trails
-- [SOC 2](/compliance/soc2) — Access controls, audit logging, change management
+- [GDPR](/compliance/gdpr) — Data minimization, right to deletion, data portability (Article 20), audit trails
+- [SOC 2](/compliance/soc2) — Access controls, audit logging, change management, processing integrity
+
+## Data Portability
+
+The platform supports GDPR Article 20 data portability through a [bulk import/export system](/features/import-export):
+
+- **Import** — Migrate configurations from other systems via CSV or JSON upload with full DTO validation
+- **Export** — Download all project data or user-specific data as structured JSON (re-importable format)
+- **Audit** — All import/export operations are logged with actor, timestamp, and operation details

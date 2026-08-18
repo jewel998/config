@@ -11,6 +11,15 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
+#. placeholder {0}: store.validationResult?.conflicts.length
+#: src/routes/import.tsx:614
+msgid "{0} conflicting entries found. Choose a resolution strategy:"
+msgstr ""
+
+#: src/routes/import.tsx:326
+msgid "Accepts .csv and .json files (max 5 MB)"
+msgstr ""
+
 #: src/routes/__root.tsx:350
 msgid "Access Denied"
 msgstr "पहुँच अस्वीकृत"
@@ -197,6 +206,10 @@ msgstr "ऑडिट लॉग"
 msgid "Available Variables"
 msgstr "Available Variables"
 
+#: src/routes/import.tsx:133
+msgid "Back"
+msgstr ""
+
 #: src/components/audit-diff-viewer.tsx:86
 msgid "Before"
 msgstr "पहले"
@@ -204,6 +217,10 @@ msgstr "पहले"
 #: src/components/config-form-modal.tsx:418
 msgid "Boolean values are constrained to true/false by default."
 msgstr "Boolean values are constrained to true/false by default."
+
+#: src/routes/import.tsx:103
+msgid "Bulk import configuration entries from a CSV or JSON file."
+msgstr ""
 
 #: src/components/config-form-modal.tsx:468
 #: src/components/date-picker-schedule.tsx:140
@@ -362,6 +379,10 @@ msgstr "Configs guide"
 msgid "Configure an HTTP endpoint to receive notifications."
 msgstr "Configure an HTTP endpoint to receive notifications."
 
+#: src/routes/import.tsx:154
+msgid "Confirm"
+msgstr ""
+
 #: src/components/gdpr-panel.tsx:87
 msgid "Confirm Delete"
 msgstr "Confirm Delete"
@@ -370,6 +391,10 @@ msgstr "Confirm Delete"
 msgid "Confirm Delete?"
 msgstr "Confirm Delete?"
 
+#: src/routes/import.tsx:593
+msgid "Confirm Import"
+msgstr ""
+
 #: src/routes/compare.tsx:538
 msgid "Confirm Sync"
 msgstr "Confirm Sync"
@@ -377,6 +402,10 @@ msgstr "Confirm Sync"
 #: src/routes/environments.tsx:306
 msgid "Confirm?"
 msgstr "Confirm?"
+
+#: src/routes/import.tsx:625
+msgid "Conflict resolution strategy"
+msgstr ""
 
 #: src/components/config-form-modal.tsx:165
 msgid "Continue"
@@ -438,6 +467,10 @@ msgstr "Create your first project"
 #: src/routes/settings.tsx:551
 msgid "Created"
 msgstr "बनाया गया"
+
+#: src/routes/import.tsx:352
+msgid "CSV Template"
+msgstr ""
 
 #: src/routes/preferences.tsx:232
 msgid "Current time:"
@@ -573,6 +606,22 @@ msgstr "Discord"
 msgid "Display Name"
 msgstr "प्रदर्शन नाम"
 
+#: src/routes/import.tsx:356
+msgid "Download a sample CSV file with the expected format"
+msgstr ""
+
+#: src/routes/import.tsx:371
+msgid "Download a sample JSON file with the expected format"
+msgstr ""
+
+#: src/routes/import.tsx:323
+msgid "Drag and drop your file here, or click to browse"
+msgstr ""
+
+#: src/routes/import.tsx:313
+msgid "Drop file here or click to upload"
+msgstr ""
+
 #: src/routes/configs.tsx:694
 msgid "Duplicate"
 msgstr "Duplicate"
@@ -679,6 +728,10 @@ msgstr "Enter email address..."
 msgid "Enter valid JSON"
 msgstr "Enter valid JSON"
 
+#: src/routes/import.tsx:604
+msgid "Entries to import:"
+msgstr ""
+
 #: src/routes/settings.tsx:222
 msgid "Environment cloned"
 msgstr "Environment cloned"
@@ -743,6 +796,11 @@ msgstr "Export failed"
 #: src/components/gdpr-panel.tsx:68
 msgid "Exporting..."
 msgstr "Exporting..."
+
+#: src/routes/import.tsx:507
+#: src/routes/import.tsx:750
+msgid "Failed"
+msgstr ""
 
 #: src/routes/team.tsx:185
 msgid "Failed to add member"
@@ -884,6 +942,10 @@ msgstr "Feature Flags"
 msgid "Feature guide"
 msgstr "Feature guide"
 
+#: src/routes/import.tsx:218
+msgid "File is empty or contains no valid rows"
+msgstr ""
+
 #: src/routes/__root.tsx:436
 msgid "Firebase sync"
 msgstr "Firebase sync"
@@ -954,6 +1016,27 @@ msgstr "I understand, save anyway"
 msgid "identical"
 msgstr "identical"
 
+#. placeholder {0}: isProcessing ? "In Progress" : "Complete"
+#: src/routes/import.tsx:709
+msgid "Import {0}"
+msgstr ""
+
+#: src/routes/import.tsx:100
+msgid "Import Configurations"
+msgstr ""
+
+#: src/routes/import.tsx:584
+msgid "Import failed"
+msgstr ""
+
+#: src/routes/import.tsx:686
+msgid "Import job not found."
+msgstr ""
+
+#: src/routes/import.tsx:159
+msgid "Import wizard steps"
+msgstr ""
+
 #: src/components/config-form-modal.tsx:140
 msgid "Invalid regex pattern"
 msgstr "Invalid regex pattern"
@@ -970,8 +1053,14 @@ msgstr "Invite sent"
 msgid "JSON and array values are validated for correct syntax automatically."
 msgstr "JSON and array values are validated for correct syntax automatically."
 
+#: src/routes/import.tsx:367
+msgid "JSON Template"
+msgstr ""
+
 #: src/components/config-form-modal.tsx:232
 #: src/routes/configs.tsx:519
+#: src/routes/import.tsx:405
+#: src/routes/import.tsx:521
 msgid "Key"
 msgstr "कुंजी"
 
@@ -1099,6 +1188,10 @@ msgstr "New Config"
 msgid "New Environment"
 msgstr "नया वातावरण"
 
+#: src/routes/import.tsx:137
+msgid "Next"
+msgstr ""
+
 #: src/routes/configs.tsx:783
 msgid "Next page"
 msgstr "Next page"
@@ -1162,6 +1255,10 @@ msgstr "No overrides configured."
 #: src/components/prerequisite-ui.tsx:211
 msgid "No prerequisites configured."
 msgstr "No prerequisites configured."
+
+#: src/routes/import.tsx:561
+msgid "No project or environment selected"
+msgstr ""
 
 #: src/components/project-switcher.tsx:75
 msgid "No projects found."
@@ -1232,6 +1329,10 @@ msgstr "Overrides"
 msgid "Overrides saved"
 msgstr "Overrides saved"
 
+#: src/routes/import.tsx:633
+msgid "Overwrite existing — replace with imported values"
+msgstr ""
+
 #: src/components/template-bar.tsx:104
 msgid "Overwrite existing data?"
 msgstr "Overwrite existing data?"
@@ -1278,6 +1379,10 @@ msgstr "Pick a date"
 msgid "Pin to top"
 msgstr "Pin to top"
 
+#: src/routes/import.tsx:565
+msgid "Please select a conflict resolution strategy"
+msgstr ""
+
 #: src/components/pii-warning.tsx:23
 msgid "Potential PII detected in config value"
 msgstr "Potential PII detected in config value"
@@ -1298,6 +1403,8 @@ msgstr "पूर्वापेक्षाएं"
 msgid "Prerequisites saved"
 msgstr "Prerequisites saved"
 
+#: src/routes/import.tsx:152
+#: src/routes/import.tsx:390
 #: src/routes/settings.tsx:127
 msgid "Preview"
 msgstr "पूर्वावलोकन"
@@ -1314,6 +1421,14 @@ msgstr "Previous page"
 #: src/components/rule-builder.tsx:578
 msgid "Priority"
 msgstr "प्राथमिकता"
+
+#: src/routes/import.tsx:723
+msgid "processed"
+msgstr ""
+
+#: src/routes/import.tsx:651
+msgid "Processing..."
+msgstr ""
 
 #: src/routes/settings.tsx:351
 msgid "Production"
@@ -1386,6 +1501,10 @@ msgstr "Protected by Firebase Authentication."
 msgid "Real-time"
 msgstr "रीयल-टाइम"
 
+#: src/routes/import.tsx:524
+msgid "Reason"
+msgstr ""
+
 #: src/components/config-form-modal.tsx:386
 msgid "Regex pattern"
 msgstr "Regex pattern"
@@ -1409,10 +1528,22 @@ msgstr "Remove member?"
 msgid "Resource categories"
 msgstr "Resource categories"
 
+#: src/routes/import.tsx:155
+msgid "Results"
+msgstr ""
+
 #. placeholder {0}: actions.size
 #: src/routes/compare.tsx:527
 msgid "Review {0} changes"
 msgstr "Review {0} changes"
+
+#: src/routes/import.tsx:636
+msgid "Review individually — decide per entry"
+msgstr ""
+
+#: src/routes/import.tsx:596
+msgid "Review your import settings and confirm to begin processing."
+msgstr ""
 
 #: src/routes/api-keys.tsx:335
 msgid "Revoke"
@@ -1437,6 +1568,10 @@ msgstr "Rollout"
 #: src/components/rollout-section.tsx:60
 msgid "Rollout updated"
 msgstr "Rollout updated"
+
+#: src/routes/import.tsx:518
+msgid "Row"
+msgstr ""
 
 #. placeholder {0}: index + 1
 #: src/components/rule-builder.tsx:425
@@ -1600,6 +1735,10 @@ msgstr "Select env"
 msgid "Select project"
 msgstr "Select project"
 
+#: src/routes/import.tsx:626
+msgid "Select strategy"
+msgstr ""
+
 #: src/components/add-member-modal.tsx:187
 msgid "Send Invite"
 msgstr "Send Invite"
@@ -1633,6 +1772,13 @@ msgstr "Show Preview"
 msgid "Show unchanged ({unchangedCount})"
 msgstr "Show unchanged ({unchangedCount})"
 
+#. placeholder {0}: previewRows.length
+#. placeholder {1}: parsedEntries.length
+#. placeholder {2}: file?.name ?? "file"
+#: src/routes/import.tsx:393
+msgid "Showing {0} of {1} entries from {2}"
+msgstr ""
+
 #. placeholder {0}: safePage * PAGE_SIZE + 1
 #. placeholder {1}: Math.min( (safePage + 1) * PAGE_SIZE, filteredConfigs.length, )
 #. placeholder {2}: filteredConfigs.length
@@ -1657,6 +1803,14 @@ msgstr "Google से साइन इन करें"
 msgid "Sign out"
 msgstr "साइन आउट"
 
+#: src/routes/import.tsx:630
+msgid "Skip existing — keep current values"
+msgstr ""
+
+#: src/routes/import.tsx:756
+msgid "Skipped"
+msgstr ""
+
 #: src/components/webhook-form-modal.tsx:164
 msgid "Slack"
 msgstr "Slack"
@@ -1677,6 +1831,14 @@ msgstr "Standard JSON"
 msgid "Start configuring your environments with secrets and settings."
 msgstr "Start configuring your environments with secrets and settings."
 
+#: src/routes/import.tsx:656
+msgid "Start Import"
+msgstr ""
+
+#: src/routes/import.tsx:770
+msgid "Start New Import"
+msgstr ""
+
 #: src/components/audit-log-viewer.tsx:155
 msgid "State change"
 msgstr "State change"
@@ -1688,6 +1850,10 @@ msgstr "Storing personal data in config values may violate GDPR. Acknowledge to 
 #: src/components/config-form-modal.tsx:322
 msgid "String value"
 msgstr "String value"
+
+#: src/routes/import.tsx:742
+msgid "Succeeded"
+msgstr ""
 
 #: src/routes/compare.tsx:326
 msgid "Swap environments"
@@ -1722,6 +1888,10 @@ msgstr "Target Segment"
 #: src/components/schedule-ui.tsx:79
 msgid "Target value"
 msgstr "Target value"
+
+#: src/routes/import.tsx:115
+msgid "Target:"
+msgstr ""
 
 #: src/components/config-detail-panel.tsx:237
 #: src/components/rule-builder.tsx:183
@@ -1812,6 +1982,11 @@ msgstr "समय क्षेत्र"
 msgid "Toggle theme"
 msgstr "Toggle theme"
 
+#: src/routes/import.tsx:491
+#: src/routes/import.tsx:734
+msgid "Total"
+msgstr ""
+
 #: src/routes/audit.tsx:28
 msgid "Track all configuration changes for SOC2 compliance."
 msgstr "Track all configuration changes for SOC2 compliance."
@@ -1822,6 +1997,7 @@ msgstr "Try a different account"
 
 #: src/components/config-form-modal.tsx:256
 #: src/routes/configs.tsx:522
+#: src/routes/import.tsx:411
 msgid "Type"
 msgstr "प्रकार"
 
@@ -1863,6 +2039,18 @@ msgstr "Update the segment name, description, and conditions."
 msgid "Updated"
 msgstr "अपडेट किया गया"
 
+#: src/routes/import.tsx:151
+msgid "Upload"
+msgstr ""
+
+#: src/routes/import.tsx:296
+msgid "Upload a CSV or JSON file with your configuration entries. Maximum 5 MB, up to 10,000 entries."
+msgstr ""
+
+#: src/routes/import.tsx:293
+msgid "Upload File"
+msgstr ""
+
 #: src/components/webhook-form-modal.tsx:134
 msgid "URL (HTTPS)"
 msgstr "URL (HTTPS)"
@@ -1893,6 +2081,18 @@ msgstr "User ID to delete"
 msgid "User ID to export"
 msgstr "User ID to export"
 
+#: src/routes/import.tsx:499
+msgid "Valid"
+msgstr ""
+
+#: src/routes/import.tsx:153
+msgid "Validate"
+msgstr ""
+
+#: src/routes/import.tsx:483
+msgid "Validation Results"
+msgstr ""
+
 #: src/components/config-form-modal.tsx:347
 msgid "Validation Rules"
 msgstr "Validation Rules"
@@ -1901,6 +2101,7 @@ msgstr "Validation Rules"
 #: src/components/config-form-modal.tsx:278
 #: src/components/override-manager.tsx:46
 #: src/routes/configs.tsx:525
+#: src/routes/import.tsx:408
 msgid "Value"
 msgstr "मान"
 
@@ -1928,6 +2129,10 @@ msgstr "Versioned"
 #: src/components/audit-entry-row.tsx:81
 msgid "View changes"
 msgstr "View changes"
+
+#: src/routes/import.tsx:766
+msgid "View Failed Entries"
+msgstr ""
 
 #: src/hooks/use-webhook-mutations.ts:66
 msgid "Webhook created"
