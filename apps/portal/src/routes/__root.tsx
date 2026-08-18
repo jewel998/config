@@ -11,6 +11,7 @@ import {
 import {
   Globe,
   History,
+  Import,
   Key,
   Layers,
   LogOut,
@@ -232,6 +233,7 @@ const TabNav = () => {
     { to: "/configs" as const, label: <Trans>Configs</Trans>, icon: Layers },
     { to: "/segments" as const, label: <Trans>Segments</Trans>, icon: Users },
     { to: "/api-keys" as const, label: <Trans>API Keys</Trans>, icon: Key },
+    { to: "/import" as const, label: <Trans>Import</Trans>, icon: Import },
     { to: "/audit" as const, label: <Trans>Audit</Trans>, icon: History },
     { to: "/team" as const, label: <Trans>Team</Trans>, icon: UsersRound },
     {
