@@ -12,11 +12,11 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: store.validationResult?.conflicts.length
-#: src/routes/import.tsx:632
+#: src/routes/import.tsx:641
 msgid "{0} conflicting entries found. Choose a resolution strategy:"
 msgstr ""
 
-#: src/routes/import.tsx:334
+#: src/routes/import.tsx:343
 msgid "Accepts .csv and .json files (max 5 MB)"
 msgstr ""
 
@@ -206,7 +206,7 @@ msgstr "監査ログ"
 msgid "Available Variables"
 msgstr "Available Variables"
 
-#: src/routes/import.tsx:137
+#: src/routes/import.tsx:146
 msgid "Back"
 msgstr ""
 
@@ -218,7 +218,7 @@ msgstr "変更前"
 msgid "Boolean values are constrained to true/false by default."
 msgstr "Boolean values are constrained to true/false by default."
 
-#: src/routes/import.tsx:107
+#: src/routes/import.tsx:116
 msgid "Bulk import configuration entries from a CSV or JSON file."
 msgstr ""
 
@@ -250,6 +250,11 @@ msgstr "Cannot add self as prerequisite (circular dependency)."
 msgid "Cannot remove the last admin"
 msgstr "Cannot remove the last admin"
 
+#: src/components/gdpr-panel.tsx:154
+#: src/components/gdpr-panel.tsx:270
+msgid "Change"
+msgstr ""
+
 #: src/components/audit-log-viewer.tsx:209
 msgid "Change Details"
 msgstr "Change Details"
@@ -278,7 +283,7 @@ msgstr "クリア"
 msgid "Click a segment below to target it"
 msgstr "Click a segment below to target it"
 
-#: src/components/gdpr-panel.tsx:90
+#: src/components/gdpr-panel.tsx:349
 msgid "Click again to confirm permanent deletion."
 msgstr "Click again to confirm permanent deletion."
 
@@ -379,11 +384,11 @@ msgstr "Configs guide"
 msgid "Configure an HTTP endpoint to receive notifications."
 msgstr "Configure an HTTP endpoint to receive notifications."
 
-#: src/routes/import.tsx:158
+#: src/routes/import.tsx:167
 msgid "Confirm"
 msgstr ""
 
-#: src/components/gdpr-panel.tsx:87
+#: src/components/gdpr-panel.tsx:342
 msgid "Confirm Delete"
 msgstr "Confirm Delete"
 
@@ -391,7 +396,7 @@ msgstr "Confirm Delete"
 msgid "Confirm Delete?"
 msgstr "Confirm Delete?"
 
-#: src/routes/import.tsx:611
+#: src/routes/import.tsx:620
 msgid "Confirm Import"
 msgstr ""
 
@@ -403,7 +408,7 @@ msgstr "Confirm Sync"
 msgid "Confirm?"
 msgstr "Confirm?"
 
-#: src/routes/import.tsx:643
+#: src/routes/import.tsx:652
 msgid "Conflict resolution strategy"
 msgstr ""
 
@@ -468,7 +473,7 @@ msgstr "Create your first project"
 msgid "Created"
 msgstr "作成日"
 
-#: src/routes/import.tsx:360
+#: src/routes/import.tsx:369
 msgid "CSV Template"
 msgstr ""
 
@@ -498,19 +503,19 @@ msgstr "Customize your portal experience."
 msgid "Danger Zone"
 msgstr "Danger Zone"
 
-#: src/components/gdpr-panel.tsx:78
+#: src/components/gdpr-panel.tsx:235
 msgid "Data Deletion (GDPR Article 17)"
 msgstr "Data Deletion (GDPR Article 17)"
 
-#: src/components/gdpr-panel.tsx:43
+#: src/components/gdpr-panel.tsx:103
 msgid "Data deletion request submitted"
 msgstr "Data deletion request submitted"
 
-#: src/components/gdpr-panel.tsx:59
+#: src/components/gdpr-panel.tsx:120
 msgid "Data Export (GDPR Article 20)"
 msgstr "Data Export (GDPR Article 20)"
 
-#: src/components/gdpr-panel.tsx:28
+#: src/components/gdpr-panel.tsx:85
 msgid "Data export completed"
 msgstr "Data export completed"
 
@@ -522,7 +527,6 @@ msgstr "Define a reusable audience group for targeting rules."
 msgid "Define reusable audience groups for targeting rules."
 msgstr "Define reusable audience groups for targeting rules."
 
-#: src/components/gdpr-panel.tsx:87
 #: src/components/segment-manager.tsx:252
 #: src/components/webhook-card.tsx:128
 #: src/components/webhook-settings.tsx:174
@@ -556,6 +560,10 @@ msgstr "Delete Project"
 msgid "Delete segment?"
 msgstr "Delete segment?"
 
+#: src/components/gdpr-panel.tsx:344
+msgid "Delete User Data"
+msgstr ""
+
 #: src/components/webhook-settings.tsx:152
 msgid "Delete webhook?"
 msgstr "Delete webhook?"
@@ -568,15 +576,15 @@ msgstr "Deleted"
 msgid "Deleting a project is irreversible. All environments, configs, and API keys will become inaccessible."
 msgstr "Deleting a project is irreversible. All environments, configs, and API keys will become inaccessible."
 
-#: src/components/gdpr-panel.tsx:87
+#: src/components/gdpr-panel.tsx:340
 msgid "Deleting..."
 msgstr "Deleting..."
 
-#: src/components/gdpr-panel.tsx:47
+#: src/components/gdpr-panel.tsx:107
 msgid "Deletion failed"
 msgstr "Deletion failed"
 
-#: src/routes/gdpr.tsx:48
+#: src/routes/gdpr.tsx:44
 msgid "Deletion request submitted"
 msgstr "Deletion request submitted"
 
@@ -606,19 +614,19 @@ msgstr "Discord"
 msgid "Display Name"
 msgstr "Display Name"
 
-#: src/routes/import.tsx:364
+#: src/routes/import.tsx:373
 msgid "Download a sample CSV file with the expected format"
 msgstr ""
 
-#: src/routes/import.tsx:379
+#: src/routes/import.tsx:388
 msgid "Download a sample JSON file with the expected format"
 msgstr ""
 
-#: src/routes/import.tsx:331
+#: src/routes/import.tsx:340
 msgid "Drag and drop your file here, or click to browse"
 msgstr ""
 
-#: src/routes/import.tsx:321
+#: src/routes/import.tsx:330
 msgid "Drop file here or click to upload"
 msgstr ""
 
@@ -728,7 +736,7 @@ msgstr "Enter email address..."
 msgid "Enter valid JSON"
 msgstr "Enter valid JSON"
 
-#: src/routes/import.tsx:622
+#: src/routes/import.tsx:631
 msgid "Entries to import:"
 msgstr ""
 
@@ -781,29 +789,29 @@ msgstr "Environments define deployment targets like production or staging."
 msgid "Event types"
 msgstr "Event types"
 
-#: src/components/gdpr-panel.tsx:68
-msgid "Export"
-msgstr "Export"
+#: src/components/gdpr-panel.tsx:125
+msgid "Export all personal data associated with a team member as a JSON file."
+msgstr ""
 
-#: src/components/gdpr-panel.tsx:63
-msgid "Export all personal data associated with a user ID as a JSON file."
-msgstr "Export all personal data associated with a user ID as a JSON file."
-
-#: src/components/gdpr-panel.tsx:31
-#: src/routes/gdpr.tsx:41
+#: src/components/gdpr-panel.tsx:88
+#: src/routes/gdpr.tsx:38
 msgid "Export failed"
 msgstr "Export failed"
 
-#: src/routes/gdpr.tsx:37
+#: src/routes/gdpr.tsx:36
 msgid "Export ready. Download link valid for 24 hours."
 msgstr ""
 
-#: src/components/gdpr-panel.tsx:68
+#: src/components/gdpr-panel.tsx:224
+msgid "Export User Data"
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:222
 msgid "Exporting..."
 msgstr "Exporting..."
 
-#: src/routes/import.tsx:526
-#: src/routes/import.tsx:774
+#: src/routes/import.tsx:535
+#: src/routes/import.tsx:783
 msgid "Failed"
 msgstr ""
 
@@ -947,7 +955,7 @@ msgstr "Feature Flags"
 msgid "Feature guide"
 msgstr "Feature guide"
 
-#: src/routes/import.tsx:224
+#: src/routes/import.tsx:233
 msgid "File is empty or contains no valid rows"
 msgstr ""
 
@@ -968,7 +976,7 @@ msgstr "Fresh"
 msgid "GDPR & Privacy"
 msgstr "GDPR & Privacy"
 
-#: src/routes/gdpr.tsx:54
+#: src/routes/gdpr.tsx:50
 msgid "GDPR Compliance"
 msgstr "GDPR Compliance"
 
@@ -1026,23 +1034,23 @@ msgid "Import"
 msgstr ""
 
 #. placeholder {0}: isProcessing ? "In Progress" : "Complete"
-#: src/routes/import.tsx:732
+#: src/routes/import.tsx:741
 msgid "Import {0}"
 msgstr ""
 
-#: src/routes/import.tsx:104
+#: src/routes/import.tsx:113
 msgid "Import Configurations"
 msgstr ""
 
-#: src/routes/import.tsx:603
+#: src/routes/import.tsx:612
 msgid "Import failed"
 msgstr ""
 
-#: src/routes/import.tsx:709
+#: src/routes/import.tsx:718
 msgid "Import job not found."
 msgstr ""
 
-#: src/routes/import.tsx:166
+#: src/routes/import.tsx:175
 msgid "Import wizard steps"
 msgstr ""
 
@@ -1062,14 +1070,14 @@ msgstr "Invite sent"
 msgid "JSON and array values are validated for correct syntax automatically."
 msgstr "JSON and array values are validated for correct syntax automatically."
 
-#: src/routes/import.tsx:375
+#: src/routes/import.tsx:384
 msgid "JSON Template"
 msgstr ""
 
 #: src/components/config-form-modal.tsx:232
 #: src/routes/configs.tsx:519
-#: src/routes/import.tsx:415
-#: src/routes/import.tsx:541
+#: src/routes/import.tsx:424
+#: src/routes/import.tsx:550
 msgid "Key"
 msgstr "キー"
 
@@ -1110,7 +1118,7 @@ msgstr "Loading..."
 msgid "Lock"
 msgstr "Lock"
 
-#: src/routes/gdpr.tsx:56
+#: src/routes/gdpr.tsx:52
 msgid "Manage data export and deletion requests for compliance."
 msgstr "Manage data export and deletion requests for compliance."
 
@@ -1197,7 +1205,7 @@ msgstr "New Config"
 msgid "New Environment"
 msgstr "New Environment"
 
-#: src/routes/import.tsx:141
+#: src/routes/import.tsx:150
 msgid "Next"
 msgstr ""
 
@@ -1265,7 +1273,7 @@ msgstr "No overrides configured."
 msgid "No prerequisites configured."
 msgstr "前提条件は設定されていません。"
 
-#: src/routes/import.tsx:581
+#: src/routes/import.tsx:590
 msgid "No project or environment selected"
 msgstr ""
 
@@ -1289,6 +1297,11 @@ msgstr "No segments defined."
 #: src/components/rule-builder.tsx:195
 msgid "No targeting rules. All users receive the default value."
 msgstr "ターゲティングルールなし。全ユーザーにデフォルト値が配信されます。"
+
+#: src/components/gdpr-panel.tsx:177
+#: src/components/gdpr-panel.tsx:294
+msgid "No team members found"
+msgstr ""
 
 #: src/components/rbac-manager.tsx:111
 msgid "No team members yet."
@@ -1338,7 +1351,7 @@ msgstr "オーバーライド"
 msgid "Overrides saved"
 msgstr "Overrides saved"
 
-#: src/routes/import.tsx:651
+#: src/routes/import.tsx:660
 msgid "Overwrite existing — replace with imported values"
 msgstr ""
 
@@ -1376,9 +1389,9 @@ msgstr "Per-env overrides"
 msgid "Per-User Overrides"
 msgstr "Per-User Overrides"
 
-#: src/components/gdpr-panel.tsx:82
-msgid "Permanently remove all personal data for a user ID. This action cannot be undone."
-msgstr "Permanently remove all personal data for a user ID. This action cannot be undone."
+#: src/components/gdpr-panel.tsx:240
+msgid "Permanently remove all personal data for a team member. This action cannot be undone."
+msgstr ""
 
 #: src/components/date-picker-schedule.tsx:164
 msgid "Pick a date"
@@ -1388,7 +1401,7 @@ msgstr "Pick a date"
 msgid "Pin to top"
 msgstr "Pin to top"
 
-#: src/routes/import.tsx:585
+#: src/routes/import.tsx:594
 msgid "Please select a conflict resolution strategy"
 msgstr ""
 
@@ -1412,8 +1425,8 @@ msgstr "前提条件"
 msgid "Prerequisites saved"
 msgstr "Prerequisites saved"
 
-#: src/routes/import.tsx:156
-#: src/routes/import.tsx:400
+#: src/routes/import.tsx:165
+#: src/routes/import.tsx:409
 #: src/routes/settings.tsx:127
 msgid "Preview"
 msgstr "プレビュー"
@@ -1431,11 +1444,11 @@ msgstr "Previous page"
 msgid "Priority"
 msgstr "優先度"
 
-#: src/routes/import.tsx:746
+#: src/routes/import.tsx:755
 msgid "processed"
 msgstr ""
 
-#: src/routes/import.tsx:674
+#: src/routes/import.tsx:683
 msgid "Processing..."
 msgstr ""
 
@@ -1510,7 +1523,7 @@ msgstr "Protected by Firebase Authentication."
 msgid "Real-time"
 msgstr "Real-time"
 
-#: src/routes/import.tsx:544
+#: src/routes/import.tsx:553
 msgid "Reason"
 msgstr ""
 
@@ -1537,7 +1550,7 @@ msgstr "Remove member?"
 msgid "Resource categories"
 msgstr "Resource categories"
 
-#: src/routes/import.tsx:159
+#: src/routes/import.tsx:168
 msgid "Results"
 msgstr ""
 
@@ -1546,11 +1559,11 @@ msgstr ""
 msgid "Review {0} changes"
 msgstr "Review {0} changes"
 
-#: src/routes/import.tsx:656
+#: src/routes/import.tsx:665
 msgid "Review individually — decide per entry"
 msgstr ""
 
-#: src/routes/import.tsx:614
+#: src/routes/import.tsx:623
 msgid "Review your import settings and confirm to begin processing."
 msgstr ""
 
@@ -1578,7 +1591,7 @@ msgstr "ロールアウト"
 msgid "Rollout updated"
 msgstr "Rollout updated"
 
-#: src/routes/import.tsx:538
+#: src/routes/import.tsx:547
 msgid "Row"
 msgstr ""
 
@@ -1638,6 +1651,19 @@ msgstr "Search environments..."
 #: src/components/project-switcher.tsx:72
 msgid "Search projects..."
 msgstr "Search projects..."
+
+#: src/components/gdpr-panel.tsx:287
+msgid "Search team members for deletion"
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:170
+msgid "Search team members for export"
+msgstr ""
+
+#: src/components/gdpr-panel.tsx:162
+#: src/components/gdpr-panel.tsx:278
+msgid "Search team members..."
+msgstr ""
 
 #: src/components/audit-log-viewer.tsx:128
 msgid "Search..."
@@ -1744,7 +1770,7 @@ msgstr "Select env"
 msgid "Select project"
 msgstr "Select project"
 
-#: src/routes/import.tsx:644
+#: src/routes/import.tsx:653
 msgid "Select strategy"
 msgstr ""
 
@@ -1784,7 +1810,7 @@ msgstr "Show unchanged ({unchangedCount})"
 #. placeholder {0}: previewRows.length
 #. placeholder {1}: parsedEntries.length
 #. placeholder {2}: file?.name ?? "file"
-#: src/routes/import.tsx:403
+#: src/routes/import.tsx:412
 msgid "Showing {0} of {1} entries from {2}"
 msgstr ""
 
@@ -1812,11 +1838,11 @@ msgstr "Sign in with Google"
 msgid "Sign out"
 msgstr "Sign out"
 
-#: src/routes/import.tsx:648
+#: src/routes/import.tsx:657
 msgid "Skip existing — keep current values"
 msgstr ""
 
-#: src/routes/import.tsx:780
+#: src/routes/import.tsx:789
 msgid "Skipped"
 msgstr ""
 
@@ -1840,11 +1866,11 @@ msgstr "Standard JSON"
 msgid "Start configuring your environments with secrets and settings."
 msgstr "Start configuring your environments with secrets and settings."
 
-#: src/routes/import.tsx:679
+#: src/routes/import.tsx:688
 msgid "Start Import"
 msgstr ""
 
-#: src/routes/import.tsx:794
+#: src/routes/import.tsx:803
 msgid "Start New Import"
 msgstr ""
 
@@ -1860,7 +1886,7 @@ msgstr "Storing personal data in config values may violate GDPR. Acknowledge to 
 msgid "String value"
 msgstr "String value"
 
-#: src/routes/import.tsx:766
+#: src/routes/import.tsx:775
 msgid "Succeeded"
 msgstr ""
 
@@ -1898,7 +1924,7 @@ msgstr "ターゲットセグメント"
 msgid "Target value"
 msgstr "Target value"
 
-#: src/routes/import.tsx:119
+#: src/routes/import.tsx:128
 msgid "Target:"
 msgstr ""
 
@@ -1991,8 +2017,8 @@ msgstr "Timezone"
 msgid "Toggle theme"
 msgstr "Toggle theme"
 
-#: src/routes/import.tsx:509
-#: src/routes/import.tsx:758
+#: src/routes/import.tsx:518
+#: src/routes/import.tsx:767
 msgid "Total"
 msgstr ""
 
@@ -2006,7 +2032,7 @@ msgstr "Try a different account"
 
 #: src/components/config-form-modal.tsx:256
 #: src/routes/configs.tsx:522
-#: src/routes/import.tsx:421
+#: src/routes/import.tsx:430
 msgid "Type"
 msgstr "タイプ"
 
@@ -2048,15 +2074,15 @@ msgstr "Update the segment name, description, and conditions."
 msgid "Updated"
 msgstr "更新日"
 
-#: src/routes/import.tsx:155
+#: src/routes/import.tsx:164
 msgid "Upload"
 msgstr ""
 
-#: src/routes/import.tsx:302
+#: src/routes/import.tsx:311
 msgid "Upload a CSV or JSON file with your configuration entries. Maximum 5 MB, up to 10,000 entries."
 msgstr ""
 
-#: src/routes/import.tsx:299
+#: src/routes/import.tsx:308
 msgid "Upload File"
 msgstr ""
 
@@ -2082,23 +2108,15 @@ msgstr "User ID"
 msgid "User ID or email"
 msgstr "User ID or email"
 
-#: src/components/gdpr-panel.tsx:84
-msgid "User ID to delete"
-msgstr "User ID to delete"
-
-#: src/components/gdpr-panel.tsx:65
-msgid "User ID to export"
-msgstr "User ID to export"
-
-#: src/routes/import.tsx:517
+#: src/routes/import.tsx:526
 msgid "Valid"
 msgstr ""
 
-#: src/routes/import.tsx:157
+#: src/routes/import.tsx:166
 msgid "Validate"
 msgstr ""
 
-#: src/routes/import.tsx:501
+#: src/routes/import.tsx:510
 msgid "Validation Results"
 msgstr ""
 
@@ -2110,7 +2128,7 @@ msgstr "Validation Rules"
 #: src/components/config-form-modal.tsx:278
 #: src/components/override-manager.tsx:46
 #: src/routes/configs.tsx:525
-#: src/routes/import.tsx:418
+#: src/routes/import.tsx:427
 msgid "Value"
 msgstr "値"
 
@@ -2139,7 +2157,7 @@ msgstr "Versioned"
 msgid "View changes"
 msgstr "View changes"
 
-#: src/routes/import.tsx:790
+#: src/routes/import.tsx:799
 msgid "View Failed Entries"
 msgstr ""
 

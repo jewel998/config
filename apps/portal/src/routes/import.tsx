@@ -60,6 +60,8 @@ import type {
   ValidationResult,
 } from "@/lib/types";
 import { useImportConfigs, useImportJob } from "@/hooks/use-import";
+import { useEnvironments } from "@/hooks/use-environments";
+import { useProjects } from "@/hooks/use-projects";
 import {
   useImportWizardStore,
   type WizardStep,
@@ -82,6 +84,13 @@ function ImportPage() {
   const environmentId = useProjectStore((s) => s.selectedEnvironmentId);
   const importMutation = useImportConfigs();
   const { job } = useImportJob(projectId, store.jobId);
+  const { data: projects = [] } = useProjects();
+  const { data: environments = [] } = useEnvironments(projectId);
+
+  const projectName =
+    projects.find((p) => p.id === projectId)?.name ?? projectId;
+  const environmentName =
+    environments.find((e) => e.id === environmentId)?.name ?? environmentId;
 
   const stepIndex = STEPS.indexOf(store.step);
 
@@ -117,8 +126,8 @@ function ImportPage() {
       {projectId && environmentId && (
         <div className="bg-muted/50 rounded-md px-4 py-2 text-sm">
           <Trans>Target:</Trans>{" "}
-          <span className="font-medium">{projectId}</span> /{" "}
-          <span className="font-medium">{environmentId}</span>
+          <span className="font-medium">{projectName}</span> /{" "}
+          <span className="font-medium">{environmentName}</span>
         </div>
       )}
 
