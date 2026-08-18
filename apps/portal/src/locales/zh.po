@@ -1073,7 +1073,7 @@ msgstr ""
 #: src/routes/configs.tsx:519
 #: src/routes/import.tsx:423
 #: src/routes/import.tsx:549
-#: src/routes/import.tsx:776
+#: src/routes/import.tsx:777
 msgid "Key"
 msgstr "键"
 
@@ -1520,7 +1520,7 @@ msgid "Real-time"
 msgstr "实时"
 
 #: src/routes/import.tsx:552
-#: src/routes/import.tsx:777
+#: src/routes/import.tsx:780
 msgid "Reason"
 msgstr ""
 
@@ -1867,7 +1867,7 @@ msgstr "Start configuring your environments with secrets and settings."
 msgid "Start Import"
 msgstr ""
 
-#: src/routes/import.tsx:795
+#: src/routes/import.tsx:803
 msgid "Start New Import"
 msgstr ""
 
