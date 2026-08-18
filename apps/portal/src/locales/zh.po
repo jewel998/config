@@ -12,11 +12,11 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: store.validationResult?.conflicts.length
-#: src/routes/import.tsx:641
+#: src/routes/import.tsx:639
 msgid "{0} conflicting entries found. Choose a resolution strategy:"
 msgstr ""
 
-#: src/routes/import.tsx:343
+#: src/routes/import.tsx:342
 msgid "Accepts .csv and .json files (max 5 MB)"
 msgstr ""
 
@@ -206,7 +206,7 @@ msgstr "审计日志"
 msgid "Available Variables"
 msgstr "Available Variables"
 
-#: src/routes/import.tsx:146
+#: src/routes/import.tsx:145
 msgid "Back"
 msgstr ""
 
@@ -218,7 +218,7 @@ msgstr "之前"
 msgid "Boolean values are constrained to true/false by default."
 msgstr "Boolean values are constrained to true/false by default."
 
-#: src/routes/import.tsx:116
+#: src/routes/import.tsx:115
 msgid "Bulk import configuration entries from a CSV or JSON file."
 msgstr ""
 
@@ -384,7 +384,7 @@ msgstr "Configs guide"
 msgid "Configure an HTTP endpoint to receive notifications."
 msgstr "Configure an HTTP endpoint to receive notifications."
 
-#: src/routes/import.tsx:167
+#: src/routes/import.tsx:166
 msgid "Confirm"
 msgstr ""
 
@@ -396,7 +396,7 @@ msgstr "Confirm Delete"
 msgid "Confirm Delete?"
 msgstr "Confirm Delete?"
 
-#: src/routes/import.tsx:620
+#: src/routes/import.tsx:618
 msgid "Confirm Import"
 msgstr ""
 
@@ -408,7 +408,7 @@ msgstr "Confirm Sync"
 msgid "Confirm?"
 msgstr "Confirm?"
 
-#: src/routes/import.tsx:652
+#: src/routes/import.tsx:650
 msgid "Conflict resolution strategy"
 msgstr ""
 
@@ -473,7 +473,7 @@ msgstr "Create your first project"
 msgid "Created"
 msgstr "创建时间"
 
-#: src/routes/import.tsx:369
+#: src/routes/import.tsx:368
 msgid "CSV Template"
 msgstr ""
 
@@ -614,19 +614,19 @@ msgstr "Discord"
 msgid "Display Name"
 msgstr "显示名称"
 
-#: src/routes/import.tsx:373
+#: src/routes/import.tsx:372
 msgid "Download a sample CSV file with the expected format"
 msgstr ""
 
-#: src/routes/import.tsx:388
+#: src/routes/import.tsx:387
 msgid "Download a sample JSON file with the expected format"
 msgstr ""
 
-#: src/routes/import.tsx:340
+#: src/routes/import.tsx:339
 msgid "Drag and drop your file here, or click to browse"
 msgstr ""
 
-#: src/routes/import.tsx:330
+#: src/routes/import.tsx:329
 msgid "Drop file here or click to upload"
 msgstr ""
 
@@ -736,7 +736,7 @@ msgstr "Enter email address..."
 msgid "Enter valid JSON"
 msgstr "Enter valid JSON"
 
-#: src/routes/import.tsx:631
+#: src/routes/import.tsx:629
 msgid "Entries to import:"
 msgstr ""
 
@@ -810,8 +810,8 @@ msgstr ""
 msgid "Exporting..."
 msgstr "Exporting..."
 
-#: src/routes/import.tsx:535
-#: src/routes/import.tsx:783
+#: src/routes/import.tsx:534
+#: src/routes/import.tsx:759
 msgid "Failed"
 msgstr ""
 
@@ -955,7 +955,7 @@ msgstr "Feature Flags"
 msgid "Feature guide"
 msgstr "Feature guide"
 
-#: src/routes/import.tsx:233
+#: src/routes/import.tsx:232
 msgid "File is empty or contains no valid rows"
 msgstr ""
 
@@ -1033,24 +1033,19 @@ msgstr "identical"
 msgid "Import"
 msgstr ""
 
-#. placeholder {0}: isProcessing ? "In Progress" : "Complete"
-#: src/routes/import.tsx:741
-msgid "Import {0}"
+#: src/routes/import.tsx:734
+msgid "Import Complete"
 msgstr ""
 
-#: src/routes/import.tsx:113
+#: src/routes/import.tsx:112
 msgid "Import Configurations"
 msgstr ""
 
-#: src/routes/import.tsx:612
+#: src/routes/import.tsx:610
 msgid "Import failed"
 msgstr ""
 
-#: src/routes/import.tsx:718
-msgid "Import job not found."
-msgstr ""
-
-#: src/routes/import.tsx:175
+#: src/routes/import.tsx:174
 msgid "Import wizard steps"
 msgstr ""
 
@@ -1070,14 +1065,15 @@ msgstr "Invite sent"
 msgid "JSON and array values are validated for correct syntax automatically."
 msgstr "JSON and array values are validated for correct syntax automatically."
 
-#: src/routes/import.tsx:384
+#: src/routes/import.tsx:383
 msgid "JSON Template"
 msgstr ""
 
 #: src/components/config-form-modal.tsx:232
 #: src/routes/configs.tsx:519
-#: src/routes/import.tsx:424
-#: src/routes/import.tsx:550
+#: src/routes/import.tsx:423
+#: src/routes/import.tsx:549
+#: src/routes/import.tsx:776
 msgid "Key"
 msgstr "键"
 
@@ -1205,7 +1201,7 @@ msgstr "New Config"
 msgid "New Environment"
 msgstr "新建环境"
 
-#: src/routes/import.tsx:150
+#: src/routes/import.tsx:149
 msgid "Next"
 msgstr ""
 
@@ -1257,6 +1253,10 @@ msgstr "暂无环境"
 msgid "No environments yet."
 msgstr "No environments yet."
 
+#: src/routes/import.tsx:716
+msgid "No import results available."
+msgstr ""
+
 #: src/components/config-form-modal.tsx:374
 msgid "No maximum"
 msgstr "No maximum"
@@ -1273,7 +1273,7 @@ msgstr "No overrides configured."
 msgid "No prerequisites configured."
 msgstr "No prerequisites configured."
 
-#: src/routes/import.tsx:590
+#: src/routes/import.tsx:589
 msgid "No project or environment selected"
 msgstr ""
 
@@ -1351,7 +1351,7 @@ msgstr "覆盖"
 msgid "Overrides saved"
 msgstr "Overrides saved"
 
-#: src/routes/import.tsx:660
+#: src/routes/import.tsx:658
 msgid "Overwrite existing — replace with imported values"
 msgstr ""
 
@@ -1401,7 +1401,7 @@ msgstr "Pick a date"
 msgid "Pin to top"
 msgstr "Pin to top"
 
-#: src/routes/import.tsx:594
+#: src/routes/import.tsx:593
 msgid "Please select a conflict resolution strategy"
 msgstr ""
 
@@ -1425,8 +1425,8 @@ msgstr "前置条件"
 msgid "Prerequisites saved"
 msgstr "Prerequisites saved"
 
-#: src/routes/import.tsx:165
-#: src/routes/import.tsx:409
+#: src/routes/import.tsx:164
+#: src/routes/import.tsx:408
 #: src/routes/settings.tsx:127
 msgid "Preview"
 msgstr "预览"
@@ -1444,11 +1444,7 @@ msgstr "Previous page"
 msgid "Priority"
 msgstr "优先级"
 
-#: src/routes/import.tsx:755
-msgid "processed"
-msgstr ""
-
-#: src/routes/import.tsx:683
+#: src/routes/import.tsx:681
 msgid "Processing..."
 msgstr ""
 
@@ -1523,7 +1519,8 @@ msgstr "Protected by Firebase Authentication."
 msgid "Real-time"
 msgstr "实时"
 
-#: src/routes/import.tsx:553
+#: src/routes/import.tsx:552
+#: src/routes/import.tsx:777
 msgid "Reason"
 msgstr ""
 
@@ -1550,7 +1547,7 @@ msgstr "Remove member?"
 msgid "Resource categories"
 msgstr "Resource categories"
 
-#: src/routes/import.tsx:168
+#: src/routes/import.tsx:167
 msgid "Results"
 msgstr ""
 
@@ -1559,11 +1556,11 @@ msgstr ""
 msgid "Review {0} changes"
 msgstr "Review {0} changes"
 
-#: src/routes/import.tsx:665
+#: src/routes/import.tsx:663
 msgid "Review individually — decide per entry"
 msgstr ""
 
-#: src/routes/import.tsx:623
+#: src/routes/import.tsx:621
 msgid "Review your import settings and confirm to begin processing."
 msgstr ""
 
@@ -1591,7 +1588,7 @@ msgstr "灰度发布"
 msgid "Rollout updated"
 msgstr "Rollout updated"
 
-#: src/routes/import.tsx:547
+#: src/routes/import.tsx:546
 msgid "Row"
 msgstr ""
 
@@ -1770,7 +1767,7 @@ msgstr "Select env"
 msgid "Select project"
 msgstr "Select project"
 
-#: src/routes/import.tsx:653
+#: src/routes/import.tsx:651
 msgid "Select strategy"
 msgstr ""
 
@@ -1810,7 +1807,7 @@ msgstr "Show unchanged ({unchangedCount})"
 #. placeholder {0}: previewRows.length
 #. placeholder {1}: parsedEntries.length
 #. placeholder {2}: file?.name ?? "file"
-#: src/routes/import.tsx:412
+#: src/routes/import.tsx:411
 msgid "Showing {0} of {1} entries from {2}"
 msgstr ""
 
@@ -1838,11 +1835,11 @@ msgstr "使用 Google 登录"
 msgid "Sign out"
 msgstr "退出登录"
 
-#: src/routes/import.tsx:657
+#: src/routes/import.tsx:655
 msgid "Skip existing — keep current values"
 msgstr ""
 
-#: src/routes/import.tsx:789
+#: src/routes/import.tsx:765
 msgid "Skipped"
 msgstr ""
 
@@ -1866,11 +1863,11 @@ msgstr "Standard JSON"
 msgid "Start configuring your environments with secrets and settings."
 msgstr "Start configuring your environments with secrets and settings."
 
-#: src/routes/import.tsx:688
+#: src/routes/import.tsx:686
 msgid "Start Import"
 msgstr ""
 
-#: src/routes/import.tsx:803
+#: src/routes/import.tsx:795
 msgid "Start New Import"
 msgstr ""
 
@@ -1886,7 +1883,7 @@ msgstr "Storing personal data in config values may violate GDPR. Acknowledge to 
 msgid "String value"
 msgstr "String value"
 
-#: src/routes/import.tsx:775
+#: src/routes/import.tsx:751
 msgid "Succeeded"
 msgstr ""
 
@@ -1924,7 +1921,7 @@ msgstr "Target Segment"
 msgid "Target value"
 msgstr "Target value"
 
-#: src/routes/import.tsx:128
+#: src/routes/import.tsx:127
 msgid "Target:"
 msgstr ""
 
@@ -2017,8 +2014,8 @@ msgstr "时区"
 msgid "Toggle theme"
 msgstr "Toggle theme"
 
-#: src/routes/import.tsx:518
-#: src/routes/import.tsx:767
+#: src/routes/import.tsx:517
+#: src/routes/import.tsx:743
 msgid "Total"
 msgstr ""
 
@@ -2032,7 +2029,7 @@ msgstr "Try a different account"
 
 #: src/components/config-form-modal.tsx:256
 #: src/routes/configs.tsx:522
-#: src/routes/import.tsx:430
+#: src/routes/import.tsx:429
 msgid "Type"
 msgstr "类型"
 
@@ -2074,15 +2071,15 @@ msgstr "Update the segment name, description, and conditions."
 msgid "Updated"
 msgstr "已更新"
 
-#: src/routes/import.tsx:164
+#: src/routes/import.tsx:163
 msgid "Upload"
 msgstr ""
 
-#: src/routes/import.tsx:311
+#: src/routes/import.tsx:310
 msgid "Upload a CSV or JSON file with your configuration entries. Maximum 5 MB, up to 10,000 entries."
 msgstr ""
 
-#: src/routes/import.tsx:308
+#: src/routes/import.tsx:307
 msgid "Upload File"
 msgstr ""
 
@@ -2108,15 +2105,15 @@ msgstr "用户 ID"
 msgid "User ID or email"
 msgstr "User ID or email"
 
-#: src/routes/import.tsx:526
+#: src/routes/import.tsx:525
 msgid "Valid"
 msgstr ""
 
-#: src/routes/import.tsx:166
+#: src/routes/import.tsx:165
 msgid "Validate"
 msgstr ""
 
-#: src/routes/import.tsx:510
+#: src/routes/import.tsx:509
 msgid "Validation Results"
 msgstr ""
 
@@ -2128,7 +2125,7 @@ msgstr "Validation Rules"
 #: src/components/config-form-modal.tsx:278
 #: src/components/override-manager.tsx:46
 #: src/routes/configs.tsx:525
-#: src/routes/import.tsx:427
+#: src/routes/import.tsx:426
 msgid "Value"
 msgstr "值"
 
@@ -2156,10 +2153,6 @@ msgstr "Versioned"
 #: src/components/audit-entry-row.tsx:81
 msgid "View changes"
 msgstr "View changes"
-
-#: src/routes/import.tsx:799
-msgid "View Failed Entries"
-msgstr ""
 
 #: src/hooks/use-webhook-mutations.ts:66
 msgid "Webhook created"

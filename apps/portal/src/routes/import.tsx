@@ -59,7 +59,7 @@ import type {
   RawEntry,
   ValidationResult,
 } from "@/lib/types";
-import { useImportConfigs, useImportJob } from "@/hooks/use-import";
+import { useImportConfigs } from "@/hooks/use-import";
 import { useEnvironments } from "@/hooks/use-environments";
 import { useProjects } from "@/hooks/use-projects";
 import {
@@ -83,7 +83,6 @@ function ImportPage() {
   const projectId = useProjectStore((s) => s.selectedProjectId);
   const environmentId = useProjectStore((s) => s.selectedEnvironmentId);
   const importMutation = useImportConfigs();
-  const { job } = useImportJob(projectId, store.jobId);
   const { data: projects = [] } = useProjects();
   const { data: environments = [] } = useEnvironments(projectId);
 
@@ -606,7 +605,6 @@ function ConfirmStep() {
             ? store.reviewDecisions
             : undefined,
       });
-      store.setJobId(result.jobId);
       store.setStep("results");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : t`Import failed`);
@@ -698,10 +696,10 @@ function ConfirmStep() {
 
 function ResultsStep() {
   const store = useImportWizardStore();
-  const projectId = useProjectStore((s) => s.selectedProjectId);
-  const { job, isLoading } = useImportJob(projectId, store.jobId);
+  const importMutation = useImportConfigs();
+  const result = importMutation.data;
 
-  if (isLoading) {
+  if (importMutation.isPending) {
     return (
       <Card>
         <CardContent className="flex items-center justify-center py-12">
@@ -711,94 +709,96 @@ function ResultsStep() {
     );
   }
 
-  if (!job) {
+  if (!result) {
     return (
       <Card>
         <CardContent className="py-8 text-center">
-          <Trans>Import job not found.</Trans>
+          <Trans>No import results available.</Trans>
         </CardContent>
       </Card>
     );
   }
 
-  const isProcessing = job.status === "processing";
-  const progress =
-    job.totalRows > 0
-      ? Math.round((job.processedRows / job.totalRows) * 100)
-      : 0;
+  const total = result.succeeded + result.failed + result.skipped;
+  const hasFailures = result.failed > 0;
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          {isProcessing ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : job.status === "completed" || job.status === "resolved" ? (
-            <CheckCircle2 className="h-5 w-5 text-green-500" />
+          {hasFailures ? (
+            <XCircle className="h-5 w-5 text-yellow-500" />
           ) : (
-            <XCircle className="h-5 w-5 text-red-500" />
+            <CheckCircle2 className="h-5 w-5 text-green-500" />
           )}
-          <Trans>Import {isProcessing ? "In Progress" : "Complete"}</Trans>
+          <Trans>Import Complete</Trans>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Progress Bar */}
-        {isProcessing && (
-          <div className="space-y-2">
-            <div className="bg-muted h-2 overflow-hidden rounded-full">
-              <div
-                className="bg-primary h-full transition-all"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <p className="text-muted-foreground text-sm">
-              {job.processedRows} / {job.totalRows} <Trans>processed</Trans> (
-              {progress}%)
+        {/* Summary Stats */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="rounded-lg border p-3 text-center">
+            <p className="text-lg font-semibold">{total}</p>
+            <p className="text-muted-foreground text-xs">
+              <Trans>Total</Trans>
             </p>
           </div>
-        )}
+          <div className="rounded-lg border border-green-200 p-3 text-center dark:border-green-900">
+            <p className="text-lg font-semibold text-green-600">
+              {result.succeeded}
+            </p>
+            <p className="text-xs text-green-600">
+              <Trans>Succeeded</Trans>
+            </p>
+          </div>
+          <div className="rounded-lg border border-red-200 p-3 text-center dark:border-red-900">
+            <p className="text-lg font-semibold text-red-600">
+              {result.failed}
+            </p>
+            <p className="text-xs text-red-600">
+              <Trans>Failed</Trans>
+            </p>
+          </div>
+          <div className="rounded-lg border p-3 text-center">
+            <p className="text-lg font-semibold">{result.skipped}</p>
+            <p className="text-muted-foreground text-xs">
+              <Trans>Skipped</Trans>
+            </p>
+          </div>
+        </div>
 
-        {/* Summary Stats */}
-        {!isProcessing && (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div className="rounded-lg border p-3 text-center">
-              <p className="text-lg font-semibold">{job.totalRows}</p>
-              <p className="text-muted-foreground text-xs">
-                <Trans>Total</Trans>
-              </p>
-            </div>
-            <div className="rounded-lg border border-green-200 p-3 text-center dark:border-green-900">
-              <p className="text-lg font-semibold text-green-600">
-                {job.succeededCount}
-              </p>
-              <p className="text-xs text-green-600">
-                <Trans>Succeeded</Trans>
-              </p>
-            </div>
-            <div className="rounded-lg border border-red-200 p-3 text-center dark:border-red-900">
-              <p className="text-lg font-semibold text-red-600">
-                {job.failedCount}
-              </p>
-              <p className="text-xs text-red-600">
-                <Trans>Failed</Trans>
-              </p>
-            </div>
-            <div className="rounded-lg border p-3 text-center">
-              <p className="text-lg font-semibold">{job.skippedCount}</p>
-              <p className="text-muted-foreground text-xs">
-                <Trans>Skipped</Trans>
-              </p>
-            </div>
+        {/* Failed entries detail */}
+        {hasFailures && (
+          <div className="max-h-[300px] overflow-auto rounded border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>
+                    <Trans>Key</Trans>
+                  </TableHead>
+                  <TableHead>
+                    <Trans>Reason</Trans>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {result.failedEntries.map((entry, i) => (
+                  <TableRow key={i}>
+                    <TableCell className="font-mono text-sm">
+                      {entry.key}
+                    </TableCell>
+                    <TableCell className="text-destructive text-sm">
+                      {entry.reason}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         )}
 
         {/* Actions */}
         <div className="flex gap-2">
-          {job.failedCount > 0 && (
-            <Button variant="outline" size="sm">
-              <Trans>View Failed Entries</Trans>
-            </Button>
-          )}
           <Button variant="outline" size="sm" onClick={() => store.reset()}>
             <Trans>Start New Import</Trans>
           </Button>
