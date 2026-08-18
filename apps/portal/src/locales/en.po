@@ -852,7 +852,7 @@ msgstr "Failed to create project"
 msgid "Failed to create segment"
 msgstr "Failed to create segment"
 
-#: src/hooks/use-webhook-mutations.ts:63
+#: src/hooks/use-webhook-mutations.ts:68
 msgid "Failed to create webhook"
 msgstr "Failed to create webhook"
 
@@ -877,7 +877,7 @@ msgstr "Failed to delete project"
 msgid "Failed to delete segment"
 msgstr "Failed to delete segment"
 
-#: src/hooks/use-webhook-mutations.ts:150
+#: src/hooks/use-webhook-mutations.ts:161
 msgid "Failed to delete webhook"
 msgstr "Failed to delete webhook"
 
@@ -945,7 +945,7 @@ msgstr "Failed to update schedule"
 msgid "Failed to update segment"
 msgstr "Failed to update segment"
 
-#: src/hooks/use-webhook-mutations.ts:110
+#: src/hooks/use-webhook-mutations.ts:118
 msgid "Failed to update webhook"
 msgstr "Failed to update webhook"
 
@@ -1333,7 +1333,7 @@ msgstr "Not set"
 msgid "Numeric value"
 msgstr "Numeric value"
 
-#: src/hooks/use-webhook-mutations.ts:182
+#: src/hooks/use-webhook-mutations.ts:196
 msgid "Operation failed"
 msgstr "Operation failed"
 
@@ -2156,16 +2156,16 @@ msgstr "Versioned"
 msgid "View changes"
 msgstr "View changes"
 
-#: src/hooks/use-webhook-mutations.ts:60
+#: src/hooks/use-webhook-mutations.ts:65
 msgid "Webhook created"
 msgstr "Webhook created"
 
-#: src/hooks/use-webhook-mutations.ts:147
+#: src/hooks/use-webhook-mutations.ts:158
 msgid "Webhook deleted"
 msgstr "Webhook deleted"
 
-#: src/hooks/use-webhook-mutations.ts:107
-#: src/hooks/use-webhook-mutations.ts:179
+#: src/hooks/use-webhook-mutations.ts:115
+#: src/hooks/use-webhook-mutations.ts:193
 msgid "Webhook updated"
 msgstr "Webhook updated"
 

@@ -121,6 +121,14 @@ export abstract class BaseRepository<
     projectId: string,
     context: AuditContext,
   ): Promise<string> {
+    // Guard: actorId must always be set by the pipeline
+    if (!context.actorId) {
+      throw new RepositoryError(
+        "Audit actorId is required — this is a bug in the repository pipeline",
+        "AUDIT_MISSING_ACTOR",
+      );
+    }
+
     const sanitized: Record<string, unknown> = {
       actorId: context.actorId,
       timestamp: new Date().toISOString(),
@@ -187,6 +195,7 @@ export abstract class BaseRepository<
 
     // 5. Audit (mandatory — NOT in try/catch)
     const auditCtx = this.buildAuditContext("create", ctx, input, null, entity);
+    auditCtx.actorId = user.uid;
     await this.writeAudit(ctx.projectId, auditCtx);
 
     // 6. After hook
@@ -240,6 +249,7 @@ export abstract class BaseRepository<
       oldEntity,
       entity,
     );
+    auditCtx.actorId = user.uid;
     await this.writeAudit(ctx.projectId, auditCtx);
 
     // 6. After hook
@@ -278,6 +288,7 @@ export abstract class BaseRepository<
       undefined,
       oldEntity,
     );
+    auditCtx.actorId = user.uid;
     await this.writeAudit(ctx.projectId, auditCtx);
 
     // 5. After hook
