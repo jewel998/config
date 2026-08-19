@@ -105,54 +105,73 @@ function ImportPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-semibold">
-          <Trans>Import Configurations</Trans>
-        </h1>
-        <p className="text-muted-foreground mt-1">
+    <>
+      {/* Mobile: show desktop-only message */}
+      <div className="flex flex-col items-center justify-center gap-4 px-6 py-16 text-center md:hidden">
+        <Upload className="h-12 w-12 text-muted-foreground" />
+        <h2 className="text-lg font-semibold">
+          <Trans>Desktop Only</Trans>
+        </h2>
+        <p className="text-muted-foreground text-sm max-w-[280px]">
           <Trans>
-            Bulk import configuration entries from a CSV or JSON file.
+            Bulk import requires a desktop browser for file uploads, data
+            preview, and conflict resolution. Please switch to a desktop device.
           </Trans>
         </p>
       </div>
 
-      {/* Step Indicator */}
-      <StepIndicator currentStep={store.step} />
+      {/* Desktop: full wizard */}
+      <div className="hidden md:block">
+        <div className="mx-auto max-w-4xl space-y-6 p-6">
+          {/* Header */}
+          <div>
+            <h1 className="text-2xl font-semibold">
+              <Trans>Import Configurations</Trans>
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              <Trans>
+                Bulk import configuration entries from a CSV or JSON file.
+              </Trans>
+            </p>
+          </div>
 
-      {/* Project/Environment Context */}
-      {projectId && environmentId && (
-        <div className="bg-muted/50 rounded-md px-4 py-2 text-sm">
-          <Trans>Target:</Trans>{" "}
-          <span className="font-medium">{projectName}</span> /{" "}
-          <span className="font-medium">{environmentName}</span>
-        </div>
-      )}
+          {/* Step Indicator */}
+          <StepIndicator currentStep={store.step} />
 
-      {/* Step Content */}
-      {store.step === "upload" && <UploadStep onNext={goNext} />}
-      {store.step === "preview" && <PreviewStep />}
-      {store.step === "validate" && <ValidateStep />}
-      {store.step === "confirm" && <ConfirmStep />}
-      {store.step === "results" && <ResultsStep />}
+          {/* Project/Environment Context */}
+          {projectId && environmentId && (
+            <div className="bg-muted/50 rounded-md px-4 py-2 text-sm">
+              <Trans>Target:</Trans>{" "}
+              <span className="font-medium">{projectName}</span> /{" "}
+              <span className="font-medium">{environmentName}</span>
+            </div>
+          )}
 
-      {/* Navigation */}
-      {store.step !== "upload" && store.step !== "results" && (
-        <div className="flex justify-between">
-          <Button variant="outline" onClick={goBack} disabled={!canGoBack}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            <Trans>Back</Trans>
-          </Button>
-          {store.step !== "confirm" && (
-            <Button onClick={goNext} disabled={!canGoNext}>
-              <Trans>Next</Trans>
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+          {/* Step Content */}
+          {store.step === "upload" && <UploadStep onNext={goNext} />}
+          {store.step === "preview" && <PreviewStep />}
+          {store.step === "validate" && <ValidateStep />}
+          {store.step === "confirm" && <ConfirmStep />}
+          {store.step === "results" && <ResultsStep />}
+
+          {/* Navigation */}
+          {store.step !== "upload" && store.step !== "results" && (
+            <div className="flex justify-between">
+              <Button variant="outline" onClick={goBack} disabled={!canGoBack}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                <Trans>Back</Trans>
+              </Button>
+              {store.step !== "confirm" && (
+                <Button onClick={goNext} disabled={!canGoNext}>
+                  <Trans>Next</Trans>
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+            </div>
           )}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }
 
