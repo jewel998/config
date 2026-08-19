@@ -385,20 +385,37 @@ export abstract class BaseRepository<
       }
     }
 
-    // Single audit entry for the batch
+    // Per-item audit entries + summary entry
     if (succeeded.length > 0) {
-      const auditCtx: AuditContext = {
+      // Write individual audit entry for each created item (traceability)
+      for (const entity of succeeded) {
+        const itemAudit = this.buildAuditContext(
+          "create",
+          ctx,
+          undefined,
+          null,
+          entity,
+        );
+        itemAudit.actorId = user!.uid;
+        await this.writeAudit(ctx.projectId, itemAudit);
+      }
+
+      // Also write a summary entry for the batch operation
+      const summaryAudit: AuditContext = {
         actorId: user!.uid,
         action: "create",
         resourcePath: colPath,
         newValue: {
-          operation: "batch_create",
+          operation: "batch_import",
           total: inputs.length,
           succeeded: succeeded.length,
           failed: failed.length,
+          keys: succeeded.map(
+            (e) => (e as Record<string, unknown>).key ?? e.id,
+          ),
         },
       };
-      await this.writeAudit(ctx.projectId, auditCtx);
+      await this.writeAudit(ctx.projectId, summaryAudit);
     }
 
     // After hooks for all succeeded

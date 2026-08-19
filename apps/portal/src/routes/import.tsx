@@ -595,7 +595,7 @@ function ConfirmStep() {
     }
 
     try {
-      const result = await importMutation.mutateAsync({
+      await importMutation.mutateAsync({
         projectId,
         environmentId,
         entries: store.validationResult?.valid ?? [],
@@ -605,6 +605,8 @@ function ConfirmStep() {
             ? store.reviewDecisions
             : undefined,
       });
+      // setImportResult is called inside useImportConfigs before this resolves
+      // so by the time we get here, the store already has the result
       store.setStep("results");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : t`Import failed`);
@@ -696,13 +698,28 @@ function ConfirmStep() {
 
 function ResultsStep() {
   const store = useImportWizardStore();
+  const importMutation = useImportConfigs();
   const result = store.importResult;
+
+  // Show loading if mutation is still running
+  if (importMutation.isPending) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="ml-3 text-muted-foreground">
+            <Trans>Importing configurations...</Trans>
+          </span>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (!result) {
     return (
       <Card>
         <CardContent className="py-8 text-center">
-          <Trans>No import results available.</Trans>
+          <Trans>No import results available. Please start a new import.</Trans>
         </CardContent>
       </Card>
     );

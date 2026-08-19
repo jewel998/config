@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: store.validationResult?.conflicts.length
-#: src/routes/import.tsx:639
+#: src/routes/import.tsx:641
 msgid "{0} conflicting entries found. Choose a resolution strategy:"
 msgstr ""
 
@@ -396,7 +396,7 @@ msgstr "Confirm Delete"
 msgid "Confirm Delete?"
 msgstr "Confirm Delete?"
 
-#: src/routes/import.tsx:618
+#: src/routes/import.tsx:620
 msgid "Confirm Import"
 msgstr ""
 
@@ -408,7 +408,7 @@ msgstr "Confirm Sync"
 msgid "Confirm?"
 msgstr "Confirm?"
 
-#: src/routes/import.tsx:650
+#: src/routes/import.tsx:652
 msgid "Conflict resolution strategy"
 msgstr ""
 
@@ -736,7 +736,7 @@ msgstr "Enter email address..."
 msgid "Enter valid JSON"
 msgstr "Enter valid JSON"
 
-#: src/routes/import.tsx:629
+#: src/routes/import.tsx:631
 msgid "Entries to import:"
 msgstr ""
 
@@ -811,7 +811,7 @@ msgid "Exporting..."
 msgstr "Exporting..."
 
 #: src/routes/import.tsx:534
-#: src/routes/import.tsx:748
+#: src/routes/import.tsx:765
 msgid "Failed"
 msgstr ""
 
@@ -1033,7 +1033,7 @@ msgstr "identical"
 msgid "Import"
 msgstr ""
 
-#: src/routes/import.tsx:723
+#: src/routes/import.tsx:740
 msgid "Import Complete"
 msgstr ""
 
@@ -1041,12 +1041,16 @@ msgstr ""
 msgid "Import Configurations"
 msgstr ""
 
-#: src/routes/import.tsx:610
+#: src/routes/import.tsx:612
 msgid "Import failed"
 msgstr ""
 
 #: src/routes/import.tsx:174
 msgid "Import wizard steps"
+msgstr ""
+
+#: src/routes/import.tsx:711
+msgid "Importing configurations..."
 msgstr ""
 
 #: src/components/config-form-modal.tsx:140
@@ -1073,7 +1077,7 @@ msgstr ""
 #: src/routes/configs.tsx:519
 #: src/routes/import.tsx:423
 #: src/routes/import.tsx:549
-#: src/routes/import.tsx:766
+#: src/routes/import.tsx:783
 msgid "Key"
 msgstr "Clé"
 
@@ -1253,8 +1257,8 @@ msgstr "Pas encore d'environnements"
 msgid "No environments yet."
 msgstr "No environments yet."
 
-#: src/routes/import.tsx:705
-msgid "No import results available."
+#: src/routes/import.tsx:722
+msgid "No import results available. Please start a new import."
 msgstr ""
 
 #: src/components/config-form-modal.tsx:374
@@ -1351,7 +1355,7 @@ msgstr "Remplacements"
 msgid "Overrides saved"
 msgstr "Overrides saved"
 
-#: src/routes/import.tsx:658
+#: src/routes/import.tsx:660
 msgid "Overwrite existing — replace with imported values"
 msgstr ""
 
@@ -1444,7 +1448,7 @@ msgstr "Previous page"
 msgid "Priority"
 msgstr "Priorité"
 
-#: src/routes/import.tsx:681
+#: src/routes/import.tsx:683
 msgid "Processing..."
 msgstr ""
 
@@ -1520,7 +1524,7 @@ msgid "Real-time"
 msgstr "Temps réel"
 
 #: src/routes/import.tsx:552
-#: src/routes/import.tsx:769
+#: src/routes/import.tsx:786
 msgid "Reason"
 msgstr ""
 
@@ -1556,11 +1560,11 @@ msgstr ""
 msgid "Review {0} changes"
 msgstr "Review {0} changes"
 
-#: src/routes/import.tsx:663
+#: src/routes/import.tsx:665
 msgid "Review individually — decide per entry"
 msgstr ""
 
-#: src/routes/import.tsx:621
+#: src/routes/import.tsx:623
 msgid "Review your import settings and confirm to begin processing."
 msgstr ""
 
@@ -1767,7 +1771,7 @@ msgstr "Select env"
 msgid "Select project"
 msgstr "Select project"
 
-#: src/routes/import.tsx:651
+#: src/routes/import.tsx:653
 msgid "Select strategy"
 msgstr ""
 
@@ -1835,11 +1839,11 @@ msgstr "Se connecter avec Google"
 msgid "Sign out"
 msgstr "Se déconnecter"
 
-#: src/routes/import.tsx:655
+#: src/routes/import.tsx:657
 msgid "Skip existing — keep current values"
 msgstr ""
 
-#: src/routes/import.tsx:754
+#: src/routes/import.tsx:771
 msgid "Skipped"
 msgstr ""
 
@@ -1863,11 +1867,11 @@ msgstr "Standard JSON"
 msgid "Start configuring your environments with secrets and settings."
 msgstr "Start configuring your environments with secrets and settings."
 
-#: src/routes/import.tsx:686
+#: src/routes/import.tsx:688
 msgid "Start Import"
 msgstr ""
 
-#: src/routes/import.tsx:792
+#: src/routes/import.tsx:809
 msgid "Start New Import"
 msgstr ""
 
@@ -1883,7 +1887,7 @@ msgstr "Storing personal data in config values may violate GDPR. Acknowledge to 
 msgid "String value"
 msgstr "String value"
 
-#: src/routes/import.tsx:740
+#: src/routes/import.tsx:757
 msgid "Succeeded"
 msgstr ""
 
@@ -2015,7 +2019,7 @@ msgid "Toggle theme"
 msgstr "Toggle theme"
 
 #: src/routes/import.tsx:517
-#: src/routes/import.tsx:732
+#: src/routes/import.tsx:749
 msgid "Total"
 msgstr ""
 
