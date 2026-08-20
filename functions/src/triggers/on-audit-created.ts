@@ -16,7 +16,10 @@ export function createOnAuditCreated(
   dispatcher: WebhookDispatcher = httpDispatcher,
 ) {
   return onDocumentCreated(
-    "projects/{projectId}/audit_log/{entryId}",
+    {
+      document: "projects/{projectId}/audit_log/{entryId}",
+      database: "default",
+    },
     async (event) => {
       const { projectId, entryId } = event.params;
       const data = event.data?.data();
