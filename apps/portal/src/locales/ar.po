@@ -12,13 +12,13 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: store.validationResult?.conflicts.length
-#: src/routes/import.tsx:661
+#: src/routes/import.tsx:660
 msgid "{0} conflicting entries found. Choose a resolution strategy:"
-msgstr ""
+msgstr "تم العثور على {0} إدخالات متعارضة. اختر استراتيجية الحل:"
 
-#: src/routes/import.tsx:362
+#: src/routes/import.tsx:361
 msgid "Accepts .csv and .json files (max 5 MB)"
-msgstr ""
+msgstr "يقبل ملفات .csv و .json (حد أقصى 5 ميجابايت)"
 
 #: src/routes/__root.tsx:352
 msgid "Access Denied"
@@ -206,9 +206,9 @@ msgstr "سجل التدقيق"
 msgid "Available Variables"
 msgstr "Available Variables"
 
-#: src/routes/import.tsx:163
+#: src/routes/import.tsx:162
 msgid "Back"
-msgstr ""
+msgstr "رجوع"
 
 #: src/components/audit-diff-viewer.tsx:86
 msgid "Before"
@@ -218,13 +218,13 @@ msgstr "قبل"
 msgid "Boolean values are constrained to true/false by default."
 msgstr "Boolean values are constrained to true/false by default."
 
-#: src/routes/import.tsx:133
+#: src/routes/import.tsx:132
 msgid "Bulk import configuration entries from a CSV or JSON file."
-msgstr ""
+msgstr "استيراد إدخالات التكوين بالجملة من ملف CSV أو JSON."
 
 #: src/routes/import.tsx:116
 msgid "Bulk import requires a desktop browser for file uploads, data preview, and conflict resolution. Please switch to a desktop device."
-msgstr ""
+msgstr "يتطلب الاستيراد بالجملة متصفح سطح المكتب لرفع الملفات ومعاينة البيانات وحل التعارضات. يرجى التبديل إلى جهاز سطح المكتب."
 
 #: src/components/config-form-modal.tsx:468
 #: src/components/date-picker-schedule.tsx:140
@@ -257,7 +257,7 @@ msgstr "Cannot remove the last admin"
 #: src/components/gdpr-panel.tsx:154
 #: src/components/gdpr-panel.tsx:270
 msgid "Change"
-msgstr ""
+msgstr "تغيير"
 
 #: src/components/audit-log-viewer.tsx:209
 msgid "Change Details"
@@ -388,9 +388,9 @@ msgstr "Configs guide"
 msgid "Configure an HTTP endpoint to receive notifications."
 msgstr "Configure an HTTP endpoint to receive notifications."
 
-#: src/routes/import.tsx:186
+#: src/routes/import.tsx:185
 msgid "Confirm"
-msgstr ""
+msgstr "تأكيد"
 
 #: src/components/gdpr-panel.tsx:342
 msgid "Confirm Delete"
@@ -400,9 +400,9 @@ msgstr "Confirm Delete"
 msgid "Confirm Delete?"
 msgstr "Confirm Delete?"
 
-#: src/routes/import.tsx:640
+#: src/routes/import.tsx:639
 msgid "Confirm Import"
-msgstr ""
+msgstr "تأكيد الاستيراد"
 
 #: src/routes/compare.tsx:538
 msgid "Confirm Sync"
@@ -412,9 +412,9 @@ msgstr "Confirm Sync"
 msgid "Confirm?"
 msgstr "Confirm?"
 
-#: src/routes/import.tsx:672
+#: src/routes/import.tsx:671
 msgid "Conflict resolution strategy"
-msgstr ""
+msgstr "استراتيجية حل التعارض"
 
 #: src/components/config-form-modal.tsx:165
 msgid "Continue"
@@ -477,9 +477,9 @@ msgstr "Create your first project"
 msgid "Created"
 msgstr "تاريخ الإنشاء"
 
-#: src/routes/import.tsx:388
+#: src/routes/import.tsx:387
 msgid "CSV Template"
-msgstr ""
+msgstr "قالب CSV"
 
 #: src/routes/preferences.tsx:232
 msgid "Current time:"
@@ -566,7 +566,7 @@ msgstr "Delete segment?"
 
 #: src/components/gdpr-panel.tsx:344
 msgid "Delete User Data"
-msgstr ""
+msgstr "حذف بيانات المستخدم"
 
 #: src/components/webhook-settings.tsx:152
 msgid "Delete webhook?"
@@ -604,7 +604,7 @@ msgstr "Description saved"
 
 #: src/routes/import.tsx:113
 msgid "Desktop Only"
-msgstr ""
+msgstr "لسطح المكتب فقط"
 
 #: src/routes/compare.tsx:290
 msgid "Diff configs between environments and sync changes."
@@ -622,21 +622,21 @@ msgstr "Discord"
 msgid "Display Name"
 msgstr "الاسم المعروض"
 
-#: src/routes/import.tsx:392
+#: src/routes/import.tsx:391
 msgid "Download a sample CSV file with the expected format"
-msgstr ""
+msgstr "تنزيل ملف CSV نموذجي بالتنسيق المتوقع"
 
-#: src/routes/import.tsx:407
+#: src/routes/import.tsx:406
 msgid "Download a sample JSON file with the expected format"
-msgstr ""
+msgstr "تنزيل ملف JSON نموذجي بالتنسيق المتوقع"
 
-#: src/routes/import.tsx:359
+#: src/routes/import.tsx:358
 msgid "Drag and drop your file here, or click to browse"
-msgstr ""
+msgstr "اسحب وأسقط ملفك هنا، أو انقر للتصفح"
 
-#: src/routes/import.tsx:349
+#: src/routes/import.tsx:348
 msgid "Drop file here or click to upload"
-msgstr ""
+msgstr "أسقط الملف هنا أو انقر للرفع"
 
 #: src/routes/configs.tsx:694
 msgid "Duplicate"
@@ -744,9 +744,9 @@ msgstr "Enter email address..."
 msgid "Enter valid JSON"
 msgstr "Enter valid JSON"
 
-#: src/routes/import.tsx:651
+#: src/routes/import.tsx:650
 msgid "Entries to import:"
-msgstr ""
+msgstr "الإدخالات للاستيراد:"
 
 #: src/routes/settings.tsx:222
 msgid "Environment cloned"
@@ -799,7 +799,7 @@ msgstr "Event types"
 
 #: src/components/gdpr-panel.tsx:125
 msgid "Export all personal data associated with a team member as a JSON file."
-msgstr ""
+msgstr "تصدير جميع البيانات الشخصية المرتبطة بعضو الفريق كملف JSON."
 
 #: src/components/gdpr-panel.tsx:88
 #: src/routes/gdpr.tsx:38
@@ -808,20 +808,20 @@ msgstr "Export failed"
 
 #: src/routes/gdpr.tsx:36
 msgid "Export ready. Download link valid for 24 hours."
-msgstr ""
+msgstr "التصدير جاهز. رابط التنزيل صالح لمدة 24 ساعة."
 
 #: src/components/gdpr-panel.tsx:224
 msgid "Export User Data"
-msgstr ""
+msgstr "تصدير بيانات المستخدم"
 
 #: src/components/gdpr-panel.tsx:222
 msgid "Exporting..."
 msgstr "Exporting..."
 
-#: src/routes/import.tsx:554
-#: src/routes/import.tsx:785
+#: src/routes/import.tsx:553
+#: src/routes/import.tsx:784
 msgid "Failed"
-msgstr ""
+msgstr "فشل"
 
 #: src/routes/team.tsx:185
 msgid "Failed to add member"
@@ -963,9 +963,9 @@ msgstr "Feature Flags"
 msgid "Feature guide"
 msgstr "Feature guide"
 
-#: src/routes/import.tsx:252
+#: src/routes/import.tsx:251
 msgid "File is empty or contains no valid rows"
-msgstr ""
+msgstr "الملف فارغ أو لا يحتوي على صفوف صالحة"
 
 #: src/routes/__root.tsx:438
 msgid "Firebase sync"
@@ -1039,27 +1039,27 @@ msgstr "identical"
 
 #: src/routes/__root.tsx:236
 msgid "Import"
-msgstr ""
+msgstr "استيراد"
 
-#: src/routes/import.tsx:760
+#: src/routes/import.tsx:759
 msgid "Import Complete"
-msgstr ""
+msgstr "اكتمل الاستيراد"
 
-#: src/routes/import.tsx:130
+#: src/routes/import.tsx:129
 msgid "Import Configurations"
-msgstr ""
+msgstr "استيراد التكوينات"
 
-#: src/routes/import.tsx:632
+#: src/routes/import.tsx:631
 msgid "Import failed"
-msgstr ""
+msgstr "فشل الاستيراد"
 
-#: src/routes/import.tsx:194
+#: src/routes/import.tsx:193
 msgid "Import wizard steps"
-msgstr ""
+msgstr "خطوات معالج الاستيراد"
 
-#: src/routes/import.tsx:731
+#: src/routes/import.tsx:730
 msgid "Importing configurations..."
-msgstr ""
+msgstr "جارٍ استيراد التكوينات..."
 
 #: src/components/config-form-modal.tsx:140
 msgid "Invalid regex pattern"
@@ -1077,15 +1077,15 @@ msgstr "Invite sent"
 msgid "JSON and array values are validated for correct syntax automatically."
 msgstr "JSON and array values are validated for correct syntax automatically."
 
-#: src/routes/import.tsx:403
+#: src/routes/import.tsx:402
 msgid "JSON Template"
-msgstr ""
+msgstr "قالب JSON"
 
 #: src/components/config-form-modal.tsx:232
 #: src/routes/configs.tsx:519
-#: src/routes/import.tsx:443
-#: src/routes/import.tsx:569
-#: src/routes/import.tsx:803
+#: src/routes/import.tsx:442
+#: src/routes/import.tsx:568
+#: src/routes/import.tsx:802
 msgid "Key"
 msgstr "مفتاح"
 
@@ -1213,9 +1213,9 @@ msgstr "New Config"
 msgid "New Environment"
 msgstr "بيئة جديدة"
 
-#: src/routes/import.tsx:167
+#: src/routes/import.tsx:166
 msgid "Next"
-msgstr ""
+msgstr "التالي"
 
 #: src/routes/configs.tsx:783
 msgid "Next page"
@@ -1265,9 +1265,9 @@ msgstr "لا توجد بيئات بعد"
 msgid "No environments yet."
 msgstr "No environments yet."
 
-#: src/routes/import.tsx:742
+#: src/routes/import.tsx:741
 msgid "No import results available. Please start a new import."
-msgstr ""
+msgstr "لا تتوفر نتائج استيراد. يرجى بدء استيراد جديد."
 
 #: src/components/config-form-modal.tsx:374
 msgid "No maximum"
@@ -1285,9 +1285,9 @@ msgstr "No overrides configured."
 msgid "No prerequisites configured."
 msgstr "No prerequisites configured."
 
-#: src/routes/import.tsx:609
+#: src/routes/import.tsx:608
 msgid "No project or environment selected"
-msgstr ""
+msgstr "لم يتم تحديد مشروع أو بيئة"
 
 #: src/components/project-switcher.tsx:75
 msgid "No projects found."
@@ -1313,7 +1313,7 @@ msgstr "No targeting rules. All users receive the default value."
 #: src/components/gdpr-panel.tsx:177
 #: src/components/gdpr-panel.tsx:294
 msgid "No team members found"
-msgstr ""
+msgstr "لم يتم العثور على أعضاء الفريق"
 
 #: src/components/rbac-manager.tsx:111
 msgid "No team members yet."
@@ -1363,9 +1363,9 @@ msgstr "تجاوزات"
 msgid "Overrides saved"
 msgstr "Overrides saved"
 
-#: src/routes/import.tsx:680
+#: src/routes/import.tsx:679
 msgid "Overwrite existing — replace with imported values"
-msgstr ""
+msgstr "الكتابة فوق الموجود — استبدال بالقيم المستوردة"
 
 #: src/components/template-bar.tsx:104
 msgid "Overwrite existing data?"
@@ -1403,7 +1403,7 @@ msgstr "Per-User Overrides"
 
 #: src/components/gdpr-panel.tsx:240
 msgid "Permanently remove all personal data for a team member. This action cannot be undone."
-msgstr ""
+msgstr "حذف جميع البيانات الشخصية لعضو الفريق نهائياً. لا يمكن التراجع عن هذا الإجراء."
 
 #: src/components/date-picker-schedule.tsx:164
 msgid "Pick a date"
@@ -1413,9 +1413,9 @@ msgstr "Pick a date"
 msgid "Pin to top"
 msgstr "Pin to top"
 
-#: src/routes/import.tsx:613
+#: src/routes/import.tsx:612
 msgid "Please select a conflict resolution strategy"
-msgstr ""
+msgstr "يرجى تحديد استراتيجية حل التعارض"
 
 #: src/components/pii-warning.tsx:23
 msgid "Potential PII detected in config value"
@@ -1437,8 +1437,8 @@ msgstr "متطلبات مسبقة"
 msgid "Prerequisites saved"
 msgstr "Prerequisites saved"
 
-#: src/routes/import.tsx:184
-#: src/routes/import.tsx:428
+#: src/routes/import.tsx:183
+#: src/routes/import.tsx:427
 #: src/routes/settings.tsx:127
 msgid "Preview"
 msgstr "معاينة"
@@ -1456,9 +1456,9 @@ msgstr "Previous page"
 msgid "Priority"
 msgstr "أولوية"
 
-#: src/routes/import.tsx:703
+#: src/routes/import.tsx:702
 msgid "Processing..."
-msgstr ""
+msgstr "جارٍ المعالجة..."
 
 #: src/routes/settings.tsx:351
 msgid "Production"
@@ -1531,10 +1531,10 @@ msgstr "Protected by Firebase Authentication."
 msgid "Real-time"
 msgstr "الوقت الفعلي"
 
-#: src/routes/import.tsx:572
-#: src/routes/import.tsx:806
+#: src/routes/import.tsx:571
+#: src/routes/import.tsx:805
 msgid "Reason"
-msgstr ""
+msgstr "السبب"
 
 #: src/components/config-form-modal.tsx:386
 msgid "Regex pattern"
@@ -1559,22 +1559,22 @@ msgstr "Remove member?"
 msgid "Resource categories"
 msgstr "Resource categories"
 
-#: src/routes/import.tsx:187
+#: src/routes/import.tsx:186
 msgid "Results"
-msgstr ""
+msgstr "النتائج"
 
 #. placeholder {0}: actions.size
 #: src/routes/compare.tsx:527
 msgid "Review {0} changes"
 msgstr "Review {0} changes"
 
-#: src/routes/import.tsx:685
+#: src/routes/import.tsx:684
 msgid "Review individually — decide per entry"
-msgstr ""
+msgstr "مراجعة فردية — قرر لكل إدخال"
 
-#: src/routes/import.tsx:643
+#: src/routes/import.tsx:642
 msgid "Review your import settings and confirm to begin processing."
-msgstr ""
+msgstr "راجع إعدادات الاستيراد وأكد لبدء المعالجة."
 
 #: src/routes/api-keys.tsx:335
 msgid "Revoke"
@@ -1600,9 +1600,9 @@ msgstr "طرح"
 msgid "Rollout updated"
 msgstr "Rollout updated"
 
-#: src/routes/import.tsx:566
+#: src/routes/import.tsx:565
 msgid "Row"
-msgstr ""
+msgstr "صف"
 
 #. placeholder {0}: index + 1
 #: src/components/rule-builder.tsx:425
@@ -1663,16 +1663,16 @@ msgstr "Search projects..."
 
 #: src/components/gdpr-panel.tsx:287
 msgid "Search team members for deletion"
-msgstr ""
+msgstr "البحث عن أعضاء الفريق للحذف"
 
 #: src/components/gdpr-panel.tsx:170
 msgid "Search team members for export"
-msgstr ""
+msgstr "البحث عن أعضاء الفريق للتصدير"
 
 #: src/components/gdpr-panel.tsx:162
 #: src/components/gdpr-panel.tsx:278
 msgid "Search team members..."
-msgstr ""
+msgstr "البحث عن أعضاء الفريق..."
 
 #: src/components/audit-log-viewer.tsx:128
 msgid "Search..."
@@ -1779,9 +1779,9 @@ msgstr "Select env"
 msgid "Select project"
 msgstr "Select project"
 
-#: src/routes/import.tsx:673
+#: src/routes/import.tsx:672
 msgid "Select strategy"
-msgstr ""
+msgstr "اختر الاستراتيجية"
 
 #: src/components/add-member-modal.tsx:187
 msgid "Send Invite"
@@ -1819,9 +1819,9 @@ msgstr "Show unchanged ({unchangedCount})"
 #. placeholder {0}: previewRows.length
 #. placeholder {1}: parsedEntries.length
 #. placeholder {2}: file?.name ?? "file"
-#: src/routes/import.tsx:431
+#: src/routes/import.tsx:430
 msgid "Showing {0} of {1} entries from {2}"
-msgstr ""
+msgstr "عرض {0} من {1} إدخال من {2}"
 
 #. placeholder {0}: safePage * PAGE_SIZE + 1
 #. placeholder {1}: Math.min( (safePage + 1) * PAGE_SIZE, filteredConfigs.length, )
@@ -1847,13 +1847,13 @@ msgstr "تسجيل الدخول بحساب Google"
 msgid "Sign out"
 msgstr "تسجيل الخروج"
 
-#: src/routes/import.tsx:677
+#: src/routes/import.tsx:676
 msgid "Skip existing — keep current values"
-msgstr ""
+msgstr "تخطي الموجود — الاحتفاظ بالقيم الحالية"
 
-#: src/routes/import.tsx:791
+#: src/routes/import.tsx:790
 msgid "Skipped"
-msgstr ""
+msgstr "تم التخطي"
 
 #: src/components/webhook-form-modal.tsx:164
 msgid "Slack"
@@ -1875,13 +1875,13 @@ msgstr "Standard JSON"
 msgid "Start configuring your environments with secrets and settings."
 msgstr "Start configuring your environments with secrets and settings."
 
-#: src/routes/import.tsx:708
+#: src/routes/import.tsx:707
 msgid "Start Import"
-msgstr ""
+msgstr "بدء الاستيراد"
 
-#: src/routes/import.tsx:829
+#: src/routes/import.tsx:828
 msgid "Start New Import"
-msgstr ""
+msgstr "بدء استيراد جديد"
 
 #: src/components/audit-log-viewer.tsx:155
 msgid "State change"
@@ -1895,9 +1895,9 @@ msgstr "Storing personal data in config values may violate GDPR. Acknowledge to 
 msgid "String value"
 msgstr "String value"
 
-#: src/routes/import.tsx:777
+#: src/routes/import.tsx:776
 msgid "Succeeded"
-msgstr ""
+msgstr "نجح"
 
 #: src/routes/compare.tsx:326
 msgid "Swap environments"
@@ -1933,9 +1933,9 @@ msgstr "Target Segment"
 msgid "Target value"
 msgstr "Target value"
 
-#: src/routes/import.tsx:145
+#: src/routes/import.tsx:144
 msgid "Target:"
-msgstr ""
+msgstr "الهدف:"
 
 #: src/components/config-detail-panel.tsx:237
 #: src/components/rule-builder.tsx:183
@@ -2026,10 +2026,10 @@ msgstr "المنطقة الزمنية"
 msgid "Toggle theme"
 msgstr "Toggle theme"
 
-#: src/routes/import.tsx:537
-#: src/routes/import.tsx:769
+#: src/routes/import.tsx:536
+#: src/routes/import.tsx:768
 msgid "Total"
-msgstr ""
+msgstr "المجموع"
 
 #: src/routes/audit.tsx:28
 msgid "Track all configuration changes for SOC2 compliance."
@@ -2041,7 +2041,7 @@ msgstr "Try a different account"
 
 #: src/components/config-form-modal.tsx:256
 #: src/routes/configs.tsx:522
-#: src/routes/import.tsx:449
+#: src/routes/import.tsx:448
 msgid "Type"
 msgstr "نوع"
 
@@ -2083,17 +2083,17 @@ msgstr "Update the segment name, description, and conditions."
 msgid "Updated"
 msgstr "تم التحديث"
 
-#: src/routes/import.tsx:183
+#: src/routes/import.tsx:182
 msgid "Upload"
-msgstr ""
+msgstr "رفع"
 
-#: src/routes/import.tsx:330
+#: src/routes/import.tsx:329
 msgid "Upload a CSV or JSON file with your configuration entries. Maximum 5 MB, up to 10,000 entries."
-msgstr ""
+msgstr "ارفع ملف CSV أو JSON بإدخالات التكوين الخاصة بك. الحد الأقصى 5 ميجابايت، حتى 10,000 إدخال."
 
-#: src/routes/import.tsx:327
+#: src/routes/import.tsx:326
 msgid "Upload File"
-msgstr ""
+msgstr "رفع ملف"
 
 #: src/components/webhook-form-modal.tsx:134
 msgid "URL (HTTPS)"
@@ -2117,17 +2117,17 @@ msgstr "معرف المستخدم"
 msgid "User ID or email"
 msgstr "User ID or email"
 
-#: src/routes/import.tsx:545
+#: src/routes/import.tsx:544
 msgid "Valid"
-msgstr ""
+msgstr "صالح"
 
-#: src/routes/import.tsx:185
+#: src/routes/import.tsx:184
 msgid "Validate"
-msgstr ""
+msgstr "التحقق"
 
-#: src/routes/import.tsx:529
+#: src/routes/import.tsx:528
 msgid "Validation Results"
-msgstr ""
+msgstr "نتائج التحقق"
 
 #: src/components/config-form-modal.tsx:347
 msgid "Validation Rules"
@@ -2137,7 +2137,7 @@ msgstr "Validation Rules"
 #: src/components/config-form-modal.tsx:278
 #: src/components/override-manager.tsx:46
 #: src/routes/configs.tsx:525
-#: src/routes/import.tsx:446
+#: src/routes/import.tsx:445
 msgid "Value"
 msgstr "قيمة"
 
