@@ -15,6 +15,7 @@
 
 import { createConfig } from "./createConfig.js";
 import type {
+  CacheStorage,
   ConfigClient,
   ConfigEventCallback,
   ConfigEventType,
@@ -42,6 +43,20 @@ export interface InitConfigOptions {
    * @example "https://your-project.web.app/api"
    */
   baseUrl?: string;
+
+  /**
+   * Cache storage adapter. Controls where resolved config values are persisted.
+   *
+   * - `memoryStorage()` (default) — In-memory, lost on page reload
+   * - `browserStorage()` — localStorage, persists across page reloads and sessions
+   *
+   * @example
+   * ```ts
+   * import { browserStorage } from "@jewel998/config";
+   * initConfig({ storage: browserStorage({ prefix: "myapp" }) })
+   * ```
+   */
+  storage?: CacheStorage;
 
   /**
    * Polling interval in milliseconds for version checks.
@@ -106,6 +121,7 @@ export function initConfig(options: InitConfigOptions): Flags {
     clientId: options.clientId,
     loadingStrategy: "optimistic",
     context: options.context,
+    storage: options.storage,
     baseUrl,
   });
 

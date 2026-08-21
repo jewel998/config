@@ -22,6 +22,7 @@ export default defineConfig({
         items: [
           { text: "Quick Start", link: "/guide/getting-started" },
           { text: "Self-Hosting Guide", link: "/guide/self-hosting" },
+          { text: "Storage & Caching", link: "/guide/storage" },
           { text: "Configuration Scopes", link: "/guide/scopes" },
         ],
       },
