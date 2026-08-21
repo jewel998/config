@@ -9,8 +9,18 @@ export const isNonRetryableError = (error: unknown): boolean => {
   if (error instanceof AuthenticationError) {
     return true;
   }
-  if (error instanceof ConfigError && error.code === "REVOKED") {
-    return true;
+  if (error instanceof ConfigError) {
+    // Client errors — retrying won't help
+    switch (error.code) {
+      case "REVOKED":
+      case "BAD_REQUEST":
+      case "FORBIDDEN":
+      case "NOT_FOUND":
+      case "METHOD_NOT_ALLOWED":
+      case "PAYLOAD_TOO_LARGE":
+      case "CONFLICT":
+        return true;
+    }
   }
   return false;
 };

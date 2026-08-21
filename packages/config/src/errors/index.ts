@@ -5,7 +5,14 @@ export type ConfigErrorCode =
   | "TIMEOUT"
   | "RATE_LIMITED"
   | "REVOKED"
-  | "NETWORK_ERROR";
+  | "NETWORK_ERROR"
+  | "BAD_REQUEST"
+  | "FORBIDDEN"
+  | "NOT_FOUND"
+  | "METHOD_NOT_ALLOWED"
+  | "PAYLOAD_TOO_LARGE"
+  | "CONFLICT"
+  | "SERVER_ERROR";
 
 export class ConfigError extends Error {
   override name = "ConfigError";

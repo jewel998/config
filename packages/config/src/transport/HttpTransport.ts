@@ -52,18 +52,33 @@ export const createHttpTransport = (
       const errorData = errorBody as {
         error?: { code?: string; message?: string };
       };
-      const code = errorData.error?.code ?? "NETWORK_ERROR";
       const message = errorData.error?.message ?? `HTTP ${response.status}`;
 
-      if (response.status === 401) {
-        throw new AuthenticationError(message);
+      switch (response.status) {
+        case 400:
+          throw new ConfigError(message, "BAD_REQUEST");
+        case 401:
+          throw new AuthenticationError(message);
+        case 403:
+          throw new ConfigError(message, "FORBIDDEN");
+        case 404:
+          throw new ConfigError(message, "NOT_FOUND");
+        case 405:
+          throw new ConfigError(message, "METHOD_NOT_ALLOWED");
+        case 409:
+          throw new ConfigError(message, "CONFLICT");
+        case 413:
+          throw new ConfigError(message, "PAYLOAD_TOO_LARGE");
+        case 429:
+          throw new ConfigError(message, "RATE_LIMITED");
+        case 500:
+        case 502:
+        case 503:
+        case 504:
+          throw new ConfigError(message, "SERVER_ERROR");
+        default:
+          throw new ConfigError(message, "NETWORK_ERROR");
       }
-
-      if (response.status === 429) {
-        throw new ConfigError(message, "RATE_LIMITED");
-      }
-
-      throw new ConfigError(message, code as "NETWORK_ERROR");
     }
 
     return (await response.json()) as T;
