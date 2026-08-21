@@ -42,7 +42,10 @@ jobs:
           npm version ${{ inputs.version }} --no-git-tag-version
 
       - name: Build SDK
-        run: pnpm --filter @jewel998/config run build
+        run: |
+          cd packages/config
+          rm -rf dist tsconfig.tsbuildinfo
+          pnpm run build
 
       - name: Copy root README and LICENSE into package
         run: |

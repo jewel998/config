@@ -1,8 +1,8 @@
-# Override root .gitignore which excludes dist/
-# We WANT dist/ included in the published package
+# This file overrides .gitignore for npm publish.
+# When .npmignore exists, .gitignore is NOT used by npm.
 src/
 tsconfig.json
 tsconfig.tsbuildinfo
 vitest.config.ts
-*.test.ts
-*.map
+**/*.test.ts
+**/*.map
