@@ -26,12 +26,14 @@ flags.get("feature.dark_mode"); // → true (resolved from server)
 
 ## InitConfigOptions
 
-| Property   | Type                  | Default                               | Description                                            |
-| ---------- | --------------------- | ------------------------------------- | ------------------------------------------------------ |
-| `clientId` | `string`              | (required)                            | API key from your Portal (cid_ or svr_)                |
-| `baseUrl`  | `string`              | `https://jewel998-config.web.app/api` | Your self-hosted Firebase API URL                      |
-| `defaults` | `Record<string, any>` | `{}`                                  | Fallback values returned instantly before API responds |
-| `context`  | `EvaluationContext`   | `{}`                                  | User context for targeting. Use `autoContext()`        |
+| Property       | Type                  | Default                               | Description                                                      |
+| -------------- | --------------------- | ------------------------------------- | ---------------------------------------------------------------- |
+| `clientId`     | `string`              | (required)                            | API key from your Portal (cid_ or svr_)                          |
+| `baseUrl`      | `string`              | `https://jewel998-config.web.app/api` | Your self-hosted Firebase API URL                                |
+| `defaults`     | `Record<string, any>` | `{}`                                  | Fallback values returned instantly before API responds           |
+| `context`      | `EvaluationContext`   | `{}`                                  | User context for targeting. Use `autoContext()`                  |
+| `pollInterval` | `number`              | `300000` (5 min)                      | Version polling interval in ms. Set to `0` to disable polling.   |
+| `storage`      | `CacheStorage`        | `memoryStorage()`                     | Cache adapter. Use `browserStorage()` to persist across reloads. |
 
 ## Flags Interface
 
@@ -45,9 +47,17 @@ flags.get("feature.dark_mode"); // → true (resolved from server)
 | `on`         | `(event, callback) => void`        | Subscribe to events                            |
 | `off`        | `(event, callback) => void`        | Unsubscribe                                    |
 
+::: info No destroy() on Flags
+The `Flags` object returned by `initConfig` does not expose a `destroy()` method. Polling timers are automatically cleared when the page unloads. If you need explicit cleanup (e.g., in a SPA route unmount), use `createConfig` which returns a `ConfigClient` with `destroy()`.
+:::
+
 ## createConfig (Advanced)
 
 Lower-level entry point with full control over loading strategy, plugins, and caching.
+
+::: tip When to use createConfig vs initConfig
+Use `initConfig` for most frontend apps — it handles polling, versioning, and defaults automatically. Use `createConfig` when you need custom loading strategies, client-side evaluation with plugins, or consent-aware GDPR mode.
+:::
 
 ```ts
 import { createConfig } from "@jewel998/config";
@@ -61,19 +71,22 @@ const config = createConfig({
 
 ## CreateConfigOptions
 
-| Property           | Type                                          | Default           | Description                                          |
-| ------------------ | --------------------------------------------- | ----------------- | ---------------------------------------------------- |
-| `clientId`         | `string`                                      | (required)        | API key from Portal → API Keys                       |
-| `evaluationMode`   | `"server" \| "client"`                        | `"server"`        | Where targeting/rollout evaluation happens           |
-| `loadingStrategy`  | `"optimistic" \| "pessimistic" \| "deferred"` | `"optimistic"`    | How data is loaded on init                           |
-| `fetchGranularity` | `"batch" \| "projected"`                      | `"batch"`         | Fetch all keys or only requested ones                |
-| `storage`          | `CacheStorage`                                | `memoryStorage()` | Cache adapter (memory or browser localStorage)       |
-| `plugins`          | `EvaluationPlugin[]`                          | `[]`              | Plugins for client-mode local evaluation             |
-| `context`          | `EvaluationContext`                           | `{}`              | User context for targeting                           |
-| `retry`            | `RetryConfig`                                 | 3 retries         | Retry configuration for failed fetches               |
-| `timeout`          | `number`                                      | `10000`           | Pessimistic mode timeout (ms)                        |
-| `baseUrl`          | `string`                                      | Production URL    | Custom API endpoint                                  |
-| `consentAware`     | `boolean`                                     | `false`           | GDPR mode: returns defaults until consent is granted |
+| Property           | Type                                          | Default           | Description                                                                                          |
+| ------------------ | --------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------- |
+| `clientId`         | `string`                                      | (required)        | API key from Portal → API Keys. Prefix determines evaluation mode: `cid_` = server, `svr_` = client. |
+| `loadingStrategy`  | `"optimistic" \| "pessimistic" \| "deferred"` | `"optimistic"`    | How data is loaded on init                                                                           |
+| `fetchGranularity` | `"batch" \| "projected"`                      | `"batch"`         | Fetch all keys or only requested ones                                                                |
+| `storage`          | `CacheStorage`                                | `memoryStorage()` | Cache adapter (memory or browser localStorage)                                                       |
+| `plugins`          | `EvaluationPlugin[]`                          | `[]`              | Plugins for client-mode local evaluation (svr_ keys only)                                            |
+| `context`          | `EvaluationContext`                           | `{}`              | User context for targeting                                                                           |
+| `retry`            | `RetryConfig`                                 | 3 retries         | Retry configuration for failed fetches                                                               |
+| `timeout`          | `number`                                      | `10000`           | Pessimistic mode timeout (ms)                                                                        |
+| `baseUrl`          | `string`                                      | Demo instance URL | Custom API endpoint                                                                                  |
+| `consentAware`     | `boolean`                                     | `false`           | GDPR mode: returns defaults until consent is granted                                                 |
+
+::: info Evaluation mode is auto-detected
+The evaluation mode is determined by the `clientId` prefix — not a configuration option. `cid_` keys use server-side evaluation (API resolves values). `svr_` keys use client-side evaluation (SDK evaluates locally with plugins).
+:::
 
 ## ConfigClient
 
@@ -124,12 +137,15 @@ config.getFlag("feature.new_checkout"); // → true
 
 ### Client Mode (opt-in)
 
-The API returns full flag data (targeting rules, segments, rollout percentages). The SDK evaluates everything locally using the plugin pipeline. Best for backend services that need instant re-evaluation without network round-trips.
+The API returns full flag data (targeting rules, segments, rollout percentages). The SDK evaluates everything locally using the plugin pipeline. Best for advanced frontend scenarios that need instant re-evaluation without network round-trips.
+
+::: warning Browser-only SDK
+The `@jewel998/config` SDK is browser-only — it throws an error if `window` is undefined. For Node.js/server-side usage, call the `/api/getConfig` endpoint directly with a `svr_` key and evaluate locally using your own logic, or use the server evaluator from the functions package.
+:::
 
 ```ts
 const config = createConfig({
-  clientId: "cid_xxx",
-  evaluationMode: "client",
+  clientId: "svr_xxx", // svr_ prefix auto-enables client-side evaluation
   plugins: [targetingPlugin(segments), rolloutPlugin()],
   context: { userId: "user_123", attributes: { plan: "pro" } },
 });

@@ -36,6 +36,10 @@ How @jewel998/config stacks up against other feature flag platforms.
 | Flagsmith              | 50K requests             | $45/mo           | Yes       |
 | Firebase Remote Config | 2000 parameters          | Free             | No        |
 
+::: info Why not Firebase Remote Config?
+Firebase Remote Config is free and performs server-side evaluation, but lacks reusable segments, detailed targeting rules with DNF conditions, a diff-based audit log, webhooks, environment isolation, team RBAC, and import/export tooling. It's a great starting point for simple use cases, but @jewel998/config provides the full feature flag management platform that growing teams need.
+:::
+
 ## What We Solve That Others Don't
 
 ### 1. Cost Barrier for Startups

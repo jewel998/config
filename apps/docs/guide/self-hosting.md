@@ -65,6 +65,10 @@ If you haven't registered a web app yet: Firebase Console → Project Settings �
 
 Deploy Firestore rules, indexes, Cloud Functions, and hosting in one command:
 
+::: warning First-time deploy
+The `--force` flag is needed for first-time function deployments to set up artifact cleanup policies. Subsequent deploys don't need it.
+:::
+
 ```bash
 firebase deploy --project your-project-id --force
 ```
@@ -85,10 +89,6 @@ firebase deploy --only functions
 firebase deploy --only hosting
 ```
 
-::: warning
-The `--force` flag is needed for first-time function deployments to set up artifact cleanup policies. Subsequent deploys don't need it.
-:::
-
 ### Deployed Endpoints
 
 After deployment, your API is available at:
@@ -96,6 +96,10 @@ After deployment, your API is available at:
 - `https://your-project.web.app/api/getConfig` — Config delivery (via hosting rewrite)
 - `https://your-project.web.app/api/getVersion` — Lightweight version check
 - `https://us-central1-your-project.cloudfunctions.net/getConfig` — Direct function URL (fallback)
+
+::: tip Region configuration
+All functions deploy to `us-central1` by default. If your Firestore database is in a different region, consider updating the `region` option in the function configurations (especially for `onAuditCreated`) to reduce latency. See the [Cloud Functions Reference](/api/cloud-functions) for details.
+:::
 
 ### Required Indexes
 
@@ -218,7 +222,7 @@ Ensure the environment variables in `.env.production` match your Firebase projec
 1. Check that your API key is active (not revoked) in the portal
 2. Verify `baseUrl` points to your deployment
 3. Check browser console — if you see 401/403, the SDK's circuit breaker will stop retrying for 5 minutes
-4. Call `config.destroy()` and reinitialize if you need to reset the circuit breaker
+4. If using `createConfig`, call `client.destroy()` and reinitialize to reset the circuit breaker. With `initConfig`, reload the page.
 
 ### SDK stops making requests (circuit breaker)
 
@@ -346,10 +350,10 @@ At the free tier limits (2M invocations/month + 50K reads/day), you can serve **
 
 ### What NOT to Do
 
-| Anti-Pattern                             | Why It's Expensive                                   | Fix                               |
-| ---------------------------------------- | ---------------------------------------------------- | --------------------------------- |
-| Calling `refresh()` on every render      | Bypasses deduplication if renders are >30s apart     | Let the poll interval handle it   |
-| Using `pollInterval: 1000` (1s)          | Each poll = function invocation                      | Use 300,000+ (5 min or more)      |
-| Not setting `defaults`                   | Forces a blocking fetch before app can render        | Always provide defaults           |
-| Creating multiple `initConfig` instances | Each instance polls independently, multiplying costs | Use one singleton                 |
-| Not calling `destroy()` on unmount (SPA) | Timer keeps polling after navigation                 | Call `flags.destroy()` in cleanup |
+| Anti-Pattern                             | Why It's Expensive                                   | Fix                                                                           |
+| ---------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Calling `refresh()` on every render      | Bypasses deduplication if renders are >30s apart     | Let the poll interval handle it                                               |
+| Using `pollInterval: 1000` (1s)          | Each poll = function invocation                      | Use 300,000+ (5 min or more)                                                  |
+| Not setting `defaults`                   | Forces a blocking fetch before app can render        | Always provide defaults                                                       |
+| Creating multiple `initConfig` instances | Each instance polls independently, multiplying costs | Use one singleton                                                             |
+| Not calling `destroy()` on unmount (SPA) | Timer keeps polling after navigation                 | Use `createConfig` with `destroy()`, or use a single `initConfig` at app root |

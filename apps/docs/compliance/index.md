@@ -32,6 +32,30 @@ Your data lives in your own Firebase project. You choose the Firestore region. N
 - [GDPR](/compliance/gdpr) — Data minimization, right to deletion, data portability (Article 20), audit trails
 - [SOC 2](/compliance/soc2) — Access controls, audit logging, change management, processing integrity
 
+## Consent-Aware Mode (GDPR)
+
+The SDK supports a `consentAware` mode for GDPR compliance. When enabled, the SDK returns only default values until the user explicitly grants consent:
+
+```typescript
+import { createConfig } from "@jewel998/config";
+
+const config = createConfig({
+  clientId: "cid_xxx",
+  baseUrl: "https://your-project.web.app/api",
+  consentAware: true, // Blocks API calls until consent is granted
+  context: { userId: "user_123", consentGranted: false },
+});
+
+// Returns defaults only — no API call is made
+config.getValue("feature.personalized"); // → undefined (or your default)
+
+// User grants consent (e.g., clicks "Accept Cookies")
+config.setContext({ userId: "user_123", consentGranted: true });
+// Now the SDK fetches real values from the API
+```
+
+This ensures no user-identifying data is sent to the server before consent is obtained.
+
 ## Data Portability
 
 The platform supports GDPR Article 20 data portability through a [bulk import/export system](/features/import-export):

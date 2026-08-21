@@ -69,6 +69,13 @@ export default withMermaid(
           text: "Compare",
           items: [{ text: "vs. Competitors", link: "/comparison/" }],
         },
+        {
+          text: "Contributing",
+          items: [
+            { text: "Architecture", link: "/contributing/architecture" },
+            { text: "Local Development", link: "/contributing/development" },
+          ],
+        },
       ],
       socialLinks: [
         { icon: "github", link: "https://github.com/jewel998/config" },
