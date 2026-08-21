@@ -2,6 +2,7 @@ import { onRequest } from "firebase-functions/v2/https";
 import { getDb } from "../utils/firestore.js";
 import {
   BadRequestError,
+  InternalError,
   UnauthorizedError,
   withErrorHandler,
 } from "../utils/errors.js";
@@ -38,12 +39,26 @@ export const getVersion = onRequest(
     const db = getDb();
 
     // Find project + environment from clientId
-    const clientIdSnapshot = await db
-      .collectionGroup("clientIds")
-      .where("token", "==", clientId)
-      .where("status", "==", "active")
-      .limit(1)
-      .get();
+    let clientIdSnapshot;
+    try {
+      clientIdSnapshot = await db
+        .collectionGroup("clientIds")
+        .where("token", "==", clientId)
+        .where("status", "==", "active")
+        .limit(1)
+        .get();
+    } catch (error) {
+      const grpcCode = (error as { code?: number }).code;
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error(
+        `[getVersion] Firestore collectionGroup query failed. ` +
+          `gRPC code: ${grpcCode}, message: ${msg}. ` +
+          `Ensure the composite index for clientIds is deployed.`,
+      );
+      throw new InternalError(
+        "Failed to validate clientId. The required Firestore index may not exist.",
+      );
+    }
 
     if (clientIdSnapshot.empty) {
       throw new UnauthorizedError("Invalid or revoked clientId");
