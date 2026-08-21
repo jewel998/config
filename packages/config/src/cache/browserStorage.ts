@@ -1,9 +1,13 @@
 /// <reference lib="dom" />
 
-import type { BrowserStorageOptions, CacheEntry, CacheStorage } from "../types";
-import { DEFAULT_CACHE_TTL } from "../types";
+import type {
+  BrowserStorageOptions,
+  CacheEntry,
+  CacheStorage,
+} from "../types.js";
+import { DEFAULT_CACHE_TTL } from "../types.js";
 
-import { memoryStorage } from "./memoryStorage";
+import { memoryStorage } from "./memoryStorage.js";
 
 export const browserStorage = (
   options?: BrowserStorageOptions,

@@ -13,13 +13,13 @@
 //   flags.get("feature.dark_mode") // → true (resolved from server)
 // ═══════════════════════════════════════════════════════════════
 
-import { createConfig } from "./createConfig";
+import { createConfig } from "./createConfig.js";
 import type {
   ConfigClient,
   ConfigEventCallback,
   ConfigEventType,
   CreateConfigOptions,
-} from "./types";
+} from "./types.js";
 import type { EvaluationContext } from "./plugins/types.js";
 
 export interface InitConfigOptions {

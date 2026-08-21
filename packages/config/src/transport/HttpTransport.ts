@@ -1,8 +1,8 @@
 /// <reference lib="dom" />
 
-import { AuthenticationError, ConfigError } from "../errors/index";
-import type { EvaluationContext } from "../plugins/types";
-import type { HttpTransport } from "../types";
+import { AuthenticationError, ConfigError } from "../errors/index.js";
+import type { EvaluationContext } from "../plugins/types.js";
+import type { HttpTransport } from "../types.js";
 
 export interface TransportConfig {
   baseUrl: string;

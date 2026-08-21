@@ -1,6 +1,6 @@
-import { withRetry } from "../retry/RetryEngine";
-import type { LoadingContext, LoadingResult } from "../types";
-import { DEFAULT_CACHE_TTL } from "../types";
+import { withRetry } from "../retry/RetryEngine.js";
+import type { LoadingContext, LoadingResult } from "../types.js";
+import { DEFAULT_CACHE_TTL } from "../types.js";
 
 const scheduleBackgroundFetch = (ctx: LoadingContext): void => {
   const doFetch = async () => {

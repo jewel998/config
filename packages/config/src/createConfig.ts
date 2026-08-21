@@ -1,20 +1,20 @@
-import { memoryStorage } from "./cache/memoryStorage";
-import { buildConfigClient } from "./client/ConfigClient";
-import { ConfigError } from "./errors/index";
-import { TypedEventEmitter } from "./events/EventEmitter";
-import { createBatchFetcher } from "./fetch/batchFetcher";
-import { createProjectedFetcher } from "./fetch/projectedFetcher";
-import { executeDeferred } from "./loading/deferred";
-import { executeOptimistic } from "./loading/optimistic";
-import { executePessimistic } from "./loading/pessimistic";
-import type { EvaluationContext } from "./plugins/types";
-import { createHttpTransport } from "./transport/HttpTransport";
+import { memoryStorage } from "./cache/memoryStorage.js";
+import { buildConfigClient } from "./client/ConfigClient.js";
+import { ConfigError } from "./errors/index.js";
+import { TypedEventEmitter } from "./events/EventEmitter.js";
+import { createBatchFetcher } from "./fetch/batchFetcher.js";
+import { createProjectedFetcher } from "./fetch/projectedFetcher.js";
+import { executeDeferred } from "./loading/deferred.js";
+import { executeOptimistic } from "./loading/optimistic.js";
+import { executePessimistic } from "./loading/pessimistic.js";
+import type { EvaluationContext } from "./plugins/types.js";
+import { createHttpTransport } from "./transport/HttpTransport.js";
 import type {
   ConfigClient,
   CreateConfigOptions,
   LoadingContext,
-} from "./types";
-import { DEFAULT_RETRY, DEFAULT_TIMEOUT } from "./types";
+} from "./types.js";
+import { DEFAULT_RETRY, DEFAULT_TIMEOUT } from "./types.js";
 
 const DEFAULT_BASE_URL = "https://jewel998-config.web.app/api";
 

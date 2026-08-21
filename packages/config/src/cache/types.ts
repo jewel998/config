@@ -1,2 +1,6 @@
-export type { CacheEntry, CacheStorage, BrowserStorageOptions } from "../types";
-export { DEFAULT_CACHE_TTL } from "../types";
+export type {
+  CacheEntry,
+  CacheStorage,
+  BrowserStorageOptions,
+} from "../types.js";
+export { DEFAULT_CACHE_TTL } from "../types.js";

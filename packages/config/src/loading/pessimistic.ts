@@ -1,7 +1,7 @@
-import { TimeoutError } from "../errors/index";
-import { withRetry } from "../retry/RetryEngine";
-import type { LoadingContext, LoadingResult } from "../types";
-import { DEFAULT_CACHE_TTL } from "../types";
+import { TimeoutError } from "../errors/index.js";
+import { withRetry } from "../retry/RetryEngine.js";
+import type { LoadingContext, LoadingResult } from "../types.js";
+import { DEFAULT_CACHE_TTL } from "../types.js";
 
 export const executePessimistic = async (
   ctx: LoadingContext,

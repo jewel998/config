@@ -1,6 +1,6 @@
-import { AuthenticationError, ConfigError } from "../errors/index";
-import type { RetryConfig } from "../types";
-import { DEFAULT_RETRY } from "../types";
+import { AuthenticationError, ConfigError } from "../errors/index.js";
+import type { RetryConfig } from "../types.js";
+import { DEFAULT_RETRY } from "../types.js";
 
 export const sleep = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));

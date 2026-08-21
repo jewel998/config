@@ -1,4 +1,4 @@
-import { withRetry } from "../retry/RetryEngine";
+import { withRetry } from "../retry/RetryEngine.js";
 import type { EvaluationContext, EvaluationPlugin } from "../plugins/types.js";
 import type { ConfigFlagData } from "../plugins/models.js";
 import { evaluatePipeline } from "../plugins/evaluatePipeline.js";
@@ -12,8 +12,8 @@ import type {
   EventEmitterInterface,
   FetchGranularity,
   RetryConfig,
-} from "../types";
-import { DEFAULT_CACHE_TTL } from "../types";
+} from "../types.js";
+import { DEFAULT_CACHE_TTL } from "../types.js";
 
 export interface ConfigClientInternals {
   data: Record<string, unknown>;

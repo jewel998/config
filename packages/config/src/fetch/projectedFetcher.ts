@@ -1,4 +1,8 @@
-import type { ConfigFetcher, GetConfigResponse, HttpTransport } from "../types";
+import type {
+  ConfigFetcher,
+  GetConfigResponse,
+  HttpTransport,
+} from "../types.js";
 
 export const createProjectedFetcher = (
   transport: HttpTransport,

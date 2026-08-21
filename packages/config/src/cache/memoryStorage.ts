@@ -1,5 +1,5 @@
-import type { CacheEntry, CacheStorage } from "../types";
-import { DEFAULT_CACHE_TTL } from "../types";
+import type { CacheEntry, CacheStorage } from "../types.js";
+import { DEFAULT_CACHE_TTL } from "../types.js";
 
 export const memoryStorage = (): CacheStorage => {
   const store = new Map<string, CacheEntry>();

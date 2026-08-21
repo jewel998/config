@@ -3,7 +3,7 @@ import type {
   ConfigEventPayloads,
   ConfigEventType,
   EventEmitterInterface,
-} from "../types";
+} from "../types.js";
 
 type Listener = (...args: unknown[]) => void;
 
