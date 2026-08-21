@@ -1,5 +1,5 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { getFirestore } from "firebase-admin/firestore";
+import { getDb } from "../utils/firestore.js";
 import { DISPATCH_TIMEOUT_MS } from "../constants.js";
 import { writeDeliveryLog } from "../delivery/write-delivery-log.js";
 import { httpDispatcher } from "../dispatcher/http.dispatcher.js";
@@ -24,7 +24,7 @@ export const testWebhook = onCall<{ projectId: string; webhookId: string }>(
       );
     }
 
-    const db = getFirestore();
+    const db = getDb();
 
     // Verify admin role
     const projectDoc = await db.collection("projects").doc(projectId).get();

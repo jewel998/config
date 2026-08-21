@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { getFirestore } from "firebase-admin/firestore";
+import { getDb } from "../utils/firestore.js";
+import { MAX_INSTANCES, FUNCTION_TIMEOUT_SECONDS } from "../utils/constants.js";
 import { getStorage } from "firebase-admin/storage";
 import type {
   ExportFile,
@@ -21,7 +22,7 @@ interface ExportCallableData {
  * uploads to Firebase Storage, and returns a signed download URL.
  */
 export const exportConfigs = onCall(
-  { maxInstances: 10, timeoutSeconds: 540 },
+  { maxInstances: MAX_INSTANCES, timeoutSeconds: FUNCTION_TIMEOUT_SECONDS },
   async (request) => {
     // ─── Auth Check ──────────────────────────────────────────
     if (!request.auth) {
@@ -44,7 +45,7 @@ export const exportConfigs = onCall(
       );
     }
 
-    const db = getFirestore();
+    const db = getDb();
     const projectRef = db.collection("projects").doc(data.projectId);
 
     // ─── Project Membership Check ────────────────────────────

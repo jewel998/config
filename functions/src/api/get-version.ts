@@ -1,5 +1,13 @@
 import { onRequest } from "firebase-functions/v2/https";
-import { getFirestore } from "firebase-admin/firestore";
+import { getDb } from "../utils/firestore.js";
+import {
+  BadRequestError,
+  UnauthorizedError,
+  withErrorHandler,
+} from "../utils/errors.js";
+import { assertMethod } from "../utils/request.js";
+import { sendSuccess } from "../utils/response.js";
+import { MAX_INSTANCES } from "../utils/constants.js";
 
 /**
  * GET /api/version?clientId=cid_xxx
@@ -14,14 +22,9 @@ import { getFirestore } from "firebase-admin/firestore";
  * ~800 function calls/5min (well within free tier).
  */
 export const getVersion = onRequest(
-  { cors: true, maxInstances: 10 },
-  async (req, res) => {
-    if (req.method !== "GET" && req.method !== "POST") {
-      res.status(405).json({
-        error: { code: "METHOD_NOT_ALLOWED", message: "Use GET or POST" },
-      });
-      return;
-    }
+  { cors: true, maxInstances: MAX_INSTANCES },
+  withErrorHandler(async (req, res) => {
+    assertMethod(req, "GET", "POST");
 
     const clientId =
       (req.query.clientId as string) ??
@@ -29,13 +32,10 @@ export const getVersion = onRequest(
       null;
 
     if (!clientId) {
-      res.status(400).json({
-        error: { code: "MISSING_CLIENT_ID", message: "clientId is required" },
-      });
-      return;
+      throw new BadRequestError("clientId is required");
     }
 
-    const db = getFirestore();
+    const db = getDb();
 
     // Find project + environment from clientId
     const clientIdSnapshot = await db
@@ -46,13 +46,7 @@ export const getVersion = onRequest(
       .get();
 
     if (clientIdSnapshot.empty) {
-      res.status(401).json({
-        error: {
-          code: "INVALID_CLIENT_ID",
-          message: "Invalid or revoked clientId",
-        },
-      });
-      return;
+      throw new UnauthorizedError("Invalid or revoked clientId");
     }
 
     const pathParts = clientIdSnapshot.docs[0].ref.path.split("/");
@@ -82,6 +76,6 @@ export const getVersion = onRequest(
       return;
     }
 
-    res.status(200).json({ version, changedKeys });
-  },
+    sendSuccess(res, { version, changedKeys });
+  }),
 );

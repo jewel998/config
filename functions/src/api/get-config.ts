@@ -1,5 +1,19 @@
 import { onRequest } from "firebase-functions/v2/https";
-import { getFirestore } from "firebase-admin/firestore";
+import { getDb } from "../utils/firestore.js";
+import {
+  BadRequestError,
+  ForbiddenError,
+  PayloadTooLargeError,
+  UnauthorizedError,
+  withErrorHandler,
+} from "../utils/errors.js";
+import { assertMethod } from "../utils/request.js";
+import {
+  sendSuccess,
+  setCdnCache,
+  setPrivateCache,
+} from "../utils/response.js";
+import { MAX_INSTANCES, MAX_CONTEXT_SIZE_BYTES } from "../utils/constants.js";
 import {
   evaluateConfigsForContext,
   type ConfigDoc,
@@ -23,45 +37,12 @@ import {
  *   - Cloud Function: only on cache miss ($0.40 / million invocations)
  *   - Firestore reads: 2 per invocation (clientId lookup + configs)
  *   - With 60s CDN: 10K polls/hour = ~60 function calls/hour = FREE tier
- *
- * Rate Limiting (optional — enable if needed):
- *   To add rate limiting, uncomment the section below and create a
- *   Firestore collection `rateLimits/{clientId}` with fields:
- *     - count: number (requests in current window)
- *     - windowStart: timestamp (start of current window)
- *
- *   // --- RATE LIMITING (uncomment to enable) ---
- *   // const RATE_LIMIT = 100; // requests per minute
- *   // const WINDOW_MS = 60_000;
- *   // const rateLimitRef = db.collection("rateLimits").doc(clientId);
- *   // const rateLimitDoc = await rateLimitRef.get();
- *   // const now = Date.now();
- *   // if (rateLimitDoc.exists) {
- *   //   const { count, windowStart } = rateLimitDoc.data()!;
- *   //   if (now - windowStart < WINDOW_MS && count >= RATE_LIMIT) {
- *   //     res.status(429).json({ error: { code: "RATE_LIMITED", message: "Too many requests" } });
- *   //     return;
- *   //   }
- *   //   if (now - windowStart >= WINDOW_MS) {
- *   //     await rateLimitRef.set({ count: 1, windowStart: now });
- *   //   } else {
- *   //     await rateLimitRef.update({ count: count + 1 });
- *   //   }
- *   // } else {
- *   //   await rateLimitRef.set({ count: 1, windowStart: now });
- *   // }
- *   // --- END RATE LIMITING ---
  */
 export const getConfig = onRequest(
-  { cors: true, maxInstances: 10 },
-  async (req, res) => {
+  { cors: true, maxInstances: MAX_INSTANCES },
+  withErrorHandler(async (req, res) => {
     // Only allow GET (CDN-cacheable) and POST (SDK compatibility)
-    if (req.method !== "GET" && req.method !== "POST") {
-      res.status(405).json({
-        error: { code: "METHOD_NOT_ALLOWED", message: "Use GET or POST" },
-      });
-      return;
-    }
+    assertMethod(req, "GET", "POST");
 
     // Extract clientId from query (GET) or body (POST)
     const clientId =
@@ -70,17 +51,12 @@ export const getConfig = onRequest(
       null;
 
     if (!clientId) {
-      res.status(400).json({
-        error: { code: "MISSING_CLIENT_ID", message: "clientId is required" },
-      });
-      return;
+      throw new BadRequestError("clientId is required");
     }
 
-    const db = getFirestore();
+    const db = getDb();
 
     // 1. Find which project+environment this clientId belongs to
-    // ClientIds are stored at: projects/{projectId}/environments/{envId}/clientIds/{token}
-    // We need to query across all projects — use a collectionGroup query
     const clientIdSnapshot = await db
       .collectionGroup("clientIds")
       .where("token", "==", clientId)
@@ -89,13 +65,7 @@ export const getConfig = onRequest(
       .get();
 
     if (clientIdSnapshot.empty) {
-      res.status(401).json({
-        error: {
-          code: "INVALID_CLIENT_ID",
-          message: "Invalid or revoked clientId",
-        },
-      });
-      return;
+      throw new UnauthorizedError("Invalid or revoked clientId");
     }
 
     const clientIdDoc = clientIdSnapshot.docs[0];
@@ -122,13 +92,9 @@ export const getConfig = onRequest(
             (d) => requestDomain === d || requestDomain.endsWith(`.${d}`),
           );
           if (!isAllowed) {
-            res.status(403).json({
-              error: {
-                code: "DOMAIN_NOT_ALLOWED",
-                message: `Origin ${requestDomain} is not in allowedDomains`,
-              },
-            });
-            return;
+            throw new ForbiddenError(
+              `Origin ${requestDomain} is not in allowedDomains`,
+            );
           }
         }
       }
@@ -145,17 +111,11 @@ export const getConfig = onRequest(
         ? ((req.body?.data?.context as UserContext) ?? null)
         : null;
 
-    // Reject oversized context payloads (> 10KB)
+    // Reject oversized context payloads
     if (userContext) {
       const contextSize = JSON.stringify(userContext).length;
-      if (contextSize > 10240) {
-        res.status(413).json({
-          error: {
-            code: "CONTEXT_TOO_LARGE",
-            message: "Context payload exceeds 10KB limit",
-          },
-        });
-        return;
+      if (contextSize > MAX_CONTEXT_SIZE_BYTES) {
+        throw new PayloadTooLargeError("Context payload exceeds 10KB limit");
       }
     }
 
@@ -238,20 +198,18 @@ export const getConfig = onRequest(
         if (d.updatedAt > latestUpdate) latestUpdate = d.updatedAt;
       }
 
-      const { data, warnings } = evaluateConfigsForContext(
+      const { data } = evaluateConfigsForContext(
         configs,
         segments,
         userContext,
       );
 
       // Private cache — varies by context, not CDN-cacheable
-      res.set("Cache-Control", "private, max-age=30");
+      setPrivateCache(res, 30);
       res.set("X-Config-Project", projectId);
       res.set("X-Config-Environment", environmentId);
 
-      // Never expose warnings to client keys — they could reveal internal
-      // flag names, prerequisite relationships, or segment structure.
-      res.status(200).json({
+      sendSuccess(res, {
         data,
         version: String(Object.keys(data).length),
         timestamp: latestUpdate || new Date().toISOString(),
@@ -297,15 +255,15 @@ export const getConfig = onRequest(
     }
 
     // Public cache — CDN-cacheable (same response for all consumers)
-    res.set("Cache-Control", "public, max-age=30, s-maxage=60");
+    setCdnCache(res, 30, 60);
     res.set("X-Config-Project", projectId);
     res.set("X-Config-Environment", environmentId);
 
-    res.status(200).json({
+    sendSuccess(res, {
       data,
       segments,
       version: String(Object.keys(data).length),
       timestamp: latestUpdate || new Date().toISOString(),
     });
-  },
+  }),
 );

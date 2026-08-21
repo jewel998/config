@@ -1,5 +1,11 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { FieldValue } from "firebase-admin/firestore";
+import { getDb } from "../utils/firestore.js";
+import {
+  MAX_BATCH_SIZE,
+  MAX_INSTANCES,
+  FUNCTION_TIMEOUT_SECONDS,
+} from "../utils/constants.js";
 import { validateEntries } from "../utils/import-validator.js";
 import type {
   ConflictRow,
@@ -9,7 +15,6 @@ import type {
   FailedRowDoc,
 } from "../import-export-types.js";
 
-const MAX_BATCH_SIZE = 500;
 const JOB_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
 interface ImportCallableData {
@@ -27,7 +32,7 @@ interface ImportCallableData {
  * into the target environment via batched Firestore writes.
  */
 export const importConfigs = onCall(
-  { maxInstances: 10, timeoutSeconds: 540 },
+  { maxInstances: MAX_INSTANCES, timeoutSeconds: FUNCTION_TIMEOUT_SECONDS },
   async (request) => {
     // ─── Auth Check ──────────────────────────────────────────
     if (!request.auth) {
@@ -50,7 +55,7 @@ export const importConfigs = onCall(
       );
     }
 
-    const db = getFirestore();
+    const db = getDb();
     const projectRef = db.collection("projects").doc(data.projectId);
 
     // ─── Project & RBAC Check ────────────────────────────────

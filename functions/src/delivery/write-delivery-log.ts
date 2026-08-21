@@ -1,4 +1,4 @@
-import { getFirestore } from "firebase-admin/firestore";
+import { getDb } from "../utils/firestore.js";
 import { MAX_DELIVERIES } from "../constants.js";
 import type { DispatchResult } from "../types.js";
 
@@ -12,7 +12,7 @@ export async function writeDeliveryLog(
   auditEntryId: string,
   isTest: boolean,
 ): Promise<void> {
-  const db = getFirestore();
+  const db = getDb();
   const deliveriesRef = db
     .collection("projects")
     .doc(projectId)
@@ -41,7 +41,7 @@ async function enforceDeliveryCap(
   const snapshot = await deliveriesRef.orderBy("timestamp", "asc").get();
 
   if (snapshot.size > MAX_DELIVERIES) {
-    const batch = getFirestore().batch();
+    const batch = getDb().batch();
     const toDelete = snapshot.docs.slice(0, snapshot.size - MAX_DELIVERIES);
     toDelete.forEach((doc) => batch.delete(doc.ref));
     await batch.commit();
