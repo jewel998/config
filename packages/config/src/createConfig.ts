@@ -16,7 +16,8 @@ import type {
 } from "./types.js";
 import { DEFAULT_RETRY, DEFAULT_TIMEOUT } from "./types.js";
 
-const DEFAULT_BASE_URL = "https://jewel998-config.web.app/api";
+const DEFAULT_BASE_URL =
+  "https://us-central1-jewel998-config.cloudfunctions.net";
 
 export function createConfig(
   options: CreateConfigOptions & { loadingStrategy: "pessimistic" },
