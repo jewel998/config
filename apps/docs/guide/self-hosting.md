@@ -258,7 +258,6 @@ The SDK is designed to minimize API costs by default. Here's how each feature sa
 
 ```typescript
 import { initConfig, autoContext } from "@jewel998/config";
-import { browserStorage } from "@jewel998/config/storage";
 
 const flags = initConfig({
   clientId: "cid_xxx",
@@ -269,11 +268,22 @@ const flags = initConfig({
     "feature.new_checkout": false,
     "app.upload_limit": 50,
   },
-  // Persist across page reloads (avoids re-fetch on every visit)
-  storage: browserStorage({ prefix: "myapp" }),
   context: autoContext({ userId: "user_123" }),
   // Longer poll interval = fewer API calls
   pollInterval: 600_000, // 10 minutes instead of default 5
+});
+```
+
+For maximum cache persistence across page reloads, use `createConfig` with `browserStorage`:
+
+```typescript
+import { createConfig, browserStorage } from "@jewel998/config";
+
+const config = createConfig({
+  clientId: "cid_xxx",
+  baseUrl: "https://your-project.web.app/api",
+  storage: browserStorage({ prefix: "myapp" }),
+  context: { userId: "user_123" },
 });
 ```
 
@@ -282,30 +292,32 @@ const flags = initConfig({
 #### Small teams (< 1,000 users) — Stay on free tier
 
 - Use default settings — you'll never exceed free limits
-- Use `browserStorage` to avoid re-fetching on page reload
-- Set all your defaults — the SDK serves them instantly without any API call
+- Set all your defaults in `initConfig` — the SDK serves them instantly without any API call
+- The optimistic loading strategy fetches in the background while defaults are served
 
 #### Medium scale (1K–50K users) — Optimize refresh
 
 ```typescript
 const flags = initConfig({
-  // ...
+  clientId: "cid_xxx",
+  baseUrl: "https://your-project.web.app/api",
+  defaults: {/* all your flags */},
   pollInterval: 900_000, // 15 min — most flag changes don't need instant propagation
-  storage: browserStorage({ defaultTtl: 86_400_000 }), // 24h localStorage cache
 });
 ```
 
 - Longer `pollInterval` = fewer version checks
-- `browserStorage` with longer TTL = data survives page reloads
-- Consider `loadingStrategy: "deferred"` if not all pages need flags immediately
+- For persistent cache across page reloads, use `createConfig` with `browserStorage`
+- Consider `loadingStrategy: "deferred"` via `createConfig` if not all pages need flags immediately
 
 #### Large scale (50K+ users) — Minimize function invocations
 
 ```typescript
 const flags = initConfig({
-  // ...
+  clientId: "cid_xxx",
+  baseUrl: "https://your-project.web.app/api",
+  defaults: {/* all your flags */},
   pollInterval: 0, // Disable polling entirely
-  storage: browserStorage({ defaultTtl: 7 * 86_400_000 }), // 7-day cache
 });
 
 // Only refresh when YOU decide (e.g., on route change)
@@ -313,8 +325,8 @@ router.on("routeChange", () => flags.refresh());
 ```
 
 - Disable automatic polling and trigger `refresh()` only at meaningful moments
-- Use `browserStorage` with a long TTL — values persist across sessions
 - The CDN handles the heavy lifting — most requests never reach your function
+- For long-lived cache, use `createConfig` with `browserStorage({ defaultTtl: 7 * 86_400_000 })`
 
 ### Cost Breakdown by API Call
 
