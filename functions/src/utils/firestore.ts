@@ -7,5 +7,5 @@
 import { getFirestore } from "firebase-admin/firestore";
 
 export function getDb() {
-  return getFirestore();
+  return getFirestore("default");
 }
