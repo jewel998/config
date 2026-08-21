@@ -18,6 +18,10 @@ Each environment has its own set of config values. A flag can be:
 - `true` in staging (testing before launch)
 - `false` in production (not yet released)
 
+::: info Environments are fully independent
+Configs are **not** automatically synced between environments. Changing a flag in staging does not affect production. Each environment is its own isolated data set.
+:::
+
 ## API Keys Per Environment
 
 Each environment has its own API keys:
@@ -43,3 +47,39 @@ Assign colors to environments for quick visual identification in the portal. Pro
 ## Switching Environments
 
 Use the environment switcher in the portal's top bar to switch context. All configs, API keys, and targeting rules shown are scoped to the selected environment.
+
+## Promoting Configs Between Environments
+
+Environments are intentionally independent — there's no automatic "promote to production" button. This is by design to prevent accidental production changes.
+
+**Recommended patterns for promoting configs:**
+
+### Manual Promotion (Recommended for most teams)
+
+1. Configure and test the flag in development
+2. Manually replicate the config in staging (verify with QA)
+3. Manually set the same value in production when ready
+
+### Import/Export Promotion (For larger teams)
+
+1. Export configs from staging using [Import & Export](/features/import-export)
+2. Review the exported JSON
+3. Import into production with the `review` conflict strategy
+
+### CI/CD Promotion (For automated pipelines)
+
+```bash
+# Export from staging, import to production
+curl -X POST "$FUNCTION_URL/exportConfigs" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"data": {"projectId": "my-project", "exportType": "full"}}'
+
+# Review, then import to production environment
+curl -X POST "$FUNCTION_URL/importConfigs" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"data": {"projectId": "my-project", "environmentId": "production", "entries": [...], "conflictStrategy": "overwrite"}}'
+```
+
+::: tip
+The audit log tracks all changes per environment, making it easy to verify what was promoted and by whom.
+:::

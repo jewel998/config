@@ -59,3 +59,22 @@ The portal shows which configs reference each segment. This helps you understand
 
 - **Client keys (cid\_):** The API evaluates segment membership server-side. Your segment conditions are never exposed to the browser.
 - **Server keys (svr\_):** Segment definitions are included in the API response for local evaluation by the SDK.
+
+## Segments and autoContext
+
+When you pass attributes via `autoContext()`, they are automatically available for segment evaluation:
+
+```typescript
+const flags = initConfig({
+  clientId: "cid_xxx",
+  context: autoContext({
+    userId: "user_123",
+    plan: "enterprise",
+    country: "US",
+  }),
+});
+```
+
+If you have a segment defined as `plan equals "enterprise"`, users whose context includes `plan: "enterprise"` will automatically match that segment. The SDK sends context attributes to the API, which evaluates segment membership server-side.
+
+**Auto-detected attributes** (browser, OS, device, locale, timezone) are also available for segment conditions — you can create segments like "Mobile Users" with `device equals "mobile"` without any extra configuration.

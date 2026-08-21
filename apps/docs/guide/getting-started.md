@@ -55,19 +55,24 @@ flags.on("updated", ({ keys }) => {
 4. **Cached**: All subsequent reads are from local cache (0ms)
 5. **Version-gated refresh**: SDK polls `/api/getVersion` (tiny response). Only re-fetches full config when the version number changes.
 6. **Circuit breaker**: If the API returns 401/403, the SDK stops retrying for 5 minutes to prevent hammering a misconfigured endpoint.
-7. **Cleanup**: Call `flags.destroy()` when unmounting to clear timers and listeners.
+7. **Cleanup**: When using `createConfig`, call `client.destroy()` to clear timers and listeners. With `initConfig`, timers are tied to the page lifecycle.
 
 ## Configuration Options
 
 ```typescript
 const flags = initConfig({
   clientId: "cid_xxx",           // Required — your API key
-  baseUrl: "https://...",        // Required for self-hosted
+  baseUrl: "https://...",        // Your self-hosted Firebase URL (defaults to demo instance)
   defaults: { ... },            // Fallback values (instant)
   context: autoContext({ ... }), // User attributes for targeting
   pollInterval: 300_000,         // Version polling (default: 5 min, 0 to disable)
+  storage: browserStorage(),     // Cache adapter (default: memoryStorage)
 });
 ```
+
+::: warning baseUrl
+If you omit `baseUrl`, the SDK defaults to a demo instance (`https://jewel998-config.web.app/api`). For production, always set this to your own Firebase deployment URL.
+:::
 
 ## Auto-Context
 
@@ -94,10 +99,39 @@ flags.setContext(autoContext({ userId: "user_456", plan: "free" }));
 
 ## API Key Types
 
-| Prefix | Use In   | Behavior                                                     |
-| ------ | -------- | ------------------------------------------------------------ |
-| `cid_` | Frontend | API evaluates targeting server-side, returns only values     |
-| `svr_` | Backend  | API returns full flag data for local evaluation with plugins |
+| Prefix | Use In              | Behavior                                                     |
+| ------ | ------------------- | ------------------------------------------------------------ |
+| `cid_` | Frontend            | API evaluates targeting server-side, returns only values     |
+| `svr_` | Frontend (advanced) | API returns full flag data for local evaluation with plugins |
+
+::: info Server keys are NOT for Node.js
+Despite the `svr_` prefix, the SDK is browser-only. Server keys return full flag data so the **browser SDK** can evaluate targeting locally (useful for reducing latency). For actual Node.js backends, call the API directly via HTTP.
+:::
+
+## Which API Should I Use?
+
+The SDK exports two entry points: `initConfig` and `createConfig`.
+
+| Use Case                                 | Recommended API | Why                                                   |
+| ---------------------------------------- | --------------- | ----------------------------------------------------- |
+| Most apps (frontend with `cid_` key)     | `initConfig`    | Simpler API, handles polling/versioning automatically |
+| Need custom loading strategy             | `createConfig`  | Control over optimistic/pessimistic/deferred loading  |
+| Need client-side evaluation (`svr_` key) | `createConfig`  | Pass plugins for local rollout/targeting evaluation   |
+| Need consent-aware mode (GDPR)           | `createConfig`  | Supports `consentAware` option                        |
+
+```typescript
+// initConfig — simple, recommended for most use cases
+const flags = initConfig({ clientId: "cid_xxx", defaults: { ... } });
+
+// createConfig — advanced, full control (svr_ key auto-enables client evaluation)
+const client = createConfig({
+  clientId: "svr_xxx",
+  plugins: [targetingPlugin(segments), rolloutPlugin()],
+  loadingStrategy: "pessimistic", // blocks until data is fetched
+});
+```
+
+See the [SDK API Reference](/api/) for full details on both.
 
 ## Next Steps
 

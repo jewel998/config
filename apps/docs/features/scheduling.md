@@ -12,6 +12,41 @@ Schedule config changes to activate at a specific date and time. Perfect for pla
 
 Once the scheduled time arrives, the API automatically returns the scheduled value instead of the default.
 
+## Schedule Behavior
+
+Schedules are **one-shot activations** — once the `activateAt` time is reached, the scheduled value becomes the resolved value permanently (until you change it or remove the schedule).
+
+::: info Schedules are permanent once activated
+A schedule does NOT auto-revert. If the current time is past `activateAt`, the scheduled value is always returned. Think of it as "switch to this value at this time, forever."
+:::
+
+### What happens after the scheduled time?
+
+The evaluation logic is:
+
+```
+if (now >= activateAt) → return targetValue
+if (now < activateAt) → skip, continue to targeting/rollout/default
+```
+
+Once activated, the schedule takes precedence over targeting rules and rollouts indefinitely.
+
+## Time-Limited Features (Campaigns)
+
+To enable a feature for a limited window (e.g., a 24-hour sale), use two config values:
+
+1. **Option A: Two schedules on separate flags**
+   - `feature.sale_banner` — Schedule to `true` at sale start
+   - After the sale ends, manually update the value back to `false` in the portal
+
+2. **Option B: Use targeting + schedule together**
+   - Schedule the flag to `true` at sale start
+   - After the event, remove the schedule and the flag reverts to its default (`false`)
+
+::: tip
+Since schedules are permanent once activated, the recommended pattern for temporary features is to set a reminder to manually revert the flag or remove the schedule after your event ends. A future version may add schedule expiry.
+:::
+
 ## Evaluation Priority
 
 Schedules sit between overrides and targeting in the pipeline:
@@ -30,7 +65,7 @@ This means:
 - **Product launch** — Enable a feature flag at midnight on launch day
 - **Sale pricing** — Change a config value at the start of a sale event
 - **Gradual deprecation** — Switch a value after a migration deadline
-- **Time-limited features** — Combine with a second schedule to disable after the event
+- **Time-limited features** — Combine with manual revert after the event
 
 ## Timezone
 

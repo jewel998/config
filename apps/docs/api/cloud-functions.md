@@ -20,33 +20,33 @@ All Cloud Functions deployed as part of @jewel998/config, their purposes, and ho
 ```mermaid
 flowchart TB
     subgraph Clients
-        SDK[SDK / Browser]
-        Portal[Portal UI]
+        SDK["SDK / Browser"]
+        Portal["Portal UI"]
     end
 
-    subgraph "Cloud Functions"
-        GC[getConfig]
-        GV[getVersion]
-        VS[validateSignIn]
-        OAC[onAuditCreated]
-        IC[importConfigs]
-        EC[exportConfigs]
-        RFR[retryFailedRows]
-        TW[testWebhook]
+    subgraph CloudFunctions["Cloud Functions"]
+        GC["getConfig"]
+        GV["getVersion"]
+        VS["validateSignIn"]
+        OAC["onAuditCreated"]
+        IC["importConfigs"]
+        EC["exportConfigs"]
+        RFR["retryFailedRows"]
+        TW["testWebhook"]
     end
 
-    subgraph Firestore
-        AC[accessControl/default]
-        PR[projects/{id}]
-        ENV[environments/{id}]
-        CFG[configs/{key}]
-        AL[audit_log/{id}]
-        WH[webhooks/{id}]
+    subgraph FirestoreDB["Firestore"]
+        AC["accessControl/default"]
+        PR["projects/{id}"]
+        ENV["environments/{id}"]
+        CFG["configs/{key}"]
+        AL["audit_log/{id}"]
+        WH["webhooks/{id}"]
     end
 
     subgraph External
-        WE[Webhook Endpoints<br/>Slack, Discord, etc.]
-        ST[Firebase Storage<br/>Export files]
+        WE["Webhook Endpoints\nSlack, Discord, etc."]
+        ST["Firebase Storage\nExport files"]
     end
 
     SDK -->|POST| GC
@@ -71,7 +71,7 @@ flowchart TB
 
 **Type:** HTTP onRequest (CORS enabled)  
 **URL:** `POST https://your-project.web.app/api/getConfig`  
-**CDN Cache:** 60s for client-mode (svr_ keys), private for server-mode (cid_ keys)
+**CDN Cache:** 60s for client-mode (`svr_` keys return full data, CDN-cacheable), private for server-mode (`cid_` keys return user-specific resolved values, not cacheable)
 
 ### Flow
 
@@ -351,10 +351,14 @@ The following GCP APIs must be enabled (the CLI enables them automatically on fi
 
 ### Regions
 
-| Function       | Region      | Why                               |
-| -------------- | ----------- | --------------------------------- |
-| getConfig      | us-central1 | Close to CDN edge, lowest latency |
-| getVersion     | us-central1 | Same as getConfig                 |
-| onAuditCreated | asia-south2 | Same region as Firestore database |
-| Callables      | us-central1 | Default                           |
-| validateSignIn | us-central1 | Global (runs before auth)         |
+| Function       | Region      | Why                                                               |
+| -------------- | ----------- | ----------------------------------------------------------------- |
+| getConfig      | us-central1 | Close to CDN edge, lowest latency                                 |
+| getVersion     | us-central1 | Same as getConfig                                                 |
+| onAuditCreated | us-central1 | Default (configure region in code if your Firestore is elsewhere) |
+| Callables      | us-central1 | Default                                                           |
+| validateSignIn | us-central1 | Global (runs before auth)                                         |
+
+::: tip Changing Regions
+All functions default to `us-central1`. If your Firestore database is in a different region, you can set the `region` option in each function's configuration object (e.g., `onDocumentCreated({ document: "...", region: "europe-west1" })`). Deploy Firestore triggers in the same region as your database for lowest latency.
+:::

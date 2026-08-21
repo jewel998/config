@@ -24,6 +24,22 @@ Rollouts use a MurmurHash3 algorithm: `hash(flagKey + ":" + userId) % 100`. This
 4. Set the rollout value (e.g., `true` for a boolean flag)
 5. Save
 
+## What Happens When You Change the Percentage?
+
+Since bucketing is deterministic (`hash % 100`), changing the percentage does **not** re-randomize users:
+
+| Change    | Effect                                                                                                                        |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 20% → 50% | All users who were in the 20% bucket remain in the rollout. An additional ~30% of users are added (those with buckets 20–49). |
+| 50% → 20% | Users with buckets 20–49 are removed from the rollout. Users with buckets 0–19 remain.                                        |
+| 100% → 0% | Everyone reverts to the default value.                                                                                        |
+
+**Key insight:** Increasing the percentage is always additive — existing users never lose the feature when you ramp up. Decreasing the percentage does remove users from the high end of the bucket range.
+
+::: tip Ramp-up is safe
+You can confidently go 5% → 10% → 25% → 50% → 100% knowing that the first 5% of users remain consistent throughout the entire ramp-up.
+:::
+
 ## Rollout + Targeting
 
 Targeting rules have higher priority than rollouts in the evaluation pipeline. If a targeting rule matches, the rollout is skipped. This means you can:
@@ -40,3 +56,12 @@ Targeting rules have higher priority than rollouts in the evaluation pipeline. I
 ## Consistency Across Modes
 
 The same hashing algorithm is used in both server-side evaluation (client keys) and client-side evaluation (server keys). A user bucketed at 30% in one mode will be bucketed at 30% in the other — no flip-flopping during migration.
+
+## Edge Cases
+
+| Scenario                   | Behavior                                                             |
+| -------------------------- | -------------------------------------------------------------------- |
+| `rolloutPercentage: 0`     | Rollout step is skipped entirely; pipeline continues to default      |
+| `rolloutPercentage: 100`   | Everyone gets the rollout value (equivalent to changing the default) |
+| No `userId` in context     | Rollout step is skipped; pipeline continues to default               |
+| Same user, different flags | Different buckets (the flag key is part of the hash input)           |
