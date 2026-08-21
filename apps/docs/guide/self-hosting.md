@@ -237,3 +237,101 @@ If the SDK receives a 400, 401, or 403 error, it activates a circuit breaker tha
 *CDN absorbs 99%+ of version polls (15s cache). Actual function invocations are a fraction of raw request count.
 
 Firebase free tier limits: 2M function invocations/month, 50K Firestore reads/day, 10GB hosting bandwidth.
+
+## Cost Optimization Guide
+
+The SDK is designed to minimize API costs by default. Here's how each feature saves you money, and what you can tune for maximum efficiency.
+
+### Built-in Cost Savings
+
+| Feature                   | How It Saves Money                                                                                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Version-gated refresh** | `refresh()` calls `/getVersion` first (1 Firestore read, ~100 bytes). Only fetches full config if version changed. 95%+ of refresh cycles cost almost nothing.     |
+| **CDN caching**           | `/getVersion` cached 15s, `/getConfig` (client mode) cached 60s. At 10K users polling every 5 min, CDN serves 99% — only ~60 function calls/hour actually execute. |
+| **Circuit breaker**       | On 401/403, SDK stops all requests for 5 minutes. Prevents runaway costs from misconfigured clients.                                                               |
+| **Request deduplication** | Multiple `refresh()` calls within the same tick share a single network request.                                                                                    |
+| **30s stale check**       | `setContext()` skips re-fetch if the last fetch was <30s ago. Prevents unnecessary calls during rapid user interactions.                                           |
+| **7-day cache TTL**       | Once fetched, values persist in memory/localStorage for 7 days. Page refreshes use cached data immediately.                                                        |
+| **Conditional requests**  | `/getVersion` supports `If-None-Match` (ETag). When version is unchanged, server returns 304 with zero body.                                                       |
+
+### Recommended Configuration for Cost Efficiency
+
+```typescript
+import { initConfig, autoContext } from "@jewel998/config";
+import { browserStorage } from "@jewel998/config/storage";
+
+const flags = initConfig({
+  clientId: "cid_xxx",
+  baseUrl: "https://your-project.web.app/api",
+  defaults: {
+    // Define ALL flags here — served instantly, zero API cost
+    "feature.dark_mode": false,
+    "feature.new_checkout": false,
+    "app.upload_limit": 50,
+  },
+  // Persist across page reloads (avoids re-fetch on every visit)
+  storage: browserStorage({ prefix: "myapp" }),
+  context: autoContext({ userId: "user_123" }),
+  // Longer poll interval = fewer API calls
+  pollInterval: 600_000, // 10 minutes instead of default 5
+});
+```
+
+### Tips by Scale
+
+#### Small teams (< 1,000 users) — Stay on free tier
+
+- Use default settings — you'll never exceed free limits
+- Use `browserStorage` to avoid re-fetching on page reload
+- Set all your defaults — the SDK serves them instantly without any API call
+
+#### Medium scale (1K–50K users) — Optimize refresh
+
+```typescript
+const flags = initConfig({
+  // ...
+  pollInterval: 900_000, // 15 min — most flag changes don't need instant propagation
+  storage: browserStorage({ defaultTtl: 86_400_000 }), // 24h localStorage cache
+});
+```
+
+- Longer `pollInterval` = fewer version checks
+- `browserStorage` with longer TTL = data survives page reloads
+- Consider `loadingStrategy: "deferred"` if not all pages need flags immediately
+
+#### Large scale (50K+ users) — Minimize function invocations
+
+```typescript
+const flags = initConfig({
+  // ...
+  pollInterval: 0, // Disable polling entirely
+  storage: browserStorage({ defaultTtl: 7 * 86_400_000 }), // 7-day cache
+});
+
+// Only refresh when YOU decide (e.g., on route change)
+router.on("routeChange", () => flags.refresh());
+```
+
+- Disable automatic polling and trigger `refresh()` only at meaningful moments
+- Use `browserStorage` with a long TTL — values persist across sessions
+- The CDN handles the heavy lifting — most requests never reach your function
+
+### Cost Breakdown by API Call
+
+| Endpoint                       | Firestore Reads                     | Function Cost | CDN-Cacheable?         |
+| ------------------------------ | ----------------------------------- | ------------- | ---------------------- |
+| `/api/getVersion`              | 1 (environment doc)                 | ~$0.0000004   | ✅ 15s                 |
+| `/api/getConfig` (server mode) | 2-3 (clientId + configs + segments) | ~$0.0000012   | ❌ (varies by context) |
+| `/api/getConfig` (client mode) | 2-3 (same)                          | ~$0.0000012   | ✅ 60s                 |
+
+At the free tier limits (2M invocations/month + 50K reads/day), you can serve **~50,000 active users** polling every 5 minutes at zero cost.
+
+### What NOT to Do
+
+| Anti-Pattern                             | Why It's Expensive                                   | Fix                               |
+| ---------------------------------------- | ---------------------------------------------------- | --------------------------------- |
+| Calling `refresh()` on every render      | Bypasses deduplication if renders are >30s apart     | Let the poll interval handle it   |
+| Using `pollInterval: 1000` (1s)          | Each poll = function invocation                      | Use 300,000+ (5 min or more)      |
+| Not setting `defaults`                   | Forces a blocking fetch before app can render        | Always provide defaults           |
+| Creating multiple `initConfig` instances | Each instance polls independently, multiplying costs | Use one singleton                 |
+| Not calling `destroy()` on unmount (SPA) | Timer keeps polling after navigation                 | Call `flags.destroy()` in cleanup |
