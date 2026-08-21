@@ -169,7 +169,10 @@ export type ConfigEventType = "ready" | "updated" | "fetchError" | "revoked";
 
 export interface ConfigEventPayloads {
   ready: { loadingStrategy: LoadingStrategy; cachedKeys: number };
-  updated: { keys: string[]; source: "background" | "refresh" };
+  updated: {
+    keys: string[];
+    source: "background" | "refresh" | "version-check";
+  };
   fetchError: { error: Error; retryCount: number; willRetry: boolean };
   revoked: { clientId: string; message: string };
 }
@@ -211,6 +214,9 @@ export interface ConfigFetcher {
 
   /** Fetch specific keys only */
   fetchKeys(keys: string[]): Promise<Record<string, unknown>>;
+
+  /** Check current config version (lightweight — single Firestore read) */
+  checkVersion(): Promise<{ version: string; changedKeys: string[] }>;
 }
 
 // ═══════════════════════════════════════════════════════════════

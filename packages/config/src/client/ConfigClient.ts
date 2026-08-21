@@ -46,6 +46,7 @@ export const buildConfigClient = (
   let inflightRefresh: Promise<void> | null = null;
   let lastFetchTime = 0;
   let contextDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  let cachedVersion: string | null = null;
   const MIN_FETCH_INTERVAL = 30_000; // Don't re-fetch within 30s
   const CONTEXT_DEBOUNCE_MS = 100; // Batch rapid setContext calls
 
@@ -219,6 +220,21 @@ export const buildConfigClient = (
 
       inflightRefresh = (async () => {
         try {
+          // Version-gated refresh: check version first (lightweight call)
+          // Only fetch full config if version has changed
+          try {
+            const { version } = await fetcher.checkVersion();
+            if (cachedVersion !== null && version === cachedVersion) {
+              // Version unchanged — skip full fetch, emit event
+              events.emit("updated", { keys: [], source: "version-check" });
+              lastFetchTime = Date.now();
+              return;
+            }
+            cachedVersion = version;
+          } catch {
+            // If version check fails, proceed with full fetch as fallback
+          }
+
           const result = await withRetry(() => fetcher.fetchAll(), retry);
           cache.set("__all__", result, DEFAULT_CACHE_TTL);
           for (const [key, value] of Object.entries(result)) {

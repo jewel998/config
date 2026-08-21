@@ -23,11 +23,13 @@
     "rewrites": [
       {
         "source": "/api/getConfig",
-        "function": "getConfig"
+        "function": "getConfig",
+        "region": "us-central1"
       },
       {
         "source": "/api/getVersion",
-        "function": "getVersion"
+        "function": "getVersion",
+        "region": "us-central1"
       }
     ],
     "headers": [
@@ -41,9 +43,13 @@
           },
           {
             "key": "Access-Control-Allow-Headers",
-            "value": "Content-Type, Authorization"
+            "value": "Content-Type, Authorization, If-None-Match"
           },
-          { "key": "Access-Control-Max-Age", "value": "3600" }
+          { "key": "Access-Control-Max-Age", "value": "86400" },
+          {
+            "key": "Access-Control-Expose-Headers",
+            "value": "ETag, X-Config-Version, X-Config-Hash"
+          }
         ]
       }
     ]
