@@ -50,6 +50,7 @@ export default defineConfig({
         text: "SDK Reference",
         items: [
           { text: "initConfig", link: "/api/" },
+          { text: "Cloud Functions", link: "/api/cloud-functions" },
           { text: "Storage Adapters", link: "/guide/storage" },
           { text: "Webhook API", link: "/api/webhooks" },
         ],

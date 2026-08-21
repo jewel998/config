@@ -4,6 +4,7 @@ import { testWebhook } from "./callables/test-webhook.js";
 import { importConfigs } from "./callables/import-configs.js";
 import { exportConfigs } from "./callables/export-configs.js";
 import { retryFailedRows } from "./callables/retry-failed-rows.js";
+import { validateSignIn } from "./identity/validate-sign-in.js";
 import { getConfig } from "./api/get-config.js";
 import { getVersion } from "./api/get-version.js";
 
@@ -17,6 +18,7 @@ export {
   importConfigs,
   exportConfigs,
   retryFailedRows,
+  validateSignIn,
   getConfig,
   getVersion,
 };

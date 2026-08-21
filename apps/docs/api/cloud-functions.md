@@ -1,0 +1,360 @@
+# Cloud Functions Reference
+
+All Cloud Functions deployed as part of @jewel998/config, their purposes, and how they interact.
+
+## Function Overview
+
+| Function          | Type              | Trigger               | Purpose                                         |
+| ----------------- | ----------------- | --------------------- | ----------------------------------------------- |
+| `getConfig`       | HTTP (onRequest)  | `POST /api/getConfig` | Deliver resolved config values to the SDK       |
+| `getVersion`      | HTTP (onRequest)  | `GET /api/getVersion` | Lightweight version check for polling           |
+| `validateSignIn`  | Blocking          | Before user sign-in   | Enforce access control (email/domain allowlist) |
+| `onAuditCreated`  | Firestore Trigger | New audit log entry   | Dispatch webhooks to configured endpoints       |
+| `importConfigs`   | Callable (onCall) | Portal / programmatic | Bulk import configs with validation             |
+| `exportConfigs`   | Callable (onCall) | Portal / programmatic | Export project data as JSON (GDPR)              |
+| `retryFailedRows` | Callable (onCall) | Portal                | Retry/dismiss failed import entries             |
+| `testWebhook`     | Callable (onCall) | Portal                | Send a test payload to a webhook URL            |
+
+## Architecture Diagram
+
+```mermaid
+flowchart TB
+    subgraph Clients
+        SDK[SDK / Browser]
+        Portal[Portal UI]
+    end
+
+    subgraph "Cloud Functions"
+        GC[getConfig]
+        GV[getVersion]
+        VS[validateSignIn]
+        OAC[onAuditCreated]
+        IC[importConfigs]
+        EC[exportConfigs]
+        RFR[retryFailedRows]
+        TW[testWebhook]
+    end
+
+    subgraph Firestore
+        AC[accessControl/default]
+        PR[projects/{id}]
+        ENV[environments/{id}]
+        CFG[configs/{key}]
+        AL[audit_log/{id}]
+        WH[webhooks/{id}]
+    end
+
+    subgraph External
+        WE[Webhook Endpoints<br/>Slack, Discord, etc.]
+        ST[Firebase Storage<br/>Export files]
+    end
+
+    SDK -->|POST| GC
+    SDK -->|GET| GV
+    Portal -->|httpsCallable| IC
+    Portal -->|httpsCallable| EC
+    Portal -->|httpsCallable| RFR
+    Portal -->|httpsCallable| TW
+
+    VS -->|reads| AC
+    GC -->|reads| CFG
+    GV -->|reads| ENV
+    OAC -->|triggered by| AL
+    OAC -->|dispatches to| WE
+    EC -->|writes| ST
+    IC -->|writes| CFG
+```
+
+---
+
+## getConfig
+
+**Type:** HTTP onRequest (CORS enabled)  
+**URL:** `POST https://your-project.web.app/api/getConfig`  
+**CDN Cache:** 60s for client-mode (svr_ keys), private for server-mode (cid_ keys)
+
+### Flow
+
+```mermaid
+sequenceDiagram
+    participant SDK
+    participant CDN
+    participant getConfig
+    participant Firestore
+
+    SDK->>CDN: POST /api/getConfig {clientId}
+    CDN->>CDN: Cache hit?
+    alt Cache hit
+        CDN-->>SDK: Cached response
+    else Cache miss
+        CDN->>getConfig: Forward request
+        getConfig->>Firestore: collectionGroup("clientIds")<br/>where token == clientId
+        Firestore-->>getConfig: projectId, environmentId
+        getConfig->>Firestore: Validate domain (optional)
+        getConfig->>Firestore: Fetch configs + segments
+        getConfig->>getConfig: Evaluate targeting/rollout (server mode)
+        getConfig-->>CDN: Response + Cache-Control headers
+        CDN-->>SDK: Config data
+    end
+```
+
+### Request
+
+```json
+{
+  "data": {
+    "clientId": "cid_xxxxx",
+    "keys": ["feature.dark_mode", "app.timeout"],
+    "context": {
+      "userId": "user_123",
+      "attributes": { "plan": "pro", "country": "US" }
+    }
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "data": {
+    "feature.dark_mode": true,
+    "app.timeout": 5000
+  },
+  "version": "2",
+  "timestamp": "2026-08-21T10:00:00.000Z"
+}
+```
+
+### Error Codes
+
+| Status | Code              | Cause                               |
+| ------ | ----------------- | ----------------------------------- |
+| 400    | BAD_REQUEST       | Missing clientId                    |
+| 401    | UNAUTHORIZED      | Invalid or revoked clientId         |
+| 403    | FORBIDDEN         | Domain not in allowedDomains        |
+| 413    | PAYLOAD_TOO_LARGE | Context exceeds 10KB                |
+| 500    | INTERNAL_ERROR    | Firestore index missing or DB error |
+
+---
+
+## getVersion
+
+**Type:** HTTP onRequest (CORS enabled)  
+**URL:** `GET https://your-project.web.app/api/getVersion?clientId=cid_xxx`  
+**CDN Cache:** 15s (public)
+
+### Flow
+
+```mermaid
+sequenceDiagram
+    participant SDK
+    participant CDN
+    participant getVersion
+    participant Firestore
+
+    SDK->>CDN: GET /api/getVersion?clientId=cid_xxx
+    Note over SDK,CDN: If-None-Match: "42"
+    CDN->>getVersion: Forward (cache miss)
+    getVersion->>Firestore: Authenticate clientId
+    getVersion->>Firestore: Read environment doc (configVersion)
+    getVersion-->>CDN: {version: "43", changedKeys: ["feature.x"]}
+    CDN-->>SDK: Response
+    Note over SDK: Version changed → trigger full refresh
+```
+
+### Response
+
+```json
+{
+  "version": "43",
+  "changedKeys": ["feature.dark_mode", "app.timeout"]
+}
+```
+
+Supports `If-None-Match` header — returns 304 if version unchanged.
+
+---
+
+## validateSignIn
+
+**Type:** Blocking Function (beforeUserSignedIn)  
+**Trigger:** Runs BEFORE Firebase Auth issues a token  
+**Config:** Reads `accessControl/default` document in Firestore
+
+### Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant FirebaseAuth
+    participant validateSignIn
+    participant Firestore
+
+    User->>FirebaseAuth: Sign in with Google
+    FirebaseAuth->>validateSignIn: Before sign-in hook
+    validateSignIn->>Firestore: Read accessControl/default
+    Firestore-->>validateSignIn: {emails: [...], patterns: [...]}
+
+    alt Email in emails[] OR matches patterns[]
+        validateSignIn-->>FirebaseAuth: Allow
+        FirebaseAuth-->>User: Token issued ✅
+    else No match
+        validateSignIn-->>FirebaseAuth: Reject (permission-denied)
+        FirebaseAuth-->>User: Sign-in failed ❌
+    end
+```
+
+### Configuration Document
+
+**Path:** `accessControl/default`
+
+```json
+{
+  "emails": ["admin@yourcompany.com", "partner@external.org"],
+  "patterns": [".*@yourcompany\\.com$", ".*@subsidiary\\.io$"]
+}
+```
+
+- `emails` — Exact email addresses (case-insensitive)
+- `patterns` — JavaScript regex patterns tested against the email
+
+If the document doesn't exist, all authenticated users are allowed (backward-compatible open mode).
+
+---
+
+## onAuditCreated
+
+**Type:** Firestore Trigger (onDocumentCreated)  
+**Trigger:** New document in `projects/{projectId}/audit_log/{entryId}`  
+**Database:** `default`
+
+### Flow
+
+```mermaid
+sequenceDiagram
+    participant Portal
+    participant Firestore
+    participant onAuditCreated
+    participant Webhook
+
+    Portal->>Firestore: Write audit entry
+    Firestore->>onAuditCreated: Trigger (new document)
+    onAuditCreated->>Firestore: Read enabled webhooks
+    onAuditCreated->>onAuditCreated: Filter pipeline<br/>(eventType, resource, environment)
+    onAuditCreated->>onAuditCreated: Format payload<br/>(Slack, Discord, Standard, etc.)
+    onAuditCreated->>Webhook: HTTP POST (parallel dispatch)
+    Webhook-->>onAuditCreated: Response
+    onAuditCreated->>Firestore: Write delivery log
+```
+
+### Design Patterns Used
+
+- **Chain of Responsibility** — Filter pipeline (event type → resource category → environment)
+- **Strategy** — Formatter registry (standard, slack, discord, google-chat, ms-teams, custom)
+- **Adapter** — WebhookDispatcher interface (injectable for testing)
+
+---
+
+## importConfigs
+
+**Type:** Callable (onCall)  
+**Auth:** Firebase Auth required (admin or editor role)
+
+### Flow
+
+```mermaid
+sequenceDiagram
+    participant Portal
+    participant importConfigs
+    participant Firestore
+
+    Portal->>importConfigs: {projectId, envId, entries[], conflictStrategy}
+    importConfigs->>importConfigs: Auth + RBAC check
+    importConfigs->>importConfigs: Validate all entries (DTO schema)
+    importConfigs->>Firestore: Read existing configs (conflict detection)
+    importConfigs->>importConfigs: Resolve conflicts (skip/overwrite/review)
+    importConfigs->>Firestore: Batched writes (≤500 per batch)
+    importConfigs->>Firestore: Write audit log
+    importConfigs-->>Portal: {jobId, status}
+```
+
+---
+
+## exportConfigs
+
+**Type:** Callable (onCall)  
+**Auth:** Firebase Auth required (project member)
+
+### Flow
+
+```mermaid
+sequenceDiagram
+    participant Portal
+    participant exportConfigs
+    participant Firestore
+    participant Storage
+
+    Portal->>exportConfigs: {projectId, exportType, userId?}
+    exportConfigs->>exportConfigs: Auth + membership check
+    exportConfigs->>Firestore: Read all environments + configs + segments
+    exportConfigs->>exportConfigs: Assemble JSON (grouped by environment)
+    exportConfigs->>Storage: Upload to exports/{projectId}/{exportId}.json
+    exportConfigs->>Storage: Generate signed URL (24h expiry)
+    exportConfigs->>Firestore: Write audit log
+    exportConfigs-->>Portal: {downloadUrl, expiresAt, exportId}
+```
+
+---
+
+## retryFailedRows
+
+**Type:** Callable (onCall)  
+**Auth:** Firebase Auth required (admin or editor role)
+
+Retries or dismisses failed entries from a bulk import. Re-validates each corrected entry before persisting.
+
+---
+
+## testWebhook
+
+**Type:** Callable (onCall)  
+**Auth:** Firebase Auth required (admin role)
+
+Sends a sample audit event payload to a webhook URL for testing. Uses the same formatter and dispatcher as `onAuditCreated`.
+
+---
+
+## Deployment
+
+Deploy all functions at once:
+
+```bash
+firebase deploy --only functions --project your-project-id --force
+```
+
+Deploy specific functions:
+
+```bash
+firebase deploy --only functions:getConfig,functions:getVersion --project your-project-id
+```
+
+### Required APIs
+
+The following GCP APIs must be enabled (the CLI enables them automatically on first deploy):
+
+- Cloud Functions API
+- Cloud Build API
+- Artifact Registry API
+- Eventarc API (for Firestore triggers)
+- Cloud Run API
+
+### Regions
+
+| Function       | Region      | Why                               |
+| -------------- | ----------- | --------------------------------- |
+| getConfig      | us-central1 | Close to CDN edge, lowest latency |
+| getVersion     | us-central1 | Same as getConfig                 |
+| onAuditCreated | asia-south2 | Same region as Firestore database |
+| Callables      | us-central1 | Default                           |
+| validateSignIn | us-central1 | Global (runs before auth)         |
