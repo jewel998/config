@@ -18,6 +18,14 @@
       "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
     }
   ],
+  "auth": {
+    "beforeCreate": {
+      "function": "validateCreate"
+    },
+    "beforeSignIn": {
+      "function": "validateSignIn"
+    }
+  },
   "hosting": {
     "public": "apps/portal/dist",
     "rewrites": [
