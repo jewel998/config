@@ -61,29 +61,63 @@ VITE_FIREBASE_APP_ID=your-app-id
 
 If you haven't registered a web app yet: Firebase Console → Project Settings → Add app → Web → Register.
 
-## Step 5: Deploy Firestore Rules
+## Step 5: Deploy Everything
+
+Deploy Firestore rules, indexes, Cloud Functions, and hosting in one command:
 
 ```bash
+firebase deploy --project your-project-id --force
+```
+
+Or deploy individual pieces:
+
+```bash
+# Security rules
 firebase deploy --only firestore:rules
+
+# Firestore indexes (required for clientId lookup)
+firebase deploy --only firestore:indexes
+
+# Cloud Functions (API endpoints)
+firebase deploy --only functions
+
+# Portal hosting
+firebase deploy --only hosting
 ```
 
-This sets up the security rules that protect your data.
+::: warning
+The `--force` flag is needed for first-time function deployments to set up artifact cleanup policies. Subsequent deploys don't need it.
+:::
 
-## Step 6: Deploy Cloud Functions
+### Deployed Endpoints
+
+After deployment, your API is available at:
+
+- `https://your-project.web.app/api/getConfig` — Config delivery (via hosting rewrite)
+- `https://your-project.web.app/api/getVersion` — Lightweight version check
+- `https://us-central1-your-project.cloudfunctions.net/getConfig` — Direct function URL (fallback)
+
+### Required Indexes
+
+The `getConfig` endpoint uses a Firestore collection group query that requires a composite index. If you see a `gRPC 5 NOT_FOUND` error in your function logs, deploy the indexes:
 
 ```bash
-cd functions
-npm install
-cd ..
-firebase deploy --only functions
+firebase deploy --only firestore:indexes --project your-project-id
 ```
 
-This deploys two API endpoints:
+If your database has a non-standard name (not `(default)`), create the index manually:
 
-- `/api/getConfig` — Main config delivery endpoint
-- `/api/getVersion` — Lightweight version check for SDK polling
+```bash
+gcloud firestore indexes composite create \
+  --project=your-project-id \
+  --database=your-database-name \
+  --collection-group=clientIds \
+  --field-config=field-path=token,order=ascending \
+  --field-config=field-path=status,order=ascending \
+  --query-scope=COLLECTION_GROUP
+```
 
-## Step 7: Build and Deploy the Portal
+## Step 6: Build and Deploy the Portal
 
 ```bash
 pnpm install
@@ -93,7 +127,7 @@ firebase deploy --only hosting
 
 Your portal is now live at `https://your-project.web.app`
 
-## Step 8: Configure the SDK
+## Step 7: Configure the SDK
 
 In your application, point the SDK at your deployment:
 
@@ -110,7 +144,7 @@ const flags = initConfig({
 });
 ```
 
-## Step 9: Create Your First Flag
+## Step 8: Create Your First Flag
 
 1. Open your portal at `https://your-project.web.app`
 2. Sign in with the Google account you used for Firebase
@@ -148,13 +182,32 @@ We provide migration guides for breaking changes. Your Firestore data is never t
 
 ## Troubleshooting
 
+### "gRPC 5 NOT_FOUND" in function logs
+
+The composite index for `clientIds` isn't deployed. Run:
+
+```bash
+firebase deploy --only firestore:indexes --project your-project-id
+```
+
+### CORS errors calling the API
+
+If you see CORS errors when calling `https://your-project.web.app/api/getConfig`:
+
+1. Ensure hosting is deployed: `firebase deploy --only hosting`
+2. The hosting config includes CORS headers for `/api/**`
+3. As a fallback, call the function URL directly: `https://us-central1-your-project.cloudfunctions.net/getConfig`
+
 ### "Permission denied" on Firestore
 
 Make sure you've deployed the security rules: `firebase deploy --only firestore:rules`
 
-### Cloud Functions not responding
+### Cloud Functions returning 500
 
-Check the Functions logs: Firebase Console → Functions → Logs
+Check the function logs: Firebase Console → Functions → Logs. Common causes:
+
+- Missing Firestore index (see above)
+- Database name mismatch (if you have a non-standard database name, see `functions/src/utils/firestore.ts`)
 
 ### Portal shows blank page
 
@@ -163,8 +216,13 @@ Ensure the environment variables in `.env.production` match your Firebase projec
 ### SDK returns undefined values
 
 1. Check that your API key is active (not revoked) in the portal
-2. Verify `baseUrl` points to your deployment (not the demo)
-3. Check browser console for network errors
+2. Verify `baseUrl` points to your deployment
+3. Check browser console — if you see 401/403, the SDK's circuit breaker will stop retrying for 5 minutes
+4. Call `config.destroy()` and reinitialize if you need to reset the circuit breaker
+
+### SDK stops making requests (circuit breaker)
+
+If the SDK receives a 400, 401, or 403 error, it activates a circuit breaker that blocks all requests for 5 minutes. This prevents hammering a misconfigured endpoint. After the cooldown, it automatically retries once.
 
 ## Cost at Scale
 

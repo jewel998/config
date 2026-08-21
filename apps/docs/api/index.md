@@ -82,10 +82,11 @@ const config = createConfig({
 | `getValue`   | `<T>(key: string, default?: T) => T` | Get a typed config value                               |
 | `getFlag`    | `(key: string) => boolean`           | Get a boolean flag (false if missing)                  |
 | `getAll`     | `() => Record<string, unknown>`      | Get all config key-value pairs                         |
-| `refresh`    | `() => Promise<void>`                | Force re-fetch from API                                |
+| `refresh`    | `() => Promise<void>`                | Version-gated re-fetch (skips if unchanged)            |
 | `setContext` | `(ctx: EvaluationContext) => void`   | Update user context (triggers re-fetch in server mode) |
 | `on`         | `(event, callback) => void`          | Subscribe to lifecycle events                          |
 | `off`        | `(event, callback) => void`          | Unsubscribe from events                                |
+| `destroy`    | `() => void`                         | Clean up timers, listeners, and circuit breaker state  |
 
 ## EvaluationContext
 
@@ -173,12 +174,55 @@ const context = mergeContext(autoContext(), {
 
 ## Events
 
-| Event        | Payload                                               | Description           |
-| ------------ | ----------------------------------------------------- | --------------------- |
-| `ready`      | `{ loadingStrategy, cachedKeys }`                     | SDK initialized       |
-| `updated`    | `{ keys: string[], source: "background"\|"refresh" }` | Config values changed |
-| `fetchError` | `{ error, retryCount, willRetry }`                    | Fetch failed          |
-| `revoked`    | `{ clientId, message }`                               | API key revoked       |
+| Event        | Payload                                                                | Description           |
+| ------------ | ---------------------------------------------------------------------- | --------------------- |
+| `ready`      | `{ loadingStrategy, cachedKeys }`                                      | SDK initialized       |
+| `updated`    | `{ keys: string[], source: "background"\|"refresh"\|"version-check" }` | Config values changed |
+| `fetchError` | `{ error, retryCount, willRetry }`                                     | Fetch failed          |
+| `revoked`    | `{ clientId, message }`                                                | API key revoked       |
+
+### Version-Gated Refresh
+
+When `refresh()` is called, the SDK first calls `/api/getVersion` (tiny response: version number + changed keys). If the version matches the cached one, the full `/api/getConfig` call is skipped entirely. This means most refresh cycles cost almost nothing.
+
+```ts
+// This only hits /getConfig if the version has actually changed
+await config.refresh();
+```
+
+### Circuit Breaker
+
+The SDK includes a circuit breaker that stops making requests after receiving fatal errors (400, 401, 403). This prevents wasting bandwidth on misconfigured clients.
+
+| State     | Behavior                                     |
+| --------- | -------------------------------------------- |
+| CLOSED    | Normal operation — all requests flow through |
+| OPEN      | Fatal error received — blocks for 5 minutes  |
+| HALF_OPEN | Cooldown expired — allows one probe request  |
+
+If the probe succeeds, the circuit closes. If it fails again, it stays open for another 5 minutes.
+
+```ts
+// If you need to reset the circuit (e.g., after fixing the clientId):
+config.destroy();
+const newConfig = createConfig({ clientId: "cid_fixed_key", ... });
+```
+
+## Error Codes
+
+The SDK maps HTTP status codes to typed error codes:
+
+| HTTP Status | Error Code              | Retries? | Circuit? |
+| ----------- | ----------------------- | -------- | -------- |
+| 400         | `BAD_REQUEST`           | ❌       | Opens    |
+| 401         | `AUTHENTICATION_FAILED` | ❌       | Opens    |
+| 403         | `FORBIDDEN`             | ❌       | Opens    |
+| 404         | `NOT_FOUND`             | ❌       | —        |
+| 405         | `METHOD_NOT_ALLOWED`    | ❌       | —        |
+| 413         | `PAYLOAD_TOO_LARGE`     | ❌       | —        |
+| 429         | `RATE_LIMITED`          | ✅       | —        |
+| 500-504     | `SERVER_ERROR`          | ✅       | —        |
+| Other       | `NETWORK_ERROR`         | ✅       | —        |
 
 ## Error Handling
 

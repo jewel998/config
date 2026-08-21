@@ -162,7 +162,9 @@ For GDPR data portability requests, you can export data specific to a user ID:
 
 ## API Reference
 
-### `importConfigs` (HTTPS Callable)
+### `importConfigs` (HTTPS Callable — deprecated)
+
+The portal now writes directly to Firestore for imports (no Cloud Function needed). This callable is retained for programmatic API access only.
 
 **Authentication:** Firebase Auth ID token (automatic with SDK)
 

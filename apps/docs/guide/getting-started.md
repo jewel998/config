@@ -53,7 +53,9 @@ flags.on("updated", ({ keys }) => {
 2. **Background fetch**: SDK calls your API once on init
 3. **Resolved values**: API evaluates targeting rules server-side, returns flat values
 4. **Cached**: All subsequent reads are from local cache (0ms)
-5. **Auto-refresh**: SDK polls `/api/version` every 5 min (configurable). Only re-fetches when configs actually change.
+5. **Version-gated refresh**: SDK polls `/api/getVersion` (tiny response). Only re-fetches full config when the version number changes.
+6. **Circuit breaker**: If the API returns 401/403, the SDK stops retrying for 5 minutes to prevent hammering a misconfigured endpoint.
+7. **Cleanup**: Call `flags.destroy()` when unmounting to clear timers and listeners.
 
 ## Configuration Options
 
