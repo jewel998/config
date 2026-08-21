@@ -1,0 +1,7 @@
+# Override root .gitignore which excludes dist/
+# We WANT dist/ included in the published package
+src/
+tsconfig.json
+tsconfig.tsbuildinfo
+vitest.config.ts
+*.test.ts

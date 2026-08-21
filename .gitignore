@@ -11,6 +11,7 @@ coverage
 dist
 .vite
 .turbo
+*.tsbuildinfo
 .vitepress/dist
 .vitepress/cache
 _site
