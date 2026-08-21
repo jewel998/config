@@ -50,7 +50,7 @@ export const importConfigs = onCall(
       );
     }
 
-    const db = getFirestore("default");
+    const db = getFirestore();
     const projectRef = db.collection("projects").doc(data.projectId);
 
     // ─── Project & RBAC Check ────────────────────────────────

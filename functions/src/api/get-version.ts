@@ -35,7 +35,7 @@ export const getVersion = onRequest(
       return;
     }
 
-    const db = getFirestore("default");
+    const db = getFirestore();
 
     // Find project + environment from clientId
     const clientIdSnapshot = await db

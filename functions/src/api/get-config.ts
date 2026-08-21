@@ -76,7 +76,7 @@ export const getConfig = onRequest(
       return;
     }
 
-    const db = getFirestore("default");
+    const db = getFirestore();
 
     // 1. Find which project+environment this clientId belongs to
     // ClientIds are stored at: projects/{projectId}/environments/{envId}/clientIds/{token}
