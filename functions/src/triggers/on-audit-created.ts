@@ -35,7 +35,7 @@ export function createOnAuditCreated(
       };
 
       // Read all enabled webhooks for this project
-      const db = getFirestore();
+      const db = getFirestore("default");
       const webhooksSnapshot = await db
         .collection("projects")
         .doc(projectId)

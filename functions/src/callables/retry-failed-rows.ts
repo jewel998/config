@@ -32,7 +32,7 @@ export const retryFailedRows = onCall({ maxInstances: 10 }, async (request) => {
     );
   }
 
-  const db = getFirestore();
+  const db = getFirestore("default");
   const projectRef = db.collection("projects").doc(data.projectId);
 
   // ─── RBAC Check ──────────────────────────────────────────

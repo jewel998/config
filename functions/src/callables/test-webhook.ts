@@ -24,7 +24,7 @@ export const testWebhook = onCall<{ projectId: string; webhookId: string }>(
       );
     }
 
-    const db = getFirestore();
+    const db = getFirestore("default");
 
     // Verify admin role
     const projectDoc = await db.collection("projects").doc(projectId).get();

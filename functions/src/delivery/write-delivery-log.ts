@@ -12,7 +12,7 @@ export async function writeDeliveryLog(
   auditEntryId: string,
   isTest: boolean,
 ): Promise<void> {
-  const db = getFirestore();
+  const db = getFirestore("default");
   const deliveriesRef = db
     .collection("projects")
     .doc(projectId)
@@ -41,7 +41,7 @@ async function enforceDeliveryCap(
   const snapshot = await deliveriesRef.orderBy("timestamp", "asc").get();
 
   if (snapshot.size > MAX_DELIVERIES) {
-    const batch = getFirestore().batch();
+    const batch = getFirestore("default").batch();
     const toDelete = snapshot.docs.slice(0, snapshot.size - MAX_DELIVERIES);
     toDelete.forEach((doc) => batch.delete(doc.ref));
     await batch.commit();

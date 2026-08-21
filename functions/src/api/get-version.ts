@@ -17,11 +17,9 @@ export const getVersion = onRequest(
   { cors: true, maxInstances: 10 },
   async (req, res) => {
     if (req.method !== "GET" && req.method !== "POST") {
-      res
-        .status(405)
-        .json({
-          error: { code: "METHOD_NOT_ALLOWED", message: "Use GET or POST" },
-        });
+      res.status(405).json({
+        error: { code: "METHOD_NOT_ALLOWED", message: "Use GET or POST" },
+      });
       return;
     }
 
@@ -31,15 +29,13 @@ export const getVersion = onRequest(
       null;
 
     if (!clientId) {
-      res
-        .status(400)
-        .json({
-          error: { code: "MISSING_CLIENT_ID", message: "clientId is required" },
-        });
+      res.status(400).json({
+        error: { code: "MISSING_CLIENT_ID", message: "clientId is required" },
+      });
       return;
     }
 
-    const db = getFirestore();
+    const db = getFirestore("default");
 
     // Find project + environment from clientId
     const clientIdSnapshot = await db
@@ -50,14 +46,12 @@ export const getVersion = onRequest(
       .get();
 
     if (clientIdSnapshot.empty) {
-      res
-        .status(401)
-        .json({
-          error: {
-            code: "INVALID_CLIENT_ID",
-            message: "Invalid or revoked clientId",
-          },
-        });
+      res.status(401).json({
+        error: {
+          code: "INVALID_CLIENT_ID",
+          message: "Invalid or revoked clientId",
+        },
+      });
       return;
     }
 
