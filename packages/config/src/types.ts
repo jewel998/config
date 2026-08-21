@@ -104,6 +104,9 @@ export interface ConfigClient {
     event: E,
     callback: ConfigEventCallback<E>,
   ): void;
+
+  /** Clean up timers, listeners, and in-flight requests. */
+  destroy(): void;
 }
 
 // ═══════════════════════════════════════════════════════════════

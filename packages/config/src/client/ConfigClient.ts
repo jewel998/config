@@ -1,7 +1,5 @@
 import { withRetry } from "../retry/RetryEngine.js";
 import type { EvaluationContext, EvaluationPlugin } from "../plugins/types.js";
-import type { ConfigFlagData } from "../plugins/models.js";
-import { evaluatePipeline } from "../plugins/evaluatePipeline.js";
 import type {
   CacheStorage,
   ConfigClient,
@@ -14,6 +12,8 @@ import type {
   RetryConfig,
 } from "../types.js";
 import { DEFAULT_CACHE_TTL } from "../types.js";
+import { RefreshManager } from "./RefreshManager.js";
+import { ValueResolver } from "./ValueResolver.js";
 
 export interface ConfigClientInternals {
   data: Record<string, unknown>;
@@ -30,6 +30,9 @@ export interface ConfigClientInternals {
   onContextChange?: (ctx: EvaluationContext) => void;
 }
 
+const MIN_FETCH_INTERVAL = 30_000; // Don't re-fetch within 30s
+const CONTEXT_DEBOUNCE_MS = 100; // Batch rapid setContext calls
+
 export const buildConfigClient = (
   internals: ConfigClientInternals,
 ): ConfigClient => {
@@ -42,18 +45,23 @@ export const buildConfigClient = (
   let data = { ...internals.data };
   let batchFetchTriggered = false;
 
-  // ── Request deduplication & debouncing ──
-  let inflightRefresh: Promise<void> | null = null;
-  let lastFetchTime = 0;
+  // ── Debouncing ──
   let contextDebounceTimer: ReturnType<typeof setTimeout> | null = null;
-  let cachedVersion: string | null = null;
-  const MIN_FETCH_INTERVAL = 30_000; // Don't re-fetch within 30s
-  const CONTEXT_DEBOUNCE_MS = 100; // Batch rapid setContext calls
 
+  // ── Extracted components ──
+  const refreshManager = new RefreshManager({
+    fetcher,
+    cache,
+    events,
+    retry,
+    minFetchInterval: MIN_FETCH_INTERVAL,
+  });
+
+  const valueResolver = new ValueResolver(plugins, data, cache, events);
+
+  // ── Deferred fetch helpers ──
   const triggerDeferredFetch = (): void => {
-    if (!isDeferred || batchFetchTriggered) {
-      return;
-    }
+    if (!isDeferred || batchFetchTriggered) return;
 
     if (granularity === "batch") {
       batchFetchTriggered = true;
@@ -64,7 +72,7 @@ export const buildConfigClient = (
           for (const [key, value] of Object.entries(result)) {
             cache.set(key, value, DEFAULT_CACHE_TTL);
           }
-          data = { ...data, ...result };
+          Object.assign(data, result);
           events.emit("updated", {
             keys: Object.keys(result),
             source: "background",
@@ -81,9 +89,7 @@ export const buildConfigClient = (
   };
 
   const triggerProjectedFetch = (key: string): void => {
-    if (!isDeferred || granularity !== "projected") {
-      return;
-    }
+    if (!isDeferred || granularity !== "projected") return;
 
     void (async () => {
       try {
@@ -108,81 +114,25 @@ export const buildConfigClient = (
 
   const client: ConfigClient = {
     getValue<T = unknown>(key: string, defaultValue?: T): T | undefined {
-      // If plugins are registered, use the evaluation pipeline
+      // Delegate to ValueResolver for plugin-based or simple resolution
       if (plugins.length > 0) {
-        // Consent-aware mode: if enabled and consent not granted, return default immediately
-        if (consentAware && evalContext.consentGranted !== true) {
+        // Check if data is missing and trigger deferred fetch
+        if (valueResolver.isMissing(key) && isDeferred) {
+          triggerDeferredFetch();
+          triggerProjectedFetch(key);
           return defaultValue as T | undefined;
         }
-
-        // Get raw flag data from cache/data store
-        const rawValue = data[key] ?? cache.get(key);
-
-        // If we have no data at all for this key, trigger deferred fetch and return default
-        if (rawValue === undefined) {
-          if (isDeferred) {
-            triggerDeferredFetch();
-            triggerProjectedFetch(key);
-          }
-          return defaultValue as T | undefined;
-        }
-
-        // Build a ConfigFlagData object from the raw data
-        // If the data is already a full ConfigFlagData object (has 'key' and 'value' fields), use it
-        // Otherwise, wrap the raw value as a simple flag
-        const flag: ConfigFlagData = isConfigFlagData(rawValue)
-          ? rawValue
-          : {
-              key,
-              value: rawValue,
-              valueType: inferValueType(rawValue),
-              version: "0",
-              lifecycleState: "active",
-            };
-
-        // Build pipeline helpers
-        const helpers = {
-          evaluateFlag: (flagKey: string, ctx: EvaluationContext): unknown => {
-            // Recursive evaluation for prerequisites
-            const flagData = data[flagKey] ?? cache.get(flagKey);
-            if (flagData === undefined) return undefined;
-            const innerFlag: ConfigFlagData = isConfigFlagData(flagData)
-              ? flagData
-              : {
-                  key: flagKey,
-                  value: flagData,
-                  valueType: inferValueType(flagData),
-                  version: "0",
-                  lifecycleState: "active",
-                };
-            return evaluatePipeline(plugins, innerFlag, ctx, helpers);
-          },
-          emitError: (message: string): void => {
-            events.emit("fetchError", {
-              error: new Error(message),
-              retryCount: 0,
-              willRetry: false,
-            });
-          },
-          now: (): number => Date.now(),
-        };
-
-        const result = evaluatePipeline(plugins, flag, evalContext, helpers);
-        return (result !== undefined ? result : defaultValue) as T | undefined;
+        return valueResolver.resolve<T>(
+          key,
+          evalContext,
+          defaultValue,
+          consentAware,
+        );
       }
 
-      // No plugins — use existing behavior (backward compat)
-      // Check live data first
-      if (key in data) {
-        return data[key] as T;
-      }
-
-      // Check cache
-      const cached = cache.get<T>(key);
-      if (cached !== undefined) {
-        data[key] = cached;
-        return cached;
-      }
+      // No plugins — use simple resolution via ValueResolver
+      const result = valueResolver.resolveSimple<T>(key, defaultValue);
+      if (result !== undefined) return result;
 
       // Trigger deferred fetch if applicable
       if (isDeferred) {
@@ -199,14 +149,12 @@ export const buildConfigClient = (
     },
 
     getAll(): Record<string, unknown> {
-      // Check cache for full batch
       const cached = cache.get<Record<string, unknown>>("__all__");
       if (cached) {
-        data = { ...data, ...cached };
+        Object.assign(data, cached);
         return { ...data };
       }
 
-      // Trigger deferred fetch if applicable
       if (isDeferred) {
         triggerDeferredFetch();
       }
@@ -215,49 +163,7 @@ export const buildConfigClient = (
     },
 
     async refresh(): Promise<void> {
-      // Deduplication: if a refresh is already in-flight, reuse it
-      if (inflightRefresh) return inflightRefresh;
-
-      inflightRefresh = (async () => {
-        try {
-          // Version-gated refresh: check version first (lightweight call)
-          // Only fetch full config if version has changed
-          try {
-            const { version } = await fetcher.checkVersion();
-            if (cachedVersion !== null && version === cachedVersion) {
-              // Version unchanged — skip full fetch, emit event
-              events.emit("updated", { keys: [], source: "version-check" });
-              lastFetchTime = Date.now();
-              return;
-            }
-            cachedVersion = version;
-          } catch {
-            // If version check fails, proceed with full fetch as fallback
-          }
-
-          const result = await withRetry(() => fetcher.fetchAll(), retry);
-          cache.set("__all__", result, DEFAULT_CACHE_TTL);
-          for (const [key, value] of Object.entries(result)) {
-            cache.set(key, value, DEFAULT_CACHE_TTL);
-          }
-          data = { ...data, ...result };
-          lastFetchTime = Date.now();
-          events.emit("updated", {
-            keys: Object.keys(result),
-            source: "refresh",
-          });
-        } catch (error) {
-          events.emit("fetchError", {
-            error: error as Error,
-            retryCount: retry.maxRetries,
-            willRetry: false,
-          });
-        } finally {
-          inflightRefresh = null;
-        }
-      })();
-
-      return inflightRefresh;
+      await refreshManager.refresh(data);
     },
 
     on<E extends ConfigEventType>(
@@ -276,7 +182,6 @@ export const buildConfigClient = (
 
     setContext(newContext: EvaluationContext): void {
       evalContext = { ...newContext };
-      // Notify the transport layer of the context change
       if (onContextChange) {
         onContextChange(evalContext);
       }
@@ -286,38 +191,20 @@ export const buildConfigClient = (
         if (contextDebounceTimer) clearTimeout(contextDebounceTimer);
         contextDebounceTimer = setTimeout(() => {
           contextDebounceTimer = null;
-          // Skip if we fetched very recently (stale check)
-          if (Date.now() - lastFetchTime < MIN_FETCH_INTERVAL) return;
+          if (refreshManager.isRecent) return;
           void client.refresh();
         }, CONTEXT_DEBOUNCE_MS);
       }
+    },
+
+    destroy(): void {
+      if (contextDebounceTimer) {
+        clearTimeout(contextDebounceTimer);
+        contextDebounceTimer = null;
+      }
+      events.removeAllListeners();
     },
   };
 
   return client;
 };
-
-// ═══════════════════════════════════════════════════════════════
-// Helpers
-// ═══════════════════════════════════════════════════════════════
-
-/** Type guard: checks if a value looks like a full ConfigFlagData object */
-function isConfigFlagData(value: unknown): value is ConfigFlagData {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "key" in value &&
-    "value" in value &&
-    "lifecycleState" in value
-  );
-}
-
-/** Infer a valueType string from a raw value */
-function inferValueType(
-  value: unknown,
-): "string" | "number" | "boolean" | "json" {
-  if (typeof value === "boolean") return "boolean";
-  if (typeof value === "number") return "number";
-  if (typeof value === "string") return "string";
-  return "json";
-}

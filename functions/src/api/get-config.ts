@@ -2,10 +2,7 @@ import { onRequest } from "firebase-functions/v2/https";
 import { getDb } from "../utils/firestore.js";
 import {
   BadRequestError,
-  ForbiddenError,
-  InternalError,
   PayloadTooLargeError,
-  UnauthorizedError,
   withErrorHandler,
 } from "../utils/errors.js";
 import { assertMethod } from "../utils/request.js";
@@ -17,10 +14,11 @@ import {
 import { MAX_INSTANCES, MAX_CONTEXT_SIZE_BYTES } from "../utils/constants.js";
 import {
   evaluateConfigsForContext,
-  type ConfigDoc,
-  type SegmentDoc,
   type UserContext,
 } from "./server-evaluator.js";
+import { authenticateClient } from "./middleware/authenticate.js";
+import { validateDomain } from "./middleware/validate-domain.js";
+import { fetchConfigs } from "./middleware/fetch-configs.js";
 
 /**
  * GET  /api/getConfig?clientId=cid_xxx
@@ -42,7 +40,6 @@ import {
 export const getConfig = onRequest(
   { cors: true, maxInstances: MAX_INSTANCES },
   withErrorHandler(async (req, res) => {
-    // Only allow GET (CDN-cacheable) and POST (SDK compatibility)
     assertMethod(req, "GET", "POST");
 
     // Extract clientId from query (GET) or body (POST)
@@ -57,68 +54,14 @@ export const getConfig = onRequest(
 
     const db = getDb();
 
-    // 1. Find which project+environment this clientId belongs to
-    let clientIdSnapshot;
-    try {
-      clientIdSnapshot = await db
-        .collectionGroup("clientIds")
-        .where("token", "==", clientId)
-        .where("status", "==", "active")
-        .limit(1)
-        .get();
-    } catch (error) {
-      const grpcCode = (error as { code?: number }).code;
-      const msg = error instanceof Error ? error.message : String(error);
-      console.error(
-        `[getConfig] Firestore collectionGroup query failed. ` +
-          `gRPC code: ${grpcCode}, message: ${msg}. ` +
-          `This usually means the composite index for clientIds (token + status, COLLECTION_GROUP scope) ` +
-          `has not been deployed. Run: firebase deploy --only firestore:indexes`,
-      );
-      throw new InternalError(
-        "Failed to validate clientId. The required Firestore index may not exist.",
-      );
-    }
+    // 1. Authenticate
+    const { projectId, environmentId } = await authenticateClient(db, clientId);
 
-    if (clientIdSnapshot.empty) {
-      throw new UnauthorizedError("Invalid or revoked clientId");
-    }
-
-    const clientIdDoc = clientIdSnapshot.docs[0];
-    // Path: projects/{projectId}/environments/{envId}/clientIds/{token}
-    const pathParts = clientIdDoc.ref.path.split("/");
-    const projectId = pathParts[1];
-    const environmentId = pathParts[3];
-
-    // 2. Optional: Domain validation
+    // 2. Domain validation
     const origin = req.headers.origin ?? req.headers.referer ?? "";
-    if (origin) {
-      const envDoc = await db
-        .collection("projects")
-        .doc(projectId)
-        .collection("environments")
-        .doc(environmentId)
-        .get();
+    await validateDomain(db, projectId, environmentId, origin);
 
-      if (envDoc.exists) {
-        const allowedDomains: string[] = envDoc.data()?.allowedDomains ?? [];
-        if (allowedDomains.length > 0) {
-          const requestDomain = new URL(origin).hostname;
-          const isAllowed = allowedDomains.some(
-            (d) => requestDomain === d || requestDomain.endsWith(`.${d}`),
-          );
-          if (!isAllowed) {
-            throw new ForbiddenError(
-              `Origin ${requestDomain} is not in allowedDomains`,
-            );
-          }
-        }
-      }
-    }
-
-    // 3. Determine evaluation mode from key prefix (enforced, not client-controlled)
-    // cid_ = client key → always server-evaluate, never expose rules/segments
-    // svr_ = server key → return full flag data for local SDK evaluation
+    // 3. Determine evaluation mode from key prefix
     const isServerKey = clientId.startsWith("svr_");
     const evaluationMode = isServerKey ? "client" : "server";
 
@@ -144,83 +87,22 @@ export const getConfig = onRequest(
       (req.body?.data?.keys as string[] | undefined) ??
       undefined;
 
-    // 5. Fetch configs for the environment
-    const configsRef = db
-      .collection("projects")
-      .doc(projectId)
-      .collection("environments")
-      .doc(environmentId)
-      .collection("configs");
+    // 5. Fetch configs and segments
+    const { configs, segments, latestUpdate } = await fetchConfigs(
+      db,
+      projectId,
+      environmentId,
+      requestedKeys,
+    );
 
-    let configsSnapshot;
-    if (
-      requestedKeys &&
-      requestedKeys.length > 0 &&
-      requestedKeys.length <= 10
-    ) {
-      const docs = await Promise.all(
-        requestedKeys.map((key) => configsRef.doc(key).get()),
-      );
-      configsSnapshot = docs.filter((d) => d.exists);
-    } else {
-      const snapshot = await configsRef.get();
-      configsSnapshot = snapshot.docs;
-    }
-
-    // 6. Fetch segments (needed for both modes)
-    const segmentsSnapshot = await db
-      .collection("projects")
-      .doc(projectId)
-      .collection("segments")
-      .get();
-
-    const segments: Record<string, SegmentDoc> = {};
-    for (const doc of segmentsSnapshot.docs) {
-      const segData = doc.data();
-      segments[doc.id] = {
-        id: doc.id,
-        name: segData.name ?? "",
-        conditions: segData.conditions ?? [],
-      };
-    }
-
-    // Track latest update for version/timestamp
-    let latestUpdate = "";
-
-    // ═══════════════════════════════════════════════════════════
-    // SERVER EVALUATION MODE (default)
-    // Evaluate targeting, rollout, segments server-side.
-    // Return only resolved values — no business logic exposed.
-    // ═══════════════════════════════════════════════════════════
+    // 6. Build response based on evaluation mode
     if (evaluationMode === "server") {
-      const configs: ConfigDoc[] = [];
-
-      for (const doc of configsSnapshot) {
-        const d = doc.data();
-        if (!d) continue;
-        configs.push({
-          key: doc.id,
-          value: d.value,
-          valueType: d.valueType ?? "string",
-          version: d.version ?? "1",
-          lifecycleState: d.lifecycleState ?? "active",
-          targetingRules: d.targetingRules,
-          rolloutPercentage: d.rolloutPercentage,
-          rolloutValue: d.rolloutValue,
-          overrides: d.overrides,
-          schedule: d.schedule,
-          prerequisites: d.prerequisites,
-        });
-        if (d.updatedAt > latestUpdate) latestUpdate = d.updatedAt;
-      }
-
       const { data } = evaluateConfigsForContext(
         configs,
         segments,
         userContext,
       );
 
-      // Private cache — varies by context, not CDN-cacheable
       setPrivateCache(res, 30);
       res.set("X-Config-Project", projectId);
       res.set("X-Config-Environment", environmentId);
@@ -233,44 +115,28 @@ export const getConfig = onRequest(
       return;
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // CLIENT EVALUATION MODE (opt-in)
-    // Return full flag data + segments for local SDK evaluation.
-    // ═══════════════════════════════════════════════════════════
+    // CLIENT EVALUATION MODE — return full flag data + segments
     const data: Record<string, unknown> = {};
-
-    for (const doc of configsSnapshot) {
-      const configData = doc.data();
-      if (!configData) continue;
-
-      data[doc.id] = {
-        key: doc.id,
-        value: configData.value,
-        valueType: configData.valueType ?? "string",
-        version: configData.version ?? "1",
-        lifecycleState: configData.lifecycleState ?? "active",
-        ...(configData.targetingRules && {
-          targetingRules: configData.targetingRules,
+    for (const config of configs) {
+      data[config.key] = {
+        key: config.key,
+        value: config.value,
+        valueType: config.valueType ?? "string",
+        version: config.version ?? "1",
+        lifecycleState: config.lifecycleState ?? "active",
+        ...(config.targetingRules && { targetingRules: config.targetingRules }),
+        ...(config.rolloutPercentage != null && {
+          rolloutPercentage: config.rolloutPercentage,
         }),
-        ...(configData.rolloutPercentage != null && {
-          rolloutPercentage: configData.rolloutPercentage,
+        ...(config.rolloutValue !== undefined && {
+          rolloutValue: config.rolloutValue,
         }),
-        ...(configData.rolloutValue !== undefined && {
-          rolloutValue: configData.rolloutValue,
-        }),
-        ...(configData.overrides && { overrides: configData.overrides }),
-        ...(configData.schedule && { schedule: configData.schedule }),
-        ...(configData.prerequisites && {
-          prerequisites: configData.prerequisites,
-        }),
+        ...(config.overrides && { overrides: config.overrides }),
+        ...(config.schedule && { schedule: config.schedule }),
+        ...(config.prerequisites && { prerequisites: config.prerequisites }),
       };
-
-      if (configData.updatedAt > latestUpdate) {
-        latestUpdate = configData.updatedAt;
-      }
     }
 
-    // Public cache — CDN-cacheable (same response for all consumers)
     setCdnCache(res, 30, 60);
     res.set("X-Config-Project", projectId);
     res.set("X-Config-Environment", environmentId);

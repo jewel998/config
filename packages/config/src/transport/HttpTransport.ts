@@ -3,6 +3,7 @@
 import { AuthenticationError, ConfigError } from "../errors/index.js";
 import type { EvaluationContext } from "../plugins/types.js";
 import type { HttpTransport } from "../types.js";
+import { CircuitBreaker } from "./CircuitBreaker.js";
 
 export interface TransportConfig {
   baseUrl: string;
@@ -12,14 +13,6 @@ export interface TransportConfig {
   getContext?: () => EvaluationContext;
 }
 
-/**
- * Circuit breaker states:
- * - CLOSED: normal operation, requests flow through
- * - OPEN: fatal error occurred, requests are blocked
- * - HALF_OPEN: cooldown expired, allow one probe request
- */
-type CircuitState = "CLOSED" | "OPEN" | "HALF_OPEN";
-
 /** Errors that should permanently stop retrying (circuit opens) */
 const FATAL_STATUS_CODES = new Set([400, 401, 403]);
 
@@ -27,9 +20,10 @@ const FATAL_STATUS_CODES = new Set([400, 401, 403]);
 const CIRCUIT_COOLDOWN_MS = 5 * 60 * 1000;
 
 export const createHttpTransport = (config: TransportConfig): HttpTransport => {
-  let circuitState: CircuitState = "CLOSED";
-  let circuitOpenedAt = 0;
-  let lastFatalError: ConfigError | null = null;
+  const circuitBreaker = new CircuitBreaker({
+    fatalCodes: FATAL_STATUS_CODES,
+    cooldownMs: CIRCUIT_COOLDOWN_MS,
+  });
 
   return {
     async request<T>(
@@ -37,20 +31,14 @@ export const createHttpTransport = (config: TransportConfig): HttpTransport => {
       body?: Record<string, unknown>,
     ): Promise<T> {
       // ── Circuit breaker check ──────────────────────────────
-      if (circuitState === "OPEN") {
-        // Check if cooldown has passed → transition to HALF_OPEN
-        if (Date.now() - circuitOpenedAt >= CIRCUIT_COOLDOWN_MS) {
-          circuitState = "HALF_OPEN";
-        } else {
-          // Still in cooldown — throw the cached error without hitting the network
-          throw (
-            lastFatalError ??
-            new ConfigError(
-              "API circuit breaker is open — requests are blocked due to a previous fatal error",
-              "FORBIDDEN",
-            )
-          );
-        }
+      if (!circuitBreaker.canExecute()) {
+        throw (
+          circuitBreaker.getCachedError() ??
+          new ConfigError(
+            "API circuit breaker is open — requests are blocked due to a previous fatal error",
+            "FORBIDDEN",
+          )
+        );
       }
 
       const url = `${config.baseUrl}/${endpoint}`;
@@ -125,24 +113,14 @@ export const createHttpTransport = (config: TransportConfig): HttpTransport => {
             error = new ConfigError(message, "NETWORK_ERROR");
         }
 
-        // ── Open circuit on fatal errors ────────────────────
-        if (FATAL_STATUS_CODES.has(response.status)) {
-          circuitState = "OPEN";
-          circuitOpenedAt = Date.now();
-          lastFatalError = error;
-        }
-
-        // ── Close circuit on success in HALF_OPEN state ─────
-        // (handled below after successful response)
+        // Record failure in circuit breaker
+        circuitBreaker.recordFailure(response.status, error);
 
         throw error;
       }
 
-      // ── Success: close the circuit if it was half-open ────
-      if (circuitState === "HALF_OPEN") {
-        circuitState = "CLOSED";
-        lastFatalError = null;
-      }
+      // Success: record in circuit breaker (closes if HALF_OPEN)
+      circuitBreaker.recordSuccess();
 
       return (await response.json()) as T;
     },
