@@ -274,16 +274,22 @@ const flags = initConfig({
 });
 ```
 
-For maximum cache persistence across page reloads, use `createConfig` with `browserStorage`:
+For maximum cache persistence across page reloads, add `browserStorage`:
 
 ```typescript
-import { createConfig, browserStorage } from "@jewel998/config";
+import { initConfig, browserStorage, autoContext } from "@jewel998/config";
 
-const config = createConfig({
+const flags = initConfig({
   clientId: "cid_xxx",
   baseUrl: "https://your-project.web.app/api",
   storage: browserStorage({ prefix: "myapp" }),
-  context: { userId: "user_123" },
+  defaults: {
+    "feature.dark_mode": false,
+    "feature.new_checkout": false,
+    "app.upload_limit": 50,
+  },
+  context: autoContext({ userId: "user_123" }),
+  pollInterval: 600_000,
 });
 ```
 
@@ -307,8 +313,8 @@ const flags = initConfig({
 ```
 
 - Longer `pollInterval` = fewer version checks
-- For persistent cache across page reloads, use `createConfig` with `browserStorage`
-- Consider `loadingStrategy: "deferred"` via `createConfig` if not all pages need flags immediately
+- Add `storage: browserStorage()` to persist cache across page reloads
+- Consider `loadingStrategy: "deferred"` via `createConfig` only if you need advanced control
 
 #### Large scale (50K+ users) — Minimize function invocations
 
@@ -326,7 +332,7 @@ router.on("routeChange", () => flags.refresh());
 
 - Disable automatic polling and trigger `refresh()` only at meaningful moments
 - The CDN handles the heavy lifting — most requests never reach your function
-- For long-lived cache, use `createConfig` with `browserStorage({ defaultTtl: 7 * 86_400_000 })`
+- Add `storage: browserStorage({ defaultTtl: 7 * 86_400_000 })` for long-lived cache
 
 ### Cost Breakdown by API Call
 
