@@ -71,15 +71,13 @@ Environments are intentionally independent — there's no automatic "promote to 
 ### CI/CD Promotion (For automated pipelines)
 
 ```bash
-# Export from staging, import to production
+# Export from staging
 curl -X POST "$FUNCTION_URL/exportConfigs" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"data": {"projectId": "my-project", "exportType": "full"}}'
 
-# Review, then import to production environment
-curl -X POST "$FUNCTION_URL/importConfigs" \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{"data": {"projectId": "my-project", "environmentId": "production", "entries": [...], "conflictStrategy": "overwrite"}}'
+# Download the exported JSON, review it, then import to production
+# via the portal's import UI (which writes directly to Firestore)
 ```
 
 ::: tip

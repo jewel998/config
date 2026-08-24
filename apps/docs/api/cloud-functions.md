@@ -6,16 +6,14 @@ All Cloud Functions deployed as part of @jewel998/config, their purposes, and ho
 
 ## Function Overview
 
-| Function          | Type              | Trigger               | Purpose                                         |
-| ----------------- | ----------------- | --------------------- | ----------------------------------------------- |
-| `getConfig`       | HTTP (onRequest)  | `POST /api/v1/config` | Deliver resolved config values to the SDK       |
-| `getVersion`      | HTTP (onRequest)  | `GET /api/v1/version` | Lightweight version check for polling           |
-| `validateSignIn`  | Blocking          | Before user sign-in   | Enforce access control (email/domain allowlist) |
-| `onAuditCreated`  | Firestore Trigger | New audit log entry   | Dispatch webhooks to configured endpoints       |
-| `importConfigs`   | Callable (onCall) | Portal / programmatic | Bulk import configs with validation             |
-| `exportConfigs`   | Callable (onCall) | Portal / programmatic | Export project data as JSON (GDPR)              |
-| `retryFailedRows` | Callable (onCall) | Portal                | Retry/dismiss failed import entries             |
-| `testWebhook`     | Callable (onCall) | Portal                | Send a test payload to a webhook URL            |
+| Function         | Type              | Trigger               | Purpose                                         |
+| ---------------- | ----------------- | --------------------- | ----------------------------------------------- |
+| `getConfig`      | HTTP (onRequest)  | `POST /api/v1/config` | Deliver resolved config values to the SDK       |
+| `getVersion`     | HTTP (onRequest)  | `GET /api/v1/version` | Lightweight version check for polling           |
+| `validateSignIn` | Blocking          | Before user sign-in   | Enforce access control (email/domain allowlist) |
+| `onAuditCreated` | Firestore Trigger | New audit log entry   | Dispatch webhooks to configured endpoints       |
+| `exportConfigs`  | Callable (onCall) | Portal / programmatic | Export project data as JSON (GDPR)              |
+| `testWebhook`    | Callable (onCall) | Portal                | Send a test payload to a webhook URL            |
 
 ## Architecture Diagram
 
@@ -31,9 +29,7 @@ flowchart TB
         GV["getVersion"]
         VS["validateSignIn"]
         OAC["onAuditCreated"]
-        IC["importConfigs"]
         EC["exportConfigs"]
-        RFR["retryFailedRows"]
         TW["testWebhook"]
     end
 
@@ -53,9 +49,7 @@ flowchart TB
 
     SDK -->|POST| GC
     SDK -->|GET| GV
-    Portal -->|httpsCallable| IC
     Portal -->|httpsCallable| EC
-    Portal -->|httpsCallable| RFR
     Portal -->|httpsCallable| TW
 
     VS -->|reads| AC
@@ -64,7 +58,6 @@ flowchart TB
     OAC -->|triggered by| AL
     OAC -->|dispatches to| WE
     EC -->|writes| ST
-    IC -->|writes| CFG
 ```
 
 ---
@@ -259,31 +252,6 @@ sequenceDiagram
 
 ---
 
-## importConfigs
-
-**Type:** Callable (onCall)  
-**Auth:** Firebase Auth required (admin or editor role)
-
-### Flow
-
-```mermaid
-sequenceDiagram
-    participant Portal
-    participant importConfigs
-    participant Firestore
-
-    Portal->>importConfigs: {projectId, envId, entries[], conflictStrategy}
-    importConfigs->>importConfigs: Auth + RBAC check
-    importConfigs->>importConfigs: Validate all entries (DTO schema)
-    importConfigs->>Firestore: Read existing configs (conflict detection)
-    importConfigs->>importConfigs: Resolve conflicts (skip/overwrite/review)
-    importConfigs->>Firestore: Batched writes (≤500 per batch)
-    importConfigs->>Firestore: Write audit log
-    importConfigs-->>Portal: {jobId, status}
-```
-
----
-
 ## exportConfigs
 
 **Type:** Callable (onCall)  
@@ -307,15 +275,6 @@ sequenceDiagram
     exportConfigs->>Firestore: Write audit log
     exportConfigs-->>Portal: {downloadUrl, expiresAt, exportId}
 ```
-
----
-
-## retryFailedRows
-
-**Type:** Callable (onCall)  
-**Auth:** Firebase Auth required (admin or editor role)
-
-Retries or dismisses failed entries from a bulk import. Re-validates each corrected entry before persisting.
 
 ---
 
@@ -431,19 +390,17 @@ Pick the region closest to the majority of your users. The Firebase Hosting CDN 
 
 #### What about other functions?
 
-The `API_REGION` constant applies to `getConfig` and `getVersion` only. The other functions (`onAuditCreated`, `importConfigs`, `exportConfigs`, etc.) deploy to the default region or can be configured individually:
+The `API_REGION` constant applies to `getConfig` and `getVersion` only. The other functions (`onAuditCreated`, `exportConfigs`, etc.) deploy to the default region or can be configured individually:
 
-| Function          | Region Behavior          | Notes                                                  |
-| ----------------- | ------------------------ | ------------------------------------------------------ |
-| `getConfig`       | Uses `API_REGION`        | SDK-facing, latency-critical                           |
-| `getVersion`      | Uses `API_REGION`        | SDK-facing, latency-critical                           |
-| `validateSignIn`  | Firebase default         | Blocking function — region is managed by Firebase Auth |
-| `validateCreate`  | Firebase default         | Blocking function — region is managed by Firebase Auth |
-| `onAuditCreated`  | Firestore trigger region | Must match your Firestore database region              |
-| `importConfigs`   | Default (us-central1)    | Portal-facing, not latency-critical                    |
-| `exportConfigs`   | Default (us-central1)    | Portal-facing, not latency-critical                    |
-| `retryFailedRows` | Default (us-central1)    | Portal-facing, not latency-critical                    |
-| `testWebhook`     | Default (us-central1)    | Portal-facing, not latency-critical                    |
+| Function         | Region Behavior          | Notes                                                  |
+| ---------------- | ------------------------ | ------------------------------------------------------ |
+| `getConfig`      | Uses `API_REGION`        | SDK-facing, latency-critical                           |
+| `getVersion`     | Uses `API_REGION`        | SDK-facing, latency-critical                           |
+| `validateSignIn` | Firebase default         | Blocking function — region is managed by Firebase Auth |
+| `validateCreate` | Firebase default         | Blocking function — region is managed by Firebase Auth |
+| `onAuditCreated` | Firestore trigger region | Must match your Firestore database region              |
+| `exportConfigs`  | Default (us-central1)    | Portal-facing, not latency-critical                    |
+| `testWebhook`    | Default (us-central1)    | Portal-facing, not latency-critical                    |
 
 For `onAuditCreated` (the Firestore trigger), ensure it's deployed in the same region as your Firestore database. If you're using a non-default region, update its configuration:
 

@@ -9,6 +9,20 @@ export default withMermaid(
       "A free, self-hostable feature flag and remote configuration platform for startups.",
     base: "/config/",
     sitemap: { hostname: "https://jewel998.github.io/config/" },
+    head: [
+      ["meta", { name: "robots", content: "index, follow" }],
+      ["meta", { property: "og:title", content: "@jewel998/config — Free Feature Flags" }],
+      [
+        "meta",
+        {
+          property: "og:description",
+          content:
+            "Free, self-hosted feature flag and remote configuration SDK. Replaces LaunchDarkly at $0/month.",
+        },
+      ],
+      ["meta", { property: "og:type", content: "website" }],
+      ["link", { rel: "canonical", href: "https://jewel998.github.io/config/" }],
+    ],
     markdown: {
       config: (md) => {
         md.use(taskLists);

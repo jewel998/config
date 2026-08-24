@@ -2,9 +2,6 @@
  * Shared constants for Cloud Functions configuration.
  */
 
-/** Maximum Firestore batch write size */
-export const MAX_BATCH_SIZE = 500;
-
 /** Default CDN cache duration in seconds */
 export const CDN_CACHE_SECONDS = 60;
 

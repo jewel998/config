@@ -51,34 +51,9 @@ For GDPR data portability requests, you can export data specific to a user ID:
 
 ## API Reference
 
-### `importConfigs` (HTTPS Callable — deprecated)
-
-The portal now writes directly to Firestore for imports (no Cloud Function needed). This callable is retained for programmatic API access only.
+### `exportConfigs` (HTTPS Callable)
 
 **Authentication:** Firebase Auth ID token (automatic with SDK)
-
-**Request:**
-
-```typescript
-{
-  projectId: string;
-  environmentId: string;
-  entries: Array<{ key: string; value: unknown; valueType: string }>;
-  conflictStrategy: "skip" | "overwrite" | "review";
-  reviewDecisions?: Record<string, "accept" | "reject">;
-}
-```
-
-**Response:**
-
-```typescript
-{
-  jobId: string;
-  status: "processing" | "completed" | "failed";
-}
-```
-
-### `exportConfigs` (HTTPS Callable)
 
 **Request:**
 
@@ -100,27 +75,6 @@ The portal now writes directly to Firestore for imports (no Cloud Function neede
 }
 ```
 
-### `retryFailedRows` (HTTPS Callable)
-
-**Request:**
-
-```typescript
-{
-  projectId: string;
-  jobId: string;
-  entries: Array<{ rowId: string; key: string; value: unknown; valueType: string }>;
-  dismiss?: string[]; // rowIds to dismiss
-}
-```
-
-**Response:**
-
-```typescript
-{
-  results: Array<{ rowId: string; success: boolean; error?: string }>;
-}
-```
-
 ### Error Codes
 
 | Code                | Meaning                                      |
@@ -129,7 +83,6 @@ The portal now writes directly to Firestore for imports (no Cloud Function neede
 | `invalid-argument`  | Missing or malformed request fields          |
 | `permission-denied` | Insufficient role for the operation          |
 | `not-found`         | Project or environment does not exist        |
-| `already-exists`    | Another import is already in progress        |
 | `internal`          | Server-side failure (export file generation) |
 
 ## End-to-End Example
@@ -140,19 +93,15 @@ The portal now writes directly to Firestore for imports (no Cloud Function neede
 # Get a Firebase ID token first
 TOKEN=$(firebase auth:export-token --project my-project)
 
-# Trigger an import
+# Trigger an export
 curl -X POST \
-  'https://us-central1-my-project.cloudfunctions.net/importConfigs' \
+  'https://us-central1-my-project.cloudfunctions.net/exportConfigs' \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
     "data": {
       "projectId": "my-project-id",
-      "environmentId": "development",
-      "entries": [
-        { "key": "feature.new", "value": true, "valueType": "boolean" }
-      ],
-      "conflictStrategy": "skip"
+      "exportType": "full"
     }
   }'
 ```
@@ -162,15 +111,14 @@ curl -X POST \
 ```typescript
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
-import { getFunctions } from "firebase-admin/functions";
 
 const app = initializeApp();
 
 // Create a custom token for a service account
 const token = await getAuth().createCustomToken("service-account-uid");
 
-// Call the function
-const response = await fetch("https://us-central1-my-project.cloudfunctions.net/importConfigs", {
+// Call the export function
+const response = await fetch("https://us-central1-my-project.cloudfunctions.net/exportConfigs", {
   method: "POST",
   headers: {
     Authorization: `Bearer ${token}`,
@@ -179,18 +127,13 @@ const response = await fetch("https://us-central1-my-project.cloudfunctions.net/
   body: JSON.stringify({
     data: {
       projectId: "my-project-id",
-      environmentId: "production",
-      entries: [
-        { key: "api.rate_limit", value: 1000, valueType: "number" },
-        { key: "feature.v2", value: false, valueType: "boolean" },
-      ],
-      conflictStrategy: "overwrite",
+      exportType: "full",
     },
   }),
 });
 
 const result = await response.json();
-console.log("Import job:", result.result.jobId);
+console.log("Download URL:", result.result.downloadUrl);
 ```
 
 ## Compliance

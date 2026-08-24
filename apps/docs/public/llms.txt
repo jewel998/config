@@ -1,0 +1,153 @@
+# @jewel998/config
+
+> Free, self-hosted feature flag and remote configuration SDK. Replaces LaunchDarkly at $0/month. Runs entirely on Firebase free tier.
+
+## Links
+
+- [Documentation](https://jewel998.github.io/config/)
+- [GitHub](https://github.com/jewel998/config)
+- [npm](https://www.npmjs.com/package/@jewel998/config)
+- [Full LLM Documentation](https://jewel998.github.io/config/llms-full.txt)
+
+## Install
+
+```
+npm install @jewel998/config
+```
+
+## Quick Start (Client-side / Frontend)
+
+```typescript
+import { initConfig, autoContext } from "@jewel998/config";
+
+const flags = initConfig({
+  clientId: "cid_xxx",           // From Portal → API Keys
+  baseUrl: "https://your-project.web.app/api",
+  defaults: {
+    "feature.dark_mode": false,
+    "app.upload_limit": 50,
+  },
+  context: autoContext({ userId: "user_123", plan: "pro" }),
+});
+
+// Instant read — returns default before API responds
+flags.get("feature.dark_mode"); // → false
+
+// After API resolves
+flags.on("updated", () => {
+  flags.get("feature.dark_mode"); // → true
+});
+```
+
+## Quick Start (Server-side / Backend)
+
+```typescript
+import { createConfig } from "@jewel998/config";
+import { targetingPlugin } from "@jewel998/config/targeting";
+import { rolloutPlugin } from "@jewel998/config/rollout";
+
+const config = createConfig({
+  clientId: "svr_xxx",
+  baseUrl: "https://your-project.web.app/api",
+  plugins: [targetingPlugin(), rolloutPlugin()],
+  context: { userId: "user_123", attributes: { plan: "pro", country: "US" } },
+});
+
+config.getFlag("feature.checkout_v2"); // Evaluated locally
+```
+
+## API Key Types
+
+- `cid_` prefix = Client key (frontend). API evaluates server-side, returns only values.
+- `svr_` prefix = Server key (backend). Returns full flag data for local evaluation.
+
+## Core API
+
+### initConfig(options) → Flags
+
+Primary entry point. Returns instant defaults, resolves to real values.
+
+Options:
+- clientId (string, required) — API key from Portal
+- baseUrl (string) — Your Firebase API URL
+- defaults (Record<string, any>) — Fallback values
+- context (EvaluationContext) — User targeting context
+- pollInterval (number, default 300000) — Version poll interval ms
+- storage (CacheStorage) — Cache adapter
+
+### Flags methods
+
+- flags.get(key) — Get a flag value
+- flags.flag(key) — Get boolean flag
+- flags.all() — Get all values
+- flags.setContext(ctx) — Update context, triggers re-fetch
+- flags.refresh() — Force re-fetch
+- flags.on(event, cb) / flags.off(event, cb) — Event subscription
+
+### createConfig(options) → ConfigClient
+
+Advanced entry point with plugins and loading strategies.
+
+Additional options:
+- loadingStrategy ("optimistic" | "pessimistic" | "deferred")
+- fetchGranularity ("batch" | "projected")
+- plugins (EvaluationPlugin[])
+- retry (RetryConfig)
+- timeout (number)
+- consentAware (boolean) — GDPR mode
+
+### ConfigClient methods
+
+- config.getValue(key, default?) — Typed value
+- config.getFlag(key) — Boolean flag
+- config.getAll() — All key-value pairs
+- config.refresh() — Version-gated re-fetch
+- config.setContext(ctx) — Update context
+- config.on/off(event, cb) — Events
+- config.destroy() — Cleanup timers and state
+
+## Package Exports
+
+- @jewel998/config — Main SDK (initConfig, createConfig, autoContext)
+- @jewel998/config/server — Server utilities
+- @jewel998/config/storage — Memory storage adapter
+- @jewel998/config/targeting — Targeting evaluation plugin
+- @jewel998/config/rollout — Percentage rollout plugin
+- @jewel998/config/schedule — Scheduling plugin
+- @jewel998/config/prerequisites — Flag prerequisites plugin
+- @jewel998/config/lifecycle — Lifecycle hooks plugin
+- @jewel998/config/overrides — Local overrides plugin
+- @jewel998/config/management — Management API client
+
+## Events
+
+- "ready" — SDK initialized
+- "updated" — Config values changed
+- "fetchError" — Fetch failed (SDK never throws)
+- "revoked" — API key revoked
+
+## Self-Hosting
+
+```bash
+git clone https://github.com/jewel998/config && cd config
+firebase use --add your-project-id
+pnpm install && firebase deploy
+```
+
+Runs on Firebase Spark (free) tier for up to 50K+ users.
+
+## Features
+
+- Feature flags (boolean, string, number, JSON, array)
+- User targeting rules by attributes
+- Reusable segments (audience groups)
+- Percentage rollouts with deterministic bucketing
+- Flag prerequisites with operators
+- Scheduled config changes
+- Multiple environments (dev/staging/production)
+- Audit log with diff viewer
+- Webhooks (Slack, Discord, Teams, custom)
+- RBAC (Viewer, Editor, Admin)
+- Server-side evaluation (rules never exposed to client)
+- Circuit breaker and retry logic built-in
+- Version-gated polling (minimal bandwidth)

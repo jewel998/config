@@ -181,13 +181,13 @@ firebase deploy --project your-project-id --force
 
 This single command deploys:
 
-| Component                   | What It Does                                                                                                                      |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| **Firestore Rules**         | RBAC enforcement, project isolation, append-only audit log                                                                        |
-| **Firestore Indexes**       | Composite index for clientId lookups (required for API)                                                                           |
-| **Cloud Functions (8)**     | getConfig, getVersion, validateSignIn, validateCreate, onAuditCreated, importConfigs, exportConfigs, testWebhook, retryFailedRows |
-| **Auth Blocking Functions** | validateSignIn + validateCreate registered as identity hooks                                                                      |
-| **Hosting**                 | Portal SPA + API rewrites (`/api/*` → Cloud Functions)                                                                            |
+| Component                   | What It Does                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Firestore Rules**         | RBAC enforcement, project isolation, append-only audit log                                        |
+| **Firestore Indexes**       | Composite index for clientId lookups (required for API)                                           |
+| **Cloud Functions (6)**     | getConfig, getVersion, validateSignIn, validateCreate, onAuditCreated, exportConfigs, testWebhook |
+| **Auth Blocking Functions** | validateSignIn + validateCreate registered as identity hooks                                      |
+| **Hosting**                 | Portal SPA + API rewrites (`/api/*` → Cloud Functions)                                            |
 
 Or deploy individual pieces:
 

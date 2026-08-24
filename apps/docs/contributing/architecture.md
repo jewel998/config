@@ -171,16 +171,14 @@ Both the server-side evaluator (`functions/src/api/server-evaluator.ts`) and the
 
 ## Cloud Functions
 
-| Function          | Type              | Purpose                                    |
-| ----------------- | ----------------- | ------------------------------------------ |
-| `getConfig`       | HTTP              | Config delivery API (CDN-cached)           |
-| `getVersion`      | HTTP              | Lightweight version check (CDN-cached 15s) |
-| `validateSignIn`  | Blocking Auth     | Email/domain allowlist enforcement         |
-| `onAuditCreated`  | Firestore Trigger | Webhook dispatch on audit entries          |
-| `importConfigs`   | Callable          | Bulk CSV/JSON import                       |
-| `exportConfigs`   | Callable          | Project data export (GDPR)                 |
-| `retryFailedRows` | Callable          | Retry failed import entries                |
-| `testWebhook`     | Callable          | Test webhook delivery                      |
+| Function         | Type              | Purpose                                    |
+| ---------------- | ----------------- | ------------------------------------------ |
+| `getConfig`      | HTTP              | Config delivery API (CDN-cached)           |
+| `getVersion`     | HTTP              | Lightweight version check (CDN-cached 15s) |
+| `validateSignIn` | Blocking Auth     | Email/domain allowlist enforcement         |
+| `onAuditCreated` | Firestore Trigger | Webhook dispatch on audit entries          |
+| `exportConfigs`  | Callable          | Project data export (GDPR)                 |
+| `testWebhook`    | Callable          | Test webhook delivery                      |
 
 ### API Framework (`@jewel998/api`)
 
