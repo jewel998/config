@@ -1,6 +1,8 @@
 # Segments
 
-Segments are reusable audience groups that you can target across multiple feature flags and configs. Instead of duplicating conditions like "plan equals enterprise AND country in US, UK" on every flag, define it once as a segment and reference it everywhere.
+> See also: [Targeting Rules](/features/targeting) · [Configuration Scopes](/guide/scopes) · [Percentage Rollouts](/features/rollouts)
+
+Segments are reusable audience groups that you can target across multiple feature flags and configs. Instead of duplicating conditions like "plan equals enterprise AND country in US, UK" on every flag, define it once as a segment and reference it everywhere. See [Configuration Scopes](/guide/scopes) for how segments fit into the broader evaluation model.
 
 ## Creating a Segment
 
@@ -29,7 +31,7 @@ Group 2: email ends_with "@company.com"
 
 ## Using Segments in Targeting
 
-When creating a targeting rule on a config or feature flag:
+When creating a [targeting rule](/features/targeting) on a config or feature flag:
 
 1. Click **Target Segment** (primary action)
 2. Click the segment badges to select them
@@ -78,3 +80,11 @@ const flags = initConfig({
 If you have a segment defined as `plan equals "enterprise"`, users whose context includes `plan: "enterprise"` will automatically match that segment. The SDK sends context attributes to the API, which evaluates segment membership server-side.
 
 **Auto-detected attributes** (browser, OS, device, locale, timezone) are also available for segment conditions — you can create segments like "Mobile Users" with `device equals "mobile"` without any extra configuration.
+
+## Related
+
+- [Targeting Rules](/features/targeting) — Use segments in targeting rules to serve different values per audience
+- [Configuration Scopes](/guide/scopes) — How context, segments, and scopes interact during evaluation
+- [Percentage Rollouts](/features/rollouts) — Combine segments with gradual rollouts for targeted releases
+- [Export](/features/export) — Bulk export includes segment definitions
+- [SDK Reference](/api/) — Passing context attributes for segment evaluation

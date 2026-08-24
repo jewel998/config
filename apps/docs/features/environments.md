@@ -1,5 +1,7 @@
 # Environments
 
+> See also: [Team & RBAC](/features/team) · [Import](/features/import) · [Self-Hosting Guide](/guide/self-hosting)
+
 Environments separate your configurations by deployment stage. A single project can have multiple environments like development, staging, and production — each with its own configs, API keys, and domain restrictions.
 
 ## Default Setup
@@ -62,7 +64,7 @@ Environments are intentionally independent — there's no automatic "promote to 
 
 ### Import/Export Promotion (For larger teams)
 
-1. Export configs from staging using [Import & Export](/features/import-export)
+1. Export configs from staging using [Import & Export](/features/export)
 2. Review the exported JSON
 3. Import into production with the `review` conflict strategy
 
@@ -83,3 +85,11 @@ curl -X POST "$FUNCTION_URL/importConfigs" \
 ::: tip
 The audit log tracks all changes per environment, making it easy to verify what was promoted and by whom.
 :::
+
+## Related
+
+- [Import](/features/import) — Bulk import configs into a specific environment
+- [Export](/features/export) — Export environment data for backup or migration
+- [Team & RBAC](/features/team) — Control who can modify production environments
+- [Audit Log](/features/audit-log) — Track all changes per environment
+- [Self-Hosting Guide](/guide/self-hosting) — Configure environments in your deployment

@@ -1,5 +1,7 @@
 # Data Backup & Restore
 
+> See also: [Export](/features/export) · [Versioning](/guide/versioning) · [Self-Hosting Guide](/guide/self-hosting)
+
 Your @jewel998/config data lives entirely in your Firebase project's Firestore database. This guide covers backup strategies, automated schedules, and restore procedures.
 
 ## What Gets Backed Up
@@ -106,8 +108,7 @@ curl -X POST \
   }'
 ```
 
-This returns a signed download URL for a JSON file containing all environments, configs, and segments. See [Import & Export](/features/import-export) for the full format.
-
+This returns a signed download URL for a JSON file containing all environments, configs, and segments. See [Export](/features/export) for the full format.
 ::: tip When to use which
 
 - **Firestore backups** → Disaster recovery, full database restore, point-in-time recovery
@@ -229,7 +230,7 @@ db.collection('projects')
 
 ### Scenario 1: Accidental Flag Deletion
 
-1. Check the **Audit Log** — it records the old value in the diff
+1. Check the [Audit Log](/features/audit-log) — it records the old value in the diff
 2. Recreate the flag manually using the audit log's recorded value
 3. Or restore from the most recent application export
 
@@ -291,3 +292,11 @@ gcloud firestore databases delete backup-verify-temp \
 | Application-level export  | Free (uses existing function invocations) |
 
 For a typical @jewel998/config deployment (< 50MB of data), backup costs are effectively $0.
+
+## Related
+
+- [Import & Export](/features/export) — Application-level export for portable, human-readable backups
+- [Self-Hosting Guide](/guide/self-hosting) — Full deployment setup including Firestore configuration
+- [Versioning](/guide/versioning) — Understand version management for safe upgrades
+- [Audit Log](/features/audit-log) — Track changes and use diffs to recover accidental modifications
+- [Environments](/features/environments) — Environment-specific backup and restore strategies

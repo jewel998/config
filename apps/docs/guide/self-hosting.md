@@ -1,5 +1,7 @@
 # Self-Hosting Guide
 
+> See also: [Performance Tuning](/guide/performance) · [Cost & Scaling](/guide/cost) · [Troubleshooting](/guide/troubleshooting)
+
 Deploy @jewel998/config to your own Firebase project. Full control over your data, zero monthly cost.
 
 ## Prerequisites
@@ -325,83 +327,6 @@ pnpm --filter @jewel998/config-portal run build
 firebase deploy
 ```
 
-## Performance Tuning
-
-### Region Selection
-
-The single biggest factor in API response time is **geographic distance** between your users, Cloud Functions, and Firestore. All three should be in the same region.
-
-Edit `functions/src/utils/constants.ts`:
-
-```typescript
-// Choose the region closest to your users
-export const API_REGION = "asia-south1"; // Mumbai (default)
-```
-
-Then update `firebase.json` rewrites to match:
-
-```json
-{
-  "source": "/api/v1/config",
-  "function": "getConfig",
-  "region": "asia-south1"
-}
-```
-
-| Your Users         | Recommended Region            | Firestore Location |
-| ------------------ | ----------------------------- | ------------------ |
-| India / South Asia | `asia-south1` (Mumbai)        | `asia-south1`      |
-| US                 | `us-central1` (Iowa)          | `us-central1`      |
-| Europe             | `europe-west1` (Belgium)      | `europe-west1`     |
-| Southeast Asia     | `asia-southeast1` (Singapore) | `asia-southeast1`  |
-| East Asia          | `asia-east1` (Taiwan)         | `asia-east1`       |
-
-::: warning Firestore region must match
-If your Cloud Functions are in `asia-south1` but your Firestore database is in `us-central1`, every query adds 200-400ms of cross-region latency. Always create your Firestore database in the same region as your functions.
-:::
-
-### Eliminating Cold Starts
-
-Cloud Functions experience **cold starts** (2-4 seconds) when no instance is warm. This happens after periods of inactivity. To eliminate cold starts:
-
-Edit `functions/src/utils/constants.ts`:
-
-```typescript
-// Set to 1 or higher to keep instances warm (costs ~$3-5/month per instance)
-export const MIN_INSTANCES = 1;
-```
-
-| Setting                       | Behavior                                             | Cost         |
-| ----------------------------- | ---------------------------------------------------- | ------------ |
-| `MIN_INSTANCES = 0` (default) | Cold starts after idle periods (~2-4s first request) | $0           |
-| `MIN_INSTANCES = 1`           | One instance always warm, no cold starts             | ~$3-5/month  |
-| `MIN_INSTANCES = 2`           | Two warm instances, handles concurrent cold bursts   | ~$6-10/month |
-
-**Recommendation:**
-
-- Development / low traffic: `0` (free, accept occasional cold starts)
-- Production with consistent traffic: `1` (eliminates cold starts)
-- Production with traffic spikes: `2+` (prevents queuing during bursts)
-
-### Expected Latency
-
-With properly matched regions (functions + Firestore in same region):
-
-| Scenario                                                       | Latency     |
-| -------------------------------------------------------------- | ----------- |
-| CDN cache hit (version poll)                                   | 10-50ms     |
-| CDN cache hit (config fetch, client mode)                      | 10-50ms     |
-| Warm function, same-region Firestore                           | 100-200ms   |
-| Cold start (no minInstances)                                   | 2000-4000ms |
-| Cross-region Firestore (e.g., functions in Mumbai, DB in Iowa) | 500-1000ms  |
-
-### Additional Optimizations
-
-- **Use `browserStorage()`** in the SDK — cached values persist across page loads, eliminating API calls on return visits
-- **Set longer `pollInterval`** — 10-15 minutes instead of 5 if you don't need instant flag propagation
-- **Use key filtering** — Pass `keys` parameter to fetch only the flags you need (projected read)
-- **CDN is your friend** — Firebase Hosting CDN caches `/api/v1/version` for 15s and `/api/v1/config` (client mode) for 60s at edge nodes worldwide. Most requests never reach your function.
-
 ## Updating to New Versions
 
 ```bash
@@ -410,7 +335,7 @@ pnpm install
 firebase deploy
 ```
 
-We provide migration guides for breaking changes. Your Firestore data is never touched during updates — only code is redeployed.
+We provide migration guides for breaking changes. Your Firestore data is never touched during updates — only code is redeployed. See [Migration Guides](/guide/migrations/) for details when upgrading between versions.
 
 ## Custom Domain (Optional)
 
@@ -418,176 +343,17 @@ We provide migration guides for breaking changes. Your Firestore data is never t
 2. Follow the DNS verification steps
 3. Update your SDK's `baseUrl` to `https://config.yourcompany.com/api`
 
-## Troubleshooting
+## Next Steps
 
-### "gRPC 5 NOT_FOUND" in function logs
+- [Performance Tuning](/guide/performance) — Region selection, cold starts, latency optimization
+- [Cost & Scaling](/guide/cost) — Cost at scale tables, optimization tips
+- [Troubleshooting](/guide/troubleshooting) — Common issues and fixes
+- [Concepts](/guide/concepts) — Glossary of terms used throughout the docs
 
-The composite index for `clientIds` isn't deployed. Run:
+## Related
 
-```bash
-firebase deploy --only firestore:indexes --project your-project-id
-```
-
-### CORS errors calling the API
-
-If you see CORS errors when calling `https://your-project.web.app/api/v1/config`:
-
-1. Ensure hosting is deployed: `firebase deploy --only hosting`
-2. The hosting config includes CORS headers for `/api/**`
-3. As a fallback, call the function URL directly: `https://REGION-your-project.cloudfunctions.net/getConfig` (replace `REGION` with your configured region, e.g., `asia-south1`)
-
-### "Permission denied" on Firestore
-
-Make sure you've deployed the security rules: `firebase deploy --only firestore:rules`
-
-### Cloud Functions returning 500
-
-Check the function logs: Firebase Console → Functions → Logs. Common causes:
-
-- Missing Firestore index (see above)
-- Database name mismatch (if you have a non-standard database name, see `functions/src/utils/firestore.ts`)
-
-### Portal shows blank page
-
-Ensure the environment variables in `.env.production` match your Firebase project. Rebuild and redeploy.
-
-### SDK returns undefined values
-
-1. Check that your API key is active (not revoked) in the portal
-2. Verify `baseUrl` points to your deployment
-3. Check browser console — if you see 401/403, the SDK's circuit breaker will stop retrying for 5 minutes
-4. If using `createConfig`, call `client.destroy()` and reinitialize to reset the circuit breaker. With `initConfig`, reload the page.
-
-### SDK stops making requests (circuit breaker)
-
-If the SDK receives a 400, 401, or 403 error, it activates a circuit breaker that blocks all requests for 5 minutes. This prevents hammering a misconfigured endpoint. After the cooldown, it automatically retries once.
-
-## Cost at Scale
-
-| Users    | Version polls/month | Config fetches/month | Function calls | Firestore reads/day | Cost      |
-| -------- | ------------------- | -------------------- | -------------- | ------------------: | --------- |
-| 100      | 864K                | ~100                 | ~1,000         |                ~200 | $0        |
-| 1,000    | 8.6M                | ~1,000               | ~6,000         |              ~1,500 | $0        |
-| 10,000   | 86M                 | ~10,000              | ~40,000        |             ~10,000 | $0        |
-| 50,000   | 432M                | ~50,000              | ~150,000       |             ~40,000 | $0*       |
-| 100,000+ | —                   | —                    | —              |                   — | ~$5-15/mo |
-
-*CDN absorbs 99%+ of version polls (15s cache). Actual function invocations are a fraction of raw request count.
-
-Firebase free tier limits: 2M function invocations/month, 50K Firestore reads/day, 10GB hosting bandwidth.
-
-## Cost Optimization Guide
-
-The SDK is designed to minimize API costs by default. Here's how each feature saves you money, and what you can tune for maximum efficiency.
-
-### Built-in Cost Savings
-
-| Feature                   | How It Saves Money                                                                                                                                                 |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Version-gated refresh** | `refresh()` calls `/getVersion` first (1 Firestore read, ~100 bytes). Only fetches full config if version changed. 95%+ of refresh cycles cost almost nothing.     |
-| **CDN caching**           | `/getVersion` cached 15s, `/getConfig` (client mode) cached 60s. At 10K users polling every 5 min, CDN serves 99% — only ~60 function calls/hour actually execute. |
-| **Circuit breaker**       | On 401/403, SDK stops all requests for 5 minutes. Prevents runaway costs from misconfigured clients.                                                               |
-| **Request deduplication** | Multiple `refresh()` calls within the same tick share a single network request.                                                                                    |
-| **30s stale check**       | `setContext()` skips re-fetch if the last fetch was <30s ago. Prevents unnecessary calls during rapid user interactions.                                           |
-| **7-day cache TTL**       | Once fetched, values persist in memory/localStorage for 7 days. Page refreshes use cached data immediately.                                                        |
-| **Conditional requests**  | `/getVersion` supports `If-None-Match` (ETag). When version is unchanged, server returns 304 with zero body.                                                       |
-
-### Recommended Configuration for Cost Efficiency
-
-```typescript
-import { initConfig, autoContext } from "@jewel998/config";
-
-const flags = initConfig({
-  clientId: "cid_xxx",
-  baseUrl: "https://your-project.web.app/api",
-  defaults: {
-    // Define ALL flags here — served instantly, zero API cost
-    "feature.dark_mode": false,
-    "feature.new_checkout": false,
-    "app.upload_limit": 50,
-  },
-  context: autoContext({ userId: "user_123" }),
-  // Longer poll interval = fewer API calls
-  pollInterval: 600_000, // 10 minutes instead of default 5
-});
-```
-
-For maximum cache persistence across page reloads, add `browserStorage`:
-
-```typescript
-import { initConfig, browserStorage, autoContext } from "@jewel998/config";
-
-const flags = initConfig({
-  clientId: "cid_xxx",
-  baseUrl: "https://your-project.web.app/api",
-  storage: browserStorage({ prefix: "myapp" }),
-  defaults: {
-    "feature.dark_mode": false,
-    "feature.new_checkout": false,
-    "app.upload_limit": 50,
-  },
-  context: autoContext({ userId: "user_123" }),
-  pollInterval: 600_000,
-});
-```
-
-### Tips by Scale
-
-#### Small teams (< 1,000 users) — Stay on free tier
-
-- Use default settings — you'll never exceed free limits
-- Set all your defaults in `initConfig` — the SDK serves them instantly without any API call
-- The optimistic loading strategy fetches in the background while defaults are served
-
-#### Medium scale (1K–50K users) — Optimize refresh
-
-```typescript
-const flags = initConfig({
-  clientId: "cid_xxx",
-  baseUrl: "https://your-project.web.app/api",
-  defaults: {/* all your flags */},
-  pollInterval: 900_000, // 15 min — most flag changes don't need instant propagation
-});
-```
-
-- Longer `pollInterval` = fewer version checks
-- Add `storage: browserStorage()` to persist cache across page reloads
-- Consider `loadingStrategy: "deferred"` via `createConfig` only if you need advanced control
-
-#### Large scale (50K+ users) — Minimize function invocations
-
-```typescript
-const flags = initConfig({
-  clientId: "cid_xxx",
-  baseUrl: "https://your-project.web.app/api",
-  defaults: {/* all your flags */},
-  pollInterval: 0, // Disable polling entirely
-});
-
-// Only refresh when YOU decide (e.g., on route change)
-router.on("routeChange", () => flags.refresh());
-```
-
-- Disable automatic polling and trigger `refresh()` only at meaningful moments
-- The CDN handles the heavy lifting — most requests never reach your function
-- Add `storage: browserStorage({ defaultTtl: 7 * 86_400_000 })` for long-lived cache
-
-### Cost Breakdown by API Call
-
-| Endpoint                       | Firestore Reads                     | Function Cost | CDN-Cacheable?         |
-| ------------------------------ | ----------------------------------- | ------------- | ---------------------- |
-| `/api/v1/version`              | 1 (environment doc)                 | ~$0.0000004   | ✅ 15s                 |
-| `/api/v1/config` (server mode) | 2-3 (clientId + configs + segments) | ~$0.0000012   | ❌ (varies by context) |
-| `/api/v1/config` (client mode) | 2-3 (same)                          | ~$0.0000012   | ✅ 60s                 |
-
-At the free tier limits (2M invocations/month + 50K reads/day), you can serve **~50,000 active users** polling every 5 minutes at zero cost.
-
-### What NOT to Do
-
-| Anti-Pattern                             | Why It's Expensive                                   | Fix                                                                           |
-| ---------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Calling `refresh()` on every render      | Bypasses deduplication if renders are >30s apart     | Let the poll interval handle it                                               |
-| Using `pollInterval: 1000` (1s)          | Each poll = function invocation                      | Use 300,000+ (5 min or more)                                                  |
-| Not setting `defaults`                   | Forces a blocking fetch before app can render        | Always provide defaults                                                       |
-| Creating multiple `initConfig` instances | Each instance polls independently, multiplying costs | Use one singleton                                                             |
-| Not calling `destroy()` on unmount (SPA) | Timer keeps polling after navigation                 | Use `createConfig` with `destroy()`, or use a single `initConfig` at app root |
+- [Cloud Functions Reference](/api/cloud-functions) — Detailed documentation of all deployed functions and their configuration
+- [Backup & Restore](/guide/backup-restore) — Set up automated backups for your Firestore data
+- [Environments](/features/environments) — Configure multiple environments within your deployment
+- [Team & RBAC](/features/team) — Invite team members and manage access roles
+- [Comparison](/comparison/) — See how self-hosting compares to SaaS alternatives

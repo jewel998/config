@@ -1,5 +1,7 @@
 # SOC 2 Alignment
 
+> See also: [Compliance Overview](/compliance/) · [Audit Log](/features/audit-log) · [Team & RBAC](/features/team)
+
 SOC 2 (System and Organization Controls 2) defines criteria for managing customer data based on five trust service principles. While @jewel998/config is not SOC 2 certified (as a self-hosted tool, certification is your organization's responsibility), the platform provides controls that align with SOC 2 requirements.
 
 ## Trust Service Criteria Coverage

@@ -1,6 +1,8 @@
 # Storage & Caching
 
-The SDK provides pluggable storage adapters that control where resolved config values are cached. Choosing the right adapter determines whether configs survive page reloads, how long they persist, and how much network traffic your app generates.
+> See also: [Loading Strategies](/guide/loading-strategies) · [SDK Reference](/api/) · [Cost & Scaling](/guide/cost)
+
+The SDK provides pluggable storage adapters that control where resolved config values are cached. Choosing the right adapter determines whether configs survive page reloads, how long they persist, and how much network traffic your app generates. For how caching interacts with initialization, see [Loading Strategies](/guide/loading-strategies).
 
 ## Storage Adapters
 
@@ -255,3 +257,11 @@ storage.clear();
 // Or clear all localStorage for the SDK
 localStorage.removeItem("@jewel998/config:__all__");
 ```
+
+## Related
+
+- [Loading Strategies](/guide/loading-strategies) — Choose optimistic, pessimistic, or deferred initialization
+- [SDK Reference](/api/) — Full API documentation for storage adapter options
+- [Self-Hosting Guide](/guide/self-hosting) — Cost optimization tips that leverage caching
+- [GDPR](/compliance/gdpr) — Data minimization considerations for cache storage
+- [Configuration Scopes](/guide/scopes) — How scoped cache keys are built and resolved

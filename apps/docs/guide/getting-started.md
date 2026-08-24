@@ -1,5 +1,7 @@
 # Getting Started
 
+> See also: [Concepts & Glossary](/guide/concepts) · [Loading Strategies](/guide/loading-strategies) · [Self-Hosting Guide](/guide/self-hosting)
+
 Get feature flags running in your app in under 5 minutes.
 
 ## 1. Install the SDK
@@ -51,7 +53,7 @@ flags.on("updated", ({ keys }) => {
 
 1. **Instant**: `flags.get()` returns your `defaults` immediately — no loading state
 2. **Background fetch**: SDK calls your API once on init
-3. **Resolved values**: API evaluates targeting rules server-side, returns flat values
+3. **Resolved values**: API evaluates [targeting rules](/features/targeting) server-side, returns flat values
 4. **Cached**: All subsequent reads are from local cache (0ms)
 5. **Version-gated refresh**: SDK polls `/api/v1/version` (tiny response). Only re-fetches full config when the version number changes.
 6. **Circuit breaker**: If the API returns 401/403, the SDK stops retrying for 5 minutes to prevent hammering a misconfigured endpoint.
@@ -66,7 +68,7 @@ const flags = initConfig({
   defaults: { ... },            // Fallback values (instant)
   context: autoContext({ ... }), // User attributes for targeting
   pollInterval: 300_000,         // Version polling (default: 5 min, 0 to disable)
-  storage: browserStorage(),     // Cache adapter (default: memoryStorage)
+  storage: browserStorage(),     // Cache adapter (default: memoryStorage) — see [Storage & Caching](/guide/storage)
 });
 ```
 
@@ -139,3 +141,11 @@ See the [SDK API Reference](/api/) for full details on both.
 - [Segments](/features/segments) — Create reusable audience groups
 - [Targeting Rules](/features/targeting) — Serve different values per user
 - [SDK Reference](/api/) — Full API documentation
+
+## Related
+
+- [Loading Strategies](/guide/loading-strategies) — Choose between optimistic, pessimistic, and deferred initialization
+- [Storage & Caching](/guide/storage) — Configure how the SDK caches resolved values
+- [Configuration Scopes](/guide/scopes) — Understand how context, segments, and scopes work together
+- [Environments](/features/environments) — Separate configs by deployment stage
+- [Self-Hosting Guide](/guide/self-hosting) — Deploy the platform to your own Firebase project

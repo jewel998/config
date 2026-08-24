@@ -1,6 +1,8 @@
 # Loading Strategies
 
-Loading strategies control **when and how** the SDK fetches configuration data from your API. The strategy you choose affects your app's startup behavior, perceived performance, and how users experience flag changes.
+> See also: [Storage & Caching](/guide/storage) · [SDK Reference](/api/) · [GDPR](/compliance/gdpr)
+
+Loading strategies control **when and how** the SDK fetches configuration data from your API. The strategy you choose affects your app's startup behavior, perceived performance, and how users experience flag changes. See the [SDK Reference](/api/) for the full `createConfig` options.
 
 ## The Three Strategies
 
@@ -228,7 +230,7 @@ The SDK initializes with zero network activity. No fetch, no cache read, nothing
 
 ### When to Use
 
-- **Consent-gated apps (GDPR)** — don't send user context until consent is granted
+- **Consent-gated apps (GDPR)** — don't send user context until consent is granted. See [GDPR](/compliance/gdpr) for details on the consent-aware pattern.
 - **Multi-step initialization** — you need user data from another API before you can build the flag context
 - **Conditional flag loading** — only fetch flags for certain user roles or app sections
 - **Testing and mocking** — initialize without network access, inject values manually
@@ -408,3 +410,11 @@ async function loadFlags(userId: string) {
 | **Offline support**      | Yes (cache)                   | Partial (timeout → cache) | No data until fetch         |
 | **Available via**        | `initConfig` + `createConfig` | `createConfig` only       | `createConfig` only         |
 | **Best for**             | Most apps                     | Critical-path decisions   | Consent/conditional loading |
+
+## Related
+
+- [Storage & Caching](/guide/storage) — Configure cache adapters that work alongside loading strategies
+- [SDK Reference](/api/) — Full API documentation for `initConfig` and `createConfig`
+- [Configuration Scopes](/guide/scopes) — Understand how context and evaluation work
+- [GDPR](/compliance/gdpr) — Learn about the consent-aware deferred pattern
+- [Self-Hosting Guide](/guide/self-hosting) — Performance tuning and cost optimization tips

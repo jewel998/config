@@ -1,5 +1,7 @@
 # Compliance & Security
 
+> See also: [GDPR](/compliance/gdpr) · [SOC 2](/compliance/soc2) · [Team & RBAC](/features/team)
+
 @jewel998/config is designed with security and compliance in mind. While we're not yet certified (SOC 2, ISO 27001), the architecture follows the guidelines and best practices of these frameworks.
 
 ## Security Architecture
@@ -58,8 +60,8 @@ This ensures no user-identifying data is sent to the server before consent is ob
 
 ## Data Portability
 
-The platform supports GDPR Article 20 data portability through a [bulk import/export system](/features/import-export):
+The platform supports GDPR Article 20 data portability through a bulk [import](/features/import)/[export](/features/export) system:
 
-- **Import** — Migrate configurations from other systems via CSV or JSON upload with full DTO validation
-- **Export** — Download all project data or user-specific data as structured JSON (re-importable format)
+- **Import** — Migrate configurations from other systems via CSV or JSON upload with full DTO validation. See [Import](/features/import).
+- **Export** — Download all project data or user-specific data as structured JSON (re-importable format). See [Export](/features/export).
 - **Audit** — All import/export operations are logged with actor, timestamp, and operation details

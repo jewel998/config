@@ -1,5 +1,7 @@
 # SDK API Reference
 
+> See also: [Loading Strategies](/guide/loading-strategies) · [Storage & Caching](/guide/storage) · [Cloud Functions](/api/cloud-functions)
+
 The `@jewel998/config` SDK provides a simple interface for fetching and evaluating feature flags and remote configuration.
 
 ## initConfig (Recommended)

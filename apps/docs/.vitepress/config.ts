@@ -29,13 +29,19 @@ export default withMermaid(
           text: "Getting Started",
           items: [
             { text: "Quick Start", link: "/guide/getting-started" },
-            { text: "Self-Hosting Guide", link: "/guide/self-hosting" },
+            { text: "Concepts & Glossary", link: "/guide/concepts" },
+            { text: "Self-Hosting", link: "/guide/self-hosting" },
+            { text: "Performance Tuning", link: "/guide/performance" },
+            { text: "Cost & Scaling", link: "/guide/cost" },
+            { text: "Troubleshooting", link: "/guide/troubleshooting" },
+          ],
+        },
+        {
+          text: "SDK Guide",
+          items: [
             { text: "Loading Strategies", link: "/guide/loading-strategies" },
             { text: "Storage & Caching", link: "/guide/storage" },
             { text: "Configuration Scopes", link: "/guide/scopes" },
-            { text: "Migration Guides", link: "/guide/migrations" },
-            { text: "Backup & Restore", link: "/guide/backup-restore" },
-            { text: "Versioning", link: "/guide/versioning" },
           ],
         },
         {
@@ -55,7 +61,8 @@ export default withMermaid(
             { text: "Team & RBAC", link: "/features/team" },
             { text: "Audit Log", link: "/features/audit-log" },
             { text: "Webhooks", link: "/features/webhooks" },
-            { text: "Import & Export", link: "/features/import-export" },
+            { text: "Import", link: "/features/import" },
+            { text: "Export", link: "/features/export" },
           ],
         },
         {
@@ -63,8 +70,15 @@ export default withMermaid(
           items: [
             { text: "initConfig", link: "/api/" },
             { text: "Cloud Functions", link: "/api/cloud-functions" },
-            { text: "Storage Adapters", link: "/guide/storage" },
             { text: "Webhook API", link: "/api/webhooks" },
+          ],
+        },
+        {
+          text: "Operations",
+          items: [
+            { text: "Backup & Restore", link: "/guide/backup-restore" },
+            { text: "Versioning", link: "/guide/versioning" },
+            { text: "Migration Guides", link: "/guide/migrations/" },
           ],
         },
         {

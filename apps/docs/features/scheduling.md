@@ -1,6 +1,8 @@
 # Scheduling
 
-Schedule config changes to activate at a specific date and time. Perfect for planned launches, marketing campaigns, or timed feature releases.
+> See also: [Targeting Rules](/features/targeting) · [Prerequisites](/features/prerequisites) · [Environments](/features/environments)
+
+Schedule config changes to activate at a specific date and time. Perfect for planned launches, marketing campaigns, or timed feature releases. Schedules sit between overrides and [targeting rules](/features/targeting) in the evaluation pipeline.
 
 ## How It Works
 
@@ -58,7 +60,7 @@ Prerequisites → Overrides → Schedule → Targeting → Rollout → Default
 This means:
 
 - User overrides still take priority over schedules
-- Schedules override targeting rules and rollout
+- Schedules override [targeting rules](/features/targeting) and [rollout](/features/rollouts)
 
 ## Use Cases
 
@@ -70,3 +72,11 @@ This means:
 ## Timezone
 
 Scheduled times are stored in UTC. The portal's calendar picker shows your local timezone. The API evaluates against the current UTC time.
+
+## Related
+
+- [Targeting Rules](/features/targeting) — Schedules override targeting in the evaluation pipeline
+- [Percentage Rollouts](/features/rollouts) — Combine with schedules for time-gated gradual rollouts
+- [Prerequisites](/features/prerequisites) — Prerequisites must pass before a schedule takes effect
+- [Audit Log](/features/audit-log) — Track when schedules were created and activated
+- [Environments](/features/environments) — Schedules are per-environment, enabling staged launches

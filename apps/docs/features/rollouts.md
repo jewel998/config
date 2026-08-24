@@ -1,6 +1,8 @@
 # Percentage Rollouts
 
-Gradually release features to a percentage of users. Start with 5%, validate, then increase to 20%, 50%, and finally 100%.
+> See also: [Targeting Rules](/features/targeting) · [Segments](/features/segments) · [Environments](/features/environments)
+
+Gradually release features to a percentage of users. Start with 5%, validate, then increase to 20%, 50%, and finally 100%. Rollouts are evaluated after [targeting rules](/features/targeting) in the pipeline.
 
 ## How It Works
 
@@ -47,6 +49,8 @@ Targeting rules have higher priority than rollouts in the evaluation pipeline. I
 - Target "Enterprise Users" → always get the feature
 - Roll out to 20% of everyone else → gradual release
 
+See [Segments](/features/segments) for creating reusable audience groups to combine with rollouts.
+
 ## Requirements
 
 - A `userId` must be provided in the SDK context for rollout to work
@@ -65,3 +69,11 @@ The same hashing algorithm is used in both server-side evaluation (client keys) 
 | `rolloutPercentage: 100`   | Everyone gets the rollout value (equivalent to changing the default) |
 | No `userId` in context     | Rollout step is skipped; pipeline continues to default               |
 | Same user, different flags | Different buckets (the flag key is part of the hash input)           |
+
+## Related
+
+- [Targeting Rules](/features/targeting) — Targeting rules take priority over rollouts in evaluation
+- [Segments](/features/segments) — Define audience groups to combine with percentage rollouts
+- [Environments](/features/environments) — Roll out independently per environment
+- [Audit Log](/features/audit-log) — Track rollout percentage changes over time
+- [Configuration Scopes](/guide/scopes) — Understand the full evaluation pipeline

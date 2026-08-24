@@ -1,5 +1,7 @@
 # Team Collaboration
 
+> See also: [Audit Log](/features/audit-log) · [Environments](/features/environments) · [SOC 2](/compliance/soc2)
+
 @jewel998/config supports multi-user access with role-based access control (RBAC). Invite team members, assign roles, and ensure no one has more access than they need.
 
 ## Roles

@@ -1,5 +1,7 @@
 # Prerequisites
 
+> See also: [Targeting Rules](/features/targeting) · [Scheduling](/features/scheduling) · [Percentage Rollouts](/features/rollouts)
+
 Prerequisites let you create dependencies between flags. "Feature B should only be active if Feature A is already active." This prevents inconsistent states where a dependent feature is enabled without its dependency.
 
 ## Use Cases
@@ -7,6 +9,8 @@ Prerequisites let you create dependencies between flags. "Feature B should only 
 - **New checkout** requires **payment v2** to be enabled first
 - **Dark mode** requires **theme engine** to be active
 - **Admin panel** requires **user.role** config to be `"admin"`
+
+See [Targeting Rules](/features/targeting) to understand where prerequisites fit in the evaluation pipeline.
 
 ## Setting Up Prerequisites
 
@@ -63,3 +67,11 @@ feature.checkout_v2:
 ```
 
 This means: checkout_v2 can only be `true` if payments_v2 is already `true` AND the app version is above 2.0. Even if a user is in "Beta Testers", if the prerequisites aren't met, they get `false`.
+
+## Related
+
+- [Targeting Rules](/features/targeting) — Prerequisites gate the targeting evaluation step
+- [Segments](/features/segments) — Combine prerequisites with segment-based targeting
+- [Scheduling](/features/scheduling) — Schedule a flag that has prerequisites defined
+- [Percentage Rollouts](/features/rollouts) — Rollouts are only evaluated if prerequisites pass
+- [Audit Log](/features/audit-log) — Track prerequisite additions and removals

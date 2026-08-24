@@ -1,5 +1,7 @@
 # GDPR Compliance
 
+> See also: [Compliance Overview](/compliance/) · [Export](/features/export) · [Loading Strategies](/guide/loading-strategies)
+
 The General Data Protection Regulation (GDPR) requires organizations to protect personal data and respect individuals' rights. Here's how @jewel998/config aligns with GDPR principles.
 
 ## Principles We Follow
@@ -31,7 +33,7 @@ The platform provides a **bulk export** system that supports GDPR data portabili
 - **Time-limited download** — Export files are generated as signed URLs valid for 24 hours, and files are automatically cleaned up after 7 days (data minimization).
 - **Audit-logged** — Every export action is recorded in the audit trail with the requesting user and export scope.
 
-See the [Import & Export documentation](/features/import-export) for full format specifications, examples, and API reference.
+See the [Import](/features/import) and [Export](/features/export) documentation for full format specifications, examples, and API reference.
 
 ### 4. Consent-Aware Mode
 

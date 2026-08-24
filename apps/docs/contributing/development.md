@@ -1,5 +1,7 @@
 # Local Development
 
+> See also: [Architecture](/contributing/architecture) · [Self-Hosting Guide](/guide/self-hosting) · [SDK Reference](/api/)
+
 Set up your local environment for contributing to @jewel998/config.
 
 ## Prerequisites

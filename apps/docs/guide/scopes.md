@@ -1,10 +1,12 @@
 # Configuration Scopes
 
+> See also: [Segments](/features/segments) · [Targeting Rules](/features/targeting) · [Environments](/features/environments)
+
 Understanding how @jewel998/config resolves values requires understanding three core concepts: **Context**, **Segments**, and **Scopes**. These work together to deliver the right configuration to the right user at the right time.
 
 ## Context
 
-Context is the set of attributes that describe the current user and their environment. It's the information the platform uses to evaluate targeting rules and segment membership.
+Context is the set of attributes that describe the current user and their environment. It's the information the platform uses to evaluate [targeting rules](/features/targeting) and segment membership.
 
 ### What is Context?
 
@@ -63,7 +65,7 @@ flags.setContext(autoContext({ userId: "user_123", plan: "pro" }));
 
 ## Segments
 
-Segments are **reusable audience definitions** built from context attributes. They answer the question "which group does this user belong to?" — without repeating conditions on every flag.
+[Segments](/features/segments) are **reusable audience definitions** built from context attributes. They answer the question "which group does this user belong to?" — without repeating conditions on every flag.
 
 ### Relationship to Context
 
@@ -118,6 +120,8 @@ Scopes define the data isolation boundaries in your deployment. They control whi
 | `tenant`      | Top-level organizational boundary     | Multi-tenant SaaS deployments        |
 | `project`     | A product or application              | Groups environments together         |
 | `environment` | A deployment stage (dev/staging/prod) | Fully isolated data, keys, and rules |
+
+See [Environments](/features/environments) for details on managing environments in the portal.
 
 ### How Scopes Map to Your Deployment
 
@@ -234,13 +238,13 @@ Step 2 (Fetch): Load all configs for this project + environment
          ↓
 Step 3 (Evaluate per flag):
     a. Check lifecycle state (archived flags return nothing)
-    b. Check prerequisites (dependent flags must pass)
+    b. Check [prerequisites](/features/prerequisites) (dependent flags must pass)
     c. Check overrides (userId-specific values)
-    d. Check schedule (time-based activation)
+    d. Check [schedule](/features/scheduling) (time-based activation)
     e. Check targeting rules (priority order):
        - Rule 1: "If user in Segment 'Enterprise Users'" → does context match segment conditions?
        - Rule 2: "If country in_list 'US,UK'" → check context.country attribute
-    f. Check rollout (percentage bucketing on userId)
+    f. Check [rollout](/features/rollouts) (percentage bucketing on userId)
     g. Return default value
          ↓
 Step 4 (Response): Return resolved values to SDK
@@ -252,3 +256,11 @@ This pipeline ensures:
 - **Context** provides the user attributes needed for personalization
 - **Segments** group users for clean, reusable targeting
 - **Targeting rules** use segments and context to determine the final value
+
+## Related
+
+- [Segments](/features/segments) — Create and manage reusable audience definitions
+- [Targeting Rules](/features/targeting) — Configure per-flag evaluation rules using segments and conditions
+- [Environments](/features/environments) — Set up and manage deployment stages
+- [Percentage Rollouts](/features/rollouts) — Gradually release features using deterministic bucketing
+- [SDK Reference](/api/) — API documentation for context and evaluation options

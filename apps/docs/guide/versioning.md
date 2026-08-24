@@ -1,5 +1,7 @@
 # Documentation Versioning
 
+> See also: [Migration Guides](/guide/migrations/) · [Backup & Restore](/guide/backup-restore) · [Self-Hosting Guide](/guide/self-hosting)
+
 This page explains how @jewel998/config handles versioning for the platform, SDK, and documentation.
 
 ## Version Scheme
@@ -20,7 +22,7 @@ MAJOR.MINOR.PATCH
 | Monorepo (portal, functions, docs) | 0.1.x           | Self-hosted via git |
 
 ::: info Pre-1.0 Versioning
-While the project is pre-1.0, minor versions (0.x.0) may include breaking changes. After 1.0.0, only major versions will break backward compatibility. We document all breaking changes in the [Migration Guides](/guide/migrations).
+While the project is pre-1.0, minor versions (0.x.0) may include breaking changes. After 1.0.0, only major versions will break backward compatibility. We document all breaking changes in the [Migration Guides](/guide/migrations/).
 :::
 
 ## How Versioning Works
@@ -75,7 +77,7 @@ This is safe for patch and minor version bumps.
 
 When a new version includes breaking changes:
 
-1. Check the [Migration Guide](/guide/migrations) for the target version
+1. Check the [Migration Guide](/guide/migrations/) for the target version
 2. Back up your Firestore data (see [Backup & Restore](/guide/backup-restore))
 3. Review the migration steps
 4. Apply the update:
@@ -139,3 +141,11 @@ git log --oneline -- apps/portal/
 ```
 
 Release notes are published with each GitHub release tag.
+
+## Related
+
+- [Migration Guides](/guide/migrations/) — Step-by-step instructions for breaking change updates
+- [Backup & Restore](/guide/backup-restore) — Protect your data before upgrading versions
+- [Self-Hosting Guide](/guide/self-hosting) — Deployment process including updates
+- [SDK Reference](/api/) — SDK versioning and compatibility details
+- [Environments](/features/environments) — How config versions work per environment

@@ -1,5 +1,7 @@
 # Comparison with Competitors
 
+> See also: [Self-Hosting Guide](/guide/self-hosting) · [Cost & Scaling](/guide/cost) · [Segments](/features/segments)
+
 How @jewel998/config stacks up against other feature flag platforms.
 
 ## Feature Comparison

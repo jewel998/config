@@ -1,6 +1,8 @@
 # Targeting Rules
 
-Targeting rules let you serve different config values to different users based on their attributes or segment membership.
+> See also: [Segments](/features/segments) · [Percentage Rollouts](/features/rollouts) · [Configuration Scopes](/guide/scopes)
+
+Targeting rules let you serve different config values to different users based on their attributes or [segment](/features/segments) membership.
 
 ## How Targeting Works
 
@@ -50,14 +52,22 @@ You can't accidentally type "hello" as a targeting value for a boolean flag.
 When a user requests a config value, the full evaluation pipeline runs:
 
 1. **Archived** — If flag is archived, return undefined
-2. **Prerequisites** — If required flags aren't met, return default
+2. **[Prerequisites](/features/prerequisites)** — If required flags aren't met, return default
 3. **Overrides** — If userId has a specific override, use it
-4. **Schedule** — If a scheduled value is active, use it
+4. **[Schedule](/features/scheduling)** — If a scheduled value is active, use it
 5. **Targeting Rules** — Evaluate rules by priority
-6. **Rollout** — Apply percentage rollout
+6. **[Rollout](/features/rollouts)** — Apply percentage rollout
 7. **Default** — Return the base value
 
 ## Server-Side vs Client-Side
 
 - **Client keys (cid\_):** Targeting is evaluated on the API server. Your rules are never exposed.
 - **Server keys (svr\_):** Full rules are returned; the SDK evaluates locally using plugins.
+
+## Related
+
+- [Segments](/features/segments) — Create reusable audience groups for segment-based targeting rules
+- [Percentage Rollouts](/features/rollouts) — Gradually release features after targeting rules are evaluated
+- [Prerequisites](/features/prerequisites) — Add flag dependencies that gate targeting evaluation
+- [Scheduling](/features/scheduling) — Time-based value overrides that sit above targeting in the pipeline
+- [Configuration Scopes](/guide/scopes) — How context and segments feed into rule evaluation

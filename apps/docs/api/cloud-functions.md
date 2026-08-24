@@ -1,5 +1,7 @@
 # Cloud Functions Reference
 
+> See also: [SDK Reference](/api/) · [Self-Hosting Guide](/guide/self-hosting) · [Performance Tuning](/guide/performance)
+
 All Cloud Functions deployed as part of @jewel998/config, their purposes, and how they interact.
 
 ## Function Overview
