@@ -14,298 +14,298 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: store.validationResult?.conflicts.length
-#: src/routes/import.tsx:660
+#: src/routes/import.tsx:585
 msgid "{0} conflicting entries found. Choose a resolution strategy:"
 msgstr "{0} conflicting entries found. Choose a resolution strategy:"
 
-#: src/routes/import.tsx:361
+#: src/routes/import.tsx:312
 msgid "Accepts .csv and .json files (max 5 MB)"
 msgstr "Accepts .csv and .json files (max 5 MB)"
 
-#: src/routes/__root.tsx:352
+#: src/routes/__root.tsx:313
 msgid "Access Denied"
 msgstr "Access Denied"
 
-#: src/routes/__root.tsx:482
+#: src/routes/__root.tsx:435
 msgid "Access is by request only. Rights of Admission Reserved."
 msgstr "Access is by request only. Rights of Admission Reserved."
 
-#: src/routes/preferences.tsx:357
+#: src/routes/preferences.tsx:332
 msgid "Account"
 msgstr "Account"
 
-#: src/routes/preferences.tsx:307
+#: src/routes/preferences.tsx:282
 msgid "Account Created"
 msgstr "Account Created"
 
-#: src/routes/preferences.tsx:329
+#: src/routes/preferences.tsx:304
 msgid "Account deletion is not yet available. Contact support if you need to delete your account."
 msgstr "Account deletion is not yet available. Contact support if you need to delete your account."
 
-#: src/components/command-palette.tsx:218
-#: src/routes/configs.tsx:531
+#: src/components/command-palette.tsx:190
+#: src/routes/configs.tsx:483
 msgid "Actions"
 msgstr "Actions"
 
-#: src/components/webhook-card.tsx:72
+#: src/components/webhook-card.tsx:62
 msgid "Active"
 msgstr "Active"
 
-#: src/components/audit-log-viewer.tsx:112
+#: src/components/audit-log-viewer.tsx:98
 msgid "Activity"
 msgstr "Activity"
 
-#: src/components/add-member-modal.tsx:144
-#: src/components/prerequisite-ui.tsx:193
-#: src/components/rbac-manager.tsx:101
-#: src/components/webhook-settings.tsx:86
-#: src/routes/settings.tsx:303
+#: src/components/add-member-modal.tsx:121
+#: src/components/prerequisite-ui.tsx:174
+#: src/components/rbac-manager.tsx:105
+#: src/components/webhook-settings.tsx:78
+#: src/routes/settings.tsx:290
 msgid "Add"
 msgstr "Add"
 
-#: src/routes/environments.tsx:190
+#: src/routes/environments.tsx:170
 msgid "Add a deployment target for your project."
 msgstr "Add a deployment target for your project."
 
-#: src/components/config-form-modal.tsx:224
+#: src/components/config-form-modal.tsx:212
 msgid "Add a new configuration entry."
 msgstr "Add a new configuration entry."
 
-#: src/components/webhook-settings.tsx:103
+#: src/components/webhook-settings.tsx:95
 msgid "Add a webhook to receive notifications when configs change."
 msgstr "Add a webhook to receive notifications when configs change."
 
-#: src/components/onboarding-stepper.tsx:80
+#: src/components/onboarding-stepper.tsx:74
 msgid "Add an environment"
 msgstr "Add an environment"
 
-#: src/components/config-form-modal.tsx:215
-#: src/routes/configs.tsx:347
+#: src/components/config-form-modal.tsx:203
+#: src/routes/configs.tsx:309
 msgid "Add Config"
 msgstr "Add Config"
 
-#: src/routes/environments.tsx:273
+#: src/routes/environments.tsx:245
 msgid "Add environments like production, staging, or development."
 msgstr "Add environments like production, staging, or development."
 
-#: src/components/rbac-manager.tsx:76
-#: src/routes/team.tsx:213
+#: src/components/rbac-manager.tsx:75
+#: src/routes/team.tsx:192
 msgid "Add Member"
 msgstr "Add Member"
 
-#: src/components/add-member-modal.tsx:69
+#: src/components/add-member-modal.tsx:64
 msgid "Add Team Member"
 msgstr "Add Team Member"
 
-#: src/components/webhook-form-modal.tsx:110
+#: src/components/webhook-form-modal.tsx:94
 msgid "Add Webhook"
 msgstr "Add Webhook"
 
-#: src/components/audit-diff-viewer.tsx:86
+#: src/components/audit-diff-viewer.tsx:70
 msgid "After"
 msgstr "After"
 
-#: src/routes/configs.tsx:411
+#: src/routes/configs.tsx:365
 msgid "Aging"
 msgstr "Aging"
 
-#: src/components/audit-log-viewer.tsx:151
+#: src/components/audit-log-viewer.tsx:137
 msgid "All actions"
 msgstr "All actions"
 
-#: src/routes/configs.tsx:409
+#: src/routes/configs.tsx:363
 msgid "All ages"
 msgstr "All ages"
 
-#: src/components/prerequisite-ui.tsx:271
+#: src/components/prerequisite-ui.tsx:238
 msgid "All available flags are already added as prerequisites."
 msgstr "All available flags are already added as prerequisites."
 
-#: src/components/audit-log-viewer.tsx:138
+#: src/components/audit-log-viewer.tsx:124
 msgid "All resources"
 msgstr "All resources"
 
-#: src/routes/configs.tsx:394
+#: src/routes/configs.tsx:350
 msgid "All types"
 msgstr "All types"
 
-#: src/routes/environments.tsx:320
+#: src/routes/environments.tsx:290
 msgid "Allowed domains"
 msgstr "Allowed domains"
 
-#: src/routes/environments.tsx:221
+#: src/routes/environments.tsx:199
 msgid "Allowed domains (comma-separated, e.g. example.com, app.example.com)"
 msgstr "Allowed domains (comma-separated, e.g. example.com, app.example.com)"
 
-#: src/components/environment-form.tsx:66
+#: src/components/environment-form.tsx:60
 msgid "Allowed domains (comma-separated)"
 msgstr "Allowed domains (comma-separated)"
 
-#: src/components/config-form-modal.tsx:397
+#: src/components/config-form-modal.tsx:372
 msgid "Allowed values (comma-separated)"
 msgstr "Allowed values (comma-separated)"
 
-#: src/components/config-form-modal.tsx:246
+#: src/components/config-form-modal.tsx:234
 msgid "Alphanumeric, dots, and underscores only."
 msgstr "Alphanumeric, dots, and underscores only."
 
-#: src/components/add-member-modal.tsx:164
+#: src/components/add-member-modal.tsx:136
 msgid "An invite already exists for this email."
 msgstr "An invite already exists for this email."
 
-#: src/components/rule-builder.tsx:681
+#: src/components/rule-builder.tsx:634
 msgid "AND"
 msgstr "AND"
 
-#: src/routes/api-keys.tsx:69
+#: src/routes/api-keys.tsx:56
 msgid "API key generated"
 msgstr "API key generated"
 
-#: src/routes/api-keys.tsx:225
+#: src/routes/api-keys.tsx:202
 msgid "API key revoked"
 msgstr "API key revoked"
 
-#: src/components/audit-log-viewer.tsx:141
-#: src/components/command-palette.tsx:105
-#: src/routes/__root.tsx:235
-#: src/routes/api-keys.tsx:250
-#: src/routes/api-keys.tsx:433
+#: src/components/audit-log-viewer.tsx:127
+#: src/components/command-palette.tsx:95
+#: src/routes/__root.tsx:206
+#: src/routes/api-keys.tsx:227
+#: src/routes/api-keys.tsx:392
 msgid "API Keys"
 msgstr "API Keys"
 
-#: src/routes/api-keys.tsx:441
+#: src/routes/api-keys.tsx:396
 msgid "API Keys guide"
 msgstr "API Keys guide"
 
-#: src/routes/configs.tsx:493
+#: src/routes/configs.tsx:445
 msgid "App Settings"
 msgstr "App Settings"
 
 #. placeholder {0}: actions.size
-#: src/routes/compare.tsx:615
+#: src/routes/compare.tsx:555
 msgid "Apply {0} changes"
 msgstr "Apply {0} changes"
 
-#: src/components/template-bar.tsx:122
+#: src/components/template-bar.tsx:116
 msgid "Apply template"
 msgstr "Apply template"
 
 #. placeholder {0}: deletingSegment?.name
-#: src/components/segment-manager.tsx:233
+#: src/components/segment-manager.tsx:226
 msgid "Are you sure you want to delete \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete \"{0}\"? This action cannot be undone."
 
-#: src/routes/__root.tsx:237
+#: src/routes/__root.tsx:208
 msgid "Audit"
 msgstr "Audit"
 
-#: src/components/command-palette.tsx:141
-#: src/routes/audit.tsx:26
+#: src/components/command-palette.tsx:119
+#: src/routes/audit.tsx:23
 msgid "Audit Log"
 msgstr "Audit Log"
 
-#: src/components/webhook-form-modal.tsx:196
+#: src/components/webhook-form-modal.tsx:173
 msgid "Available Variables"
 msgstr "Available Variables"
 
-#: src/routes/import.tsx:162
+#: src/routes/import.tsx:124
 msgid "Back"
 msgstr "Back"
 
-#: src/components/audit-diff-viewer.tsx:86
+#: src/components/audit-diff-viewer.tsx:70
 msgid "Before"
 msgstr "Before"
 
-#: src/components/config-form-modal.tsx:418
+#: src/components/config-form-modal.tsx:392
 msgid "Boolean values are constrained to true/false by default."
 msgstr "Boolean values are constrained to true/false by default."
 
-#: src/routes/import.tsx:132
+#: src/routes/import.tsx:97
 msgid "Bulk import configuration entries from a CSV or JSON file."
 msgstr "Bulk import configuration entries from a CSV or JSON file."
 
-#: src/routes/import.tsx:116
+#: src/routes/import.tsx:81
 msgid "Bulk import requires a desktop browser for file uploads, data preview, and conflict resolution. Please switch to a desktop device."
 msgstr "Bulk import requires a desktop browser for file uploads, data preview, and conflict resolution. Please switch to a desktop device."
 
-#: src/components/config-form-modal.tsx:468
-#: src/components/date-picker-schedule.tsx:140
-#: src/components/environment-form.tsx:95
-#: src/components/pii-warning.tsx:57
-#: src/components/rbac-manager.tsx:104
-#: src/components/schedule-ui.tsx:73
-#: src/components/segment-edit-modal.tsx:140
-#: src/components/segment-manager.tsx:201
-#: src/components/segment-manager.tsx:245
-#: src/components/template-bar.tsx:119
-#: src/components/webhook-form-modal.tsx:328
-#: src/components/webhook-settings.tsx:167
-#: src/routes/api-keys.tsx:136
-#: src/routes/compare.tsx:605
-#: src/routes/configs.tsx:817
-#: src/routes/environments.tsx:254
-#: src/routes/settings.tsx:115
+#: src/components/config-form-modal.tsx:432
+#: src/components/date-picker-schedule.tsx:118
+#: src/components/environment-form.tsx:84
+#: src/components/pii-warning.tsx:43
+#: src/components/rbac-manager.tsx:113
+#: src/components/schedule-ui.tsx:94
+#: src/components/segment-edit-modal.tsx:124
+#: src/components/segment-manager.tsx:197
+#: src/components/segment-manager.tsx:238
+#: src/components/template-bar.tsx:113
+#: src/components/webhook-form-modal.tsx:287
+#: src/components/webhook-settings.tsx:153
+#: src/routes/api-keys.tsx:117
+#: src/routes/compare.tsx:548
+#: src/routes/configs.tsx:730
+#: src/routes/environments.tsx:226
+#: src/routes/settings.tsx:108
 msgid "Cancel"
 msgstr "Cancel"
 
-#: src/components/prerequisite-ui.tsx:202
+#: src/components/prerequisite-ui.tsx:183
 msgid "Cannot add self as prerequisite (circular dependency)."
 msgstr "Cannot add self as prerequisite (circular dependency)."
 
-#: src/routes/team.tsx:118
+#: src/routes/team.tsx:109
 msgid "Cannot remove the last admin"
 msgstr "Cannot remove the last admin"
 
-#: src/components/gdpr-panel.tsx:154
-#: src/components/gdpr-panel.tsx:270
+#: src/components/gdpr-panel.tsx:146
+#: src/components/gdpr-panel.tsx:250
 msgid "Change"
 msgstr "Change"
 
-#: src/components/audit-log-viewer.tsx:209
+#: src/components/audit-log-viewer.tsx:193
 msgid "Change Details"
 msgstr "Change Details"
 
-#: src/routes/__root.tsx:110
+#: src/routes/__root.tsx:86
 msgid "Change language"
 msgstr "Change language"
 
-#: src/routes/compare.tsx:391
+#: src/routes/compare.tsx:369
 msgid "changed"
 msgstr "changed"
 
-#: src/components/lifecycle-state-badge.tsx:54
+#: src/components/lifecycle-state-badge.tsx:46
 msgid "Changed"
 msgstr "Changed"
 
-#: src/components/config-form-modal.tsx:164
+#: src/components/config-form-modal.tsx:152
 msgid "Changes will affect live users. Are you sure you want to continue?"
 msgstr "Changes will affect live users. Are you sure you want to continue?"
 
-#: src/components/date-picker-schedule.tsx:231
+#: src/components/date-picker-schedule.tsx:200
 msgid "Clear"
 msgstr "Clear"
 
-#: src/components/rule-builder.tsx:465
+#: src/components/rule-builder.tsx:430
 msgid "Click a segment below to target it"
 msgstr "Click a segment below to target it"
 
-#: src/components/gdpr-panel.tsx:349
+#: src/components/gdpr-panel.tsx:325
 msgid "Click again to confirm permanent deletion."
 msgstr "Click again to confirm permanent deletion."
 
-#: src/components/usage-indicator.tsx:61
+#: src/components/usage-indicator.tsx:49
 msgid "Click to see which configs use this segment"
 msgstr "Click to see which configs use this segment"
 
-#: src/routes/api-keys.tsx:102
+#: src/routes/api-keys.tsx:87
 msgid "Client"
 msgstr "Client"
 
-#: src/routes/settings.tsx:378
+#: src/routes/settings.tsx:358
 msgid "Clone"
 msgstr "Clone"
 
-#: src/routes/settings.tsx:383
+#: src/routes/settings.tsx:363
 msgid "Clone environment"
 msgstr "Clone environment"
 
@@ -313,280 +313,280 @@ msgstr "Clone environment"
 msgid "Color"
 msgstr "Color"
 
-#: src/components/command-palette.tsx:68
+#: src/components/command-palette.tsx:66
 msgid "Command Palette"
 msgstr "Command Palette"
 
-#: src/routes/configs.tsx:332
+#: src/routes/configs.tsx:294
 msgid "Compare"
 msgstr "Compare"
 
-#: src/components/command-palette.tsx:97
-#: src/routes/compare.tsx:289
+#: src/components/command-palette.tsx:89
+#: src/routes/compare.tsx:279
 msgid "Compare Environments"
 msgstr "Compare Environments"
 
-#: src/components/rule-builder.tsx:566
+#: src/components/rule-builder.tsx:527
 msgid "Condition"
 msgstr "Condition"
 
-#: src/components/segment-edit-modal.tsx:118
+#: src/components/segment-edit-modal.tsx:110
 msgid "Conditions"
 msgstr "Conditions"
 
-#: src/routes/__root.tsx:199
+#: src/routes/__root.tsx:170
 msgid "Config"
 msgstr "Config"
 
-#: src/components/config-form-modal.tsx:182
+#: src/components/config-form-modal.tsx:170
 msgid "Config created"
 msgstr "Config created"
 
-#: src/routes/configs.tsx:204
+#: src/routes/configs.tsx:180
 msgid "Config deleted"
 msgstr "Config deleted"
 
-#: src/routes/compare.tsx:435
+#: src/routes/compare.tsx:407
 msgid "Config Differences"
 msgstr "Config Differences"
 
-#: src/components/config-form-modal.tsx:235
+#: src/components/config-form-modal.tsx:223
 msgid "Config key (e.g. feature.enabled)"
 msgstr "Config key (e.g. feature.enabled)"
 
-#: src/routes/__root.tsx:397
+#: src/routes/__root.tsx:354
 msgid "Config Portal"
 msgstr "Config Portal"
 
-#: src/routes/__root.tsx:430
+#: src/routes/__root.tsx:387
 msgid "Config publishing"
 msgstr "Config publishing"
 
-#: src/components/config-form-modal.tsx:182
+#: src/components/config-form-modal.tsx:170
 msgid "Config updated"
 msgstr "Config updated"
 
 #. placeholder {0}: count > 1 ? "s" : ""
-#: src/components/usage-indicator.tsx:56
+#: src/components/usage-indicator.tsx:44
 msgid "config{0}"
 msgstr "config{0}"
 
-#: src/components/audit-log-viewer.tsx:139
-#: src/components/command-palette.tsx:89
-#: src/routes/__root.tsx:233
-#: src/routes/configs.tsx:314
+#: src/components/audit-log-viewer.tsx:125
+#: src/components/command-palette.tsx:83
+#: src/routes/__root.tsx:204
+#: src/routes/configs.tsx:285
 msgid "Configs"
 msgstr "Configs"
 
-#: src/routes/settings.tsx:223
+#: src/routes/settings.tsx:214
 msgid "Configs are being copied..."
 msgstr "Configs are being copied..."
 
-#: src/routes/configs.tsx:322
+#: src/routes/configs.tsx:289
 msgid "Configs guide"
 msgstr "Configs guide"
 
-#: src/components/webhook-form-modal.tsx:114
+#: src/components/webhook-form-modal.tsx:95
 msgid "Configure an HTTP endpoint to receive notifications."
 msgstr "Configure an HTTP endpoint to receive notifications."
 
-#: src/routes/import.tsx:185
+#: src/routes/import.tsx:147
 msgid "Confirm"
 msgstr "Confirm"
 
-#: src/components/gdpr-panel.tsx:342
+#: src/components/gdpr-panel.tsx:318
 msgid "Confirm Delete"
 msgstr "Confirm Delete"
 
-#: src/routes/settings.tsx:477
+#: src/routes/settings.tsx:451
 msgid "Confirm Delete?"
 msgstr "Confirm Delete?"
 
-#: src/routes/import.tsx:639
+#: src/routes/import.tsx:568
 msgid "Confirm Import"
 msgstr "Confirm Import"
 
-#: src/routes/compare.tsx:538
+#: src/routes/compare.tsx:499
 msgid "Confirm Sync"
 msgstr "Confirm Sync"
 
-#: src/routes/environments.tsx:306
+#: src/routes/environments.tsx:276
 msgid "Confirm?"
 msgstr "Confirm?"
 
-#: src/routes/import.tsx:671
+#: src/routes/import.tsx:594
 msgid "Conflict resolution strategy"
 msgstr "Conflict resolution strategy"
 
-#: src/components/config-form-modal.tsx:165
+#: src/components/config-form-modal.tsx:153
 msgid "Continue"
 msgstr "Continue"
 
-#: src/components/copy-button.tsx:26
-#: src/routes/api-keys.tsx:189
+#: src/components/copy-button.tsx:16
+#: src/routes/api-keys.tsx:166
 msgid "Copied to clipboard"
 msgstr "Copied to clipboard"
 
-#: src/components/copy-button.tsx:50
+#: src/components/copy-button.tsx:36
 msgid "Copied!"
 msgstr "Copied!"
 
-#: src/components/copy-button.tsx:50
-#: src/routes/api-keys.tsx:196
+#: src/components/copy-button.tsx:36
+#: src/routes/api-keys.tsx:173
 msgid "Copy"
 msgstr "Copy"
 
-#: src/components/config-form-modal.tsx:460
-#: src/components/onboarding-stepper.tsx:183
-#: src/components/onboarding-stepper.tsx:209
-#: src/components/segment-manager.tsx:194
-#: src/components/webhook-form-modal.tsx:321
-#: src/routes/environments.tsx:241
-#: src/routes/settings.tsx:313
+#: src/components/config-form-modal.tsx:428
+#: src/components/onboarding-stepper.tsx:162
+#: src/components/onboarding-stepper.tsx:184
+#: src/components/segment-manager.tsx:190
+#: src/components/webhook-form-modal.tsx:284
+#: src/routes/environments.tsx:214
+#: src/routes/settings.tsx:300
 msgid "Create"
 msgstr "Create"
 
-#: src/components/config-form-modal.tsx:222
+#: src/components/config-form-modal.tsx:210
 msgid "Create a copy with a new key."
 msgstr "Create a copy with a new key."
 
-#: src/routes/api-keys.tsx:87
+#: src/routes/api-keys.tsx:73
 msgid "Create a new key to authenticate SDK requests."
 msgstr "Create a new key to authenticate SDK requests."
 
-#: src/routes/configs.tsx:426
+#: src/routes/configs.tsx:380
 msgid "Create an environment first to manage configs."
 msgstr "Create an environment first to manage configs."
 
-#: src/routes/environments.tsx:284
+#: src/routes/environments.tsx:254
 msgid "Create Environment"
 msgstr "Create Environment"
 
-#: src/components/project-switcher.tsx:129
+#: src/components/project-switcher.tsx:123
 msgid "Create new project"
 msgstr "Create new project"
 
-#: src/components/segment-manager.tsx:158
+#: src/components/segment-manager.tsx:156
 msgid "Create Segment"
 msgstr "Create Segment"
 
-#: src/components/onboarding-stepper.tsx:74
+#: src/components/onboarding-stepper.tsx:70
 msgid "Create your first project"
 msgstr "Create your first project"
 
-#: src/components/audit-log-viewer.tsx:152
-#: src/routes/settings.tsx:551
+#: src/components/audit-log-viewer.tsx:138
+#: src/routes/settings.tsx:515
 msgid "Created"
 msgstr "Created"
 
-#: src/routes/import.tsx:387
+#: src/routes/import.tsx:334
 msgid "CSV Template"
 msgstr "CSV Template"
 
-#: src/routes/preferences.tsx:232
+#: src/routes/preferences.tsx:215
 msgid "Current time:"
 msgstr "Current time:"
 
-#: src/routes/configs.tsx:504
+#: src/routes/configs.tsx:456
 msgid "Custom"
 msgstr "Custom"
 
-#: src/components/rule-builder.tsx:217
-#: src/components/rule-builder.tsx:284
+#: src/components/rule-builder.tsx:196
+#: src/components/rule-builder.tsx:257
 msgid "Custom Condition"
 msgstr "Custom Condition"
 
-#: src/components/webhook-form-modal.tsx:176
+#: src/components/webhook-form-modal.tsx:153
 msgid "Custom Template"
 msgstr "Custom Template"
 
-#: src/routes/preferences.tsx:349
+#: src/routes/preferences.tsx:324
 msgid "Customize your portal experience."
 msgstr "Customize your portal experience."
 
-#: src/routes/preferences.tsx:324
-#: src/routes/settings.tsx:458
+#: src/routes/preferences.tsx:299
+#: src/routes/settings.tsx:432
 msgid "Danger Zone"
 msgstr "Danger Zone"
 
-#: src/components/gdpr-panel.tsx:235
+#: src/components/gdpr-panel.tsx:219
 msgid "Data Deletion (GDPR Article 17)"
 msgstr "Data Deletion (GDPR Article 17)"
 
-#: src/components/gdpr-panel.tsx:103
+#: src/components/gdpr-panel.tsx:101
 msgid "Data deletion request submitted"
 msgstr "Data deletion request submitted"
 
-#: src/components/gdpr-panel.tsx:120
+#: src/components/gdpr-panel.tsx:118
 msgid "Data Export (GDPR Article 20)"
 msgstr "Data Export (GDPR Article 20)"
 
-#: src/components/gdpr-panel.tsx:85
+#: src/components/gdpr-panel.tsx:83
 msgid "Data export completed"
 msgstr "Data export completed"
 
-#: src/components/segment-manager.tsx:160
+#: src/components/segment-manager.tsx:157
 msgid "Define a reusable audience group for targeting rules."
 msgstr "Define a reusable audience group for targeting rules."
 
-#: src/routes/segments.tsx:45
+#: src/routes/segments.tsx:41
 msgid "Define reusable audience groups for targeting rules."
 msgstr "Define reusable audience groups for targeting rules."
 
-#: src/components/segment-manager.tsx:252
-#: src/components/webhook-card.tsx:128
-#: src/components/webhook-settings.tsx:174
-#: src/routes/api-keys.tsx:372
-#: src/routes/api-keys.tsx:377
-#: src/routes/configs.tsx:650
-#: src/routes/configs.tsx:659
-#: src/routes/configs.tsx:718
-#: src/routes/configs.tsx:826
-#: src/routes/environments.tsx:302
-#: src/routes/environments.tsx:313
-#: src/routes/settings.tsx:404
-#: src/routes/settings.tsx:409
+#: src/components/segment-manager.tsx:241
+#: src/components/webhook-card.tsx:102
+#: src/components/webhook-settings.tsx:156
+#: src/routes/api-keys.tsx:340
+#: src/routes/api-keys.tsx:345
+#: src/routes/configs.tsx:585
+#: src/routes/configs.tsx:594
+#: src/routes/configs.tsx:647
+#: src/routes/configs.tsx:737
+#: src/routes/environments.tsx:272
+#: src/routes/environments.tsx:283
+#: src/routes/settings.tsx:384
+#: src/routes/settings.tsx:389
 msgid "Delete"
 msgstr "Delete"
 
 #. placeholder {0}: deletingWebhook?.name
-#: src/components/webhook-settings.tsx:155
+#: src/components/webhook-settings.tsx:142
 msgid "Delete \"{0}\"? This will also remove all delivery history."
 msgstr "Delete \"{0}\"? This will also remove all delivery history."
 
-#: src/routes/configs.tsx:802
+#: src/routes/configs.tsx:718
 msgid "Delete in production?"
 msgstr "Delete in production?"
 
-#: src/routes/settings.tsx:479
+#: src/routes/settings.tsx:453
 msgid "Delete Project"
 msgstr "Delete Project"
 
-#: src/components/segment-manager.tsx:230
+#: src/components/segment-manager.tsx:223
 msgid "Delete segment?"
 msgstr "Delete segment?"
 
-#: src/components/gdpr-panel.tsx:344
+#: src/components/gdpr-panel.tsx:320
 msgid "Delete User Data"
 msgstr "Delete User Data"
 
-#: src/components/webhook-settings.tsx:152
+#: src/components/webhook-settings.tsx:139
 msgid "Delete webhook?"
 msgstr "Delete webhook?"
 
-#: src/components/audit-log-viewer.tsx:154
+#: src/components/audit-log-viewer.tsx:140
 msgid "Deleted"
 msgstr "Deleted"
 
-#: src/routes/settings.tsx:463
+#: src/routes/settings.tsx:437
 msgid "Deleting a project is irreversible. All environments, configs, and API keys will become inaccessible."
 msgstr "Deleting a project is irreversible. All environments, configs, and API keys will become inaccessible."
 
-#: src/components/gdpr-panel.tsx:340
+#: src/components/gdpr-panel.tsx:316
 msgid "Deleting..."
 msgstr "Deleting..."
 
-#: src/components/gdpr-panel.tsx:107
+#: src/components/gdpr-panel.tsx:105
 msgid "Deletion failed"
 msgstr "Deletion failed"
 
@@ -594,168 +594,168 @@ msgstr "Deletion failed"
 msgid "Deletion request submitted"
 msgstr "Deletion request submitted"
 
-#: src/components/segment-edit-modal.tsx:104
-#: src/components/segment-manager.tsx:178
-#: src/routes/settings.tsx:103
+#: src/components/segment-edit-modal.tsx:96
+#: src/components/segment-manager.tsx:174
+#: src/routes/settings.tsx:96
 msgid "Description"
 msgstr "Description"
 
-#: src/hooks/use-project-description.ts:54
+#: src/hooks/use-project-description.ts:52
 msgid "Description saved"
 msgstr "Description saved"
 
-#: src/routes/import.tsx:113
+#: src/routes/import.tsx:78
 msgid "Desktop Only"
 msgstr "Desktop Only"
 
-#: src/routes/compare.tsx:290
+#: src/routes/compare.tsx:280
 msgid "Diff configs between environments and sync changes."
 msgstr "Diff configs between environments and sync changes."
 
-#: src/components/config-detail-panel.tsx:288
+#: src/components/config-detail-panel.tsx:266
 msgid "Discard"
 msgstr "Discard"
 
-#: src/components/webhook-form-modal.tsx:167
+#: src/components/webhook-form-modal.tsx:144
 msgid "Discord"
 msgstr "Discord"
 
-#: src/routes/preferences.tsx:285
+#: src/routes/preferences.tsx:264
 msgid "Display Name"
 msgstr "Display Name"
 
-#: src/routes/import.tsx:391
+#: src/routes/import.tsx:338
 msgid "Download a sample CSV file with the expected format"
 msgstr "Download a sample CSV file with the expected format"
 
-#: src/routes/import.tsx:406
+#: src/routes/import.tsx:349
 msgid "Download a sample JSON file with the expected format"
 msgstr "Download a sample JSON file with the expected format"
 
-#: src/routes/import.tsx:358
+#: src/routes/import.tsx:309
 msgid "Drag and drop your file here, or click to browse"
 msgstr "Drag and drop your file here, or click to browse"
 
-#: src/routes/import.tsx:348
+#: src/routes/import.tsx:299
 msgid "Drop file here or click to upload"
 msgstr "Drop file here or click to upload"
 
-#: src/routes/configs.tsx:694
+#: src/routes/configs.tsx:625
 msgid "Duplicate"
 msgstr "Duplicate"
 
-#: src/components/config-form-modal.tsx:213
+#: src/components/config-form-modal.tsx:201
 msgid "Duplicate Config"
 msgstr "Duplicate Config"
 
-#: src/components/config-form-modal.tsx:389
+#: src/components/config-form-modal.tsx:364
 msgid "e.g. ^https?://"
 msgstr "e.g. ^https?://"
 
-#: src/components/onboarding-stepper.tsx:196
+#: src/components/onboarding-stepper.tsx:174
 msgid "e.g. production, staging"
 msgstr "e.g. production, staging"
 
-#: src/components/config-form-modal.tsx:400
+#: src/components/config-form-modal.tsx:375
 msgid "e.g. small, medium, large"
 msgstr "e.g. small, medium, large"
 
-#: src/components/rule-builder.tsx:375
+#: src/components/rule-builder.tsx:346
 msgid "e.g., \"premium\", \"dark\""
 msgstr "e.g., \"premium\", \"dark\""
 
-#: src/components/rule-builder.tsx:362
+#: src/components/rule-builder.tsx:334
 msgid "e.g., [\"a\",\"b\"]"
 msgstr "e.g., [\"a\",\"b\"]"
 
-#: src/components/prerequisite-ui.tsx:351
+#: src/components/prerequisite-ui.tsx:310
 msgid "e.g., [\"item1\", \"item2\"]"
 msgstr "e.g., [\"item1\", \"item2\"]"
 
-#: src/components/rule-builder.tsx:362
+#: src/components/rule-builder.tsx:334
 msgid "e.g., {\"key\": \"val\"}"
 msgstr "e.g., {\"key\": \"val\"}"
 
-#: src/components/prerequisite-ui.tsx:349
+#: src/components/prerequisite-ui.tsx:308
 msgid "e.g., {\"key\": \"value\"}"
 msgstr "e.g., {\"key\": \"value\"}"
 
-#: src/components/prerequisite-ui.tsx:337
-#: src/components/rule-builder.tsx:349
+#: src/components/prerequisite-ui.tsx:296
+#: src/components/rule-builder.tsx:322
 msgid "e.g., 100, 0.5"
 msgstr "e.g., 100, 0.5"
 
-#: src/components/rule-builder.tsx:623
+#: src/components/rule-builder.tsx:578
 msgid "e.g., plan, country"
 msgstr "e.g., plan, country"
 
-#: src/components/prerequisite-ui.tsx:352
+#: src/components/prerequisite-ui.tsx:311
 msgid "e.g., premium, dark-mode"
 msgstr "e.g., premium, dark-mode"
 
-#: src/routes/api-keys.tsx:122
+#: src/routes/api-keys.tsx:107
 msgid "e.g., Production Frontend, Backend Worker"
 msgstr "e.g., Production Frontend, Backend Worker"
 
-#: src/components/webhook-form-modal.tsx:124
+#: src/components/webhook-form-modal.tsx:104
 msgid "e.g., Slack #deployments"
 msgstr "e.g., Slack #deployments"
 
-#: src/components/webhook-card.tsx:120
-#: src/routes/configs.tsx:631
-#: src/routes/configs.tsx:636
-#: src/routes/settings.tsx:115
-#: src/routes/settings.tsx:391
-#: src/routes/settings.tsx:396
+#: src/components/webhook-card.tsx:99
+#: src/routes/configs.tsx:570
+#: src/routes/configs.tsx:575
+#: src/routes/settings.tsx:108
+#: src/routes/settings.tsx:371
+#: src/routes/settings.tsx:376
 msgid "Edit"
 msgstr "Edit"
 
-#: src/components/config-form-modal.tsx:211
+#: src/components/config-form-modal.tsx:199
 msgid "Edit Config"
 msgstr "Edit Config"
 
-#: src/components/segment-edit-modal.tsx:74
+#: src/components/segment-edit-modal.tsx:68
 msgid "Edit Segment"
 msgstr "Edit Segment"
 
-#: src/components/webhook-form-modal.tsx:108
+#: src/components/webhook-form-modal.tsx:94
 msgid "Edit Webhook"
 msgstr "Edit Webhook"
 
-#: src/routes/preferences.tsx:293
+#: src/routes/preferences.tsx:270
 msgid "Email"
 msgstr "Email"
 
-#: src/components/add-member-modal.tsx:80
+#: src/components/add-member-modal.tsx:71
 msgid "Email address"
 msgstr "Email address"
 
-#: src/components/webhook-card.tsx:99
+#: src/components/webhook-card.tsx:84
 msgid "Enable"
 msgstr "Enable"
 
-#: src/components/config-form-modal.tsx:301
+#: src/components/config-form-modal.tsx:281
 msgid "Enter a JSON array"
 msgstr "Enter a JSON array"
 
-#: src/components/add-member-modal.tsx:86
+#: src/components/add-member-modal.tsx:77
 msgid "Enter email address..."
 msgstr "Enter email address..."
 
-#: src/components/config-form-modal.tsx:300
+#: src/components/config-form-modal.tsx:281
 msgid "Enter valid JSON"
 msgstr "Enter valid JSON"
 
-#: src/routes/import.tsx:650
+#: src/routes/import.tsx:577
 msgid "Entries to import:"
 msgstr "Entries to import:"
 
-#: src/routes/settings.tsx:222
+#: src/routes/settings.tsx:213
 msgid "Environment cloned"
 msgstr "Environment cloned"
 
-#: src/routes/environments.tsx:110
-#: src/routes/settings.tsx:200
+#: src/routes/environments.tsx:96
+#: src/routes/settings.tsx:191
 msgid "Environment created"
 msgstr "Environment created"
 
@@ -763,47 +763,47 @@ msgstr "Environment created"
 msgid "Environment created!"
 msgstr "Environment created!"
 
-#: src/routes/environments.tsx:131
-#: src/routes/settings.tsx:267
+#: src/routes/environments.tsx:117
+#: src/routes/settings.tsx:258
 msgid "Environment deleted"
 msgstr "Environment deleted"
 
-#: src/components/environment-form.tsx:61
+#: src/components/environment-form.tsx:55
 msgid "Environment name"
 msgstr "Environment name"
 
-#: src/routes/environments.tsx:208
+#: src/routes/environments.tsx:188
 msgid "Environment name (e.g. production, staging)"
 msgstr "Environment name (e.g. production, staging)"
 
-#: src/routes/settings.tsx:254
+#: src/routes/settings.tsx:245
 msgid "Environment updated"
 msgstr "Environment updated"
 
-#: src/components/webhook-form-modal.tsx:288
-#: src/routes/__root.tsx:419
-#: src/routes/environments.tsx:165
-#: src/routes/settings.tsx:294
+#: src/components/webhook-form-modal.tsx:256
+#: src/routes/__root.tsx:376
+#: src/routes/environments.tsx:148
+#: src/routes/settings.tsx:285
 msgid "Environments"
 msgstr "Environments"
 
-#: src/routes/compare.tsx:422
+#: src/routes/compare.tsx:396
 msgid "Environments are in sync"
 msgstr "Environments are in sync"
 
-#: src/components/onboarding-stepper.tsx:82
+#: src/components/onboarding-stepper.tsx:76
 msgid "Environments define deployment targets like production or staging."
 msgstr "Environments define deployment targets like production or staging."
 
-#: src/components/webhook-form-modal.tsx:244
+#: src/components/webhook-form-modal.tsx:217
 msgid "Event types"
 msgstr "Event types"
 
-#: src/components/gdpr-panel.tsx:125
+#: src/components/gdpr-panel.tsx:123
 msgid "Export all personal data associated with a team member as a JSON file."
 msgstr "Export all personal data associated with a team member as a JSON file."
 
-#: src/components/gdpr-panel.tsx:88
+#: src/components/gdpr-panel.tsx:86
 #: src/routes/gdpr.tsx:38
 msgid "Export failed"
 msgstr "Export failed"
@@ -812,132 +812,132 @@ msgstr "Export failed"
 msgid "Export ready. Download link valid for 24 hours."
 msgstr "Export ready. Download link valid for 24 hours."
 
-#: src/components/gdpr-panel.tsx:224
+#: src/components/gdpr-panel.tsx:209
 msgid "Export User Data"
 msgstr "Export User Data"
 
-#: src/components/gdpr-panel.tsx:222
+#: src/components/gdpr-panel.tsx:209
 msgid "Exporting..."
 msgstr "Exporting..."
 
-#: src/routes/import.tsx:553
-#: src/routes/import.tsx:784
+#: src/routes/import.tsx:488
+#: src/routes/import.tsx:698
 msgid "Failed"
 msgstr "Failed"
 
-#: src/routes/team.tsx:185
+#: src/routes/team.tsx:167
 msgid "Failed to add member"
 msgstr "Failed to add member"
 
-#: src/components/config-detail-panel.tsx:141
-#: src/components/config-detail-panel.tsx:158
-#: src/components/config-detail-panel.tsx:173
-#: src/components/config-detail-panel.tsx:188
-#: src/routes/configs.tsx:251
+#: src/components/config-detail-panel.tsx:121
+#: src/components/config-detail-panel.tsx:138
+#: src/components/config-detail-panel.tsx:153
+#: src/components/config-detail-panel.tsx:168
+#: src/routes/configs.tsx:227
 msgid "Failed to apply template"
 msgstr "Failed to apply template"
 
-#: src/routes/settings.tsx:235
+#: src/routes/settings.tsx:226
 msgid "Failed to clone environment"
 msgstr "Failed to clone environment"
 
-#: src/components/copy-button.tsx:29
+#: src/components/copy-button.tsx:19
 msgid "Failed to copy"
 msgstr "Failed to copy"
 
 #: src/components/onboarding-stepper.tsx:60
-#: src/routes/environments.tsx:113
-#: src/routes/settings.tsx:202
+#: src/routes/environments.tsx:99
+#: src/routes/settings.tsx:193
 msgid "Failed to create environment"
 msgstr "Failed to create environment"
 
 #: src/components/onboarding-stepper.tsx:44
-#: src/components/project-switcher.tsx:50
+#: src/components/project-switcher.tsx:46
 msgid "Failed to create project"
 msgstr "Failed to create project"
 
-#: src/routes/segments.tsx:60
+#: src/routes/segments.tsx:53
 msgid "Failed to create segment"
 msgstr "Failed to create segment"
 
-#: src/hooks/use-webhook-mutations.ts:68
+#: src/hooks/use-webhook-mutations.ts:57
 msgid "Failed to create webhook"
 msgstr "Failed to create webhook"
 
-#: src/routes/configs.tsx:222
+#: src/routes/configs.tsx:198
 msgid "Failed to delete config"
 msgstr "Failed to delete config"
 
-#: src/routes/environments.tsx:134
-#: src/routes/settings.tsx:285
+#: src/routes/environments.tsx:120
+#: src/routes/settings.tsx:276
 msgid "Failed to delete environment"
 msgstr "Failed to delete environment"
 
-#: src/routes/api-keys.tsx:361
+#: src/routes/api-keys.tsx:329
 msgid "Failed to delete key"
 msgstr "Failed to delete key"
 
-#: src/routes/settings.tsx:449
+#: src/routes/settings.tsx:423
 msgid "Failed to delete project"
 msgstr "Failed to delete project"
 
-#: src/routes/segments.tsx:85
+#: src/routes/segments.tsx:78
 msgid "Failed to delete segment"
 msgstr "Failed to delete segment"
 
-#: src/hooks/use-webhook-mutations.ts:161
+#: src/hooks/use-webhook-mutations.ts:138
 msgid "Failed to delete webhook"
 msgstr "Failed to delete webhook"
 
-#: src/routes/api-keys.tsx:75
+#: src/routes/api-keys.tsx:62
 msgid "Failed to generate API key"
 msgstr "Failed to generate API key"
 
-#: src/routes/team.tsx:151
+#: src/routes/team.tsx:141
 msgid "Failed to remove member"
 msgstr "Failed to remove member"
 
-#: src/routes/api-keys.tsx:226
+#: src/routes/api-keys.tsx:203
 msgid "Failed to revoke API key"
 msgstr "Failed to revoke API key"
 
-#: src/components/config-form-modal.tsx:186
+#: src/components/config-form-modal.tsx:174
 msgid "Failed to save config"
 msgstr "Failed to save config"
 
-#: src/hooks/use-project-description.ts:57
+#: src/hooks/use-project-description.ts:55
 msgid "Failed to save description"
 msgstr "Failed to save description"
 
-#: src/components/config-detail-panel.tsx:357
+#: src/components/config-detail-panel.tsx:331
 msgid "Failed to save overrides"
 msgstr "Failed to save overrides"
 
-#: src/components/config-detail-panel.tsx:438
+#: src/components/config-detail-panel.tsx:409
 msgid "Failed to save prerequisites"
 msgstr "Failed to save prerequisites"
 
-#: src/components/config-detail-panel.tsx:274
+#: src/components/config-detail-panel.tsx:252
 msgid "Failed to save rules"
 msgstr "Failed to save rules"
 
-#: src/routes/team.tsx:194
+#: src/routes/team.tsx:176
 msgid "Failed to send invite"
 msgstr "Failed to send invite"
 
-#: src/hooks/use-test-webhook.ts:39
+#: src/hooks/use-test-webhook.ts:31
 msgid "Failed to send test webhook"
 msgstr "Failed to send test webhook"
 
-#: src/routes/compare.tsx:264
+#: src/routes/compare.tsx:254
 msgid "Failed to sync configs"
 msgstr "Failed to sync configs"
 
-#: src/routes/settings.tsx:256
+#: src/routes/settings.tsx:247
 msgid "Failed to update environment"
 msgstr "Failed to update environment"
 
-#: src/routes/team.tsx:109
+#: src/routes/team.tsx:100
 msgid "Failed to update role"
 msgstr "Failed to update role"
 
@@ -945,44 +945,44 @@ msgstr "Failed to update role"
 msgid "Failed to update rollout"
 msgstr "Failed to update rollout"
 
-#: src/components/config-detail-panel.tsx:395
+#: src/components/config-detail-panel.tsx:369
 msgid "Failed to update schedule"
 msgstr "Failed to update schedule"
 
-#: src/routes/segments.tsx:75
+#: src/routes/segments.tsx:68
 msgid "Failed to update segment"
 msgstr "Failed to update segment"
 
-#: src/hooks/use-webhook-mutations.ts:118
+#: src/hooks/use-webhook-mutations.ts:98
 msgid "Failed to update webhook"
 msgstr "Failed to update webhook"
 
-#: src/routes/configs.tsx:486
+#: src/routes/configs.tsx:438
 msgid "Feature Flags"
 msgstr "Feature Flags"
 
-#: src/components/page-tour-button.tsx:37
+#: src/components/page-tour-button.tsx:33
 msgid "Feature guide"
 msgstr "Feature guide"
 
-#: src/routes/import.tsx:251
+#: src/routes/import.tsx:205
 msgid "File is empty or contains no valid rows"
 msgstr "File is empty or contains no valid rows"
 
-#: src/routes/__root.tsx:438
+#: src/routes/__root.tsx:395
 msgid "Firebase sync"
 msgstr "Firebase sync"
 
-#: src/components/webhook-form-modal.tsx:150
+#: src/components/webhook-form-modal.tsx:130
 msgid "Format"
 msgstr "Format"
 
-#: src/routes/configs.tsx:410
+#: src/routes/configs.tsx:364
 msgid "Fresh"
 msgstr "Fresh"
 
-#: src/components/command-palette.tsx:157
-#: src/routes/__root.tsx:179
+#: src/components/command-palette.tsx:131
+#: src/routes/__root.tsx:150
 msgid "GDPR & Privacy"
 msgstr "GDPR & Privacy"
 
@@ -990,215 +990,215 @@ msgstr "GDPR & Privacy"
 msgid "GDPR Compliance"
 msgstr "GDPR Compliance"
 
-#: src/routes/api-keys.tsx:143
+#: src/routes/api-keys.tsx:124
 msgid "Generate"
 msgstr "Generate"
 
-#: src/routes/api-keys.tsx:85
+#: src/routes/api-keys.tsx:72
 msgid "Generate API Key"
 msgstr "Generate API Key"
 
-#: src/routes/api-keys.tsx:259
+#: src/routes/api-keys.tsx:236
 msgid "Generate Key"
 msgstr "Generate Key"
 
-#: src/routes/configs.tsx:475
+#: src/routes/configs.tsx:429
 msgid "Get started with a template or create your own."
 msgstr "Get started with a template or create your own."
 
-#: src/components/onboarding-stepper.tsx:224
+#: src/components/onboarding-stepper.tsx:198
 msgid "Go to Environments"
 msgstr "Go to Environments"
 
-#: src/components/webhook-form-modal.tsx:170
+#: src/components/webhook-form-modal.tsx:147
 msgid "Google Chat"
 msgstr "Google Chat"
 
-#: src/components/webhook-preview.tsx:195
-#: src/routes/api-keys.tsx:179
+#: src/components/webhook-preview.tsx:188
+#: src/routes/api-keys.tsx:156
 msgid "Hide"
 msgstr "Hide"
 
-#: src/routes/compare.tsx:408
+#: src/routes/compare.tsx:385
 msgid "Hide identical"
 msgstr "Hide identical"
 
-#: src/components/config-form-modal.tsx:437
+#: src/components/config-form-modal.tsx:408
 msgid "Hide Preview"
 msgstr "Hide Preview"
 
-#: src/components/audit-diff-viewer.tsx:180
+#: src/components/audit-diff-viewer.tsx:155
 msgid "Hide unchanged ({unchangedCount})"
 msgstr "Hide unchanged ({unchangedCount})"
 
-#: src/components/pii-warning.tsx:49
+#: src/components/pii-warning.tsx:40
 msgid "I understand, save anyway"
 msgstr "I understand, save anyway"
 
-#: src/routes/compare.tsx:395
+#: src/routes/compare.tsx:373
 msgid "identical"
 msgstr "identical"
 
-#: src/routes/__root.tsx:236
+#: src/routes/__root.tsx:207
 msgid "Import"
 msgstr "Import"
 
-#: src/routes/import.tsx:759
+#: src/routes/import.tsx:677
 msgid "Import Complete"
 msgstr "Import Complete"
 
-#: src/routes/import.tsx:129
+#: src/routes/import.tsx:94
 msgid "Import Configurations"
 msgstr "Import Configurations"
 
-#: src/routes/import.tsx:631
+#: src/routes/import.tsx:560
 msgid "Import failed"
 msgstr "Import failed"
 
-#: src/routes/import.tsx:193
+#: src/routes/import.tsx:152
 msgid "Import wizard steps"
 msgstr "Import wizard steps"
 
-#: src/routes/import.tsx:730
+#: src/routes/import.tsx:648
 msgid "Importing configurations..."
 msgstr "Importing configurations..."
 
-#: src/components/config-form-modal.tsx:140
+#: src/components/config-form-modal.tsx:128
 msgid "Invalid regex pattern"
 msgstr "Invalid regex pattern"
 
-#: src/components/config-form-modal.tsx:201
+#: src/components/config-form-modal.tsx:189
 msgid "Invalid value"
 msgstr "Invalid value"
 
-#: src/routes/team.tsx:193
+#: src/routes/team.tsx:175
 msgid "Invite sent"
 msgstr "Invite sent"
 
-#: src/components/config-form-modal.tsx:410
+#: src/components/config-form-modal.tsx:385
 msgid "JSON and array values are validated for correct syntax automatically."
 msgstr "JSON and array values are validated for correct syntax automatically."
 
-#: src/routes/import.tsx:402
+#: src/routes/import.tsx:345
 msgid "JSON Template"
 msgstr "JSON Template"
 
-#: src/components/config-form-modal.tsx:232
-#: src/routes/configs.tsx:519
-#: src/routes/import.tsx:442
-#: src/routes/import.tsx:568
-#: src/routes/import.tsx:802
+#: src/components/config-form-modal.tsx:220
+#: src/routes/configs.tsx:471
+#: src/routes/import.tsx:383
+#: src/routes/import.tsx:502
+#: src/routes/import.tsx:716
 msgid "Key"
 msgstr "Key"
 
-#: src/routes/api-keys.tsx:359
+#: src/routes/api-keys.tsx:328
 msgid "Key deleted permanently"
 msgstr "Key deleted permanently"
 
-#: src/routes/api-keys.tsx:94
+#: src/routes/api-keys.tsx:79
 msgid "Key Type"
 msgstr "Key Type"
 
-#: src/routes/api-keys.tsx:119
+#: src/routes/api-keys.tsx:104
 msgid "Label (optional)"
 msgstr "Label (optional)"
 
-#: src/routes/preferences.tsx:165
+#: src/routes/preferences.tsx:155
 msgid "Language"
 msgstr "Language"
 
-#: src/routes/preferences.tsx:157
+#: src/routes/preferences.tsx:147
 msgid "Language & Region"
 msgstr "Language & Region"
 
-#: src/components/page-tour-button.tsx:42
+#: src/components/page-tour-button.tsx:38
 msgid "Learn how this works"
 msgstr "Learn how this works"
 
-#: src/components/onboarding-stepper.tsx:104
+#: src/components/onboarding-stepper.tsx:92
 msgid "Let's get you set up in a few quick steps."
 msgstr "Let's get you set up in a few quick steps."
 
-#: src/components/webhook-delivery-log.tsx:25
-#: src/components/webhook-settings.tsx:93
+#: src/components/webhook-delivery-log.tsx:19
+#: src/components/webhook-settings.tsx:85
 msgid "Loading..."
 msgstr "Loading..."
 
-#: src/routes/configs.tsx:707
+#: src/routes/configs.tsx:636
 msgid "Lock"
 msgstr "Lock"
 
-#: src/routes/gdpr.tsx:52
+#: src/routes/gdpr.tsx:51
 msgid "Manage data export and deletion requests for compliance."
 msgstr "Manage data export and deletion requests for compliance."
 
-#: src/routes/environments.tsx:166
+#: src/routes/environments.tsx:149
 msgid "Manage deployment targets and allowed domains."
 msgstr "Manage deployment targets and allowed domains."
 
-#: src/routes/configs.tsx:316
+#: src/routes/configs.tsx:286
 msgid "Manage feature flags and configuration values."
 msgstr "Manage feature flags and configuration values."
 
-#: src/routes/api-keys.tsx:435
+#: src/routes/api-keys.tsx:394
 msgid "Manage keys for this environment. Use these to authenticate SDK requests."
 msgstr "Manage keys for this environment. Use these to authenticate SDK requests."
 
-#: src/routes/settings.tsx:534
+#: src/routes/settings.tsx:502
 msgid "Manage project configuration and team access."
 msgstr "Manage project configuration and team access."
 
-#: src/routes/team.tsx:203
+#: src/routes/team.tsx:185
 msgid "Manage project members and their roles."
 msgstr "Manage project members and their roles."
 
-#: src/components/config-form-modal.tsx:370
+#: src/components/config-form-modal.tsx:345
 msgid "Max value"
 msgstr "Max value"
 
-#: src/routes/team.tsx:182
+#: src/routes/team.tsx:164
 msgid "Member added"
 msgstr "Member added"
 
-#: src/routes/team.tsx:148
+#: src/routes/team.tsx:138
 msgid "Member removed"
 msgstr "Member removed"
 
-#: src/routes/team.tsx:224
+#: src/routes/team.tsx:203
 msgid "Members"
 msgstr "Members"
 
-#: src/components/webhook-form-modal.tsx:186
+#: src/components/webhook-form-modal.tsx:163
 msgid "Message Template"
 msgstr "Message Template"
 
-#: src/components/webhook-form-modal.tsx:173
+#: src/components/webhook-form-modal.tsx:150
 msgid "Microsoft Teams"
 msgstr "Microsoft Teams"
 
-#: src/components/config-form-modal.tsx:358
+#: src/components/config-form-modal.tsx:333
 msgid "Min value"
 msgstr "Min value"
 
-#: src/routes/configs.tsx:669
+#: src/routes/configs.tsx:604
 msgid "More actions"
 msgstr "More actions"
 
-#: src/routes/__root.tsx:414
+#: src/routes/__root.tsx:371
 msgid "Multi-project scoping"
 msgstr "Multi-project scoping"
 
-#: src/components/segment-edit-modal.tsx:82
-#: src/components/segment-manager.tsx:166
-#: src/components/webhook-form-modal.tsx:121
+#: src/components/segment-edit-modal.tsx:74
+#: src/components/segment-manager.tsx:162
+#: src/components/webhook-form-modal.tsx:101
 msgid "Name"
 msgstr "Name"
 
-#: src/components/command-palette.tsx:83
+#: src/components/command-palette.tsx:79
 msgid "Navigation"
 msgstr "Navigation"
 
-#: src/routes/compare.tsx:386
+#: src/routes/compare.tsx:365
 msgid "new"
 msgstr "new"
 
@@ -1206,101 +1206,101 @@ msgstr "new"
 msgid "New"
 msgstr "New"
 
-#: src/components/command-palette.tsx:230
+#: src/components/command-palette.tsx:202
 msgid "New Config"
 msgstr "New Config"
 
-#: src/routes/environments.tsx:173
-#: src/routes/environments.tsx:189
+#: src/routes/environments.tsx:153
+#: src/routes/environments.tsx:169
 msgid "New Environment"
 msgstr "New Environment"
 
-#: src/routes/import.tsx:166
+#: src/routes/import.tsx:128
 msgid "Next"
 msgstr "Next"
 
-#: src/routes/configs.tsx:783
+#: src/routes/configs.tsx:702
 msgid "Next page"
 msgstr "Next page"
 
-#: src/components/audit-log-viewer.tsx:173
+#: src/components/audit-log-viewer.tsx:159
 msgid "No activity yet"
 msgstr "No activity yet"
 
-#: src/routes/api-keys.tsx:266
+#: src/routes/api-keys.tsx:243
 msgid "No API keys yet. Generate one to get started."
 msgstr "No API keys yet. Generate one to get started."
 
-#: src/components/audit-diff-viewer.tsx:193
+#: src/components/audit-diff-viewer.tsx:168
 msgid "No changes to display"
 msgstr "No changes to display"
 
-#: src/routes/configs.tsx:472
+#: src/routes/configs.tsx:426
 msgid "No configs yet"
 msgstr "No configs yet"
 
-#: src/components/webhook-delivery-log.tsx:31
+#: src/components/webhook-delivery-log.tsx:25
 msgid "No deliveries yet"
 msgstr "No deliveries yet"
 
-#: src/routes/settings.tsx:164
+#: src/routes/settings.tsx:156
 msgid "No description yet."
 msgstr "No description yet."
 
-#: src/routes/compare.tsx:425
+#: src/routes/compare.tsx:399
 msgid "No differences found between these environments."
 msgstr "No differences found between these environments."
 
-#: src/components/webhook-form-modal.tsx:308
+#: src/components/webhook-form-modal.tsx:271
 msgid "No environments configured"
 msgstr "No environments configured"
 
-#: src/components/environment-switcher.tsx:62
+#: src/components/environment-switcher.tsx:57
 msgid "No environments found."
 msgstr "No environments found."
 
-#: src/routes/environments.tsx:270
+#: src/routes/environments.tsx:242
 msgid "No environments yet"
 msgstr "No environments yet"
 
-#: src/routes/settings.tsx:319
+#: src/routes/settings.tsx:306
 msgid "No environments yet."
 msgstr "No environments yet."
 
-#: src/routes/import.tsx:741
+#: src/routes/import.tsx:659
 msgid "No import results available. Please start a new import."
 msgstr "No import results available. Please start a new import."
 
-#: src/components/config-form-modal.tsx:374
+#: src/components/config-form-modal.tsx:349
 msgid "No maximum"
 msgstr "No maximum"
 
-#: src/components/config-form-modal.tsx:362
+#: src/components/config-form-modal.tsx:337
 msgid "No minimum"
 msgstr "No minimum"
 
-#: src/components/override-manager.tsx:53
+#: src/components/override-manager.tsx:79
 msgid "No overrides configured."
 msgstr "No overrides configured."
 
-#: src/components/prerequisite-ui.tsx:211
+#: src/components/prerequisite-ui.tsx:190
 msgid "No prerequisites configured."
 msgstr "No prerequisites configured."
 
-#: src/routes/import.tsx:608
+#: src/routes/import.tsx:540
 msgid "No project or environment selected"
 msgstr "No project or environment selected"
 
-#: src/components/project-switcher.tsx:75
+#: src/components/project-switcher.tsx:71
 msgid "No projects found."
 msgstr "No projects found."
 
-#: src/components/command-palette.tsx:79
+#: src/components/command-palette.tsx:75
 msgid "No results found."
 msgstr "No results found."
 
-#: src/components/date-picker-schedule.tsx:238
-#: src/components/schedule-ui.tsx:86
+#: src/components/date-picker-schedule.tsx:207
+#: src/components/schedule-ui.tsx:116
 msgid "No scheduled changes."
 msgstr "No scheduled changes."
 
@@ -1308,178 +1308,178 @@ msgstr "No scheduled changes."
 msgid "No segments defined."
 msgstr "No segments defined."
 
-#: src/components/rule-builder.tsx:195
+#: src/components/rule-builder.tsx:184
 msgid "No targeting rules. All users receive the default value."
 msgstr "No targeting rules. All users receive the default value."
 
-#: src/components/gdpr-panel.tsx:177
-#: src/components/gdpr-panel.tsx:294
+#: src/components/gdpr-panel.tsx:169
+#: src/components/gdpr-panel.tsx:274
 msgid "No team members found"
 msgstr "No team members found"
 
-#: src/components/rbac-manager.tsx:111
+#: src/components/rbac-manager.tsx:120
 msgid "No team members yet."
 msgstr "No team members yet."
 
-#: src/routes/preferences.tsx:208
+#: src/routes/preferences.tsx:195
 msgid "No timezone found."
 msgstr "No timezone found."
 
-#: src/components/add-member-modal.tsx:158
+#: src/components/add-member-modal.tsx:132
 msgid "No user found with this email. Send them an invite?"
 msgstr "No user found with this email. Send them an invite?"
 
-#: src/components/webhook-settings.tsx:99
+#: src/components/webhook-settings.tsx:91
 msgid "No webhooks configured"
 msgstr "No webhooks configured"
 
-#: src/routes/environments.tsx:337
+#: src/routes/environments.tsx:303
 msgid "None configured"
 msgstr "None configured"
 
-#: src/routes/preferences.tsx:288
+#: src/routes/preferences.tsx:266
 msgid "Not set"
 msgstr "Not set"
 
-#: src/components/config-form-modal.tsx:313
+#: src/components/config-form-modal.tsx:292
 msgid "Numeric value"
 msgstr "Numeric value"
 
-#: src/hooks/use-webhook-mutations.ts:196
+#: src/hooks/use-webhook-mutations.ts:166
 msgid "Operation failed"
 msgstr "Operation failed"
 
-#: src/components/config-form-modal.tsx:349
+#: src/components/config-form-modal.tsx:325
 msgid "optional"
 msgstr "optional"
 
-#: src/components/rule-builder.tsx:706
+#: src/components/rule-builder.tsx:659
 msgid "OR"
 msgstr "OR"
 
-#: src/components/config-detail-panel.tsx:330
+#: src/components/config-detail-panel.tsx:308
 msgid "Overrides"
 msgstr "Overrides"
 
-#: src/components/config-detail-panel.tsx:356
+#: src/components/config-detail-panel.tsx:330
 msgid "Overrides saved"
 msgstr "Overrides saved"
 
-#: src/routes/import.tsx:679
+#: src/routes/import.tsx:602
 msgid "Overwrite existing — replace with imported values"
 msgstr "Overwrite existing — replace with imported values"
 
-#: src/components/template-bar.tsx:104
+#: src/components/template-bar.tsx:98
 msgid "Overwrite existing data?"
 msgstr "Overwrite existing data?"
 
-#: src/components/rbac-manager.tsx:128
-#: src/routes/settings.tsx:562
-#: src/routes/team.tsx:280
+#: src/components/rbac-manager.tsx:134
+#: src/routes/settings.tsx:526
+#: src/routes/team.tsx:252
 msgid "Owner"
 msgstr "Owner"
 
-#: src/components/webhook-card.tsx:99
+#: src/components/webhook-card.tsx:84
 msgid "Pause"
 msgstr "Pause"
 
-#: src/components/webhook-card.tsx:72
+#: src/components/webhook-card.tsx:62
 msgid "Paused"
 msgstr "Paused"
 
-#: src/routes/team.tsx:329
+#: src/routes/team.tsx:295
 msgid "Pending"
 msgstr "Pending"
 
-#: src/routes/team.tsx:309
+#: src/routes/team.tsx:277
 msgid "Pending Invites"
 msgstr "Pending Invites"
 
-#: src/routes/__root.tsx:422
+#: src/routes/__root.tsx:379
 msgid "Per-env overrides"
 msgstr "Per-env overrides"
 
-#: src/components/override-manager.tsx:39
+#: src/components/override-manager.tsx:46
 msgid "Per-User Overrides"
 msgstr "Per-User Overrides"
 
-#: src/components/gdpr-panel.tsx:240
+#: src/components/gdpr-panel.tsx:224
 msgid "Permanently remove all personal data for a team member. This action cannot be undone."
 msgstr "Permanently remove all personal data for a team member. This action cannot be undone."
 
-#: src/components/date-picker-schedule.tsx:164
+#: src/components/date-picker-schedule.tsx:142
 msgid "Pick a date"
 msgstr "Pick a date"
 
-#: src/routes/configs.tsx:686
+#: src/routes/configs.tsx:619
 msgid "Pin to top"
 msgstr "Pin to top"
 
-#: src/routes/import.tsx:612
+#: src/routes/import.tsx:544
 msgid "Please select a conflict resolution strategy"
 msgstr "Please select a conflict resolution strategy"
 
-#: src/components/pii-warning.tsx:23
+#: src/components/pii-warning.tsx:19
 msgid "Potential PII detected in config value"
 msgstr "Potential PII detected in config value"
 
-#: src/components/command-palette.tsx:123
-#: src/routes/__root.tsx:173
-#: src/routes/preferences.tsx:348
-#: src/routes/preferences.tsx:356
+#: src/components/command-palette.tsx:107
+#: src/routes/__root.tsx:144
+#: src/routes/preferences.tsx:323
+#: src/routes/preferences.tsx:331
 msgid "Preferences"
 msgstr "Preferences"
 
-#: src/components/config-detail-panel.tsx:411
-#: src/components/prerequisite-ui.tsx:109
+#: src/components/config-detail-panel.tsx:385
+#: src/components/prerequisite-ui.tsx:99
 msgid "Prerequisites"
 msgstr "Prerequisites"
 
-#: src/components/config-detail-panel.tsx:436
+#: src/components/config-detail-panel.tsx:408
 msgid "Prerequisites saved"
 msgstr "Prerequisites saved"
 
-#: src/routes/import.tsx:183
-#: src/routes/import.tsx:427
-#: src/routes/settings.tsx:127
+#: src/routes/import.tsx:145
+#: src/routes/import.tsx:368
+#: src/routes/settings.tsx:120
 msgid "Preview"
 msgstr "Preview"
 
-#: src/components/webhook-preview.tsx:178
+#: src/components/webhook-preview.tsx:171
 msgid "Preview payload"
 msgstr "Preview payload"
 
-#: src/routes/configs.tsx:768
+#: src/routes/configs.tsx:689
 msgid "Previous page"
 msgstr "Previous page"
 
-#: src/components/rule-builder.tsx:445
-#: src/components/rule-builder.tsx:578
+#: src/components/rule-builder.tsx:410
+#: src/components/rule-builder.tsx:539
 msgid "Priority"
 msgstr "Priority"
 
-#: src/routes/import.tsx:702
+#: src/routes/import.tsx:620
 msgid "Processing..."
 msgstr "Processing..."
 
-#: src/routes/settings.tsx:351
+#: src/routes/settings.tsx:335
 msgid "Production"
 msgstr "Production"
 
-#: src/components/config-form-modal.tsx:163
-#: src/components/environment-form.tsx:78
+#: src/components/config-form-modal.tsx:151
+#: src/components/environment-form.tsx:72
 msgid "Production environment"
 msgstr "Production environment"
 
-#: src/routes/preferences.tsx:263
+#: src/routes/preferences.tsx:246
 msgid "Profile"
 msgstr "Profile"
 
-#: src/components/audit-log-viewer.tsx:142
+#: src/components/audit-log-viewer.tsx:128
 msgid "Project"
 msgstr "Project"
 
-#: src/components/project-switcher.tsx:47
+#: src/components/project-switcher.tsx:43
 msgid "Project created"
 msgstr "Project created"
 
@@ -1487,114 +1487,114 @@ msgstr "Project created"
 msgid "Project created successfully!"
 msgstr "Project created successfully!"
 
-#: src/routes/settings.tsx:447
+#: src/routes/settings.tsx:421
 msgid "Project deleted"
 msgstr "Project deleted"
 
-#: src/routes/settings.tsx:135
+#: src/routes/settings.tsx:128
 msgid "Project description (markdown supported)"
 msgstr "Project description (markdown supported)"
 
-#: src/routes/settings.tsx:544
+#: src/routes/settings.tsx:508
 msgid "Project ID"
 msgstr "Project ID"
 
-#: src/components/onboarding-stepper.tsx:170
-#: src/components/project-switcher.tsx:108
+#: src/components/onboarding-stepper.tsx:152
+#: src/components/project-switcher.tsx:102
 msgid "Project name"
 msgstr "Project name"
 
-#: src/routes/settings.tsx:540
+#: src/routes/settings.tsx:506
 msgid "Project Name"
 msgstr "Project Name"
 
-#: src/routes/settings.tsx:519
+#: src/routes/settings.tsx:489
 msgid "Project not found."
 msgstr "Project not found."
 
-#: src/components/command-palette.tsx:113
-#: src/routes/settings.tsx:532
+#: src/components/command-palette.tsx:101
+#: src/routes/settings.tsx:501
 msgid "Project Settings"
 msgstr "Project Settings"
 
-#: src/routes/__root.tsx:411
+#: src/routes/__root.tsx:368
 msgid "Projects"
 msgstr "Projects"
 
-#: src/components/onboarding-stepper.tsx:76
+#: src/components/onboarding-stepper.tsx:71
 msgid "Projects group environments and configurations together."
 msgstr "Projects group environments and configurations together."
 
-#: src/routes/__root.tsx:471
+#: src/routes/__root.tsx:424
 msgid "Protected by Firebase Authentication."
 msgstr "Protected by Firebase Authentication."
 
-#: src/routes/__root.tsx:435
+#: src/routes/__root.tsx:392
 msgid "Real-time"
 msgstr "Real-time"
 
-#: src/routes/import.tsx:571
-#: src/routes/import.tsx:805
+#: src/routes/import.tsx:505
+#: src/routes/import.tsx:719
 msgid "Reason"
 msgstr "Reason"
 
-#: src/components/config-form-modal.tsx:386
+#: src/components/config-form-modal.tsx:361
 msgid "Regex pattern"
 msgstr "Regex pattern"
 
-#: src/components/date-picker-schedule.tsx:140
-#: src/components/rule-builder.tsx:690
-#: src/components/schedule-ui.tsx:73
-#: src/routes/team.tsx:126
+#: src/components/date-picker-schedule.tsx:118
+#: src/components/rule-builder.tsx:643
+#: src/components/schedule-ui.tsx:94
+#: src/routes/team.tsx:116
 msgid "Remove"
 msgstr "Remove"
 
-#: src/routes/team.tsx:125
+#: src/routes/team.tsx:115
 msgid "Remove {memberName} from this project? They will lose access immediately."
 msgstr "Remove {memberName} from this project? They will lose access immediately."
 
-#: src/routes/team.tsx:124
+#: src/routes/team.tsx:114
 msgid "Remove member?"
 msgstr "Remove member?"
 
-#: src/components/webhook-form-modal.tsx:264
+#: src/components/webhook-form-modal.tsx:236
 msgid "Resource categories"
 msgstr "Resource categories"
 
-#: src/routes/import.tsx:186
+#: src/routes/import.tsx:148
 msgid "Results"
 msgstr "Results"
 
 #. placeholder {0}: actions.size
-#: src/routes/compare.tsx:527
+#: src/routes/compare.tsx:488
 msgid "Review {0} changes"
 msgstr "Review {0} changes"
 
-#: src/routes/import.tsx:684
+#: src/routes/import.tsx:605
 msgid "Review individually — decide per entry"
 msgstr "Review individually — decide per entry"
 
-#: src/routes/import.tsx:642
+#: src/routes/import.tsx:571
 msgid "Review your import settings and confirm to begin processing."
 msgstr "Review your import settings and confirm to begin processing."
 
-#: src/routes/api-keys.tsx:335
+#: src/routes/api-keys.tsx:305
 msgid "Revoke"
 msgstr "Revoke"
 
-#: src/routes/api-keys.tsx:340
+#: src/routes/api-keys.tsx:310
 msgid "Revoke key"
 msgstr "Revoke key"
 
-#: src/routes/api-keys.tsx:313
+#: src/routes/api-keys.tsx:284
 msgid "Revoked"
 msgstr "Revoked"
 
-#: src/routes/team.tsx:106
+#: src/routes/team.tsx:97
 msgid "Role updated"
 msgstr "Role updated"
 
-#: src/components/config-detail-panel.tsx:302
+#: src/components/config-detail-panel.tsx:280
 msgid "Rollout"
 msgstr "Rollout"
 
@@ -1602,142 +1602,142 @@ msgstr "Rollout"
 msgid "Rollout updated"
 msgstr "Rollout updated"
 
-#: src/routes/import.tsx:565
+#: src/routes/import.tsx:499
 msgid "Row"
 msgstr "Row"
 
 #. placeholder {0}: index + 1
-#: src/components/rule-builder.tsx:425
-#: src/components/rule-builder.tsx:563
+#: src/components/rule-builder.tsx:392
+#: src/components/rule-builder.tsx:524
 msgid "Rule {0}"
 msgstr "Rule {0}"
 
-#: src/components/webhook-preview.tsx:187
+#: src/components/webhook-preview.tsx:180
 msgid "Sample payload"
 msgstr "Sample payload"
 
-#: src/components/environment-form.tsx:87
-#: src/components/rollout-section.tsx:101
-#: src/components/segment-edit-modal.tsx:133
-#: src/components/webhook-form-modal.tsx:321
-#: src/routes/settings.tsx:152
+#: src/components/environment-form.tsx:81
+#: src/components/rollout-section.tsx:94
+#: src/components/segment-edit-modal.tsx:121
+#: src/components/webhook-form-modal.tsx:284
+#: src/routes/settings.tsx:145
 msgid "Save"
 msgstr "Save"
 
-#: src/components/config-detail-panel.tsx:280
+#: src/components/config-detail-panel.tsx:258
 msgid "Save rules"
 msgstr "Save rules"
 
-#: src/components/config-detail-panel.tsx:373
-#: src/components/date-picker-schedule.tsx:222
-#: src/components/schedule-ui.tsx:82
+#: src/components/config-detail-panel.tsx:347
+#: src/components/date-picker-schedule.tsx:196
+#: src/components/schedule-ui.tsx:111
 msgid "Schedule"
 msgstr "Schedule"
 
-#: src/components/config-detail-panel.tsx:394
+#: src/components/config-detail-panel.tsx:368
 msgid "Schedule updated"
 msgstr "Schedule updated"
 
-#: src/components/date-picker-schedule.tsx:98
-#: src/components/schedule-ui.tsx:49
+#: src/components/date-picker-schedule.tsx:80
+#: src/components/schedule-ui.tsx:56
 msgid "Scheduled Change"
 msgstr "Scheduled Change"
 
-#: src/components/add-member-modal.tsx:71
+#: src/components/add-member-modal.tsx:65
 msgid "Search by email to add an existing user, or send an invite."
 msgstr "Search by email to add an existing user, or send an invite."
 
-#: src/components/command-palette.tsx:75
+#: src/components/command-palette.tsx:72
 msgid "Search commands, projects, environments..."
 msgstr "Search commands, projects, environments..."
 
-#: src/routes/configs.tsx:371
+#: src/routes/configs.tsx:331
 msgid "Search configs..."
 msgstr "Search configs..."
 
-#: src/components/environment-switcher.tsx:59
+#: src/components/environment-switcher.tsx:54
 msgid "Search environments..."
 msgstr "Search environments..."
 
-#: src/components/project-switcher.tsx:72
+#: src/components/project-switcher.tsx:68
 msgid "Search projects..."
 msgstr "Search projects..."
 
-#: src/components/gdpr-panel.tsx:287
+#: src/components/gdpr-panel.tsx:267
 msgid "Search team members for deletion"
 msgstr "Search team members for deletion"
 
-#: src/components/gdpr-panel.tsx:170
+#: src/components/gdpr-panel.tsx:162
 msgid "Search team members for export"
 msgstr "Search team members for export"
 
-#: src/components/gdpr-panel.tsx:162
-#: src/components/gdpr-panel.tsx:278
+#: src/components/gdpr-panel.tsx:154
+#: src/components/gdpr-panel.tsx:258
 msgid "Search team members..."
 msgstr "Search team members..."
 
-#: src/components/audit-log-viewer.tsx:128
+#: src/components/audit-log-viewer.tsx:114
 msgid "Search..."
 msgstr "Search..."
 
-#: src/components/add-member-modal.tsx:98
+#: src/components/add-member-modal.tsx:89
 msgid "Searching..."
 msgstr "Searching..."
 
-#: src/components/rule-builder.tsx:431
+#: src/components/rule-builder.tsx:398
 msgid "Segment"
 msgstr "Segment"
 
-#: src/routes/segments.tsx:59
+#: src/routes/segments.tsx:52
 msgid "Segment created"
 msgstr "Segment created"
 
-#: src/routes/segments.tsx:84
+#: src/routes/segments.tsx:77
 msgid "Segment deleted"
 msgstr "Segment deleted"
 
-#: src/components/segment-edit-modal.tsx:85
-#: src/components/segment-manager.tsx:169
+#: src/components/segment-edit-modal.tsx:77
+#: src/components/segment-manager.tsx:165
 msgid "Segment name"
 msgstr "Segment name"
 
-#: src/components/segment-edit-modal.tsx:97
+#: src/components/segment-edit-modal.tsx:89
 msgid "Segment name is required."
 msgstr "Segment name is required."
 
-#: src/routes/segments.tsx:74
+#: src/routes/segments.tsx:67
 msgid "Segment updated"
 msgstr "Segment updated"
 
-#: src/components/audit-log-viewer.tsx:140
-#: src/components/command-palette.tsx:133
+#: src/components/audit-log-viewer.tsx:126
+#: src/components/command-palette.tsx:113
 #: src/components/segment-manager.tsx:83
-#: src/routes/__root.tsx:234
-#: src/routes/segments.tsx:43
+#: src/routes/__root.tsx:205
+#: src/routes/segments.tsx:40
 msgid "Segments"
 msgstr "Segments"
 
-#: src/routes/segments.tsx:48
+#: src/routes/segments.tsx:42
 msgid "Segments guide"
 msgstr "Segments guide"
 
-#: src/components/prerequisite-ui.tsx:300
+#: src/components/prerequisite-ui.tsx:262
 msgid "Select a flag first"
 msgstr "Select a flag first"
 
-#: src/components/prerequisite-ui.tsx:130
+#: src/components/prerequisite-ui.tsx:120
 msgid "Select a flag..."
 msgstr "Select a flag..."
 
-#: src/routes/compare.tsx:272
+#: src/routes/compare.tsx:262
 msgid "Select a project to compare environments."
 msgstr "Select a project to compare environments."
 
-#: src/routes/api-keys.tsx:412
+#: src/routes/api-keys.tsx:377
 msgid "Select a project to manage API keys."
 msgstr "Select a project to manage API keys."
 
-#: src/routes/configs.tsx:296
+#: src/routes/configs.tsx:268
 msgid "Select a project to manage configs."
 msgstr "Select a project to manage configs."
 
@@ -1745,483 +1745,483 @@ msgstr "Select a project to manage configs."
 msgid "Select a project to manage GDPR compliance."
 msgstr "Select a project to manage GDPR compliance."
 
-#: src/routes/segments.tsx:35
+#: src/routes/segments.tsx:33
 msgid "Select a project to manage segments."
 msgstr "Select a project to manage segments."
 
-#: src/routes/team.tsx:68
+#: src/routes/team.tsx:60
 msgid "Select a project to manage team access."
 msgstr "Select a project to manage team access."
 
-#: src/routes/audit.tsx:18
+#: src/routes/audit.tsx:16
 msgid "Select a project to view audit log."
 msgstr "Select a project to view audit log."
 
-#: src/routes/environments.tsx:144
+#: src/routes/environments.tsx:128
 msgid "Select a project to view environments."
 msgstr "Select a project to view environments."
 
-#: src/routes/settings.tsx:502
+#: src/routes/settings.tsx:474
 msgid "Select a project to view settings."
 msgstr "Select a project to view settings."
 
-#: src/routes/compare.tsx:370
+#: src/routes/compare.tsx:352
 msgid "Select a source and target environment to see the diff."
 msgstr "Select a source and target environment to see the diff."
 
-#: src/routes/api-keys.tsx:422
+#: src/routes/api-keys.tsx:384
 msgid "Select an environment from the top bar to manage API keys."
 msgstr "Select an environment from the top bar to manage API keys."
 
-#: src/components/environment-switcher.tsx:52
+#: src/components/environment-switcher.tsx:47
 msgid "Select env"
 msgstr "Select env"
 
-#: src/components/project-switcher.tsx:65
+#: src/components/project-switcher.tsx:61
 msgid "Select project"
 msgstr "Select project"
 
-#: src/routes/import.tsx:672
+#: src/routes/import.tsx:595
 msgid "Select strategy"
 msgstr "Select strategy"
 
-#: src/components/add-member-modal.tsx:187
+#: src/components/add-member-modal.tsx:152
 msgid "Send Invite"
 msgstr "Send Invite"
 
-#: src/components/rule-builder.tsx:508
-#: src/components/rule-builder.tsx:714
+#: src/components/rule-builder.tsx:473
+#: src/components/rule-builder.tsx:667
 msgid "Serve value"
 msgstr "Serve value"
 
-#: src/routes/api-keys.tsx:110
+#: src/routes/api-keys.tsx:95
 msgid "Server"
 msgstr "Server"
 
-#: src/routes/__root.tsx:241
+#: src/routes/__root.tsx:212
 msgid "Settings"
 msgstr "Settings"
 
-#: src/routes/api-keys.tsx:179
+#: src/routes/api-keys.tsx:156
 msgid "Show"
 msgstr "Show"
 
-#: src/routes/compare.tsx:410
+#: src/routes/compare.tsx:385
 msgid "Show identical"
 msgstr "Show identical"
 
-#: src/components/config-form-modal.tsx:439
+#: src/components/config-form-modal.tsx:408
 msgid "Show Preview"
 msgstr "Show Preview"
 
-#: src/components/audit-diff-viewer.tsx:182
+#: src/components/audit-diff-viewer.tsx:157
 msgid "Show unchanged ({unchangedCount})"
 msgstr "Show unchanged ({unchangedCount})"
 
 #. placeholder {0}: previewRows.length
 #. placeholder {1}: parsedEntries.length
 #. placeholder {2}: file?.name ?? "file"
-#: src/routes/import.tsx:430
+#: src/routes/import.tsx:371
 msgid "Showing {0} of {1} entries from {2}"
 msgstr "Showing {0} of {1} entries from {2}"
 
 #. placeholder {0}: safePage * PAGE_SIZE + 1
-#. placeholder {1}: Math.min( (safePage + 1) * PAGE_SIZE, filteredConfigs.length, )
+#. placeholder {1}: Math.min((safePage + 1) * PAGE_SIZE, filteredConfigs.length)
 #. placeholder {2}: filteredConfigs.length
-#: src/routes/configs.tsx:750
+#: src/routes/configs.tsx:676
 msgid "Showing {0}–{1} of {2}"
 msgstr "Showing {0}–{1} of {2}"
 
-#: src/components/audit-diff-viewer.tsx:170
+#: src/components/audit-diff-viewer.tsx:145
 msgid "Side by side"
 msgstr "Side by side"
 
-#: src/routes/__root.tsx:400
+#: src/routes/__root.tsx:357
 msgid "Sign in to manage your configuration platform."
 msgstr "Sign in to manage your configuration platform."
 
-#: src/routes/__root.tsx:467
+#: src/routes/__root.tsx:420
 msgid "Sign in with Google"
 msgstr "Sign in with Google"
 
-#: src/routes/__root.tsx:185
-#: src/routes/__root.tsx:371
+#: src/routes/__root.tsx:156
+#: src/routes/__root.tsx:328
 msgid "Sign out"
 msgstr "Sign out"
 
-#: src/routes/import.tsx:676
+#: src/routes/import.tsx:599
 msgid "Skip existing — keep current values"
 msgstr "Skip existing — keep current values"
 
-#: src/routes/import.tsx:790
+#: src/routes/import.tsx:704
 msgid "Skipped"
 msgstr "Skipped"
 
-#: src/components/webhook-form-modal.tsx:164
+#: src/components/webhook-form-modal.tsx:141
 msgid "Slack"
 msgstr "Slack"
 
-#: src/routes/compare.tsx:303
+#: src/routes/compare.tsx:293
 msgid "Source"
 msgstr "Source"
 
-#: src/routes/configs.tsx:412
+#: src/routes/configs.tsx:366
 msgid "Stale"
 msgstr "Stale"
 
-#: src/components/webhook-form-modal.tsx:161
+#: src/components/webhook-form-modal.tsx:138
 msgid "Standard JSON"
 msgstr "Standard JSON"
 
-#: src/components/onboarding-stepper.tsx:90
+#: src/components/onboarding-stepper.tsx:81
 msgid "Start configuring your environments with secrets and settings."
 msgstr "Start configuring your environments with secrets and settings."
 
-#: src/routes/import.tsx:707
+#: src/routes/import.tsx:625
 msgid "Start Import"
 msgstr "Start Import"
 
-#: src/routes/import.tsx:828
+#: src/routes/import.tsx:738
 msgid "Start New Import"
 msgstr "Start New Import"
 
-#: src/components/audit-log-viewer.tsx:155
+#: src/components/audit-log-viewer.tsx:141
 msgid "State change"
 msgstr "State change"
 
-#: src/components/pii-warning.tsx:37
+#: src/components/pii-warning.tsx:29
 msgid "Storing personal data in config values may violate GDPR. Acknowledge to proceed."
 msgstr "Storing personal data in config values may violate GDPR. Acknowledge to proceed."
 
-#: src/components/config-form-modal.tsx:322
+#: src/components/config-form-modal.tsx:301
 msgid "String value"
 msgstr "String value"
 
-#: src/routes/import.tsx:776
+#: src/routes/import.tsx:692
 msgid "Succeeded"
 msgstr "Succeeded"
 
-#: src/routes/compare.tsx:326
+#: src/routes/compare.tsx:312
 msgid "Swap environments"
 msgstr "Swap environments"
 
-#: src/components/command-palette.tsx:194
+#: src/components/command-palette.tsx:166
 msgid "Switch Environment"
 msgstr "Switch Environment"
 
-#: src/components/command-palette.tsx:166
+#: src/components/command-palette.tsx:140
 msgid "Switch Project"
 msgstr "Switch Project"
 
 #. placeholder {0}: toTarget.length + toSource.length
-#: src/routes/compare.tsx:260
+#: src/routes/compare.tsx:250
 msgid "Synced {0} configs"
 msgstr "Synced {0} configs"
 
-#: src/routes/compare.tsx:339
+#: src/routes/compare.tsx:325
 msgid "Target"
 msgstr "Target"
 
-#: src/components/rule-builder.tsx:208
+#: src/components/rule-builder.tsx:191
 msgid "Target a Segment"
 msgstr "Target a Segment"
 
-#: src/components/rule-builder.tsx:274
+#: src/components/rule-builder.tsx:247
 msgid "Target Segment"
 msgstr "Target Segment"
 
-#: src/components/date-picker-schedule.tsx:147
-#: src/components/schedule-ui.tsx:79
+#: src/components/date-picker-schedule.tsx:125
+#: src/components/schedule-ui.tsx:101
 msgid "Target value"
 msgstr "Target value"
 
-#: src/routes/import.tsx:144
+#: src/routes/import.tsx:107
 msgid "Target:"
 msgstr "Target:"
 
-#: src/components/config-detail-panel.tsx:237
-#: src/components/rule-builder.tsx:183
+#: src/components/config-detail-panel.tsx:217
+#: src/components/rule-builder.tsx:172
 msgid "Targeting Rules"
 msgstr "Targeting Rules"
 
-#: src/components/config-detail-panel.tsx:271
+#: src/components/config-detail-panel.tsx:249
 msgid "Targeting rules saved"
 msgstr "Targeting rules saved"
 
-#: src/components/audit-log-viewer.tsx:143
-#: src/routes/__root.tsx:238
+#: src/components/audit-log-viewer.tsx:129
+#: src/routes/__root.tsx:209
 msgid "Team"
 msgstr "Team"
 
-#: src/components/command-palette.tsx:149
-#: src/routes/team.tsx:202
+#: src/components/command-palette.tsx:125
+#: src/routes/team.tsx:184
 msgid "Team & Access"
 msgstr "Team & Access"
 
-#: src/routes/team.tsx:206
+#: src/routes/team.tsx:188
 msgid "Team guide"
 msgstr "Team guide"
 
-#: src/components/rbac-manager.tsx:71
+#: src/components/rbac-manager.tsx:70
 msgid "Team Members"
 msgstr "Team Members"
 
-#: src/components/config-detail-panel.tsx:140
-#: src/components/config-detail-panel.tsx:157
-#: src/components/config-detail-panel.tsx:172
-#: src/components/config-detail-panel.tsx:187
-#: src/routes/configs.tsx:250
+#: src/components/config-detail-panel.tsx:120
+#: src/components/config-detail-panel.tsx:137
+#: src/components/config-detail-panel.tsx:152
+#: src/components/config-detail-panel.tsx:167
+#: src/routes/configs.tsx:226
 msgid "Template applied"
 msgstr "Template applied"
 
-#: src/components/template-bar.tsx:74
+#: src/components/template-bar.tsx:68
 msgid "Templates"
 msgstr "Templates"
 
-#: src/components/webhook-card.tsx:111
+#: src/components/webhook-card.tsx:94
 msgid "Test"
 msgstr "Test"
 
 #. placeholder {0}: data.error ?? "Unknown error"
-#: src/hooks/use-test-webhook.ts:35
+#: src/hooks/use-test-webhook.ts:27
 msgid "Test delivery failed: {0}"
 msgstr "Test delivery failed: {0}"
 
 #. placeholder {0}: String(data.httpStatus)
-#: src/hooks/use-test-webhook.ts:32
+#: src/hooks/use-test-webhook.ts:25
 msgid "Test delivery successful (HTTP {0})"
 msgstr "Test delivery successful (HTTP {0})"
 
-#: src/routes/compare.tsx:539
+#: src/routes/compare.tsx:500
 msgid "The following changes will be applied:"
 msgstr "The following changes will be applied:"
 
-#: src/routes/settings.tsx:565
+#: src/routes/settings.tsx:529
 msgid "The user who created this project"
 msgstr "The user who created this project"
 
-#: src/routes/preferences.tsx:70
+#: src/routes/preferences.tsx:60
 msgid "Theme"
 msgstr "Theme"
 
-#: src/routes/configs.tsx:805
+#: src/routes/configs.tsx:721
 msgid "This is a production environment. Changes will affect live users."
 msgstr "This is a production environment. Changes will affect live users."
 
-#: src/routes/configs.tsx:360
+#: src/routes/configs.tsx:322
 msgid "This is a production environment. You have read-only access."
 msgstr "This is a production environment. You have read-only access."
 
-#: src/components/template-bar.tsx:107
+#: src/components/template-bar.tsx:101
 msgid "This template will replace existing configuration in the target section. This action cannot be undone."
 msgstr "This template will replace existing configuration in the target section. This action cannot be undone."
 
-#: src/components/add-member-modal.tsx:121
+#: src/components/add-member-modal.tsx:105
 msgid "This user is already a member of this project."
 msgstr "This user is already a member of this project."
 
-#: src/routes/preferences.tsx:186
+#: src/routes/preferences.tsx:176
 msgid "Timezone"
 msgstr "Timezone"
 
-#: src/routes/__root.tsx:84
+#: src/routes/__root.tsx:64
 msgid "Toggle theme"
 msgstr "Toggle theme"
 
-#: src/routes/import.tsx:536
-#: src/routes/import.tsx:768
+#: src/routes/import.tsx:474
+#: src/routes/import.tsx:686
 msgid "Total"
 msgstr "Total"
 
-#: src/routes/audit.tsx:28
+#: src/routes/audit.tsx:24
 msgid "Track all configuration changes for SOC2 compliance."
 msgstr "Track all configuration changes for SOC2 compliance."
 
-#: src/routes/__root.tsx:363
+#: src/routes/__root.tsx:324
 msgid "Try a different account"
 msgstr "Try a different account"
 
-#: src/components/config-form-modal.tsx:256
-#: src/routes/configs.tsx:522
-#: src/routes/import.tsx:448
+#: src/components/config-form-modal.tsx:242
+#: src/routes/configs.tsx:474
+#: src/routes/import.tsx:389
 msgid "Type"
 msgstr "Type"
 
-#: src/routes/configs.tsx:206
-#: src/routes/settings.tsx:269
+#: src/routes/configs.tsx:182
+#: src/routes/settings.tsx:260
 msgid "Undo"
 msgstr "Undo"
 
-#: src/components/audit-diff-viewer.tsx:161
+#: src/components/audit-diff-viewer.tsx:136
 msgid "Unified"
 msgstr "Unified"
 
-#: src/routes/settings.tsx:547
+#: src/routes/settings.tsx:511
 msgid "Unique identifier for API integrations"
 msgstr "Unique identifier for API integrations"
 
-#: src/routes/configs.tsx:702
+#: src/routes/configs.tsx:631
 msgid "Unlock"
 msgstr "Unlock"
 
-#: src/routes/configs.tsx:681
+#: src/routes/configs.tsx:614
 msgid "Unpin"
 msgstr "Unpin"
 
-#: src/components/config-form-modal.tsx:458
+#: src/components/config-form-modal.tsx:426
 msgid "Update"
 msgstr "Update"
 
-#: src/components/config-form-modal.tsx:220
+#: src/components/config-form-modal.tsx:208
 msgid "Update the configuration value."
 msgstr "Update the configuration value."
 
-#: src/components/segment-edit-modal.tsx:76
+#: src/components/segment-edit-modal.tsx:69
 msgid "Update the segment name, description, and conditions."
 msgstr "Update the segment name, description, and conditions."
 
-#: src/components/audit-log-viewer.tsx:153
-#: src/routes/configs.tsx:528
+#: src/components/audit-log-viewer.tsx:139
+#: src/routes/configs.tsx:480
 msgid "Updated"
 msgstr "Updated"
 
-#: src/routes/import.tsx:182
+#: src/routes/import.tsx:144
 msgid "Upload"
 msgstr "Upload"
 
-#: src/routes/import.tsx:329
+#: src/routes/import.tsx:282
 msgid "Upload a CSV or JSON file with your configuration entries. Maximum 5 MB, up to 10,000 entries."
 msgstr "Upload a CSV or JSON file with your configuration entries. Maximum 5 MB, up to 10,000 entries."
 
-#: src/routes/import.tsx:326
+#: src/routes/import.tsx:279
 msgid "Upload File"
 msgstr "Upload File"
 
-#: src/components/webhook-form-modal.tsx:134
+#: src/components/webhook-form-modal.tsx:114
 msgid "URL (HTTPS)"
 msgstr "URL (HTTPS)"
 
-#: src/components/webhook-form-modal.tsx:86
+#: src/components/webhook-form-modal.tsx:74
 msgid "URL must use HTTPS"
 msgstr "URL must use HTTPS"
 
 #. placeholder {0}: sourceEnv.name
-#: src/routes/settings.tsx:231
+#: src/routes/settings.tsx:222
 msgid "Use \"Compare Environments\" to sync configs from \"{0}\" to the new environment."
 msgstr "Use \"Compare Environments\" to sync configs from \"{0}\" to the new environment."
 
-#: src/components/override-manager.tsx:45
-#: src/routes/preferences.tsx:299
+#: src/components/override-manager.tsx:56
+#: src/routes/preferences.tsx:276
 msgid "User ID"
 msgstr "User ID"
 
-#: src/components/rbac-manager.tsx:84
+#: src/components/rbac-manager.tsx:83
 msgid "User ID or email"
 msgstr "User ID or email"
 
-#: src/routes/import.tsx:544
+#: src/routes/import.tsx:482
 msgid "Valid"
 msgstr "Valid"
 
-#: src/routes/import.tsx:184
+#: src/routes/import.tsx:146
 msgid "Validate"
 msgstr "Validate"
 
-#: src/routes/import.tsx:528
+#: src/routes/import.tsx:466
 msgid "Validation Results"
 msgstr "Validation Results"
 
-#: src/components/config-form-modal.tsx:347
+#: src/components/config-form-modal.tsx:324
 msgid "Validation Rules"
 msgstr "Validation Rules"
 
-#: src/components/config-detail-panel.tsx:212
-#: src/components/config-form-modal.tsx:278
-#: src/components/override-manager.tsx:46
-#: src/routes/configs.tsx:525
-#: src/routes/import.tsx:445
+#: src/components/config-detail-panel.tsx:192
+#: src/components/config-form-modal.tsx:261
+#: src/components/override-manager.tsx:62
+#: src/routes/configs.tsx:477
+#: src/routes/import.tsx:386
 msgid "Value"
 msgstr "Value"
 
-#: src/components/config-form-modal.tsx:137
+#: src/components/config-form-modal.tsx:125
 msgid "Value does not match pattern: {validationRegex}"
 msgstr "Value does not match pattern: {validationRegex}"
 
-#: src/components/config-form-modal.tsx:126
+#: src/components/config-form-modal.tsx:114
 msgid "Value must be at least {validationMin}"
 msgstr "Value must be at least {validationMin}"
 
-#: src/components/config-form-modal.tsx:129
+#: src/components/config-form-modal.tsx:117
 msgid "Value must be at most {validationMax}"
 msgstr "Value must be at most {validationMax}"
 
 #. placeholder {0}: allowed.join(", ")
-#: src/components/config-form-modal.tsx:149
+#: src/components/config-form-modal.tsx:137
 msgid "Value must be one of: {0}"
 msgstr "Value must be one of: {0}"
 
-#: src/routes/__root.tsx:427
+#: src/routes/__root.tsx:384
 msgid "Versioned"
 msgstr "Versioned"
 
-#: src/components/audit-entry-row.tsx:81
+#: src/components/audit-entry-row.tsx:65
 msgid "View changes"
 msgstr "View changes"
 
-#: src/hooks/use-webhook-mutations.ts:65
+#: src/hooks/use-webhook-mutations.ts:54
 msgid "Webhook created"
 msgstr "Webhook created"
 
-#: src/hooks/use-webhook-mutations.ts:158
+#: src/hooks/use-webhook-mutations.ts:135
 msgid "Webhook deleted"
 msgstr "Webhook deleted"
 
-#: src/hooks/use-webhook-mutations.ts:115
-#: src/hooks/use-webhook-mutations.ts:193
+#: src/hooks/use-webhook-mutations.ts:95
+#: src/hooks/use-webhook-mutations.ts:163
 msgid "Webhook updated"
 msgstr "Webhook updated"
 
-#: src/components/webhook-settings.tsx:76
+#: src/components/webhook-settings.tsx:68
 msgid "Webhooks"
 msgstr "Webhooks"
 
-#: src/components/onboarding-stepper.tsx:101
+#: src/components/onboarding-stepper.tsx:89
 msgid "Welcome to Config Portal"
 msgstr "Welcome to Config Portal"
 
-#: src/components/segment-edit-modal.tsx:107
-#: src/components/segment-manager.tsx:181
+#: src/components/segment-edit-modal.tsx:99
+#: src/components/segment-manager.tsx:177
 msgid "What does this segment represent?"
 msgstr "What does this segment represent?"
 
-#: src/components/rule-builder.tsx:591
+#: src/components/rule-builder.tsx:552
 msgid "When"
 msgstr "When"
 
-#: src/components/rule-builder.tsx:458
+#: src/components/rule-builder.tsx:423
 msgid "When user is in"
 msgstr "When user is in"
 
-#: src/routes/settings.tsx:126
+#: src/routes/settings.tsx:119
 msgid "Write"
 msgstr "Write"
 
-#: src/routes/team.tsx:285
+#: src/routes/team.tsx:257
 msgid "You"
 msgstr "You"
 
-#: src/routes/team.tsx:84
+#: src/routes/team.tsx:76
 msgid "You cannot change your own role"
 msgstr "You cannot change your own role"
 
-#: src/routes/configs.tsx:358
+#: src/routes/configs.tsx:320
 msgid "You have view-only access to this project."
 msgstr "You have view-only access to this project."
 
-#: src/components/onboarding-stepper.tsx:88
+#: src/components/onboarding-stepper.tsx:80
 msgid "You're all set!"
 msgstr "You're all set!"
 
-#: src/routes/__root.tsx:355
+#: src/routes/__root.tsx:316
 msgid "Your account is not authorized to access this portal. Contact the project owner to request access."
 msgstr "Your account is not authorized to access this portal. Contact the project owner to request access."
