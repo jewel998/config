@@ -3,7 +3,7 @@ import {
   beforeUserSignedIn,
 } from "firebase-functions/v2/identity";
 import { HttpsError } from "firebase-functions/v2/https";
-import { getDb } from "../utils/firestore.js";
+import { getDb } from "../utils/firestore";
 
 /**
  * Shared access control check.

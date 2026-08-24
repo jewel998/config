@@ -15,6 +15,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@jewel998/api": "workspace:*",
     "firebase-admin": "^13.0.0",
     "firebase-functions": "^7.3.2"
   },

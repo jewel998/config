@@ -9,6 +9,5 @@
     "skipLibCheck": true,
     "noEmit": true,
     "lib": ["ES2022"]
-  },
-  "references": [{ "path": "./packages/config" }]
+  }
 }

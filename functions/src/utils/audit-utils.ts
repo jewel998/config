@@ -1,4 +1,4 @@
-import type { WebhookResourceCategory } from "../types.js";
+import type { WebhookResourceCategory } from "../types";
 
 export function getResourceCategory(path: string): WebhookResourceCategory {
   if (path.includes("configs")) return "config";

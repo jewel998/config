@@ -6,7 +6,7 @@
  */
 
 import type { Firestore } from "firebase-admin/firestore";
-import { ForbiddenError } from "../../utils/errors.js";
+import { ForbiddenError } from "../../utils/errors";
 
 /**
  * Validate that the request origin is allowed for the given environment.

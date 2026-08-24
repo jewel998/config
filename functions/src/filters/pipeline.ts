@@ -1,7 +1,7 @@
-import type { AuditEntry, FilterFn, WebhookConfig } from "../types.js";
-import { eventTypeFilter } from "./event-type.filter.js";
-import { resourceCategoryFilter } from "./resource-category.filter.js";
-import { environmentFilter } from "./environment.filter.js";
+import type { AuditEntry, FilterFn, WebhookConfig } from "../types";
+import { eventTypeFilter } from "./event-type.filter";
+import { resourceCategoryFilter } from "./resource-category.filter";
+import { environmentFilter } from "./environment.filter";
 
 /**
  * Composable filter pipeline (Chain of Responsibility).

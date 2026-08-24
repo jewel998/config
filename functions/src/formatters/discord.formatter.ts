@@ -1,9 +1,9 @@
-import type { AuditEntry, PayloadFormatter, WebhookConfig } from "../types.js";
+import type { AuditEntry, PayloadFormatter, WebhookConfig } from "../types";
 import {
   getEnvironmentFromPath,
   getResourceCategory,
   formatResourceName,
-} from "../utils/audit-utils.js";
+} from "../utils/audit-utils";
 
 const ACTION_COLORS: Record<string, number> = {
   create: 0x57f287, // green

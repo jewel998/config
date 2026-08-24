@@ -6,13 +6,15 @@
  */
 
 import type { Firestore } from "firebase-admin/firestore";
-import type { ConfigDoc, SegmentDoc } from "../server-evaluator.js";
+import type { ConfigDoc, SegmentDoc } from "../server-evaluator";
 
 export interface FetchConfigsResult {
   /** Parsed config documents */
   configs: ConfigDoc[];
   /** Segment definitions keyed by ID */
   segments: Record<string, SegmentDoc>;
+  /** Environment config version (same as getVersion returns) */
+  version: string;
   /** ISO timestamp of the most recently updated config */
   latestUpdate: string;
 }
@@ -56,10 +58,21 @@ export async function fetchConfigs(
     .collection("segments")
     .get();
 
-  const [configDocs, segmentsSnapshot] = await Promise.all([
+  const envPromise = db
+    .collection("projects")
+    .doc(projectId)
+    .collection("environments")
+    .doc(environmentId)
+    .get();
+
+  const [configDocs, segmentsSnapshot, envDoc] = await Promise.all([
     configsPromise,
     segmentsPromise,
+    envPromise,
   ]);
+
+  const envData = envDoc.data() ?? {};
+  const version: string = envData.configVersion ?? "0";
 
   const segments: Record<string, SegmentDoc> = {};
   for (const doc of segmentsSnapshot.docs) {
@@ -98,5 +111,5 @@ export async function fetchConfigs(
     }
   }
 
-  return { configs, segments, latestUpdate };
+  return { configs, segments, version, latestUpdate };
 }

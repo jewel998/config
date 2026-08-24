@@ -3,12 +3,12 @@ import type {
   PayloadFormatter,
   WebhookConfig,
   WebhookPayload,
-} from "../types.js";
+} from "../types";
 import {
   getEnvironmentFromPath,
   getResourceCategory,
   formatResourceName,
-} from "../utils/audit-utils.js";
+} from "../utils/audit-utils";
 
 export const standardFormatter: PayloadFormatter = {
   contentType: "application/json",

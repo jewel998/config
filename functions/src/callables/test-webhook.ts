@@ -1,10 +1,10 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { getDb } from "../utils/firestore.js";
-import { DISPATCH_TIMEOUT_MS } from "../constants.js";
-import { writeDeliveryLog } from "../delivery/write-delivery-log.js";
-import { httpDispatcher } from "../dispatcher/http.dispatcher.js";
-import { getFormatter } from "../formatters/registry.js";
-import type { AuditEntry, WebhookConfig } from "../types.js";
+import { getDb } from "../utils/firestore";
+import { DISPATCH_TIMEOUT_MS } from "../constants";
+import { writeDeliveryLog } from "../delivery/write-delivery-log";
+import { httpDispatcher } from "../dispatcher/http.dispatcher";
+import { getFormatter } from "../formatters/registry";
+import type { AuditEntry, WebhookConfig } from "../types";
 
 /**
  * Callable function for testing webhook delivery.

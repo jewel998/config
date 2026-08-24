@@ -1,9 +1,9 @@
-import type { AuditEntry, PayloadFormatter, WebhookConfig } from "../types.js";
+import type { AuditEntry, PayloadFormatter, WebhookConfig } from "../types";
 import {
   getEnvironmentFromPath,
   getResourceCategory,
   formatResourceName,
-} from "../utils/audit-utils.js";
+} from "../utils/audit-utils";
 
 export const googleChatFormatter: PayloadFormatter = {
   contentType: "application/json",

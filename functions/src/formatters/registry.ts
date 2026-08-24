@@ -1,10 +1,10 @@
-import type { PayloadFormatter } from "../types.js";
-import { customFormatter } from "./custom.formatter.js";
-import { discordFormatter } from "./discord.formatter.js";
-import { googleChatFormatter } from "./google-chat.formatter.js";
-import { msTeamsFormatter } from "./ms-teams.formatter.js";
-import { slackFormatter } from "./slack.formatter.js";
-import { standardFormatter } from "./standard.formatter.js";
+import type { PayloadFormatter } from "../types";
+import { customFormatter } from "./custom.formatter";
+import { discordFormatter } from "./discord.formatter";
+import { googleChatFormatter } from "./google-chat.formatter";
+import { msTeamsFormatter } from "./ms-teams.formatter";
+import { slackFormatter } from "./slack.formatter";
+import { standardFormatter } from "./standard.formatter";
 
 /**
  * Formatter registry (Strategy pattern).

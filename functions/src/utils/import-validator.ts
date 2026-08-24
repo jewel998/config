@@ -4,7 +4,7 @@ import type {
   ImportEntry,
   RawEntry,
   ValidationResult,
-} from "../import-export-types.js";
+} from "../import-export-types";
 
 const KEY_PATTERN = /^[a-zA-Z0-9._]+$/;
 const MAX_KEY_LENGTH = 100;

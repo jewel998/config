@@ -1,13 +1,13 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { getDb } from "../utils/firestore.js";
-import { MAX_INSTANCES, FUNCTION_TIMEOUT_SECONDS } from "../utils/constants.js";
+import { getDb } from "../utils/firestore";
+import { MAX_INSTANCES, FUNCTION_TIMEOUT_SECONDS } from "../utils/constants";
 import { getStorage } from "firebase-admin/storage";
 import type {
   ExportFile,
   ExportEnvironment,
   ExportSegment,
   ExportType,
-} from "../import-export-types.js";
+} from "../import-export-types";
 
 interface ExportCallableData {
   projectId: string;

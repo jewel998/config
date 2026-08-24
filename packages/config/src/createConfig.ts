@@ -30,10 +30,15 @@ export function createConfig(
     throw new ConfigError("clientId is required", "MISSING_CLIENT_ID");
   }
 
-  // 2. Check browser environment
-  if (typeof window === "undefined") {
+  // 2. Check browser environment (for client keys only)
+  // Server keys (svr_) can run in any environment.
+  // Client keys (cid_) require a browser because they rely on server-side evaluation
+  // with origin/referer headers for domain validation.
+  if (typeof window === "undefined" && !options.clientId.startsWith("svr_")) {
     throw new ConfigError(
-      "@jewel998/config is browser-only. Server-side usage is not supported.",
+      "Client keys (cid_) require a browser environment. " +
+        "For server-side usage, use `initServerConfig` from '@jewel998/config/server' " +
+        "with a server key (svr_).",
       "INITIALIZATION_FAILED",
     );
   }

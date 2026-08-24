@@ -1,5 +1,5 @@
-import type { FilterFn } from "../types.js";
-import { getEnvironmentFromPath } from "../utils/audit-utils.js";
+import type { FilterFn } from "../types";
+import { getEnvironmentFromPath } from "../utils/audit-utils";
 
 export const environmentFilter: FilterFn = (webhook, entry) => {
   if (webhook.environments.length === 0) return true;

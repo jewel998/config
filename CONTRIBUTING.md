@@ -34,6 +34,7 @@ apps/
   portal/      — Admin portal (React + Vite + TanStack Router + Lingui)
   docs/        — Documentation site (VitePress)
 packages/
+  api/         — Internal micro-framework for Cloud Functions (@jewel998/api)
   config/      — SDK (@jewel998/config)
   tour/        — Declarative tour framework (@jewel998/tour)
 functions/     — Firebase Cloud Functions (API + webhooks)

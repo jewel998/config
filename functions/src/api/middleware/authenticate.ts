@@ -6,7 +6,7 @@
  */
 
 import type { Firestore } from "firebase-admin/firestore";
-import { InternalError, UnauthorizedError } from "../../utils/errors.js";
+import { InternalError, UnauthorizedError } from "../../utils/errors";
 
 export interface AuthResult {
   /** Firestore project document ID */

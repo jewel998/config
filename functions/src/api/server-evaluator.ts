@@ -4,7 +4,7 @@
 // Pipeline order: archived → prerequisites → overrides → schedule → targeting → rollout → default
 // ═══════════════════════════════════════════════════════════════
 
-import { isInRollout } from "./rollout-hash.js";
+import { isInRollout } from "./rollout-hash";
 
 // ═══════════════════════════════════════════════════════════════
 // Types

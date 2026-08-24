@@ -1,11 +1,11 @@
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
-import { getDb } from "../utils/firestore.js";
-import { DISPATCH_TIMEOUT_MS } from "../constants.js";
-import { writeDeliveryLog } from "../delivery/write-delivery-log.js";
-import { httpDispatcher } from "../dispatcher/http.dispatcher.js";
-import { evaluateFilters } from "../filters/pipeline.js";
-import { getFormatter } from "../formatters/registry.js";
-import type { AuditEntry, WebhookConfig, WebhookDispatcher } from "../types.js";
+import { getDb } from "../utils/firestore";
+import { DISPATCH_TIMEOUT_MS } from "../constants";
+import { writeDeliveryLog } from "../delivery/write-delivery-log";
+import { httpDispatcher } from "../dispatcher/http.dispatcher";
+import { evaluateFilters } from "../filters/pipeline";
+import { getFormatter } from "../formatters/registry";
+import type { AuditEntry, WebhookConfig, WebhookDispatcher } from "../types";
 
 /**
  * Firestore trigger: fires when a new audit log entry is created.

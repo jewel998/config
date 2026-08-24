@@ -1,4 +1,4 @@
-import type { DispatchResult, WebhookDispatcher } from "../types.js";
+import type { DispatchResult, WebhookDispatcher } from "../types";
 
 /**
  * Default HTTP dispatcher (Adapter pattern).

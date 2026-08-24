@@ -3,7 +3,7 @@
  */
 
 import type { Request } from "firebase-functions/v2/https";
-import { BadRequestError, MethodNotAllowedError } from "./errors.js";
+import { BadRequestError, MethodNotAllowedError } from "./errors";
 
 /**
  * Asserts the request uses one of the allowed HTTP methods.

@@ -1,19 +1,19 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { FieldValue } from "firebase-admin/firestore";
-import { getDb } from "../utils/firestore.js";
+import { getDb } from "../utils/firestore";
 import {
   MAX_BATCH_SIZE,
   MAX_INSTANCES,
   FUNCTION_TIMEOUT_SECONDS,
-} from "../utils/constants.js";
-import { validateEntries } from "../utils/import-validator.js";
+} from "../utils/constants";
+import { validateEntries } from "../utils/import-validator";
 import type {
   ConflictRow,
   ConflictStrategy,
   ImportEntry,
   ImportJob,
   FailedRowDoc,
-} from "../import-export-types.js";
+} from "../import-export-types";
 
 const JOB_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 

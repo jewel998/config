@@ -1,9 +1,9 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { FieldValue } from "firebase-admin/firestore";
-import { getDb } from "../utils/firestore.js";
-import { MAX_INSTANCES } from "../utils/constants.js";
-import { validateEntry } from "../utils/import-validator.js";
-import type { CorrectedEntry, RetryResponse } from "../import-export-types.js";
+import { getDb } from "../utils/firestore";
+import { MAX_INSTANCES } from "../utils/constants";
+import { validateEntry } from "../utils/import-validator";
+import type { CorrectedEntry, RetryResponse } from "../import-export-types";
 
 interface RetryCallableData {
   projectId: string;

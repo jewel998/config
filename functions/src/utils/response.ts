@@ -2,7 +2,7 @@
  * Standardized response helpers for onRequest Cloud Functions.
  */
 
-import type { ApiError } from "./errors.js";
+import type { ApiError } from "./errors";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 

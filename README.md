@@ -192,6 +192,7 @@ apps/
   landing/     — Marketing site (Astro + React)
   docs/        — Documentation (VitePress)
 packages/
+  api/         — Internal micro-framework for Cloud Functions (@jewel998/api)
   config/      — SDK (@jewel998/config)
   tour/        — Tour framework (@jewel998/tour)
 functions/     — Firebase Cloud Functions (API + webhooks)

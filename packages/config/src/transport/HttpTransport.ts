@@ -63,15 +63,30 @@ export const createHttpTransport = (config: TransportConfig): HttpTransport => {
         }
       }
 
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data: requestData,
-        }),
-      });
+      // Client keys (cid_) use POST with body (server-side evaluation needs context).
+      // Server keys (svr_) use GET with query params (fetches full flag data).
+      const isServerKey = config.clientId.startsWith("svr_");
+
+      let response: Response;
+
+      if (isServerKey) {
+        // GET request — clientId as query param
+        const params = new URLSearchParams({ clientId: config.clientId });
+        if (body?.keys && Array.isArray(body.keys)) {
+          params.set("keys", (body.keys as string[]).join(","));
+        }
+        response = await fetch(`${url}?${params.toString()}`, {
+          method: "GET",
+          headers: { Accept: "application/json" },
+        });
+      } else {
+        // POST request — full body with context
+        response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: requestData }),
+        });
+      }
 
       if (!response.ok) {
         const errorBody = await response.json().catch(() => ({}));

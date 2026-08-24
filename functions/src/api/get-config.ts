@@ -1,141 +1,74 @@
+// ═══════════════════════════════════════════════════════════════
+// getConfig — Config Delivery API
+//
+// GET  /api/v1/config?clientId=cid_xxx
+// POST /api/v1/config  { data: { clientId: "cid_xxx", keys?: [...] } }
+// ═══════════════════════════════════════════════════════════════
+
 import { onRequest } from "firebase-functions/v2/https";
-import { getDb } from "../utils/firestore.js";
 import {
-  BadRequestError,
-  PayloadTooLargeError,
-  withErrorHandler,
-} from "../utils/errors.js";
-import { assertMethod } from "../utils/request.js";
+  Methods,
+  UseMiddleware,
+  UseGuards,
+  RequestHandler,
+  createHandler,
+} from "@jewel998/api";
+import type { RequestContext, HandlerResponse } from "@jewel998/api";
+import { MAX_INSTANCES, MIN_INSTANCES, API_REGION } from "../utils/constants";
+import { getDb } from "../utils/firestore";
+import { evaluateConfigsForContext } from "./server-evaluator";
 import {
-  sendSuccess,
-  setCdnCache,
-  setPrivateCache,
-} from "../utils/response.js";
-import {
-  MAX_INSTANCES,
-  MAX_CONTEXT_SIZE_BYTES,
-  MIN_INSTANCES,
-  API_REGION,
-} from "../utils/constants.js";
-import {
-  evaluateConfigsForContext,
-  type UserContext,
-} from "./server-evaluator.js";
-import { authenticateClient } from "./middleware/authenticate.js";
-import { validateDomain } from "./middleware/validate-domain.js";
-import { fetchConfigs } from "./middleware/fetch-configs.js";
-import { checkRateLimit } from "./middleware/rate-limit.js";
+  ExtractClientIdMiddleware,
+  ValidateKeyMethodGuard,
+  ExtractContextGuard,
+  RateLimitMiddleware,
+  AuthenticateGuard,
+  ValidateDomainGuard,
+  FetchConfigsGuard,
+} from "./guards/index";
 
-/**
- * GET  /api/v1/config?clientId=cid_xxx
- * POST /api/v1/config  { data: { clientId: "cid_xxx", keys?: ["a","b"] } }
- *
- * Config delivery API for the @jewel998/config SDK.
- *
- * Security:
- *   - clientId validated against Firestore (must be active)
- *   - Optional domain validation (allowedDomains on environment)
- *   - Read-only: cannot modify configs via this endpoint
- *
- * Cost model:
- *   - CDN-cached for 60s → most requests never hit the function
- *   - Cloud Function: only on cache miss ($0.40 / million invocations)
- *   - Firestore reads: 2 per invocation (clientId lookup + configs)
- *   - With 60s CDN: 10K polls/hour = ~60 function calls/hour = FREE tier
- *
- * Performance:
- *   - Rate limit + authenticate run in parallel
- *   - Domain validation + config/segment fetch run in parallel
- *   - Total: 2 sequential Firestore round-trips (down from 4)
- */
-export const getConfig = onRequest(
-  {
-    cors: true,
-    maxInstances: MAX_INSTANCES,
-    minInstances: MIN_INSTANCES,
-    region: API_REGION,
-    memory: "256MiB",
-  },
-  withErrorHandler(async (req, res) => {
-    assertMethod(req, "GET", "POST");
+// ── Handler ──────────────────────────────────────────────────
 
-    // Extract clientId from query (GET) or body (POST)
-    const clientId =
-      (req.query.clientId as string) ??
-      (req.body?.data?.clientId as string) ??
-      null;
+@Methods("GET", "POST")
+@UseMiddleware(new ExtractClientIdMiddleware(), new RateLimitMiddleware())
+@UseGuards(
+  new ValidateKeyMethodGuard(),
+  new ExtractContextGuard(),
+  new AuthenticateGuard(),
+  new ValidateDomainGuard(),
+  new FetchConfigsGuard(),
+)
+class GetConfigHandler extends RequestHandler {
+  handle(ctx: RequestContext): HandlerResponse {
+    const {
+      configs,
+      segments,
+      latestUpdate,
+      evaluationMode,
+      projectId,
+      environmentId,
+    } = ctx;
 
-    if (!clientId) {
-      throw new BadRequestError("clientId is required");
-    }
+    ctx.res.set("X-Config-Project", projectId!);
+    ctx.res.set("X-Config-Environment", environmentId!);
 
-    const db = getDb();
-
-    // ── Phase 1: Rate limit + Authenticate (parallel) ──────────
-    const [, authResult] = await Promise.all([
-      checkRateLimit(db, clientId),
-      authenticateClient(db, clientId),
-    ]);
-
-    const { projectId, environmentId } = authResult;
-
-    // ── Phase 2: Domain validation + Fetch data (parallel) ─────
-    const origin = req.headers.origin ?? req.headers.referer ?? "";
-
-    const isServerKey = clientId.startsWith("svr_");
-    const evaluationMode = isServerKey ? "client" : "server";
-
-    const userContext: UserContext | null =
-      evaluationMode === "server"
-        ? ((req.body?.data?.context as UserContext) ?? null)
-        : null;
-
-    // Reject oversized context payloads
-    if (userContext) {
-      const contextSize = JSON.stringify(userContext).length;
-      if (contextSize > MAX_CONTEXT_SIZE_BYTES) {
-        throw new PayloadTooLargeError("Context payload exceeds 10KB limit");
-      }
-    }
-
-    // Extract optional key filter
-    const requestedKeys: string[] | undefined =
-      (req.query.keys as string)
-        ?.split(",")
-        .map((k) => k.trim())
-        .filter(Boolean) ??
-      (req.body?.data?.keys as string[] | undefined) ??
-      undefined;
-
-    // Run domain validation and data fetching in parallel
-    const [, { configs, segments, latestUpdate }] = await Promise.all([
-      validateDomain(db, projectId, environmentId, origin),
-      fetchConfigs(db, projectId, environmentId, requestedKeys),
-    ]);
-
-    // ── Phase 3: Build response ────────────────────────────────
     if (evaluationMode === "server") {
       const { data } = evaluateConfigsForContext(
-        configs,
-        segments,
-        userContext,
+        configs!,
+        segments!,
+        ctx.userContext ?? null,
       );
+      ctx.res.set("Cache-Control", "private, max-age=30");
 
-      setPrivateCache(res, 30);
-      res.set("X-Config-Project", projectId);
-      res.set("X-Config-Environment", environmentId);
-
-      sendSuccess(res, {
+      return {
         data,
-        version: String(Object.keys(data).length),
+        version: ctx.version,
         timestamp: latestUpdate || new Date().toISOString(),
-      });
-      return;
+      };
     }
 
-    // CLIENT EVALUATION MODE — return full flag data + segments
     const data: Record<string, unknown> = {};
-    for (const config of configs) {
+    for (const config of configs!) {
       data[config.key] = {
         key: config.key,
         value: config.value,
@@ -155,15 +88,28 @@ export const getConfig = onRequest(
       };
     }
 
-    setCdnCache(res, 30, 60);
-    res.set("X-Config-Project", projectId);
-    res.set("X-Config-Environment", environmentId);
+    ctx.res.set("Cache-Control", "public, max-age=30, s-maxage=60");
 
-    sendSuccess(res, {
+    return {
       data,
       segments,
-      version: String(Object.keys(data).length),
+      version: ctx.version,
       timestamp: latestUpdate || new Date().toISOString(),
-    });
+    };
+  }
+}
+
+// ── Export ────────────────────────────────────────────────────
+
+export const getConfig = onRequest(
+  {
+    cors: true,
+    maxInstances: MAX_INSTANCES,
+    minInstances: MIN_INSTANCES,
+    region: API_REGION,
+    memory: "256MiB",
+  },
+  createHandler(GetConfigHandler, {
+    createContext: (req, res) => ({ req, res, db: getDb() }),
   }),
 );
