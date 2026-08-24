@@ -8,11 +8,7 @@ import type {
 /**
  * Combine a Date and time (hours/minutes) into an ISO 8601 string.
  */
-export function combineDateAndTime(
-  date: Date,
-  hours: number,
-  minutes: number,
-): string {
+export function combineDateAndTime(date: Date, hours: number, minutes: number): string {
   const combined = new Date(date);
   combined.setHours(hours, minutes, 0, 0);
   return combined.toISOString();
@@ -79,8 +75,7 @@ export function computeSegmentUsage(
         if (found) break;
         for (const predicate of group.predicates) {
           if (
-            (predicate.operator === "in_segment" ||
-              predicate.operator === "not_in_segment") &&
+            (predicate.operator === "in_segment" || predicate.operator === "not_in_segment") &&
             predicate.value === segmentId
           ) {
             configKeys.push(config.key);
@@ -102,17 +97,12 @@ export function computeSegmentUsage(
  * Single group with multiple predicates: "plan equals pro AND country equals US"
  * Multiple groups: first group summary + "+ N more groups"
  */
-export function formatConditionSummary(
-  conditions: PredicateGroup[],
-  maxGroups = 1,
-): string {
+export function formatConditionSummary(conditions: PredicateGroup[], maxGroups = 1): string {
   if (conditions.length === 0) return "No conditions";
 
   const formatGroup = (group: PredicateGroup): string => {
     if (group.predicates.length === 0) return "Empty group";
-    return group.predicates
-      .map((p) => `${p.attribute} ${p.operator} ${p.value}`)
-      .join(" AND ");
+    return group.predicates.map((p) => `${p.attribute} ${p.operator} ${p.value}`).join(" AND ");
   };
 
   const firstGroups = conditions.slice(0, maxGroups);

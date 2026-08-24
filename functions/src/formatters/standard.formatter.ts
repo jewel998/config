@@ -1,9 +1,4 @@
-import type {
-  AuditEntry,
-  PayloadFormatter,
-  WebhookConfig,
-  WebhookPayload,
-} from "../types";
+import type { AuditEntry, PayloadFormatter, WebhookConfig, WebhookPayload } from "../types";
 import {
   getEnvironmentFromPath,
   getResourceCategory,
@@ -13,11 +8,7 @@ import {
 export const standardFormatter: PayloadFormatter = {
   contentType: "application/json",
 
-  format(
-    entry: AuditEntry,
-    webhook: WebhookConfig,
-    projectId: string,
-  ): WebhookPayload {
+  format(entry: AuditEntry, webhook: WebhookConfig, projectId: string): WebhookPayload {
     return {
       action: entry.action,
       resourceCategory: getResourceCategory(entry.resourcePath),

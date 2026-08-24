@@ -29,11 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  useConfigs,
-  usePromoteConfigs,
-  type ConfigEntry,
-} from "@/hooks/use-configs";
+import { useConfigs, usePromoteConfigs, type ConfigEntry } from "@/hooks/use-configs";
 import { useEnvironments } from "@/hooks/use-environments";
 import { useProjectStore } from "@/stores/project-store";
 
@@ -71,16 +67,14 @@ const statusBadge: Record<
 
 const formatValue = (value: unknown): string => {
   if (value === undefined || value === null) return "—";
-  if (typeof value === "string")
-    return value.length > 40 ? value.slice(0, 40) + "…" : value;
+  if (typeof value === "string") return value.length > 40 ? value.slice(0, 40) + "…" : value;
   return JSON.stringify(value).slice(0, 40);
 };
 
 const ComparePage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const selectedEnvironmentId = useProjectStore((s) => s.selectedEnvironmentId);
-  const { data: environments = [], isLoading: envsLoading } =
-    useEnvironments(selectedProjectId);
+  const { data: environments = [], isLoading: envsLoading } = useEnvironments(selectedProjectId);
   const promoteConfigs = usePromoteConfigs();
 
   const [sourceEnvId, setSourceEnvId] = useState<string>("");
@@ -111,10 +105,8 @@ const ComparePage = () => {
     targetEnvId || null,
   );
 
-  const sourceEnvName =
-    environments.find((e) => e.id === sourceEnvId)?.name ?? "Source";
-  const targetEnvName =
-    environments.find((e) => e.id === targetEnvId)?.name ?? "Target";
+  const sourceEnvName = environments.find((e) => e.id === sourceEnvId)?.name ?? "Source";
+  const targetEnvName = environments.find((e) => e.id === targetEnvId)?.name ?? "Target";
 
   const diff = useMemo((): DiffRow[] => {
     if (!sourceEnvId || !targetEnvId) return [];
@@ -176,9 +168,7 @@ const ComparePage = () => {
     return rows.sort((a, b) => order[a.status] - order[b.status]);
   }, [sourceConfigs, targetConfigs, sourceEnvId, targetEnvId]);
 
-  const visibleDiff = showIdentical
-    ? diff
-    : diff.filter((r) => r.status !== "identical");
+  const visibleDiff = showIdentical ? diff : diff.filter((r) => r.status !== "identical");
   const identicalCount = diff.filter((r) => r.status === "identical").length;
 
   const toggleAction = (key: string, direction: SyncDirection) => {
@@ -304,11 +294,7 @@ const ComparePage = () => {
           </SelectTrigger>
           <SelectContent>
             {environments.map((env) => (
-              <SelectItem
-                key={env.id}
-                value={env.id}
-                disabled={env.id === targetEnvId}
-              >
+              <SelectItem key={env.id} value={env.id} disabled={env.id === targetEnvId}>
                 {env.name}
               </SelectItem>
             ))}
@@ -340,11 +326,7 @@ const ComparePage = () => {
           </SelectTrigger>
           <SelectContent>
             {environments.map((env) => (
-              <SelectItem
-                key={env.id}
-                value={env.id}
-                disabled={env.id === sourceEnvId}
-              >
+              <SelectItem key={env.id} value={env.id} disabled={env.id === sourceEnvId}>
                 {env.name}
               </SelectItem>
             ))}
@@ -367,9 +349,7 @@ const ComparePage = () => {
           <CardContent className="py-12 text-center">
             <GitCompare className="mx-auto mb-4 h-8 w-8 text-muted-foreground" />
             <p className="text-sm text-muted-foreground">
-              <Trans>
-                Select a source and target environment to see the diff.
-              </Trans>
+              <Trans>Select a source and target environment to see the diff.</Trans>
             </p>
           </CardContent>
         </Card>
@@ -382,13 +362,11 @@ const ComparePage = () => {
           <div className="flex flex-wrap items-center gap-3">
             <Badge variant="default" className="rounded-full gap-1">
               <Plus className="h-3 w-3" />
-              {diff.filter((r) => r.status === "added").length}{" "}
-              <Trans>new</Trans>
+              {diff.filter((r) => r.status === "added").length} <Trans>new</Trans>
             </Badge>
             <Badge variant="secondary" className="rounded-full gap-1">
               <Minus className="h-3 w-3" />
-              {diff.filter((r) => r.status === "changed").length}{" "}
-              <Trans>changed</Trans>
+              {diff.filter((r) => r.status === "changed").length} <Trans>changed</Trans>
             </Badge>
             <Badge variant="outline" className="rounded-full gap-1">
               <Check className="h-3 w-3" />
@@ -404,11 +382,7 @@ const ComparePage = () => {
                 className="rounded-full text-xs"
                 onClick={() => setShowIdentical(!showIdentical)}
               >
-                {showIdentical ? (
-                  <Trans>Hide identical</Trans>
-                ) : (
-                  <Trans>Show identical</Trans>
-                )}
+                {showIdentical ? <Trans>Hide identical</Trans> : <Trans>Show identical</Trans>}
               </Button>
             )}
           </div>
@@ -422,9 +396,7 @@ const ComparePage = () => {
                   <Trans>Environments are in sync</Trans>
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  <Trans>
-                    No differences found between these environments.
-                  </Trans>
+                  <Trans>No differences found between these environments.</Trans>
                 </p>
               </CardContent>
             </Card>
@@ -444,14 +416,9 @@ const ComparePage = () => {
                     >
                       {/* Direction arrows */}
                       <div className="flex shrink-0 gap-1">
-                        {(row.status === "added" ||
-                          row.status === "changed") && (
+                        {(row.status === "added" || row.status === "changed") && (
                           <Button
-                            variant={
-                              actions.get(row.key) === "to-target"
-                                ? "default"
-                                : "ghost"
-                            }
+                            variant={actions.get(row.key) === "to-target" ? "default" : "ghost"}
                             size="sm"
                             className="h-6 w-6 rounded-full p-0"
                             onClick={() => toggleAction(row.key, "to-target")}
@@ -460,14 +427,9 @@ const ComparePage = () => {
                             <ArrowRight className="h-3 w-3" />
                           </Button>
                         )}
-                        {(row.status === "removed" ||
-                          row.status === "changed") && (
+                        {(row.status === "removed" || row.status === "changed") && (
                           <Button
-                            variant={
-                              actions.get(row.key) === "to-source"
-                                ? "default"
-                                : "ghost"
-                            }
+                            variant={actions.get(row.key) === "to-source" ? "default" : "ghost"}
                             size="sm"
                             className="h-6 w-6 rounded-full p-0"
                             onClick={() => toggleAction(row.key, "to-source")}
@@ -502,8 +464,7 @@ const ComparePage = () => {
                         {row.status === "changed" && (
                           <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground" />
                         )}
-                        {(row.status === "changed" ||
-                          row.status === "removed") &&
+                        {(row.status === "changed" || row.status === "removed") &&
                           row.targetValue !== undefined && (
                             <code className="truncate rounded bg-muted px-1.5 py-0.5 text-xs">
                               {formatValue(row.targetValue)}
@@ -541,22 +502,15 @@ const ComparePage = () => {
         <div className="max-h-[50vh] space-y-4 overflow-y-auto">
           {toTargetPreview.length > 0 && (
             <div>
-              <p className="mb-2 text-sm font-medium">
-                → Writing to {targetEnvName}:
-              </p>
+              <p className="mb-2 text-sm font-medium">→ Writing to {targetEnvName}:</p>
               <div className="space-y-1">
                 {toTargetPreview.map((item) => (
                   <div
                     key={item.key}
                     className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2"
                   >
-                    <span className="font-mono text-xs font-medium">
-                      {item.key}
-                    </span>
-                    <Badge
-                      variant="outline"
-                      className="rounded-full text-[10px]"
-                    >
+                    <span className="font-mono text-xs font-medium">{item.key}</span>
+                    <Badge variant="outline" className="rounded-full text-[10px]">
                       {item.valueType}
                     </Badge>
                     <code className="ml-auto max-w-32 truncate text-xs text-muted-foreground">
@@ -569,22 +523,15 @@ const ComparePage = () => {
           )}
           {toSourcePreview.length > 0 && (
             <div>
-              <p className="mb-2 text-sm font-medium">
-                ← Writing to {sourceEnvName}:
-              </p>
+              <p className="mb-2 text-sm font-medium">← Writing to {sourceEnvName}:</p>
               <div className="space-y-1">
                 {toSourcePreview.map((item) => (
                   <div
                     key={item.key}
                     className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2"
                   >
-                    <span className="font-mono text-xs font-medium">
-                      {item.key}
-                    </span>
-                    <Badge
-                      variant="outline"
-                      className="rounded-full text-[10px]"
-                    >
+                    <span className="font-mono text-xs font-medium">{item.key}</span>
+                    <Badge variant="outline" className="rounded-full text-[10px]">
                       {item.valueType}
                     </Badge>
                     <code className="ml-auto max-w-32 truncate text-xs text-muted-foreground">
@@ -597,11 +544,7 @@ const ComparePage = () => {
           )}
         </div>
         <div className="flex justify-end gap-2 pt-4">
-          <Button
-            variant="outline"
-            className="rounded-full"
-            onClick={() => setShowPreview(false)}
-          >
+          <Button variant="outline" className="rounded-full" onClick={() => setShowPreview(false)}>
             <Trans>Cancel</Trans>
           </Button>
           <Button
@@ -609,11 +552,7 @@ const ComparePage = () => {
             onClick={handleApply}
             disabled={promoteConfigs.isPending}
           >
-            {promoteConfigs.isPending ? (
-              <Spinner />
-            ) : (
-              <Trans>Apply {actions.size} changes</Trans>
-            )}
+            {promoteConfigs.isPending ? <Spinner /> : <Trans>Apply {actions.size} changes</Trans>}
           </Button>
         </div>
       </ResponsiveModal>

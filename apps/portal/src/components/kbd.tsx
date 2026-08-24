@@ -1,7 +1,5 @@
 /** Detects if the user is on macOS */
-const isMac =
-  typeof navigator !== "undefined" &&
-  /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad|iPod/.test(navigator.platform);
 
 /** Symbol map for modifier keys — shows platform-appropriate glyphs */
 const MOD_SYMBOLS: Record<string, string> = {

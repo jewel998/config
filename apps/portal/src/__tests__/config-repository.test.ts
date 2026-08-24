@@ -1,9 +1,7 @@
 import { describe, it, expect } from "vitest";
+
 import { ConfigRepository } from "@/dao/config.repository";
-import type {
-  ConfigCreateInput,
-  ConfigUpdateInput,
-} from "@/dao/config.repository";
+import type { ConfigCreateInput, ConfigUpdateInput } from "@/dao/config.repository";
 
 /**
  * Tests for ConfigRepository validation.
@@ -13,10 +11,7 @@ import type {
 
 // Access the protected validate method via a test subclass
 class TestableConfigRepository extends ConfigRepository {
-  public testValidate(
-    input: ConfigCreateInput | ConfigUpdateInput,
-    op: "create" | "update",
-  ) {
+  public testValidate(input: ConfigCreateInput | ConfigUpdateInput, op: "create" | "update") {
     return this.validate(input, op);
   }
 }
@@ -36,13 +31,8 @@ describe("ConfigRepository: Create Validation", () => {
   });
 
   it("rejects missing key", () => {
-    const errors = repo.testValidate(
-      { key: "", value: true, valueType: "boolean" },
-      "create",
-    );
-    expect(errors.some((e) => e.field === "key" && e.code === "REQUIRED")).toBe(
-      true,
-    );
+    const errors = repo.testValidate({ key: "", value: true, valueType: "boolean" }, "create");
+    expect(errors.some((e) => e.field === "key" && e.code === "REQUIRED")).toBe(true);
   });
 
   it("rejects missing value", () => {
@@ -50,9 +40,7 @@ describe("ConfigRepository: Create Validation", () => {
       { key: "test", value: undefined as any, valueType: "boolean" },
       "create",
     );
-    expect(
-      errors.some((e) => e.field === "value" && e.code === "REQUIRED"),
-    ).toBe(true);
+    expect(errors.some((e) => e.field === "value" && e.code === "REQUIRED")).toBe(true);
   });
 
   it("rejects missing valueType", () => {
@@ -108,56 +96,35 @@ describe("ConfigRepository: Value-Type Consistency", () => {
   });
 
   it("accepts numeric string for number type", () => {
-    const errors = repo.testValidate(
-      { key: "test", value: "42", valueType: "number" },
-      "create",
-    );
+    const errors = repo.testValidate({ key: "test", value: "42", valueType: "number" }, "create");
     expect(errors).toHaveLength(0);
   });
 
   it("rejects invalid boolean", () => {
-    const errors = repo.testValidate(
-      { key: "test", value: "yes", valueType: "boolean" },
-      "create",
-    );
+    const errors = repo.testValidate({ key: "test", value: "yes", valueType: "boolean" }, "create");
     expect(errors.some((e) => e.code === "INVALID_BOOLEAN")).toBe(true);
   });
 
   it("accepts true/false string for boolean", () => {
     expect(
-      repo.testValidate(
-        { key: "t", value: "true", valueType: "boolean" },
-        "create",
-      ),
+      repo.testValidate({ key: "t", value: "true", valueType: "boolean" }, "create"),
     ).toHaveLength(0);
     expect(
-      repo.testValidate(
-        { key: "t", value: "false", valueType: "boolean" },
-        "create",
-      ),
+      repo.testValidate({ key: "t", value: "false", valueType: "boolean" }, "create"),
     ).toHaveLength(0);
   });
 
   it("accepts native boolean", () => {
     expect(
-      repo.testValidate(
-        { key: "t", value: true, valueType: "boolean" },
-        "create",
-      ),
+      repo.testValidate({ key: "t", value: true, valueType: "boolean" }, "create"),
     ).toHaveLength(0);
     expect(
-      repo.testValidate(
-        { key: "t", value: false, valueType: "boolean" },
-        "create",
-      ),
+      repo.testValidate({ key: "t", value: false, valueType: "boolean" }, "create"),
     ).toHaveLength(0);
   });
 
   it("rejects number for boolean type", () => {
-    const errors = repo.testValidate(
-      { key: "test", value: 1, valueType: "boolean" },
-      "create",
-    );
+    const errors = repo.testValidate({ key: "test", value: 1, valueType: "boolean" }, "create");
     expect(errors.some((e) => e.code === "INVALID_BOOLEAN")).toBe(true);
   });
 
@@ -178,18 +145,12 @@ describe("ConfigRepository: Value-Type Consistency", () => {
   });
 
   it("accepts native object for json type", () => {
-    const errors = repo.testValidate(
-      { key: "test", value: { a: 1 }, valueType: "json" },
-      "create",
-    );
+    const errors = repo.testValidate({ key: "test", value: { a: 1 }, valueType: "json" }, "create");
     expect(errors).toHaveLength(0);
   });
 
   it("rejects array for json type", () => {
-    const errors = repo.testValidate(
-      { key: "test", value: [1, 2], valueType: "json" },
-      "create",
-    );
+    const errors = repo.testValidate({ key: "test", value: [1, 2], valueType: "json" }, "create");
     expect(errors.some((e) => e.code === "INVALID_JSON")).toBe(true);
   });
 
@@ -301,10 +262,7 @@ describe("ConfigRepository: Advanced Fields", () => {
 
 describe("ConfigRepository: Update Validation", () => {
   it("accepts partial update with valid fields", () => {
-    const errors = repo.testValidate(
-      { value: "new value", valueType: "string" },
-      "update",
-    );
+    const errors = repo.testValidate({ value: "new value", valueType: "string" }, "update");
     expect(errors).toHaveLength(0);
   });
 
@@ -316,10 +274,7 @@ describe("ConfigRepository: Update Validation", () => {
   });
 
   it("validates value-type consistency on update", () => {
-    const errors = repo.testValidate(
-      { value: "not_a_number", valueType: "number" },
-      "update",
-    );
+    const errors = repo.testValidate({ value: "not_a_number", valueType: "number" }, "update");
     expect(errors.some((e) => e.code === "INVALID_NUMBER")).toBe(true);
   });
 });

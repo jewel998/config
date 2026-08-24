@@ -79,9 +79,7 @@ function evaluatePredicateGroupsWithSegments(
  * 6. First matching rule → return { resolved: true, value: rule.value }
  * 7. No rule matches → return { resolved: false }
  */
-export function targetingPlugin(
-  segments?: Record<string, Segment>,
-): EvaluationPlugin {
+export function targetingPlugin(segments?: Record<string, Segment>): EvaluationPlugin {
   const segmentsMap = segments ?? {};
 
   return {
@@ -99,9 +97,7 @@ export function targetingPlugin(
 
       // Sort rules by priority (lowest number = highest priority).
       // Array.prototype.sort is stable in modern JS — same priority preserves insertion order.
-      const sortedRules = [...flag.targetingRules].sort(
-        (a, b) => a.priority - b.priority,
-      );
+      const sortedRules = [...flag.targetingRules].sort((a, b) => a.priority - b.priority);
 
       // Build attributes from context (default to empty object)
       const attributes: Record<string, AttributeValue> = context.attributes ?? {};

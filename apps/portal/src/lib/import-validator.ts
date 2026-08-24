@@ -244,11 +244,7 @@ export function validateImportEntry(
             reason: "targeting rule must have a string id",
           });
         }
-        if (
-          typeof rule.priority !== "number" ||
-          rule.priority < 1 ||
-          rule.priority > 1000
-        ) {
+        if (typeof rule.priority !== "number" || rule.priority < 1 || rule.priority > 1000) {
           errors.push({
             rowNumber,
             key,
@@ -273,9 +269,7 @@ export function validateImportEntry(
           });
         } else {
           for (let g = 0; g < (rule.conditions as unknown[]).length; g++) {
-            const group = (rule.conditions as Array<Record<string, unknown>>)[
-              g
-            ];
+            const group = (rule.conditions as Array<Record<string, unknown>>)[g];
             if (!Array.isArray(group?.predicates)) {
               errors.push({
                 rowNumber,
@@ -285,9 +279,7 @@ export function validateImportEntry(
               });
             } else {
               for (let p = 0; p < (group.predicates as unknown[]).length; p++) {
-                const pred = (
-                  group.predicates as Array<Record<string, unknown>>
-                )[p];
+                const pred = (group.predicates as Array<Record<string, unknown>>)[p];
                 if (!pred?.attribute || typeof pred.attribute !== "string") {
                   errors.push({
                     rowNumber,
@@ -296,10 +288,7 @@ export function validateImportEntry(
                     reason: "predicate must have string attribute",
                   });
                 }
-                if (
-                  !pred?.operator ||
-                  !VALID_PREDICATE_OPERATORS.includes(String(pred.operator))
-                ) {
+                if (!pred?.operator || !VALID_PREDICATE_OPERATORS.includes(String(pred.operator))) {
                   errors.push({
                     rowNumber,
                     key,
@@ -442,9 +431,10 @@ export function validateImportEntry(
  * Validates an array of import entries. Returns all errors grouped by row,
  * plus detects duplicate keys.
  */
-export function validateImportEntries(
-  entries: Array<Record<string, unknown>>,
-): { valid: ImportEntryFull[]; errors: ImportValidationError[] } {
+export function validateImportEntries(entries: Array<Record<string, unknown>>): {
+  valid: ImportEntryFull[];
+  errors: ImportValidationError[];
+} {
   const allErrors: ImportValidationError[] = [];
   const valid: ImportEntryFull[] = [];
   const seenKeys = new Set<string>();

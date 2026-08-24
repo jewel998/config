@@ -66,10 +66,7 @@ export function autoContext(user?: {
 /**
  * Deep-merge two evaluation contexts. User-provided values take precedence.
  */
-export function mergeContext(
-  auto: EvaluationContext,
-  user: EvaluationContext,
-): EvaluationContext {
+export function mergeContext(auto: EvaluationContext, user: EvaluationContext): EvaluationContext {
   return {
     userId: user.userId ?? auto.userId,
     attributes: {

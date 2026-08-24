@@ -17,9 +17,7 @@ export function sendSuccess<T>(res: any, data: T, statusCode = 200): void {
  * Sends an error JSON response from an ApiError instance.
  */
 export function sendError(res: any, error: ApiError): void {
-  res
-    .status(error.statusCode)
-    .json({ error: { code: error.code, message: error.message } });
+  res.status(error.statusCode).json({ error: { code: error.code, message: error.message } });
 }
 
 /**

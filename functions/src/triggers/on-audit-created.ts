@@ -1,20 +1,19 @@
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
-import { getDb } from "../utils/firestore";
+
 import { DISPATCH_TIMEOUT_MS } from "../constants";
 import { writeDeliveryLog } from "../delivery/write-delivery-log";
 import { httpDispatcher } from "../dispatcher/http.dispatcher";
 import { evaluateFilters } from "../filters/pipeline";
 import { getFormatter } from "../formatters/registry";
 import type { AuditEntry, WebhookConfig, WebhookDispatcher } from "../types";
+import { getDb } from "../utils/firestore";
 
 /**
  * Firestore trigger: fires when a new audit log entry is created.
  * Reads all enabled webhooks for the project, applies the filter pipeline,
  * formats payloads via the formatter registry, and dispatches via the adapter.
  */
-export function createOnAuditCreated(
-  dispatcher: WebhookDispatcher = httpDispatcher,
-) {
+export function createOnAuditCreated(dispatcher: WebhookDispatcher = httpDispatcher) {
   return onDocumentCreated(
     {
       document: "projects/{projectId}/audit_log/{entryId}",
@@ -83,13 +82,7 @@ export function createOnAuditCreated(
                     duration: 0,
                     error: String(result.reason),
                   };
-            return writeDeliveryLog(
-              projectId,
-              matching[i].id,
-              dispatchResult,
-              entryId,
-              false,
-            );
+            return writeDeliveryLog(projectId, matching[i].id, dispatchResult, entryId, false);
           }),
         );
       } catch (error) {

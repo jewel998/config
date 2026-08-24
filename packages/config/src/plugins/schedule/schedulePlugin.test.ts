@@ -191,11 +191,7 @@ describe("schedulePlugin", () => {
         },
       });
 
-      const resultWithUser = plugin.evaluate(
-        flag,
-        { userId: "user-1" },
-        makeHelpers(),
-      );
+      const resultWithUser = plugin.evaluate(flag, { userId: "user-1" }, makeHelpers());
       const resultWithoutUser = plugin.evaluate(flag, {}, makeHelpers());
 
       expect(resultWithUser).toEqual({ resolved: true, value: "scheduled" });

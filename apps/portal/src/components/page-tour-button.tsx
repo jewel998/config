@@ -1,13 +1,9 @@
+import { useTour } from "@jewel998/tour";
 import { t } from "@lingui/core/macro";
 import { HelpCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useTour } from "@jewel998/tour";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface PageTourButtonProps {
   flowId: string;

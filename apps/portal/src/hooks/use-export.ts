@@ -19,9 +19,7 @@ interface ExportConfigsResult {
 
 export const useExportConfigs = () => {
   return useMutation({
-    mutationFn: async (
-      args: ExportConfigsArgs,
-    ): Promise<ExportConfigsResult> => {
+    mutationFn: async (args: ExportConfigsArgs): Promise<ExportConfigsResult> => {
       const callable = httpsCallable<ExportConfigsArgs, ExportConfigsResult>(
         functions,
         "exportConfigs",

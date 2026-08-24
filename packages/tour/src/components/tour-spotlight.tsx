@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import type { Position } from "../types.js";
 
 interface TourSpotlightProps {
@@ -50,15 +51,8 @@ export function TourSpotlight({
   return (
     <>
       {/* Backdrop with cutout */}
-      <div
-        className="tour-backdrop"
-        style={{ position: "fixed", inset: 0, zIndex: 9998 }}
-      >
-        <svg
-          width="100%"
-          height="100%"
-          style={{ position: "absolute", inset: 0 }}
-        >
+      <div className="tour-backdrop" style={{ position: "fixed", inset: 0, zIndex: 9998 }}>
+        <svg width="100%" height="100%" style={{ position: "absolute", inset: 0 }}>
           <defs>
             <mask id="tour-mask">
               <rect width="100%" height="100%" fill="white" />
@@ -72,12 +66,7 @@ export function TourSpotlight({
               />
             </mask>
           </defs>
-          <rect
-            width="100%"
-            height="100%"
-            fill="rgba(0,0,0,0.5)"
-            mask="url(#tour-mask)"
-          />
+          <rect width="100%" height="100%" fill="rgba(0,0,0,0.5)" mask="url(#tour-mask)" />
         </svg>
       </div>
 
@@ -148,10 +137,7 @@ export function TourSpotlight({
   );
 }
 
-function getTooltipPosition(
-  rect: DOMRect,
-  position: Position,
-): React.CSSProperties {
+function getTooltipPosition(rect: DOMRect, position: Position): React.CSSProperties {
   const gap = 12;
   switch (position) {
     case "top":

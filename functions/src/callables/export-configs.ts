@@ -1,13 +1,14 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { getDb } from "../utils/firestore";
-import { MAX_INSTANCES, FUNCTION_TIMEOUT_SECONDS } from "../utils/constants";
 import { getStorage } from "firebase-admin/storage";
+import { onCall, HttpsError } from "firebase-functions/v2/https";
+
 import type {
   ExportFile,
   ExportEnvironment,
   ExportSegment,
   ExportType,
 } from "../import-export-types";
+import { MAX_INSTANCES, FUNCTION_TIMEOUT_SECONDS } from "../utils/constants";
+import { getDb } from "../utils/firestore";
 
 interface ExportCallableData {
   projectId: string;
@@ -33,16 +34,10 @@ export const exportConfigs = onCall(
     // ─── Argument Validation ─────────────────────────────────
     const data = request.data as ExportCallableData;
     if (!data.projectId || !data.exportType) {
-      throw new HttpsError(
-        "invalid-argument",
-        "projectId and exportType are required",
-      );
+      throw new HttpsError("invalid-argument", "projectId and exportType are required");
     }
     if (data.exportType === "user" && !data.userId) {
-      throw new HttpsError(
-        "invalid-argument",
-        "userId is required for user-specific exports",
-      );
+      throw new HttpsError("invalid-argument", "userId is required for user-specific exports");
     }
 
     const db = getDb();
@@ -57,14 +52,10 @@ export const exportConfigs = onCall(
     const roles: Record<string, string> = projectData.roles || {};
     const isOwner = projectData.ownerId === uid;
     const hasRole = uid in roles;
-    const isAuthorized =
-      isOwner || hasRole || (projectData.authorizedUsers || []).includes(uid);
+    const isAuthorized = isOwner || hasRole || (projectData.authorizedUsers || []).includes(uid);
 
     if (!isAuthorized) {
-      throw new HttpsError(
-        "permission-denied",
-        "Insufficient permissions for this operation",
-      );
+      throw new HttpsError("permission-denied", "Insufficient permissions for this operation");
     }
 
     // ─── Collect Environments + Configs ──────────────────────
@@ -168,9 +159,7 @@ export const exportConfigs = onCall(
             expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
           },
           // Set lifecycle: auto-delete after 7 days for data minimization
-          customTime: new Date(
-            Date.now() + 7 * 24 * 60 * 60 * 1000,
-          ).toISOString(),
+          customTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
         },
       });
     } catch (error) {

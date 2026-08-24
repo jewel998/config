@@ -1,21 +1,21 @@
+import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
 import { Users } from "lucide-react";
 import { toast } from "sonner";
-import { t } from "@lingui/core/macro";
 
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
 import { PageTourButton } from "@/components/page-tour-button";
 import { SegmentManager } from "@/components/segment-manager";
+import { useRBAC } from "@/hooks/use-rbac";
 import {
   useSegments,
   useCreateSegment,
   useDeleteSegment,
   useUpdateSegment,
 } from "@/hooks/use-segments";
-import { useRBAC } from "@/hooks/use-rbac";
 import { useProjectStore } from "@/stores/project-store";
 
 const SegmentsPage = () => {
@@ -30,10 +30,7 @@ const SegmentsPage = () => {
 
   if (!selectedProjectId) {
     return (
-      <EmptyState
-        icon={Users}
-        message={<Trans>Select a project to manage segments.</Trans>}
-      />
+      <EmptyState icon={Users} message={<Trans>Select a project to manage segments.</Trans>} />
     );
   }
 
@@ -41,12 +38,8 @@ const SegmentsPage = () => {
     <PageLayout>
       <PageHeader
         title={<Trans>Segments</Trans>}
-        description={
-          <Trans>Define reusable audience groups for targeting rules.</Trans>
-        }
-        actions={
-          <PageTourButton flowId="tour-segments" label={t`Segments guide`} />
-        }
+        description={<Trans>Define reusable audience groups for targeting rules.</Trans>}
+        actions={<PageTourButton flowId="tour-segments" label={t`Segments guide`} />}
       />
       <SegmentManager
         segments={segments}

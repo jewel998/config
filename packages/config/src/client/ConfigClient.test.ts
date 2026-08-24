@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { memoryStorage } from "../cache/memoryStorage";
 import type { ConfigFlagData } from "../plugins/models.js";
 import type {
   EvaluationContext,
@@ -9,13 +10,10 @@ import type {
 } from "../plugins/types.js";
 import { buildConfigClient } from "./ConfigClient";
 import type { ConfigClientInternals } from "./ConfigClient";
-import { memoryStorage } from "../cache/memoryStorage";
 
 // ─── Helpers ─────────────────────────────────────────────────
 
-function makeInternals(
-  overrides: Partial<ConfigClientInternals> = {},
-): ConfigClientInternals {
+function makeInternals(overrides: Partial<ConfigClientInternals> = {}): ConfigClientInternals {
   return {
     data: {},
     cache: memoryStorage(),
@@ -33,7 +31,11 @@ function makeInternals(
   };
 }
 
-function makeFlagData(key: string, value: unknown, extras: Partial<ConfigFlagData> = {}): ConfigFlagData {
+function makeFlagData(
+  key: string,
+  value: unknown,
+  extras: Partial<ConfigFlagData> = {},
+): ConfigFlagData {
   return {
     key,
     value,
@@ -46,7 +48,11 @@ function makeFlagData(key: string, value: unknown, extras: Partial<ConfigFlagDat
 
 function makePlugin(
   stepId: PipelineStepId,
-  evaluateFn: (flag: ConfigFlagData, ctx: EvaluationContext, helpers: PipelineHelpers) => { resolved: true; value: unknown } | { resolved: false },
+  evaluateFn: (
+    flag: ConfigFlagData,
+    ctx: EvaluationContext,
+    helpers: PipelineHelpers,
+  ) => { resolved: true; value: unknown } | { resolved: false },
 ): EvaluationPlugin {
   return { stepId, evaluate: evaluateFn };
 }
@@ -56,9 +62,7 @@ function makePlugin(
 describe("ConfigClient plugin integration", () => {
   describe("backward compatibility (no plugins)", () => {
     it("returns value from data when no plugins are registered", () => {
-      const client = buildConfigClient(
-        makeInternals({ data: { "my-key": "hello" } }),
-      );
+      const client = buildConfigClient(makeInternals({ data: { "my-key": "hello" } }));
       expect(client.getValue("my-key")).toBe("hello");
     });
 

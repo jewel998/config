@@ -37,9 +37,7 @@ export const ResponsiveModal = ({
         <DialogContent className="max-w-lg p-6">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
-            {description && (
-              <DialogDescription>{description}</DialogDescription>
-            )}
+            {description && <DialogDescription>{description}</DialogDescription>}
           </DialogHeader>
           <div className="space-y-5">{children}</div>
         </DialogContent>

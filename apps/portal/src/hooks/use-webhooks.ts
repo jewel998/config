@@ -11,9 +11,7 @@ export const useWebhooks = (projectId: string | null) => {
       if (!projectId) return [];
       const ref = collection(db, "projects", projectId, "webhooks");
       const snapshot = await getDocs(ref);
-      return snapshot.docs.map(
-        (d) => ({ id: d.id, ...d.data() }) as WebhookConfig,
-      );
+      return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as WebhookConfig);
     },
     enabled: !!projectId,
   });

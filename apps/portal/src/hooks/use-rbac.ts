@@ -1,7 +1,7 @@
-import { useAuthStore } from "@/stores/auth-store";
 import { useProjects } from "@/hooks/use-projects";
-import { useProjectStore } from "@/stores/project-store";
 import type { RBACRole } from "@/lib/types";
+import { useAuthStore } from "@/stores/auth-store";
+import { useProjectStore } from "@/stores/project-store";
 
 export const useRBAC = (): {
   role: RBACRole;
@@ -23,9 +23,7 @@ export const useRBAC = (): {
   }
 
   // Check roles map (cast to ProjectWithRBAC shape)
-  const roles = (project as Record<string, unknown>).roles as
-    | Record<string, RBACRole>
-    | undefined;
+  const roles = (project as Record<string, unknown>).roles as Record<string, RBACRole> | undefined;
   const role: RBACRole = roles?.[user.uid] ?? "viewer";
 
   const canEditEnvironment = (isProduction?: boolean) => {

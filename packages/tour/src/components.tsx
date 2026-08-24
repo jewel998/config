@@ -1,13 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+
 import { useTour } from "./context.js";
 import { SafeMarkdown } from "./safe-markdown.js";
-import type {
-  ModalStep,
-  Position,
-  SpotlightStep,
-  TooltipStep,
-} from "./types.js";
+import type { ModalStep, Position, SpotlightStep, TooltipStep } from "./types.js";
 
 // ─── Main Renderer (portaled to body to escape stacking contexts) ──
 
@@ -84,9 +80,7 @@ function TourModal({
   return (
     <div className="tour-overlay" onClick={onDismiss}>
       <div className="tour-modal" onClick={(e) => e.stopPropagation()}>
-        {step.image && (
-          <img src={step.image} alt="" className="tour-modal-image" />
-        )}
+        {step.image && <img src={step.image} alt="" className="tour-modal-image" />}
         <h2 className="tour-modal-title">{step.title}</h2>
         {step.description && (
           <div className="tour-modal-description">
@@ -236,10 +230,7 @@ function TourTooltip({
   if (!rect) return null;
 
   return (
-    <div
-      className="tour-popover"
-      style={getPopoverPosition(rect, step.position ?? "bottom")}
-    >
+    <div className="tour-popover" style={getPopoverPosition(rect, step.position ?? "bottom")}>
       <h3 className="tour-popover-title">{step.title}</h3>
       {step.description && (
         <div className="tour-popover-description">
@@ -299,10 +290,7 @@ function useElementRect(selector: string) {
 const POPOVER_WIDTH = 320;
 const POPOVER_MARGIN = 12;
 
-function getPopoverPosition(
-  rect: DOMRect,
-  position: Position,
-): React.CSSProperties {
+function getPopoverPosition(rect: DOMRect, position: Position): React.CSSProperties {
   const gap = 12;
   const base: React.CSSProperties = {
     position: "fixed",
@@ -314,10 +302,7 @@ function getPopoverPosition(
   const centerX = rect.left + rect.width / 2;
   const clampedLeft = Math.max(
     POPOVER_MARGIN,
-    Math.min(
-      centerX - POPOVER_WIDTH / 2,
-      window.innerWidth - POPOVER_WIDTH - POPOVER_MARGIN,
-    ),
+    Math.min(centerX - POPOVER_WIDTH / 2, window.innerWidth - POPOVER_WIDTH - POPOVER_MARGIN),
   );
 
   switch (position) {

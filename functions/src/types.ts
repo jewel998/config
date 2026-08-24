@@ -17,7 +17,12 @@ export interface WebhookConfig {
 export type EventType = "create" | "update" | "delete" | "state_change";
 
 export type WebhookResourceCategory =
-  "config" | "segment" | "api_key" | "project" | "team" | "environment";
+  | "config"
+  | "segment"
+  | "api_key"
+  | "project"
+  | "team"
+  | "environment";
 
 export interface WebhookDelivery {
   id: string;
@@ -61,11 +66,7 @@ export interface DispatchResult {
 }
 
 export interface WebhookDispatcher {
-  dispatch(
-    url: string,
-    payload: unknown,
-    options: DispatchOptions,
-  ): Promise<DispatchResult>;
+  dispatch(url: string, payload: unknown, options: DispatchOptions): Promise<DispatchResult>;
 }
 
 // ─── Chain of Responsibility: Filter Function Type ────────────

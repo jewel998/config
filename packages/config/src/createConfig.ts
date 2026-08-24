@@ -9,11 +9,7 @@ import { executeOptimistic } from "./loading/optimistic.js";
 import { executePessimistic } from "./loading/pessimistic.js";
 import type { EvaluationContext } from "./plugins/types.js";
 import { createHttpTransport } from "./transport/HttpTransport.js";
-import type {
-  ConfigClient,
-  CreateConfigOptions,
-  LoadingContext,
-} from "./types.js";
+import type { ConfigClient, CreateConfigOptions, LoadingContext } from "./types.js";
 import { DEFAULT_RETRY, DEFAULT_TIMEOUT } from "./types.js";
 
 const DEFAULT_BASE_URL = "https://jewel998-config.web.app/api";
@@ -22,9 +18,7 @@ export function createConfig(
   options: CreateConfigOptions & { loadingStrategy: "pessimistic" },
 ): Promise<ConfigClient>;
 export function createConfig(options: CreateConfigOptions): ConfigClient;
-export function createConfig(
-  options: CreateConfigOptions,
-): ConfigClient | Promise<ConfigClient> {
+export function createConfig(options: CreateConfigOptions): ConfigClient | Promise<ConfigClient> {
   // 1. Validate clientId
   if (!options.clientId) {
     throw new ConfigError("clientId is required", "MISSING_CLIENT_ID");
@@ -54,9 +48,7 @@ export function createConfig(
   // Auto-detect evaluation mode from key prefix:
   // cid_ = client key → server evaluates (frontend)
   // svr_ = server key → client evaluates locally (backend)
-  const evaluationMode: "server" | "client" = options.clientId.startsWith(
-    "svr_",
-  )
+  const evaluationMode: "server" | "client" = options.clientId.startsWith("svr_")
     ? "client"
     : "server";
 
@@ -72,9 +64,7 @@ export function createConfig(
   });
   const events = new TypedEventEmitter();
   const fetcher =
-    granularity === "batch"
-      ? createBatchFetcher(transport)
-      : createProjectedFetcher(transport);
+    granularity === "batch" ? createBatchFetcher(transport) : createProjectedFetcher(transport);
 
   // 6. Create loading context
   const context: LoadingContext = {

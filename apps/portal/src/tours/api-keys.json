@@ -12,10 +12,7 @@
         "type": "modal",
         "title": "🔑 Connect your app with an API key",
         "description": "API keys let your app fetch config values from the portal. Each environment gets its own key.\n\n**Example flow:**\n1. Generate a key for `production`\n2. Add it to your app: `SDK.init({ clientId: 'cid_xxx' })`\n3. Fetch flags: `const darkMode = config.get('feature.dark_mode')`",
-        "actions": [
-          { "label": "Generate a key" },
-          { "label": "Skip", "dismiss": true }
-        ]
+        "actions": [{ "label": "Generate a key" }, { "label": "Skip", "dismiss": true }]
       },
       {
         "id": "nav-api-keys",

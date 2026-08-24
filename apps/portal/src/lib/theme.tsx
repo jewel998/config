@@ -20,9 +20,7 @@ function applyTheme(theme: Theme) {
     root.classList.remove("dark");
   } else {
     // system
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     if (prefersDark) {
       root.classList.add("dark");
     } else {
@@ -66,11 +64,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [theme]);
 
-  return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
 };
 
 export const useTheme = (): ThemeContextValue => {

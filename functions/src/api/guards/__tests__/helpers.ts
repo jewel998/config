@@ -31,9 +31,7 @@ export function mockRes(): Res {
   return res as unknown as Res;
 }
 
-export function makeCtx(
-  overrides: Partial<RequestContext> = {},
-): RequestContext {
+export function makeCtx(overrides: Partial<RequestContext> = {}): RequestContext {
   return {
     req: mockReq(),
     res: mockRes(),

@@ -36,9 +36,7 @@ For GDPR data portability requests, you can export data specific to a user ID:
         "color": "#4CAF50",
         "isProduction": false
       },
-      "configs": [
-        { "key": "feature.dark_mode", "value": true, "valueType": "boolean" }
-      ]
+      "configs": [{ "key": "feature.dark_mode", "value": true, "valueType": "boolean" }]
     }
   },
   "segments": []
@@ -172,27 +170,24 @@ const app = initializeApp();
 const token = await getAuth().createCustomToken("service-account-uid");
 
 // Call the function
-const response = await fetch(
-  "https://us-central1-my-project.cloudfunctions.net/importConfigs",
-  {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      data: {
-        projectId: "my-project-id",
-        environmentId: "production",
-        entries: [
-          { key: "api.rate_limit", value: 1000, valueType: "number" },
-          { key: "feature.v2", value: false, valueType: "boolean" },
-        ],
-        conflictStrategy: "overwrite",
-      },
-    }),
+const response = await fetch("https://us-central1-my-project.cloudfunctions.net/importConfigs", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
   },
-);
+  body: JSON.stringify({
+    data: {
+      projectId: "my-project-id",
+      environmentId: "production",
+      entries: [
+        { key: "api.rate_limit", value: 1000, valueType: "number" },
+        { key: "feature.v2", value: false, valueType: "boolean" },
+      ],
+      conflictStrategy: "overwrite",
+    },
+  }),
+});
 
 const result = await response.json();
 console.log("Import job:", result.result.jobId);

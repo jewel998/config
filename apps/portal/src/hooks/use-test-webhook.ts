@@ -11,26 +11,18 @@ interface TestResult {
 
 export const useTestWebhook = () => {
   return useMutation({
-    mutationFn: async ({
-      projectId,
-      webhookId,
-    }: {
-      projectId: string;
-      webhookId: string;
-    }) => {
+    mutationFn: async ({ projectId, webhookId }: { projectId: string; webhookId: string }) => {
       const functions = getFunctions();
-      const testFn = httpsCallable<
-        { projectId: string; webhookId: string },
-        TestResult
-      >(functions, "testWebhook");
+      const testFn = httpsCallable<{ projectId: string; webhookId: string }, TestResult>(
+        functions,
+        "testWebhook",
+      );
       const result = await testFn({ projectId, webhookId });
       return result.data;
     },
     onSuccess: (data) => {
       if (data.success) {
-        toast.success(
-          t`Test delivery successful (HTTP ${String(data.httpStatus)})`,
-        );
+        toast.success(t`Test delivery successful (HTTP ${String(data.httpStatus)})`);
       } else {
         toast.error(t`Test delivery failed: ${data.error ?? "Unknown error"}`);
       }

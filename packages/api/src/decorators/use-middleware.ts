@@ -7,7 +7,6 @@ import type { Middleware } from "../interfaces/index";
  */
 export function UseMiddleware(...middleware: Middleware[]): ClassDecorator {
   return (target) => {
-    (target as unknown as { __middleware: Middleware[] }).__middleware =
-      middleware;
+    (target as unknown as { __middleware: Middleware[] }).__middleware = middleware;
   };
 }

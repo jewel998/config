@@ -1,8 +1,7 @@
 // ─── Bulk Import/Export Domain Types ──────────────────────────
 
 /** Supported value types for config entries */
-export type ConfigValueType =
-  "string" | "number" | "boolean" | "json" | "array";
+export type ConfigValueType = "string" | "number" | "boolean" | "json" | "array";
 
 /** A single entry to import */
 export interface ImportEntry {
@@ -74,8 +73,7 @@ export interface ExportResponse {
 
 // ─── Import Job Document ──────────────────────────────────────
 
-export type ImportJobStatus =
-  "processing" | "completed" | "failed" | "resolved";
+export type ImportJobStatus = "processing" | "completed" | "failed" | "resolved";
 
 export interface ImportJob {
   id: string;

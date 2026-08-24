@@ -1,7 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
-import { targetingPlugin } from "./targetingPlugin.js";
+
 import type { ConfigFlagData, Segment, TargetingRule } from "../models.js";
 import type { EvaluationContext, PipelineHelpers } from "../types.js";
+import { targetingPlugin } from "./targetingPlugin.js";
 
 function makeFlag(overrides: Partial<ConfigFlagData> = {}): ConfigFlagData {
   return {
@@ -229,9 +230,7 @@ describe("targetingPlugin", () => {
       description: "Users on free plan",
       conditions: [
         {
-          predicates: [
-            { attribute: "plan", operator: "equals", value: "free" },
-          ],
+          predicates: [{ attribute: "plan", operator: "equals", value: "free" }],
         },
       ],
       createdAt: "2024-01-01T00:00:00Z",
@@ -248,9 +247,7 @@ describe("targetingPlugin", () => {
           makeRule({
             conditions: [
               {
-                predicates: [
-                  { attribute: "segment", operator: "in_segment", value: "seg-beta" },
-                ],
+                predicates: [{ attribute: "segment", operator: "in_segment", value: "seg-beta" }],
               },
             ],
           }),
@@ -293,9 +290,7 @@ describe("targetingPlugin", () => {
           makeRule({
             conditions: [
               {
-                predicates: [
-                  { attribute: "segment", operator: "in_segment", value: "seg-free" },
-                ],
+                predicates: [{ attribute: "segment", operator: "in_segment", value: "seg-free" }],
               },
             ],
           }),
@@ -360,9 +355,7 @@ describe("targetingPlugin", () => {
           makeRule({
             conditions: [
               {
-                predicates: [
-                  { attribute: "nonexistent", operator: "equals", value: "test" },
-                ],
+                predicates: [{ attribute: "nonexistent", operator: "equals", value: "test" }],
               },
             ],
           }),
@@ -380,9 +373,7 @@ describe("targetingPlugin", () => {
           makeRule({
             conditions: [
               {
-                predicates: [
-                  { attribute: "plan", operator: "equals", value: "enterprise" },
-                ],
+                predicates: [{ attribute: "plan", operator: "equals", value: "enterprise" }],
               },
             ],
           }),
@@ -407,9 +398,7 @@ describe("targetingPlugin", () => {
             priority: 1,
             conditions: [
               {
-                predicates: [
-                  { attribute: "plan", operator: "regex_match", value: "[invalid(" },
-                ],
+                predicates: [{ attribute: "plan", operator: "regex_match", value: "[invalid(" }],
               },
             ],
           }),
@@ -419,9 +408,7 @@ describe("targetingPlugin", () => {
             value: "fallback",
             conditions: [
               {
-                predicates: [
-                  { attribute: "plan", operator: "equals", value: "enterprise" },
-                ],
+                predicates: [{ attribute: "plan", operator: "equals", value: "enterprise" }],
               },
             ],
           }),
@@ -442,9 +429,7 @@ describe("targetingPlugin", () => {
           makeRule({
             conditions: [
               {
-                predicates: [
-                  { attribute: "plan", operator: "equals", value: "enterprise" },
-                ],
+                predicates: [{ attribute: "plan", operator: "equals", value: "enterprise" }],
               },
             ],
           }),

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useState, useEffect } from "react";
 
 type User = { name: string; plan: string; country: string; tenant: string };
 type Flags = {
@@ -80,10 +80,7 @@ export default function StoryInteractive() {
             <span />
           </div>
           <span className="sim-title">
-            {activeStep === 0 ||
-            activeStep === 3 ||
-            activeStep === 4 ||
-            activeStep === 5
+            {activeStep === 0 || activeStep === 3 || activeStep === 4 || activeStep === 5
               ? "Portal — Flag Manager"
               : `App — ${user.name}'s View`}
           </span>
@@ -144,18 +141,14 @@ export default function StoryInteractive() {
                     className={`sim-mockui ${flags.newCheckout ? "variant-new" : "variant-old"}`}
                   >
                     <div className="sim-mockui-title">
-                      {flags.newCheckout
-                        ? "✨ New Checkout"
-                        : "Standard Checkout"}
+                      {flags.newCheckout ? "✨ New Checkout" : "Standard Checkout"}
                     </div>
                     <div className="sim-mockui-bars">
                       <div />
                       <div />
                       {flags.newCheckout && <div className="short" />}
                     </div>
-                    <div
-                      className={`sim-mockui-btn ${flags.newCheckout ? "" : "btn-muted"}`}
-                    >
+                    <div className={`sim-mockui-btn ${flags.newCheckout ? "" : "btn-muted"}`}>
                       {flags.newCheckout ? "Complete Purchase" : "Proceed"}
                     </div>
                   </div>
@@ -209,9 +202,7 @@ export default function StoryInteractive() {
                   <div className="sim-rollout-bar">
                     <div className="sim-rollout-fill" />
                   </div>
-                  <div className="sim-rollout-txt">
-                    50% of Pro users — deterministic per userId
-                  </div>
+                  <div className="sim-rollout-txt">50% of Pro users — deterministic per userId</div>
                   <div className="sim-rows" style={{ marginTop: 10 }}>
                     <div className="sim-row">
                       <span className="sim-lbl">Priya</span>
@@ -245,9 +236,7 @@ export default function StoryInteractive() {
                     </svg>
                     All users → <code className="c-red">false</code> immediately
                   </div>
-                  <div className="sim-kill-time">
-                    Propagation: &lt;2s · No deploy · No rollback
-                  </div>
+                  <div className="sim-kill-time">Propagation: &lt;2s · No deploy · No rollback</div>
                 </div>
               )}
             </motion.div>
@@ -271,10 +260,7 @@ export default function StoryInteractive() {
               </button>
             ))}
           </div>
-          <motion.div
-            className="sim-ft-flags"
-            animate={{ opacity: refreshing ? 0.2 : 1 }}
-          >
+          <motion.div className="sim-ft-flags" animate={{ opacity: refreshing ? 0.2 : 1 }}>
             <div className="sim-ft-row">
               <span>new_checkout</span>
               <span className={flags.newCheckout ? "c-green" : "c-red"}>
@@ -287,9 +273,7 @@ export default function StoryInteractive() {
             </div>
             <div className="sim-ft-row">
               <span>dark_mode</span>
-              <span className={flags.darkMode ? "c-green" : "c-red"}>
-                {String(flags.darkMode)}
-              </span>
+              <span className={flags.darkMode ? "c-green" : "c-red"}>{String(flags.darkMode)}</span>
             </div>
             <div className="sim-ft-row">
               <span>ai_assistant</span>
@@ -299,9 +283,7 @@ export default function StoryInteractive() {
             </div>
           </motion.div>
           <div className="sim-ft-meta">
-            <span className="sim-ft-badge">
-              {refreshing ? "Evaluating" : "Cached"}
-            </span>
+            <span className="sim-ft-badge">{refreshing ? "Evaluating" : "Cached"}</span>
             <span className="sim-ft-time">{refreshing ? "52ms" : "<1ms"}</span>
           </div>
         </div>

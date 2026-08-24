@@ -93,7 +93,7 @@ pnpm test
 # Lint (oxlint)
 pnpm lint
 
-# Format (prettier)
+# Format (oxfmt)
 pnpm format
 
 # Check formatting
@@ -130,7 +130,7 @@ git commit -m "feat: Add Feature"        # uppercase subject
 ### Linting & Formatting
 
 - **oxlint** — Fast linting for TypeScript (runs on pre-commit via lint-staged)
-- **prettier** — Code formatting (auto-run on staged files)
+- **oxfmt** — Code formatting (auto-run on staged files)
 - **TypeScript strict mode** — `--noEmit` checks across all packages
 
 ### Testing

@@ -164,11 +164,7 @@ function evaluatePipeline(
 
   // Step 5: Targeting rules
   if (config.targetingRules && config.targetingRules.length > 0) {
-    const targetingResult = evaluateTargetingRules(
-      config.targetingRules,
-      segments,
-      context,
-    );
+    const targetingResult = evaluateTargetingRules(config.targetingRules, segments, context);
     if (targetingResult.resolved) {
       return { value: targetingResult.value };
     }
@@ -199,11 +195,7 @@ function resolveSimpleValue(
 ): unknown {
   if (config.lifecycleState === "archived") return undefined;
 
-  if (
-    config.overrides &&
-    context?.userId &&
-    context.userId in config.overrides
-  ) {
+  if (config.overrides && context?.userId && context.userId in config.overrides) {
     return config.overrides[context.userId];
   }
 
@@ -213,11 +205,7 @@ function resolveSimpleValue(
   }
 
   if (config.targetingRules && config.targetingRules.length > 0) {
-    const result = evaluateTargetingRules(
-      config.targetingRules,
-      segments,
-      context,
-    );
+    const result = evaluateTargetingRules(config.targetingRules, segments, context);
     if (result.resolved) return result.value;
   }
 
@@ -236,11 +224,7 @@ function resolveSimpleValue(
 // Prerequisite Operator Evaluation
 // ═══════════════════════════════════════════════════════════════
 
-function evaluatePrerequisiteOp(
-  actual: unknown,
-  operator: string,
-  expected: unknown,
-): boolean {
+function evaluatePrerequisiteOp(actual: unknown, operator: string, expected: unknown): boolean {
   switch (operator) {
     case "equals":
       // eslint-disable-next-line eqeqeq
@@ -301,9 +285,7 @@ function evaluateConditionGroups(
   if (!groups || groups.length === 0) return false;
 
   return groups.some((group) =>
-    group.predicates.every((pred) =>
-      evaluatePredicate(pred, attributes, segments),
-    ),
+    group.predicates.every((pred) => evaluatePredicate(pred, attributes, segments)),
   );
 }
 

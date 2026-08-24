@@ -71,8 +71,7 @@ const entries = unleashFlags.map((flag) => {
 
   if (hasVariants) {
     // Use the first variant's payload as the default value
-    const defaultVariant =
-      flag.variants.find((v) => v.name === "disabled") || flag.variants[0];
+    const defaultVariant = flag.variants.find((v) => v.name === "disabled") || flag.variants[0];
     const payload = defaultVariant?.payload;
 
     return {

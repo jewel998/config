@@ -6,15 +6,8 @@ interface ConditionSummaryProps {
   maxGroups?: number;
 }
 
-export const ConditionSummary = ({
-  conditions,
-  maxGroups = 1,
-}: ConditionSummaryProps) => {
+export const ConditionSummary = ({ conditions, maxGroups = 1 }: ConditionSummaryProps) => {
   const summary = formatConditionSummary(conditions, maxGroups);
 
-  return (
-    <span className="text-[10px] text-muted-foreground font-mono truncate">
-      {summary}
-    </span>
-  );
+  return <span className="text-[10px] text-muted-foreground font-mono truncate">{summary}</span>;
 };

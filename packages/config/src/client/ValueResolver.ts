@@ -8,9 +8,9 @@
  * - Providing backward-compatible behavior when no plugins are present
  */
 
-import type { EvaluationContext, EvaluationPlugin } from "../plugins/types.js";
-import type { ConfigFlagData } from "../plugins/models.js";
 import { evaluatePipeline } from "../plugins/evaluatePipeline.js";
+import type { ConfigFlagData } from "../plugins/models.js";
+import type { EvaluationContext, EvaluationPlugin } from "../plugins/types.js";
 import type { CacheStorage, EventEmitterInterface } from "../types.js";
 
 export class ValueResolver {
@@ -146,9 +146,7 @@ function isConfigFlagData(value: unknown): value is ConfigFlagData {
 }
 
 /** Infer a valueType string from a raw value */
-function inferValueType(
-  value: unknown,
-): "string" | "number" | "boolean" | "json" {
+function inferValueType(value: unknown): "string" | "number" | "boolean" | "json" {
   if (typeof value === "boolean") return "boolean";
   if (typeof value === "number") return "number";
   if (typeof value === "string") return "string";

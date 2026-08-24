@@ -1,9 +1,6 @@
 import type { Firestore } from "firebase-admin/firestore";
-import type {
-  ConfigDoc,
-  SegmentDoc,
-  UserContext,
-} from "../api/server-evaluator";
+
+import type { ConfigDoc, SegmentDoc, UserContext } from "../api/server-evaluator";
 
 /**
  * Augment the framework's RequestContext with app-specific fields.

@@ -1,5 +1,5 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 import { Download, Search, ShieldAlert, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -38,9 +38,7 @@ export const GDPRPanel = ({ onExport, onDelete }: GDPRPanelProps) => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const { data: projects = [] } = useProjects();
   const project = projects.find((p) => p.id === selectedProjectId);
-  const authorizedUsers = (project?.authorizedUsers ?? []).filter(
-    (u) => !u.startsWith("email:"),
-  );
+  const authorizedUsers = (project?.authorizedUsers ?? []).filter((u) => !u.startsWith("email:"));
   const { data: profiles = {} } = useUserProfiles(authorizedUsers);
 
   const teamMembers: TeamMember[] = useMemo(() => {
@@ -122,10 +120,7 @@ export const GDPRPanel = ({ onExport, onDelete }: GDPRPanelProps) => {
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            <Trans>
-              Export all personal data associated with a team member as a JSON
-              file.
-            </Trans>
+            <Trans>Export all personal data associated with a team member as a JSON file.</Trans>
           </p>
 
           {/* User Picker for Export */}
@@ -134,13 +129,10 @@ export const GDPRPanel = ({ onExport, onDelete }: GDPRPanelProps) => {
               <div className="flex items-center gap-2 rounded-md border px-3 py-2">
                 <div className="flex-1">
                   <p className="text-sm font-medium">
-                    {selectedExportMember.displayName ||
-                      selectedExportMember.uid}
+                    {selectedExportMember.displayName || selectedExportMember.uid}
                   </p>
                   {selectedExportMember.email && (
-                    <p className="text-xs text-muted-foreground">
-                      {selectedExportMember.email}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{selectedExportMember.email}</p>
                   )}
                 </div>
                 <Button
@@ -189,18 +181,14 @@ export const GDPRPanel = ({ onExport, onDelete }: GDPRPanelProps) => {
                           }}
                         >
                           <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
-                            {(member.displayName ||
-                              member.email ||
-                              "?")[0]?.toUpperCase()}
+                            {(member.displayName || member.email || "?")[0]?.toUpperCase()}
                           </div>
                           <div>
                             <p className="text-sm font-medium">
                               {member.displayName || member.uid}
                             </p>
                             {member.email && (
-                              <p className="text-xs text-muted-foreground">
-                                {member.email}
-                              </p>
+                              <p className="text-xs text-muted-foreground">{member.email}</p>
                             )}
                           </div>
                         </button>
@@ -218,11 +206,7 @@ export const GDPRPanel = ({ onExport, onDelete }: GDPRPanelProps) => {
             disabled={!exportUserId.trim() || exporting}
           >
             <Download className="h-3.5 w-3.5" />
-            {exporting ? (
-              <Trans>Exporting...</Trans>
-            ) : (
-              <Trans>Export User Data</Trans>
-            )}
+            {exporting ? <Trans>Exporting...</Trans> : <Trans>Export User Data</Trans>}
           </Button>
         </CardContent>
       </Card>
@@ -238,8 +222,7 @@ export const GDPRPanel = ({ onExport, onDelete }: GDPRPanelProps) => {
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
             <Trans>
-              Permanently remove all personal data for a team member. This
-              action cannot be undone.
+              Permanently remove all personal data for a team member. This action cannot be undone.
             </Trans>
           </p>
 
@@ -249,13 +232,10 @@ export const GDPRPanel = ({ onExport, onDelete }: GDPRPanelProps) => {
               <div className="flex items-center gap-2 rounded-md border border-destructive/30 px-3 py-2">
                 <div className="flex-1">
                   <p className="text-sm font-medium">
-                    {selectedDeleteMember.displayName ||
-                      selectedDeleteMember.uid}
+                    {selectedDeleteMember.displayName || selectedDeleteMember.uid}
                   </p>
                   {selectedDeleteMember.email && (
-                    <p className="text-xs text-muted-foreground">
-                      {selectedDeleteMember.email}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{selectedDeleteMember.email}</p>
                   )}
                 </div>
                 <Button
@@ -306,18 +286,14 @@ export const GDPRPanel = ({ onExport, onDelete }: GDPRPanelProps) => {
                           }}
                         >
                           <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
-                            {(member.displayName ||
-                              member.email ||
-                              "?")[0]?.toUpperCase()}
+                            {(member.displayName || member.email || "?")[0]?.toUpperCase()}
                           </div>
                           <div>
                             <p className="text-sm font-medium">
                               {member.displayName || member.uid}
                             </p>
                             {member.email && (
-                              <p className="text-xs text-muted-foreground">
-                                {member.email}
-                              </p>
+                              <p className="text-xs text-muted-foreground">{member.email}</p>
                             )}
                           </div>
                         </button>

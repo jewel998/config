@@ -9,12 +9,7 @@
  */
 
 import { withRetry } from "../retry/RetryEngine.js";
-import type {
-  CacheStorage,
-  ConfigFetcher,
-  EventEmitterInterface,
-  RetryConfig,
-} from "../types.js";
+import type { CacheStorage, ConfigFetcher, EventEmitterInterface, RetryConfig } from "../types.js";
 import { DEFAULT_CACHE_TTL } from "../types.js";
 
 export interface RefreshManagerConfig {
@@ -58,9 +53,7 @@ export class RefreshManager {
    * @param data - Mutable data record to update with fetched values
    * @returns The updated data record
    */
-  async refresh(
-    data: Record<string, unknown>,
-  ): Promise<Record<string, unknown>> {
+  async refresh(data: Record<string, unknown>): Promise<Record<string, unknown>> {
     // Deduplication: if a refresh is already in-flight, reuse it
     if (this.inflightRefresh) {
       await this.inflightRefresh;

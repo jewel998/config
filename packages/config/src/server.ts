@@ -11,10 +11,7 @@
 
 // Server-specific entry point
 export { initServerConfig } from "./server/initServerConfig.js";
-export type {
-  InitServerConfigOptions,
-  ServerFlags,
-} from "./server/initServerConfig.js";
+export type { InitServerConfigOptions, ServerFlags } from "./server/initServerConfig.js";
 
 // Server context helper (equivalent of autoContext for Node.js)
 export { serverContext } from "./server/serverContext.js";

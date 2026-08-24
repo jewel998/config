@@ -19,10 +19,7 @@ export type WebhookFormat = (typeof WEBHOOK_FORMATS)[number];
 /**
  * Human-readable descriptions for each webhook format.
  */
-export const WEBHOOK_FORMAT_INFO: Record<
-  WebhookFormat,
-  { label: string; description: string }
-> = {
+export const WEBHOOK_FORMAT_INFO: Record<WebhookFormat, { label: string; description: string }> = {
   standard: {
     label: "Standard JSON",
     description: "Plain JSON payload with all event details",
@@ -114,12 +111,7 @@ export const TEMPLATE_VARIABLES = [
 /**
  * Event types that can trigger webhooks.
  */
-export const WEBHOOK_EVENT_TYPES = [
-  "create",
-  "update",
-  "delete",
-  "state_change",
-] as const;
+export const WEBHOOK_EVENT_TYPES = ["create", "update", "delete", "state_change"] as const;
 
 export type WebhookEventType = (typeof WEBHOOK_EVENT_TYPES)[number];
 
@@ -135,8 +127,7 @@ export const WEBHOOK_RESOURCE_CATEGORIES = [
   "environment",
 ] as const;
 
-export type WebhookResourceCategory =
-  (typeof WEBHOOK_RESOURCE_CATEGORIES)[number];
+export type WebhookResourceCategory = (typeof WEBHOOK_RESOURCE_CATEGORIES)[number];
 
 /**
  * Sample payload used for preview/testing (shared between portal and docs).

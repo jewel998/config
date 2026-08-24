@@ -1,8 +1,4 @@
-import {
-  AuthenticationError,
-  ConfigError,
-  RateLimitError,
-} from "../errors/index.js";
+import { AuthenticationError, ConfigError, RateLimitError } from "../errors/index.js";
 import type { RetryConfig } from "../types.js";
 import { DEFAULT_RETRY } from "../types.js";
 
@@ -33,21 +29,14 @@ export const isNonRetryableError = (error: unknown): boolean => {
  * Get the retry delay for an error. If the error is a RateLimitError with
  * a server-specified Retry-After value, use that instead of calculated backoff.
  */
-const getRetryDelay = (
-  error: Error,
-  attempt: number,
-  config: Required<RetryConfig>,
-): number => {
+const getRetryDelay = (error: Error, attempt: number, config: Required<RetryConfig>): number => {
   // Respect server-specified Retry-After for rate limit errors
   if (error instanceof RateLimitError && error.retryAfterSeconds != null) {
     return error.retryAfterSeconds * 1000;
   }
 
   // Default: exponential backoff with jitter
-  const delay = Math.min(
-    config.baseDelay * Math.pow(config.multiplier, attempt),
-    config.maxDelay,
-  );
+  const delay = Math.min(config.baseDelay * Math.pow(config.multiplier, attempt), config.maxDelay);
   // Add jitter (±25%) to prevent thundering herd
   return delay * (0.75 + Math.random() * 0.5);
 };

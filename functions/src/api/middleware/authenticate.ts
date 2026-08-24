@@ -6,6 +6,7 @@
  */
 
 import type { Firestore } from "firebase-admin/firestore";
+
 import { InternalError, UnauthorizedError } from "../../utils/errors";
 
 export interface AuthResult {
@@ -24,10 +25,7 @@ export interface AuthResult {
  * @throws UnauthorizedError if the clientId is invalid or revoked
  * @throws InternalError if the Firestore index is missing
  */
-export async function authenticateClient(
-  db: Firestore,
-  clientId: string,
-): Promise<AuthResult> {
+export async function authenticateClient(db: Firestore, clientId: string): Promise<AuthResult> {
   let clientIdSnapshot;
   try {
     clientIdSnapshot = await db

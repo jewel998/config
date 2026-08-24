@@ -11,8 +11,9 @@ import {
   updateDoc,
   deleteField,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+
 import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
+import { db } from "@/lib/firebase";
 import type { PendingInvite } from "@/lib/team-utils";
 import type { RBACRole } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
@@ -25,14 +26,9 @@ export const usePendingInvites = (projectId: string | null) => {
     queryKey: ["pendingInvites", projectId],
     queryFn: async () => {
       if (!projectId) return [];
-      const q = query(
-        collection(db, "pendingInvites"),
-        where("projectId", "==", projectId),
-      );
+      const q = query(collection(db, "pendingInvites"), where("projectId", "==", projectId));
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(
-        (d) => ({ id: d.id, ...d.data() }) as PendingInvite,
-      );
+      return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as PendingInvite);
     },
     enabled: !!projectId,
   });

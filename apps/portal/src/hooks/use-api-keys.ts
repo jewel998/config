@@ -2,23 +2,20 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { collection, getDocs } from "firebase/firestore";
 import { useMemo } from "react";
 
-import { db } from "@/lib/firebase";
-import type { ApiKey } from "@/lib/types";
-import { useAuthStore } from "@/stores/auth-store";
 import {
   ApiKeyRepository,
   type ApiKeyCreateInput,
   type ApiKeyUpdateInput,
 } from "@/dao/api-key.repository";
+import { db } from "@/lib/firebase";
+import type { ApiKey } from "@/lib/types";
+import { useAuthStore } from "@/stores/auth-store";
 
 export type { ApiKey };
 
 type ApiKeyType = "client" | "server";
 
-export const useApiKeys = (
-  projectId: string | null,
-  environmentId: string | null,
-) => {
+export const useApiKeys = (projectId: string | null, environmentId: string | null) => {
   return useQuery({
     queryKey: ["apiKeys", projectId, environmentId],
     queryFn: async () => {
@@ -41,10 +38,7 @@ export const useApiKeys = (
 export const useGenerateApiKey = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new ApiKeyRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new ApiKeyRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async ({
@@ -91,10 +85,7 @@ export const useGenerateApiKey = () => {
 export const useRevokeApiKey = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new ApiKeyRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new ApiKeyRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async ({
@@ -131,10 +122,7 @@ export const useRevokeApiKey = () => {
 export const useDeleteApiKey = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new ApiKeyRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new ApiKeyRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async ({

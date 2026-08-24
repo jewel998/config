@@ -1,16 +1,7 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  Copy,
-  Eye,
-  EyeOff,
-  Key,
-  Plus,
-  ShieldOff,
-  Trash2,
-  User,
-} from "lucide-react";
+import { Copy, Eye, EyeOff, Key, Plus, ShieldOff, Trash2, User } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -27,20 +18,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   useApiKeys,
   useDeleteApiKey,
   useGenerateApiKey,
   useRevokeApiKey,
 } from "@/hooks/use-api-keys";
+import { useRBAC } from "@/hooks/use-rbac";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
-import { useRBAC } from "@/hooks/use-rbac";
 
 // ═══════════════════════════════════════════════════════════════
 // Generate Key Modal
@@ -83,9 +70,7 @@ const GenerateKeyModal = ({
       open={open}
       onOpenChange={onOpenChange}
       title={<Trans>Generate API Key</Trans>}
-      description={
-        <Trans>Create a new key to authenticate SDK requests.</Trans>
-      }
+      description={<Trans>Create a new key to authenticate SDK requests.</Trans>}
     >
       <div className="space-y-4">
         {/* Key Type */}
@@ -128,11 +113,7 @@ const GenerateKeyModal = ({
 
         {/* Actions */}
         <div className="flex justify-end gap-2 pt-2">
-          <Button
-            variant="outline"
-            className="rounded-full"
-            onClick={() => onOpenChange(false)}
-          >
+          <Button variant="outline" className="rounded-full" onClick={() => onOpenChange(false)}>
             <Trans>Cancel</Trans>
           </Button>
           <Button
@@ -169,11 +150,7 @@ const MaskedToken = ({ token }: { token: string }) => {
             onClick={() => setVisible(!visible)}
             aria-label={visible ? "Hide token" : "Show token"}
           >
-            {visible ? (
-              <EyeOff className="h-3.5 w-3.5" />
-            ) : (
-              <Eye className="h-3.5 w-3.5" />
-            )}
+            {visible ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
           </Button>
         </TooltipTrigger>
         <TooltipContent>{visible ? t`Hide` : t`Show`}</TooltipContent>
@@ -276,9 +253,7 @@ const EnvironmentKeys = ({
                     <div className="flex flex-wrap items-center gap-2">
                       <MaskedToken token={key.token} />
                       <Badge
-                        variant={
-                          key.status === "active" ? "default" : "secondary"
-                        }
+                        variant={key.status === "active" ? "default" : "secondary"}
                         className="rounded-full text-xs"
                       >
                         {key.status}
@@ -294,14 +269,10 @@ const EnvironmentKeys = ({
                           <TooltipTrigger asChild>
                             <span className="inline-flex max-w-28 items-center gap-1 rounded-full border bg-muted/50 px-2 py-0.5 text-[11px] text-muted-foreground">
                               <User className="h-3 w-3 shrink-0" />
-                              <span className="truncate">
-                                {user?.displayName ?? "You"}
-                              </span>
+                              <span className="truncate">{user?.displayName ?? "You"}</span>
                             </span>
                           </TooltipTrigger>
-                          <TooltipContent>
-                            {user?.displayName ?? user?.email}
-                          </TooltipContent>
+                          <TooltipContent>{user?.displayName ?? user?.email}</TooltipContent>
                         </Tooltip>
                       )}
                     </div>
@@ -310,8 +281,7 @@ const EnvironmentKeys = ({
                       <DateDisplay date={key.createdAt} />
                       {key.status === "revoked" && key.revokedAt && (
                         <span>
-                          <Trans>Revoked</Trans>{" "}
-                          <DateDisplay date={key.revokedAt} />
+                          <Trans>Revoked</Trans> <DateDisplay date={key.revokedAt} />
                         </span>
                       )}
                     </div>
@@ -355,10 +325,8 @@ const EnvironmentKeys = ({
                                   token: key.token,
                                 },
                                 {
-                                  onSuccess: () =>
-                                    toast.success(t`Key deleted permanently`),
-                                  onError: () =>
-                                    toast.error(t`Failed to delete key`),
+                                  onSuccess: () => toast.success(t`Key deleted permanently`),
+                                  onError: () => toast.error(t`Failed to delete key`),
                                 },
                               );
                             }}
@@ -406,23 +374,14 @@ const ApiKeysPage = () => {
   const isViewer = role === "viewer";
 
   if (!selectedProjectId) {
-    return (
-      <EmptyState
-        icon={Key}
-        message={<Trans>Select a project to manage API keys.</Trans>}
-      />
-    );
+    return <EmptyState icon={Key} message={<Trans>Select a project to manage API keys.</Trans>} />;
   }
 
   if (!selectedEnvironmentId) {
     return (
       <EmptyState
         icon={Key}
-        message={
-          <Trans>
-            Select an environment from the top bar to manage API keys.
-          </Trans>
-        }
+        message={<Trans>Select an environment from the top bar to manage API keys.</Trans>}
       />
     );
   }
@@ -432,14 +391,9 @@ const ApiKeysPage = () => {
       <PageHeader
         title={<Trans>API Keys</Trans>}
         description={
-          <Trans>
-            Manage keys for this environment. Use these to authenticate SDK
-            requests.
-          </Trans>
+          <Trans>Manage keys for this environment. Use these to authenticate SDK requests.</Trans>
         }
-        actions={
-          <PageTourButton flowId="tour-api-keys" label={t`API Keys guide`} />
-        }
+        actions={<PageTourButton flowId="tour-api-keys" label={t`API Keys guide`} />}
       />
 
       <EnvironmentKeys

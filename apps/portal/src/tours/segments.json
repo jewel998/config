@@ -9,10 +9,7 @@
         "type": "modal",
         "title": "👥 Target users with Segments",
         "description": "Segments are reusable audience groups. Define once, use across multiple configs.\n\n**Examples:**\n- *Beta Users* → plan equals `pro`\n- *EU Users* → country in [DE, FR, ES, IT]\n- *Internal* → email ends with `@yourcompany.com`",
-        "actions": [
-          { "label": "Show me" },
-          { "label": "Close", "dismiss": true }
-        ]
+        "actions": [{ "label": "Show me" }, { "label": "Close", "dismiss": true }]
       },
       {
         "id": "nav-segments",

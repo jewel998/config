@@ -1,9 +1,4 @@
-import {
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithPopup,
-  signOut,
-} from "firebase/auth";
+import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import type { User } from "firebase/auth";
 import {
   collection,
@@ -154,10 +149,7 @@ async function resolveInvites(firebaseUser: User): Promise<void> {
         const currentAuth: string[] = projectData.authorizedUsers ?? [];
 
         // Only claim if the email key exists and UID isn't already there
-        if (
-          currentAuth.includes(emailKey) &&
-          !currentAuth.includes(firebaseUser.uid)
-        ) {
+        if (currentAuth.includes(emailKey) && !currentAuth.includes(firebaseUser.uid)) {
           // Swap email key for real UID
           const newAuth = currentAuth
             .filter((entry) => entry !== emailKey)
@@ -174,10 +166,7 @@ async function resolveInvites(firebaseUser: User): Promise<void> {
             authorizedUsers: newAuth,
             roles: newRoles,
           });
-        } else if (
-          currentAuth.includes(emailKey) &&
-          currentAuth.includes(firebaseUser.uid)
-        ) {
+        } else if (currentAuth.includes(emailKey) && currentAuth.includes(firebaseUser.uid)) {
           // Already claimed — just clean up the email key
           const newAuth = currentAuth.filter((entry) => entry !== emailKey);
           const currentRoles = projectData.roles ?? {};

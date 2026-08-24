@@ -14,11 +14,6 @@ const widthClasses = {
   full: "max-w-full",
 };
 
-export const PageLayout = ({
-  children,
-  maxWidth = "4xl",
-}: PageLayoutProps) => (
-  <div className={`mx-auto w-full ${widthClasses[maxWidth]} space-y-6`}>
-    {children}
-  </div>
+export const PageLayout = ({ children, maxWidth = "4xl" }: PageLayoutProps) => (
+  <div className={`mx-auto w-full ${widthClasses[maxWidth]} space-y-6`}>{children}</div>
 );

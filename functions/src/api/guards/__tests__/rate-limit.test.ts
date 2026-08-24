@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
 import { TooManyRequestsError } from "@jewel998/api";
+import { describe, it, expect } from "vitest";
+
 import { RateLimitMiddleware } from "../rate-limit.guard";
 import { makeCtx } from "./helpers";
 

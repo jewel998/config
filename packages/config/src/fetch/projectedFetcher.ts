@@ -1,17 +1,11 @@
-import type {
-  ConfigFetcher,
-  GetConfigResponse,
-  HttpTransport,
-} from "../types.js";
+import type { ConfigFetcher, GetConfigResponse, HttpTransport } from "../types.js";
 
 interface VersionResponse {
   version: string;
   changedKeys: string[];
 }
 
-export const createProjectedFetcher = (
-  transport: HttpTransport,
-): ConfigFetcher => {
+export const createProjectedFetcher = (transport: HttpTransport): ConfigFetcher => {
   let pendingKeys = new Set<string>();
   let batchPromise: Promise<Record<string, unknown>> | null = null;
 
@@ -27,27 +21,22 @@ export const createProjectedFetcher = (
       }
 
       if (!batchPromise) {
-        batchPromise = new Promise<Record<string, unknown>>(
-          (resolve, reject) => {
-            queueMicrotask(async () => {
-              const batchedKeys = Array.from(pendingKeys);
-              pendingKeys = new Set();
-              batchPromise = null;
+        batchPromise = new Promise<Record<string, unknown>>((resolve, reject) => {
+          queueMicrotask(async () => {
+            const batchedKeys = Array.from(pendingKeys);
+            pendingKeys = new Set();
+            batchPromise = null;
 
-              try {
-                const response = await transport.request<GetConfigResponse>(
-                  "v1/config",
-                  {
-                    keys: batchedKeys,
-                  },
-                );
-                resolve(response.data);
-              } catch (err) {
-                reject(err);
-              }
-            });
-          },
-        );
+            try {
+              const response = await transport.request<GetConfigResponse>("v1/config", {
+                keys: batchedKeys,
+              });
+              resolve(response.data);
+            } catch (err) {
+              reject(err);
+            }
+          });
+        });
       }
 
       const result = await batchPromise;

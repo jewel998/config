@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { evaluatePredicate, evaluatePredicateGroups } from "./predicates.js";
+
 import type { Predicate, PredicateGroup } from "../models.js";
+import { evaluatePredicate, evaluatePredicateGroups } from "./predicates.js";
 
 describe("evaluatePredicate", () => {
   const attrs = {
@@ -152,7 +153,11 @@ describe("evaluatePredicate", () => {
 
   describe("regex_match operator", () => {
     it("returns true when attribute matches regex", () => {
-      const p: Predicate = { attribute: "email", operator: "regex_match", value: "^user@.*\\.com$" };
+      const p: Predicate = {
+        attribute: "email",
+        operator: "regex_match",
+        value: "^user@.*\\.com$",
+      };
       expect(evaluatePredicate(p, attrs)).toBe(true);
     });
 
@@ -186,7 +191,11 @@ describe("evaluatePredicate", () => {
     });
 
     it("returns false for not_in_segment (handled externally)", () => {
-      const p: Predicate = { attribute: "segment", operator: "not_in_segment", value: "beta-users" };
+      const p: Predicate = {
+        attribute: "segment",
+        operator: "not_in_segment",
+        value: "beta-users",
+      };
       expect(evaluatePredicate(p, attrs)).toBe(false);
     });
   });
@@ -199,8 +208,16 @@ describe("evaluatePredicate", () => {
 
     it("returns false for missing attribute with any operator", () => {
       const operators = [
-        "equals", "not_equals", "contains", "starts_with", "ends_with",
-        "in_list", "not_in_list", "greater_than", "less_than", "regex_match",
+        "equals",
+        "not_equals",
+        "contains",
+        "starts_with",
+        "ends_with",
+        "in_list",
+        "not_in_list",
+        "greater_than",
+        "less_than",
+        "regex_match",
       ] as const;
       for (const op of operators) {
         const p: Predicate = { attribute: "missing", operator: op, value: "x" };

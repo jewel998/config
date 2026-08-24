@@ -1,14 +1,6 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
-import {
-  ChevronDown,
-  ChevronRight,
-  Percent,
-  Target,
-  Timer,
-  UserCheck,
-  Link2,
-} from "lucide-react";
+import { Trans } from "@lingui/react/macro";
+import { ChevronDown, ChevronRight, Percent, Target, Timer, UserCheck, Link2 } from "lucide-react";
 import { useState } from "react";
 import React from "react";
 import { toast } from "sonner";
@@ -24,20 +16,15 @@ import { TemplateBar } from "@/components/template-bar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getFullValue } from "@/components/value-preview";
-import { useSetTargetingRules } from "@/hooks/use-targeting-rules";
-import { useSetOverrides } from "@/hooks/use-overrides";
-import { useSetSchedule } from "@/hooks/use-schedule";
-import { useSetPrerequisites } from "@/hooks/use-prerequisites";
-import { useSegments } from "@/hooks/use-segments";
 import { useConfigs } from "@/hooks/use-configs";
+import { useSetOverrides } from "@/hooks/use-overrides";
+import { useSetPrerequisites } from "@/hooks/use-prerequisites";
+import { useSetSchedule } from "@/hooks/use-schedule";
+import { useSegments } from "@/hooks/use-segments";
 import { useSetRollout } from "@/hooks/use-set-rollout";
+import { useSetTargetingRules } from "@/hooks/use-targeting-rules";
 import { CONFIG_TEMPLATES } from "@/lib/config-templates";
-import type {
-  ConfigFlagExtended,
-  SectionId,
-  TargetingRule,
-  TemplateType,
-} from "@/lib/types";
+import type { ConfigFlagExtended, SectionId, TargetingRule, TemplateType } from "@/lib/types";
 
 const EMPTY_RULES: TargetingRule[] = [];
 const EMPTY_OVERRIDES: Record<string, unknown> = {};
@@ -56,14 +43,7 @@ interface SectionHeaderProps {
   onToggle: (id: SectionId) => void;
 }
 
-const SectionHeader = ({
-  id,
-  icon: Icon,
-  label,
-  badge,
-  isOpen,
-  onToggle,
-}: SectionHeaderProps) => (
+const SectionHeader = ({ id, icon: Icon, label, badge, isOpen, onToggle }: SectionHeaderProps) => (
   <button
     type="button"
     className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium hover:bg-muted/50 transition-colors"
@@ -114,12 +94,12 @@ export const ConfigDetailPanel = ({
   const rolloutValue = config.rolloutValue;
   const overrides = config.overrides ?? EMPTY_OVERRIDES;
   const schedule = config.schedule ?? null;
-  const prerequisites = (config.prerequisites ?? EMPTY_PREREQUISITES).map(
-    (p) => ({ ...p, operator: p.operator ?? ("equals" as const) }),
-  );
+  const prerequisites = (config.prerequisites ?? EMPTY_PREREQUISITES).map((p) => ({
+    ...p,
+    operator: p.operator ?? ("equals" as const),
+  }));
 
-  const toggle = (id: SectionId) =>
-    setOpenSection(openSection === id ? null : id);
+  const toggle = (id: SectionId) => setOpenSection(openSection === id ? null : id);
 
   const handleApplyTemplate = (templateType: TemplateType) => {
     const template = CONFIG_TEMPLATES.find((t) => t.id === templateType);
@@ -235,9 +215,7 @@ export const ConfigDetailPanel = ({
           id="targeting"
           icon={Target}
           label={t`Targeting Rules`}
-          badge={
-            targetingRules.length > 0 ? `${targetingRules.length}` : undefined
-          }
+          badge={targetingRules.length > 0 ? `${targetingRules.length}` : undefined}
           isOpen={openSection === "targeting"}
           onToggle={toggle}
         />
@@ -328,11 +306,7 @@ export const ConfigDetailPanel = ({
           id="overrides"
           icon={UserCheck}
           label={t`Overrides`}
-          badge={
-            Object.keys(overrides).length > 0
-              ? `${Object.keys(overrides).length}`
-              : undefined
-          }
+          badge={Object.keys(overrides).length > 0 ? `${Object.keys(overrides).length}` : undefined}
           isOpen={openSection === "overrides"}
           onToggle={toggle}
         />
@@ -409,9 +383,7 @@ export const ConfigDetailPanel = ({
           id="prerequisites"
           icon={Link2}
           label={t`Prerequisites`}
-          badge={
-            prerequisites.length > 0 ? `${prerequisites.length}` : undefined
-          }
+          badge={prerequisites.length > 0 ? `${prerequisites.length}` : undefined}
           isOpen={openSection === "prerequisites"}
           onToggle={toggle}
         />
@@ -434,8 +406,7 @@ export const ConfigDetailPanel = ({
                     },
                     {
                       onSuccess: () => toast.success(t`Prerequisites saved`),
-                      onError: () =>
-                        toast.error(t`Failed to save prerequisites`),
+                      onError: () => toast.error(t`Failed to save prerequisites`),
                     },
                   );
                 }}

@@ -159,8 +159,7 @@ initApp();
 
 ```typescript
 // Show loading UI while waiting for flags
-document.getElementById("app")!.innerHTML =
-  "<div class='spinner'>Loading...</div>";
+document.getElementById("app")!.innerHTML = "<div class='spinner'>Loading...</div>";
 
 const config = createConfig({
   clientId: "cid_xxx",

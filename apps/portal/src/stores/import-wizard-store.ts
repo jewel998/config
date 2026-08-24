@@ -1,12 +1,8 @@
 import { create } from "zustand";
-import type {
-  ConflictStrategy,
-  ImportEntry,
-  ValidationResult,
-} from "@/lib/types";
 
-export type WizardStep =
-  "upload" | "preview" | "validate" | "confirm" | "results";
+import type { ConflictStrategy, ImportEntry, ValidationResult } from "@/lib/types";
+
+export type WizardStep = "upload" | "preview" | "validate" | "confirm" | "results";
 
 /** Result shape stored in the wizard store after import completes */
 export interface ImportResult {

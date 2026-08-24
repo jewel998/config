@@ -1,12 +1,7 @@
 import { doc, increment, updateDoc } from "firebase/firestore";
 
 import { BaseRepository } from "./base-repository";
-import type {
-  AuditContext,
-  AuthenticatedUser,
-  RepositoryContext,
-  ValidationError,
-} from "./types";
+import type { AuditContext, AuthenticatedUser, RepositoryContext, ValidationError } from "./types";
 import { RepositoryError } from "./types";
 
 // ─── Entity Types ────────────────────────────────────────────
@@ -107,18 +102,12 @@ export class ConfigRepository extends BaseRepository<
     oldEntity?: ConfigEntity | null,
     newEntity?: ConfigEntity,
   ): AuditContext {
-    const key =
-      (input as ConfigCreateInput)?.key ??
-      oldEntity?.key ??
-      newEntity?.key ??
-      "unknown";
+    const key = (input as ConfigCreateInput)?.key ?? oldEntity?.key ?? newEntity?.key ?? "unknown";
     return {
       actorId: "", // Will be set by caller
       action: operation,
       resourcePath: `environments/${ctx.environmentId}/configs/${key}`,
-      oldValue: oldEntity
-        ? { value: oldEntity.value, valueType: oldEntity.valueType }
-        : undefined,
+      oldValue: oldEntity ? { value: oldEntity.value, valueType: oldEntity.valueType } : undefined,
       newValue: input
         ? {
             value: (input as ConfigCreateInput).value,
@@ -279,11 +268,7 @@ export class ConfigRepository extends BaseRepository<
               code: "INVALID_JSON",
             });
           }
-        } else if (
-          typeof value !== "object" ||
-          value === null ||
-          Array.isArray(value)
-        ) {
+        } else if (typeof value !== "object" || value === null || Array.isArray(value)) {
           errors.push({
             field: "value",
             message: "Invalid JSON value",
@@ -353,10 +338,7 @@ export class ConfigRepository extends BaseRepository<
 
   // ─── Version Bump ──────────────────────────────────────────
 
-  private async bumpVersion(
-    ctx: RepositoryContext,
-    changedKeys: string[],
-  ): Promise<void> {
+  private async bumpVersion(ctx: RepositoryContext, changedKeys: string[]): Promise<void> {
     const envRef = doc(
       this.firestore,
       "projects",

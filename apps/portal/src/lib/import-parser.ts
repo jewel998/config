@@ -26,9 +26,7 @@ export function parseCsvFile(text: string): ParseResult {
     errors.push({
       row: 1,
       message:
-        'Invalid header row. Expected "key,value,valueType" but got: "' +
-        lines[0].trim() +
-        '"',
+        'Invalid header row. Expected "key,value,valueType" but got: "' + lines[0].trim() + '"',
     });
     return { entries, errors };
   }
@@ -86,8 +84,7 @@ export function parseJsonFile(text: string): ParseResult {
   } catch (e) {
     errors.push({
       row: 0,
-      message:
-        "Invalid JSON: " + (e instanceof Error ? e.message : "parse error"),
+      message: "Invalid JSON: " + (e instanceof Error ? e.message : "parse error"),
     });
     return { entries, errors };
   }

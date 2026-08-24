@@ -19,7 +19,5 @@ import type { RequestContext, HandlerResponse } from "../interfaces/index";
  * ```
  */
 export abstract class RequestHandler {
-  abstract handle(
-    ctx: RequestContext,
-  ): Promise<HandlerResponse> | HandlerResponse;
+  abstract handle(ctx: RequestContext): Promise<HandlerResponse> | HandlerResponse;
 }

@@ -1,12 +1,7 @@
 import { doc, updateDoc } from "firebase/firestore";
 
 import { BaseRepository } from "./base-repository";
-import type {
-  AuditContext,
-  AuthenticatedUser,
-  RepositoryContext,
-  ValidationError,
-} from "./types";
+import type { AuditContext, AuthenticatedUser, RepositoryContext, ValidationError } from "./types";
 
 // ─── Entity Types ────────────────────────────────────────────
 
@@ -56,18 +51,13 @@ export class ProjectRepository extends BaseRepository<
     newEntity?: ProjectEntity,
   ): AuditContext {
     const name =
-      (input as ProjectCreateInput)?.name ??
-      oldEntity?.name ??
-      newEntity?.name ??
-      "unknown";
+      (input as ProjectCreateInput)?.name ?? oldEntity?.name ?? newEntity?.name ?? "unknown";
     return {
       actorId: "",
       action: operation === "delete" ? "delete" : operation,
       resourcePath: `project/${name}`,
       oldValue: oldEntity ? { name: oldEntity.name } : undefined,
-      newValue: input
-        ? { name: (input as ProjectCreateInput).name }
-        : undefined,
+      newValue: input ? { name: (input as ProjectCreateInput).name } : undefined,
     };
   }
 
@@ -141,12 +131,7 @@ export class ProjectRepository extends BaseRepository<
     // Write audit manually using the parent's private method indirectly
     // We use addDoc directly for audit
     const { addDoc, collection } = await import("firebase/firestore");
-    const auditRef = collection(
-      this.firestore,
-      "projects",
-      ctx.projectId,
-      "audit_log",
-    );
+    const auditRef = collection(this.firestore, "projects", ctx.projectId, "audit_log");
     await addDoc(auditRef, {
       actorId: user.uid,
       timestamp: new Date().toISOString(),

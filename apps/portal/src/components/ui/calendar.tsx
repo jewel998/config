@@ -3,8 +3,8 @@
 import * as React from "react";
 import { DayPicker } from "react-day-picker";
 
-import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -28,8 +28,7 @@ function Calendar({ className, classNames, ...props }: CalendarProps) {
         ),
         month_grid: "w-full border-collapse",
         weekdays: "flex",
-        weekday:
-          "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+        weekday: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
         week: "flex w-full mt-2",
         day: "h-9 w-9 text-center text-sm p-0 relative",
         day_button: cn(

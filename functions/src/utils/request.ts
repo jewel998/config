@@ -3,6 +3,7 @@
  */
 
 import type { Request } from "firebase-functions/v2/https";
+
 import { BadRequestError, MethodNotAllowedError } from "./errors";
 
 /**
@@ -11,9 +12,7 @@ import { BadRequestError, MethodNotAllowedError } from "./errors";
  */
 export function assertMethod(req: Request, ...methods: string[]): void {
   if (!methods.includes(req.method)) {
-    throw new MethodNotAllowedError(
-      `Method ${req.method} not allowed. Use ${methods.join(", ")}`,
-    );
+    throw new MethodNotAllowedError(`Method ${req.method} not allowed. Use ${methods.join(", ")}`);
   }
 }
 
@@ -21,10 +20,7 @@ export function assertMethod(req: Request, ...methods: string[]): void {
  * Extracts a required string parameter from the given source object.
  * Throws BadRequestError if the parameter is missing or not a string.
  */
-export function requireParam(
-  source: Record<string, unknown>,
-  key: string,
-): string {
+export function requireParam(source: Record<string, unknown>, key: string): string {
   const value = source[key];
   if (!value || typeof value !== "string") {
     throw new BadRequestError(`${key} is required`);
@@ -36,10 +32,7 @@ export function requireParam(
  * Extracts an optional string parameter from the given source object.
  * Returns undefined if the parameter is missing or not a string.
  */
-export function optionalParam(
-  source: Record<string, unknown>,
-  key: string,
-): string | undefined {
+export function optionalParam(source: Record<string, unknown>, key: string): string | undefined {
   const value = source[key];
   if (value === undefined || value === null) return undefined;
   if (typeof value !== "string") return undefined;

@@ -35,26 +35,18 @@ const DiffLineRow = ({ line }: { line: DiffLine }) => (
     >
       {GUTTER_SYMBOL[line.type]}
     </div>
-    <div
-      className={`flex-1 px-3 py-1.5 overflow-x-auto ${ROW_STYLES[line.type]}`}
-    >
+    <div className={`flex-1 px-3 py-1.5 overflow-x-auto ${ROW_STYLES[line.type]}`}>
       <span className="text-muted-foreground mr-2">{line.key}:</span>
       {line.type === "changed" ? (
         <span>
-          <span className="line-through text-red-600 dark:text-red-400">
-            {line.oldValue}
-          </span>
+          <span className="line-through text-red-600 dark:text-red-400">{line.oldValue}</span>
           <span className="mx-1.5">→</span>
-          <span className="text-green-600 dark:text-green-400">
-            {line.newValue}
-          </span>
+          <span className="text-green-600 dark:text-green-400">{line.newValue}</span>
         </span>
       ) : line.type === "removed" ? (
         <span className="text-red-600 dark:text-red-400">{line.oldValue}</span>
       ) : line.type === "added" ? (
-        <span className="text-green-600 dark:text-green-400">
-          {line.newValue}
-        </span>
+        <span className="text-green-600 dark:text-green-400">{line.newValue}</span>
       ) : (
         <span className="text-muted-foreground">{line.oldValue}</span>
       )}
@@ -64,17 +56,9 @@ const DiffLineRow = ({ line }: { line: DiffLine }) => (
 
 // ─── Side-by-Side Panel ───────────────────────────────────────
 
-const SidePanel = ({
-  lines,
-  side,
-}: {
-  lines: DiffLine[];
-  side: "before" | "after";
-}) => {
+const SidePanel = ({ lines, side }: { lines: DiffLine[]; side: "before" | "after" }) => {
   const isBefore = side === "before";
-  const filtered = lines.filter((l) =>
-    isBefore ? l.type !== "added" : l.type !== "removed",
-  );
+  const filtered = lines.filter((l) => (isBefore ? l.type !== "added" : l.type !== "removed"));
   const color = isBefore ? "red" : "green";
 
   return (
@@ -124,22 +108,13 @@ interface AuditDiffViewerProps {
   newValue?: string;
 }
 
-export const AuditDiffViewer = ({
-  oldValue,
-  newValue,
-}: AuditDiffViewerProps) => {
+export const AuditDiffViewer = ({ oldValue, newValue }: AuditDiffViewerProps) => {
   const [mode, setMode] = useState<"unified" | "side-by-side">("unified");
   const [showUnchanged, setShowUnchanged] = useState(false);
 
-  const diffLines = useMemo(
-    () => computeDiff(oldValue, newValue),
-    [oldValue, newValue],
-  );
+  const diffLines = useMemo(() => computeDiff(oldValue, newValue), [oldValue, newValue]);
   const visibleLines = useMemo(
-    () =>
-      showUnchanged
-        ? diffLines
-        : diffLines.filter((l) => l.type !== "unchanged"),
+    () => (showUnchanged ? diffLines : diffLines.filter((l) => l.type !== "unchanged")),
     [diffLines, showUnchanged],
   );
   const unchangedCount = useMemo(

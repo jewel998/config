@@ -1,12 +1,7 @@
 import { doc, setDoc } from "firebase/firestore";
 
 import { BaseRepository } from "./base-repository";
-import type {
-  AuditContext,
-  AuthenticatedUser,
-  RepositoryContext,
-  ValidationError,
-} from "./types";
+import type { AuditContext, AuthenticatedUser, RepositoryContext, ValidationError } from "./types";
 import { RepositoryError } from "./types";
 
 // ─── Entity Types ────────────────────────────────────────────
@@ -39,8 +34,7 @@ export interface ApiKeyUpdateInput {
 
 function generateToken(type: "client" | "server"): string {
   const prefix = type === "server" ? "svr_" : "cid_";
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const bytes = new Uint8Array(20);
   crypto.getRandomValues(bytes);
   return prefix + Array.from(bytes, (b) => chars[b % chars.length]).join("");
@@ -75,17 +69,12 @@ export class ApiKeyRepository extends BaseRepository<
     newEntity?: ApiKeyEntity,
   ): AuditContext {
     const label =
-      (input as ApiKeyCreateInput)?.label ??
-      oldEntity?.label ??
-      newEntity?.label ??
-      "API key";
+      (input as ApiKeyCreateInput)?.label ?? oldEntity?.label ?? newEntity?.label ?? "API key";
     return {
       actorId: "",
       action: operation,
       resourcePath: `environments/${ctx.environmentId}/apiKeys/${label}`,
-      oldValue: oldEntity
-        ? { status: oldEntity.status, label: oldEntity.label }
-        : undefined,
+      oldValue: oldEntity ? { status: oldEntity.status, label: oldEntity.label } : undefined,
       newValue: input ?? undefined,
     };
   }
@@ -98,10 +87,7 @@ export class ApiKeyRepository extends BaseRepository<
 
     if (operation === "create") {
       const createInput = input as ApiKeyCreateInput;
-      if (
-        !createInput.type ||
-        !["client", "server"].includes(createInput.type)
-      ) {
+      if (!createInput.type || !["client", "server"].includes(createInput.type)) {
         errors.push({
           field: "type",
           message: "Type must be 'client' or 'server'",

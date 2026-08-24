@@ -1,14 +1,6 @@
-import {
-  formatDistanceToNowStrict,
-  differenceInMonths,
-  format,
-} from "date-fns";
+import { formatDistanceToNowStrict, differenceInMonths, format } from "date-fns";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 type DateFormat = "relative" | "short" | "medium" | "long";
 
@@ -19,12 +11,7 @@ interface DateDisplayProps {
   className?: string;
 }
 
-export const DateDisplay = ({
-  date,
-  mode = "relative",
-  timezone,
-  className,
-}: DateDisplayProps) => {
+export const DateDisplay = ({ date, mode = "relative", timezone, className }: DateDisplayProps) => {
   const dateObj = typeof date === "string" ? new Date(date) : date;
 
   const getRelativeDisplay = (): string => {
@@ -49,8 +36,7 @@ export const DateDisplay = ({
     }
   };
 
-  const displayText =
-    mode === "relative" ? getRelativeDisplay() : getAbsoluteDisplay();
+  const displayText = mode === "relative" ? getRelativeDisplay() : getAbsoluteDisplay();
 
   // Format date and time separately for cleaner display
   const localTz = timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -85,9 +71,7 @@ export const DateDisplay = ({
       <TooltipTrigger asChild>
         <time
           dateTime={dateObj.toISOString()}
-          className={
-            className ?? "cursor-help font-mono text-xs text-muted-foreground"
-          }
+          className={className ?? "cursor-help font-mono text-xs text-muted-foreground"}
         >
           {displayText}
         </time>

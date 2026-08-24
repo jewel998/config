@@ -5,22 +5,13 @@
 // POST /api/v1/version  { data: { clientId: "cid_xxx" } }
 // ═══════════════════════════════════════════════════════════════
 
-import { onRequest } from "firebase-functions/v2/https";
-import {
-  Methods,
-  UseMiddleware,
-  UseGuards,
-  RequestHandler,
-  createHandler,
-} from "@jewel998/api";
+import { Methods, UseMiddleware, UseGuards, RequestHandler, createHandler } from "@jewel998/api";
 import type { RequestContext, HandlerResponse } from "@jewel998/api";
+import { onRequest } from "firebase-functions/v2/https";
+
 import { MAX_INSTANCES, MIN_INSTANCES, API_REGION } from "../utils/constants";
 import { getDb } from "../utils/firestore";
-import {
-  ExtractClientIdMiddleware,
-  RateLimitMiddleware,
-  AuthenticateGuard,
-} from "./guards/index";
+import { ExtractClientIdMiddleware, RateLimitMiddleware, AuthenticateGuard } from "./guards/index";
 
 // ── Handler ──────────────────────────────────────────────────
 

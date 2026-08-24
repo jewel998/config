@@ -1,5 +1,5 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 import { useState } from "react";
 
 import { ResponsiveModal } from "@/components/responsive-modal";
@@ -54,30 +54,18 @@ export const WebhookFormModal = ({
 }: WebhookFormModalProps) => {
   const [name, setName] = useState(editingWebhook?.name ?? "");
   const [url, setUrl] = useState(editingWebhook?.url ?? "");
-  const [format, setFormat] = useState<WebhookFormat>(
-    editingWebhook?.format ?? "standard",
-  );
-  const [customTemplate, setCustomTemplate] = useState(
-    editingWebhook?.customTemplate ?? "",
-  );
-  const [eventTypes, setEventTypes] = useState<string[]>(
-    editingWebhook?.eventTypes ?? [],
-  );
+  const [format, setFormat] = useState<WebhookFormat>(editingWebhook?.format ?? "standard");
+  const [customTemplate, setCustomTemplate] = useState(editingWebhook?.customTemplate ?? "");
+  const [eventTypes, setEventTypes] = useState<string[]>(editingWebhook?.eventTypes ?? []);
   const [resourceCategories, setResourceCategories] = useState<string[]>(
     editingWebhook?.resourceCategories ?? [],
   );
-  const [environments, setEnvironments] = useState<string[]>(
-    editingWebhook?.environments ?? [],
-  );
+  const [environments, setEnvironments] = useState<string[]>(editingWebhook?.environments ?? []);
   const [urlError, setUrlError] = useState("");
 
   const { data: envs = [] } = useEnvironments(projectId);
 
-  const toggleItem = (
-    arr: string[],
-    item: string,
-    setter: (v: string[]) => void,
-  ) => {
+  const toggleItem = (arr: string[], item: string, setter: (v: string[]) => void) => {
     setter(arr.includes(item) ? arr.filter((i) => i !== item) : [...arr, item]);
   };
 
@@ -103,16 +91,8 @@ export const WebhookFormModal = ({
     <ResponsiveModal
       open={open}
       onOpenChange={onOpenChange}
-      title={
-        editingWebhook ? (
-          <Trans>Edit Webhook</Trans>
-        ) : (
-          <Trans>Add Webhook</Trans>
-        )
-      }
-      description={
-        <Trans>Configure an HTTP endpoint to receive notifications.</Trans>
-      }
+      title={editingWebhook ? <Trans>Edit Webhook</Trans> : <Trans>Add Webhook</Trans>}
+      description={<Trans>Configure an HTTP endpoint to receive notifications.</Trans>}
     >
       <div className="space-y-4">
         {/* Name */}
@@ -149,10 +129,7 @@ export const WebhookFormModal = ({
           <label className="text-xs font-medium">
             <Trans>Format</Trans>
           </label>
-          <Select
-            value={format}
-            onValueChange={(v) => setFormat(v as WebhookFormat)}
-          >
+          <Select value={format} onValueChange={(v) => setFormat(v as WebhookFormat)}>
             <SelectTrigger className="h-9">
               <SelectValue />
             </SelectTrigger>
@@ -197,19 +174,16 @@ export const WebhookFormModal = ({
               </summary>
               <div className="mt-2 space-y-1 pl-2 border-l">
                 <p>
-                  <code>{"{{action}}"}</code> — create, update, delete,
-                  state_change
+                  <code>{"{{action}}"}</code> — create, update, delete, state_change
                 </p>
                 <p>
-                  <code>{"{{resource.category}}"}</code> — config, segment,
-                  api_key, etc.
+                  <code>{"{{resource.category}}"}</code> — config, segment, api_key, etc.
                 </p>
                 <p>
                   <code>{"{{resource.path}}"}</code> — full resource path
                 </p>
                 <p>
-                  <code>{"{{resource.name}}"}</code> — human-readable resource
-                  name
+                  <code>{"{{resource.name}}"}</code> — human-readable resource name
                 </p>
                 <p>
                   <code>{"{{environment}}"}</code> — environment name or empty
@@ -227,8 +201,7 @@ export const WebhookFormModal = ({
                   <code>{"{{webhook.id}}"}</code> — webhook ID
                 </p>
                 <p>
-                  <code>{"{{changes.old}}"}</code> — previous value (JSON
-                  string)
+                  <code>{"{{changes.old}}"}</code> — previous value (JSON string)
                 </p>
                 <p>
                   <code>{"{{changes.new}}"}</code> — new value (JSON string)
@@ -241,8 +214,7 @@ export const WebhookFormModal = ({
         {/* Event Type Filters */}
         <div className="space-y-1">
           <label className="text-xs font-medium">
-            <Trans>Event types</Trans>{" "}
-            <span className="text-muted-foreground">(empty = all)</span>
+            <Trans>Event types</Trans> <span className="text-muted-foreground">(empty = all)</span>
           </label>
           <div className="flex flex-wrap gap-1">
             {EVENT_TYPES.map((et) => (
@@ -268,13 +240,9 @@ export const WebhookFormModal = ({
             {RESOURCE_CATEGORIES.map((rc) => (
               <Badge
                 key={rc}
-                variant={
-                  resourceCategories.includes(rc) ? "default" : "outline"
-                }
+                variant={resourceCategories.includes(rc) ? "default" : "outline"}
                 className="cursor-pointer text-xs rounded-full"
-                onClick={() =>
-                  toggleItem(resourceCategories, rc, setResourceCategories)
-                }
+                onClick={() => toggleItem(resourceCategories, rc, setResourceCategories)}
               >
                 {rc}
               </Badge>
@@ -285,20 +253,15 @@ export const WebhookFormModal = ({
         {/* Environment Filters */}
         <div className="space-y-1">
           <label className="text-xs font-medium">
-            <Trans>Environments</Trans>{" "}
-            <span className="text-muted-foreground">(empty = all)</span>
+            <Trans>Environments</Trans> <span className="text-muted-foreground">(empty = all)</span>
           </label>
           <div className="flex flex-wrap gap-1">
             {envs.map((env) => (
               <Badge
                 key={env.id}
-                variant={
-                  environments.includes(env.name) ? "default" : "outline"
-                }
+                variant={environments.includes(env.name) ? "default" : "outline"}
                 className="cursor-pointer text-xs rounded-full"
-                onClick={() =>
-                  toggleItem(environments, env.name, setEnvironments)
-                }
+                onClick={() => toggleItem(environments, env.name, setEnvironments)}
               >
                 {env.name}
               </Badge>
@@ -320,11 +283,7 @@ export const WebhookFormModal = ({
           >
             {editingWebhook ? <Trans>Save</Trans> : <Trans>Create</Trans>}
           </Button>
-          <Button
-            variant="ghost"
-            className="rounded-full"
-            onClick={() => onOpenChange(false)}
-          >
+          <Button variant="ghost" className="rounded-full" onClick={() => onOpenChange(false)}>
             <Trans>Cancel</Trans>
           </Button>
         </div>

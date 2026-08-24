@@ -1,7 +1,6 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ErrorBoundary } from "@/components/error-boundary";
 import {
   ChevronDown,
   ChevronLeft,
@@ -20,26 +19,28 @@ import {
   Trash2,
   Unlock,
 } from "lucide-react";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useTransition,
-} from "react";
+import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { ConfigDetailPanel } from "@/components/config-detail-panel";
 import { ConfigFormModal } from "@/components/config-form-modal";
 import { EmptyState } from "@/components/empty-state";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { Kbd } from "@/components/kbd";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
 import { PageTourButton } from "@/components/page-tour-button";
-import { ValuePreview } from "@/components/value-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,11 +66,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { ValuePreview } from "@/components/value-preview";
 import {
   type ConfigEntry,
   useConfigs,
@@ -81,19 +79,11 @@ import {
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useEnvironments } from "@/hooks/use-environments";
 import { usePinnedConfigs } from "@/hooks/use-pinned-configs";
-import { SEED_TEMPLATES } from "@/lib/constants";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { getStalenessLevel, getStalenessLabel } from "@/lib/stale-detection";
-import { useProjectStore } from "@/stores/project-store";
 import { useRBAC } from "@/hooks/use-rbac";
+import { SEED_TEMPLATES } from "@/lib/constants";
+import { getStalenessLevel, getStalenessLabel } from "@/lib/stale-detection";
 import type { ConfigFlagExtended } from "@/lib/types";
+import { useProjectStore } from "@/stores/project-store";
 
 type ValueType = ConfigEntry["valueType"];
 
@@ -114,38 +104,29 @@ const PAGE_SIZE = 20;
 const ConfigsPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const selectedEnvironmentId = useProjectStore((s) => s.selectedEnvironmentId);
-  const { data: environments = [], isLoading: envsLoading } =
-    useEnvironments(selectedProjectId);
+  const { data: environments = [], isLoading: envsLoading } = useEnvironments(selectedProjectId);
 
   const envId = selectedEnvironmentId;
   const [showForm, setShowForm] = useState(false);
   const [editingConfig, setEditingConfig] = useState<ConfigEntry | null>(null);
-  const [duplicatingConfig, setDuplicatingConfig] =
-    useState<ConfigEntry | null>(null);
+  const [duplicatingConfig, setDuplicatingConfig] = useState<ConfigEntry | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebouncedValue(searchQuery, 300);
   const [filterType, setFilterType] = useState<ValueType | "all">("all");
-  const [filterStaleness, setFilterStaleness] =
-    useState<FilterStaleness>("all");
+  const [filterStaleness, setFilterStaleness] = useState<FilterStaleness>("all");
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const [deleteConfirmKey, setDeleteConfirmKey] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [isPending, startTransition] = useTransition();
 
-  const { data: configs = [], isLoading: configsLoading } = useConfigs(
-    selectedProjectId,
-    envId,
-  );
+  const { data: configs = [], isLoading: configsLoading } = useConfigs(selectedProjectId, envId);
 
   const deleteConfig = useDeleteConfig();
   const toggleLock = useToggleConfigLock();
   const setConfigForUndo = useSetConfig();
   const promoteConfigs = usePromoteConfigs();
 
-  const { pinned, isPinned, togglePin } = usePinnedConfigs(
-    selectedProjectId,
-    envId,
-  );
+  const { pinned, isPinned, togglePin } = usePinnedConfigs(selectedProjectId, envId);
 
   const currentEnv = environments.find((e) => e.id === envId);
   const isProductionEnv = currentEnv?.isProduction ?? false;
@@ -155,12 +136,10 @@ const ConfigsPage = () => {
   const filteredConfigs = useMemo(() => {
     const filtered = configs.filter((c) => {
       const matchesSearch =
-        !debouncedSearch ||
-        c.key.toLowerCase().includes(debouncedSearch.toLowerCase());
+        !debouncedSearch || c.key.toLowerCase().includes(debouncedSearch.toLowerCase());
       const matchesType = filterType === "all" || c.valueType === filterType;
       const staleness = getStalenessLevel(c.updatedAt);
-      const matchesStaleness =
-        filterStaleness === "all" || staleness === filterStaleness;
+      const matchesStaleness = filterStaleness === "all" || staleness === filterStaleness;
       return matchesSearch && matchesType && matchesStaleness;
     });
 
@@ -176,10 +155,7 @@ const ConfigsPage = () => {
   // Pagination
   const totalPages = Math.max(1, Math.ceil(filteredConfigs.length / PAGE_SIZE));
   const safePage = Math.min(currentPage, totalPages - 1);
-  const paginatedConfigs = filteredConfigs.slice(
-    safePage * PAGE_SIZE,
-    (safePage + 1) * PAGE_SIZE,
-  );
+  const paginatedConfigs = filteredConfigs.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE);
 
   // Reset page when filters change
   useEffect(() => {
@@ -270,11 +246,9 @@ const ConfigsPage = () => {
       }
       if (e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey) {
         const active = document.activeElement;
-        if (active?.tagName === "INPUT" || active?.tagName === "TEXTAREA")
-          return;
+        if (active?.tagName === "INPUT" || active?.tagName === "TEXTAREA") return;
         e.preventDefault();
-        const searchInput =
-          document.querySelector<HTMLInputElement>("input[placeholder]");
+        const searchInput = document.querySelector<HTMLInputElement>("input[placeholder]");
         searchInput?.focus();
       }
     };
@@ -291,10 +265,7 @@ const ConfigsPage = () => {
 
   if (!selectedProjectId) {
     return (
-      <EmptyState
-        icon={Layers}
-        message={<Trans>Select a project to manage configs.</Trans>}
-      />
+      <EmptyState icon={Layers} message={<Trans>Select a project to manage configs.</Trans>} />
     );
   }
 
@@ -312,21 +283,12 @@ const ConfigsPage = () => {
     <PageLayout maxWidth="5xl">
       <PageHeader
         title={<Trans>Configs</Trans>}
-        description={
-          <Trans>Manage feature flags and configuration values.</Trans>
-        }
+        description={<Trans>Manage feature flags and configuration values.</Trans>}
         actions={
           <>
-            <PageTourButton
-              flowId="onboarding-config"
-              label={t`Configs guide`}
-            />
+            <PageTourButton flowId="onboarding-config" label={t`Configs guide`} />
             <Link to="/compare">
-              <Button
-                variant="outline"
-                className="gap-2 rounded-full"
-                size="sm"
-              >
+              <Button variant="outline" className="gap-2 rounded-full" size="sm">
                 <GitCompare className="h-4 w-4" />
                 <span className="hidden sm:inline">
                   <Trans>Compare</Trans>
@@ -357,9 +319,7 @@ const ConfigsPage = () => {
           {userRole === "viewer" ? (
             <Trans>You have view-only access to this project.</Trans>
           ) : (
-            <Trans>
-              This is a production environment. You have read-only access.
-            </Trans>
+            <Trans>This is a production environment. You have read-only access.</Trans>
           )}
         </div>
       )}
@@ -370,9 +330,7 @@ const ConfigsPage = () => {
             <Input
               placeholder={t`Search configs...`}
               value={searchQuery}
-              onChange={(e) =>
-                startTransition(() => setSearchQuery(e.target.value))
-              }
+              onChange={(e) => startTransition(() => setSearchQuery(e.target.value))}
               className="pl-9 pr-12"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -381,9 +339,7 @@ const ConfigsPage = () => {
           </div>
           <Select
             value={filterType}
-            onValueChange={(v) =>
-              startTransition(() => setFilterType(v as ValueType | "all"))
-            }
+            onValueChange={(v) => startTransition(() => setFilterType(v as ValueType | "all"))}
           >
             <SelectTrigger className="w-32">
               <SelectValue />
@@ -398,9 +354,7 @@ const ConfigsPage = () => {
           </Select>
           <Select
             value={filterStaleness}
-            onValueChange={(v) =>
-              startTransition(() => setFilterStaleness(v as FilterStaleness))
-            }
+            onValueChange={(v) => startTransition(() => setFilterStaleness(v as FilterStaleness))}
           >
             <SelectTrigger className="w-32">
               <SelectValue />
@@ -472,9 +426,7 @@ const ConfigsPage = () => {
                       <Trans>No configs yet</Trans>
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      <Trans>
-                        Get started with a template or create your own.
-                      </Trans>
+                      <Trans>Get started with a template or create your own.</Trans>
                     </p>
                   </div>
                   <div className="flex flex-wrap justify-center gap-2">
@@ -539,9 +491,7 @@ const ConfigsPage = () => {
                             key={config.key}
                             className={`cursor-pointer ${isPinned(config.key) ? "bg-primary/5" : ""}`}
                             onClick={() =>
-                              setExpandedKey(
-                                expandedKey === config.key ? null : config.key,
-                              )
+                              setExpandedKey(expandedKey === config.key ? null : config.key)
                             }
                           >
                             <TableCell className="w-8">
@@ -567,10 +517,7 @@ const ConfigsPage = () => {
                               </div>
                             </TableCell>
                             <TableCell>
-                              <Badge
-                                variant="secondary"
-                                className="rounded-full text-xs"
-                              >
+                              <Badge variant="secondary" className="rounded-full text-xs">
                                 {config.valueType}
                               </Badge>
                             </TableCell>
@@ -580,14 +527,10 @@ const ConfigsPage = () => {
                             <TableCell className="text-xs text-muted-foreground">
                               <div className="flex items-center gap-1.5">
                                 {config.updatedAt
-                                  ? new Date(
-                                      config.updatedAt,
-                                    ).toLocaleDateString()
+                                  ? new Date(config.updatedAt).toLocaleDateString()
                                   : "—"}
                                 {(() => {
-                                  const level = getStalenessLevel(
-                                    config.updatedAt,
-                                  );
+                                  const level = getStalenessLevel(config.updatedAt);
                                   if (level === "fresh") return null;
                                   return (
                                     <Tooltip>
@@ -595,16 +538,12 @@ const ConfigsPage = () => {
                                         <span>
                                           <Clock
                                             className={`h-3 w-3 ${
-                                              level === "stale"
-                                                ? "text-red-500"
-                                                : "text-amber-500"
+                                              level === "stale" ? "text-red-500" : "text-amber-500"
                                             }`}
                                           />
                                         </span>
                                       </TooltipTrigger>
-                                      <TooltipContent>
-                                        {getStalenessLabel(level)}
-                                      </TooltipContent>
+                                      <TooltipContent>{getStalenessLabel(level)}</TooltipContent>
                                     </Tooltip>
                                   );
                                 })()}
@@ -642,11 +581,7 @@ const ConfigsPage = () => {
                                       size="icon"
                                       className="h-7 w-7 rounded-full text-destructive hover:text-destructive"
                                       onClick={() => handleDelete(config.key)}
-                                      disabled={
-                                        deleteConfig.isPending ||
-                                        config.locked ||
-                                        !canEdit
-                                      }
+                                      disabled={deleteConfig.isPending || config.locked || !canEdit}
                                       aria-label={t`Delete`}
                                     >
                                       {deleteConfig.isPending ? (
@@ -672,9 +607,7 @@ const ConfigsPage = () => {
                                     </Button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end">
-                                    <DropdownMenuItem
-                                      onClick={() => togglePin(config.key)}
-                                    >
+                                    <DropdownMenuItem onClick={() => togglePin(config.key)}>
                                       {isPinned(config.key) ? (
                                         <>
                                           <PinOff className="h-4 w-4" />
@@ -687,15 +620,11 @@ const ConfigsPage = () => {
                                         </>
                                       )}
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => handleDuplicate(config)}
-                                    >
+                                    <DropdownMenuItem onClick={() => handleDuplicate(config)}>
                                       <Copy className="h-4 w-4" />
                                       <Trans>Duplicate</Trans>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => handleToggleLock(config)}
-                                    >
+                                    <DropdownMenuItem onClick={() => handleToggleLock(config)}>
                                       {config.locked ? (
                                         <>
                                           <Unlock className="h-4 w-4" />
@@ -724,10 +653,7 @@ const ConfigsPage = () => {
                           </TableRow>
                           {expandedKey === config.key && (
                             <TableRow key={`${config.key}-expanded`}>
-                              <TableCell
-                                colSpan={6}
-                                className="bg-muted/30 p-4"
-                              >
+                              <TableCell colSpan={6} className="bg-muted/30 p-4">
                                 <ConfigDetailPanel
                                   config={config as ConfigFlagExtended}
                                   projectId={selectedProjectId!}
@@ -749,11 +675,8 @@ const ConfigsPage = () => {
                     <p className="text-xs text-muted-foreground">
                       <Trans>
                         Showing {safePage * PAGE_SIZE + 1}–
-                        {Math.min(
-                          (safePage + 1) * PAGE_SIZE,
-                          filteredConfigs.length,
-                        )}{" "}
-                        of {filteredConfigs.length}
+                        {Math.min((safePage + 1) * PAGE_SIZE, filteredConfigs.length)} of{" "}
+                        {filteredConfigs.length}
                       </Trans>
                     </p>
                     <div className="flex items-center gap-1">
@@ -761,9 +684,7 @@ const ConfigsPage = () => {
                         variant="outline"
                         size="sm"
                         className="h-8 w-8 rounded-full p-0"
-                        onClick={() =>
-                          setCurrentPage((p) => Math.max(0, p - 1))
-                        }
+                        onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
                         disabled={safePage === 0}
                         aria-label={t`Previous page`}
                       >
@@ -776,9 +697,7 @@ const ConfigsPage = () => {
                         variant="outline"
                         size="sm"
                         className="h-8 w-8 rounded-full p-0"
-                        onClick={() =>
-                          setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
-                        }
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
                         disabled={safePage >= totalPages - 1}
                         aria-label={t`Next page`}
                       >
@@ -792,20 +711,14 @@ const ConfigsPage = () => {
           )}
         </ErrorBoundary>
       )}
-      <Dialog
-        open={!!deleteConfirmKey}
-        onOpenChange={(open) => !open && setDeleteConfirmKey(null)}
-      >
+      <Dialog open={!!deleteConfirmKey} onOpenChange={(open) => !open && setDeleteConfirmKey(null)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
               <Trans>Delete in production?</Trans>
             </DialogTitle>
             <DialogDescription>
-              <Trans>
-                This is a production environment. Changes will affect live
-                users.
-              </Trans>
+              <Trans>This is a production environment. Changes will affect live users.</Trans>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -819,9 +732,7 @@ const ConfigsPage = () => {
             <Button
               variant="destructive"
               className="rounded-full"
-              onClick={() =>
-                deleteConfirmKey && executeDelete(deleteConfirmKey)
-              }
+              onClick={() => deleteConfirmKey && executeDelete(deleteConfirmKey)}
             >
               <Trans>Delete</Trans>
             </Button>

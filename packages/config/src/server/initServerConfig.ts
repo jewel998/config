@@ -149,9 +149,7 @@ export interface ServerFlags extends ConfigClient {
  * process.on("SIGTERM", () => flags.close());
  * ```
  */
-export async function initServerConfig(
-  options: InitServerConfigOptions,
-): Promise<ServerFlags> {
+export async function initServerConfig(options: InitServerConfigOptions): Promise<ServerFlags> {
   // ── Validation ─────────────────────────────────────────────
   if (!options.clientId) {
     throw new ConfigError("clientId is required", "MISSING_CLIENT_ID");
@@ -190,9 +188,7 @@ export async function initServerConfig(
   });
   const events = new TypedEventEmitter();
   const fetcher =
-    granularity === "batch"
-      ? createBatchFetcher(transport)
-      : createProjectedFetcher(transport);
+    granularity === "batch" ? createBatchFetcher(transport) : createProjectedFetcher(transport);
 
   // ── Pessimistic load — await flags before returning ────────
   const loadResult = await executePessimistic({

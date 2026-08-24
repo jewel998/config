@@ -1,13 +1,9 @@
-import { useLingui } from "@lingui/react";
+import { TourProvider, TourRenderer } from "@jewel998/tour";
+import type { TourFlow } from "@jewel998/tour";
 import { t } from "@lingui/core/macro";
+import { useLingui } from "@lingui/react";
 import { Trans } from "@lingui/react/macro";
-import {
-  createRootRoute,
-  Link,
-  Outlet,
-  useNavigate,
-  useRouterState,
-} from "@tanstack/react-router";
+import { createRootRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   Globe,
   History,
@@ -27,8 +23,9 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { Toaster } from "sonner";
 
-import { EnvironmentSwitcher } from "@/components/environment-switcher";
 import { CommandPalette } from "@/components/command-palette";
+import { EnvironmentSwitcher } from "@/components/environment-switcher";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { ProjectSwitcher } from "@/components/project-switcher";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -40,37 +37,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ErrorBoundary } from "@/components/error-boundary";
-import {
-  type SupportedLocale,
-  localeNames,
-  loadCatalog,
-  storeLocale,
-} from "@/lib/i18n";
+import { useProjects } from "@/hooks/use-projects";
+import { type SupportedLocale, localeNames, loadCatalog, storeLocale } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
+import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
-import { useProjects } from "@/hooks/use-projects";
-import { TourProvider, TourRenderer } from "@jewel998/tour";
-import type { TourFlow } from "@jewel998/tour";
-import quickstartFlows from "@/tours/quickstart.json";
 import apiKeyFlows from "@/tours/api-keys.json";
+import quickstartFlows from "@/tours/quickstart.json";
 import segmentFlows from "@/tours/segments.json";
 import teamFlows from "@/tours/team.json";
-import { cn } from "@/lib/utils";
 
-const tourFlows = [
-  ...quickstartFlows,
-  ...apiKeyFlows,
-  ...segmentFlows,
-  ...teamFlows,
-] as TourFlow[];
+const tourFlows = [...quickstartFlows, ...apiKeyFlows, ...segmentFlows, ...teamFlows] as TourFlow[];
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
@@ -103,34 +83,27 @@ const LanguageSwitcher = () => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9"
-          aria-label={t`Change language`}
-        >
+        <Button variant="ghost" size="icon" className="h-9 w-9" aria-label={t`Change language`}>
           <Globe className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-40 p-1" align="end">
-        {(Object.entries(localeNames) as [SupportedLocale, string][]).map(
-          ([code, name]) => (
-            <Button
-              key={code}
-              variant="ghost"
-              size="sm"
-              onClick={() => handleChange(code)}
-              className={cn(
-                "w-full justify-start rounded-md px-3 py-1.5 text-sm h-auto",
-                currentLocale === code
-                  ? "bg-primary/10 font-medium text-primary"
-                  : "text-muted-foreground",
-              )}
-            >
-              {name}
-            </Button>
-          ),
-        )}
+        {(Object.entries(localeNames) as [SupportedLocale, string][]).map(([code, name]) => (
+          <Button
+            key={code}
+            variant="ghost"
+            size="sm"
+            onClick={() => handleChange(code)}
+            className={cn(
+              "w-full justify-start rounded-md px-3 py-1.5 text-sm h-auto",
+              currentLocale === code
+                ? "bg-primary/10 font-medium text-primary"
+                : "text-muted-foreground",
+            )}
+          >
+            {name}
+          </Button>
+        ))}
       </PopoverContent>
     </Popover>
   );
@@ -162,9 +135,7 @@ const UserMenu = () => {
       <DropdownMenuContent align="end" className="w-56">
         <div className="px-3 py-2">
           <p className="text-sm font-medium">{user?.displayName ?? "User"}</p>
-          <p className="truncate text-xs text-muted-foreground">
-            {user?.email}
-          </p>
+          <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
         </div>
         <DropdownMenuSeparator />
         <Link to="/preferences">
@@ -269,10 +240,7 @@ const AuthenticatedLayout = () => {
   const { data: projects } = useProjects();
   const navigate = useNavigate();
   const routerState = useRouterState();
-  const currentPath = routerState.location.pathname.replace(
-    "/config/portal",
-    "",
-  );
+  const currentPath = routerState.location.pathname.replace("/config/portal", "");
 
   // Tour context — determines which flow triggers
   const hasProject = !!selectedProjectId;
@@ -289,11 +257,7 @@ const AuthenticatedLayout = () => {
   );
 
   useEffect(() => {
-    if (
-      projects &&
-      selectedProjectId &&
-      !projects.find((p) => p.id === selectedProjectId)
-    ) {
+    if (projects && selectedProjectId && !projects.find((p) => p.id === selectedProjectId)) {
       useProjectStore.getState().setSelectedProjectId(null);
     }
   }, [projects, selectedProjectId]);
@@ -321,10 +285,7 @@ const AuthenticatedLayout = () => {
         >
           <TabNav />
         </div>
-        <main
-          id="main-content"
-          className="flex-1 overflow-auto p-4 md:p-6 lg:p-8"
-        >
+        <main id="main-content" className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
           <ErrorBoundary>
             <Outlet />
           </ErrorBoundary>
@@ -353,8 +314,8 @@ const AccessDeniedPage = () => {
           </h1>
           <p className="text-sm text-muted-foreground">
             <Trans>
-              Your account is not authorized to access this portal. Contact the
-              project owner to request access.
+              Your account is not authorized to access this portal. Contact the project owner to
+              request access.
             </Trans>
           </p>
         </div>
@@ -362,11 +323,7 @@ const AccessDeniedPage = () => {
           <Button onClick={signIn} className="w-full rounded-full">
             <Trans>Try a different account</Trans>
           </Button>
-          <Button
-            variant="outline"
-            onClick={logOut}
-            className="w-full gap-2 rounded-full"
-          >
+          <Button variant="outline" onClick={logOut} className="w-full gap-2 rounded-full">
             <LogOut className="h-4 w-4" />
             <Trans>Sign out</Trans>
           </Button>
@@ -441,11 +398,7 @@ const LoginPage = () => {
             </div>
 
             {/* Sign in button */}
-            <Button
-              onClick={signIn}
-              size="lg"
-              className="w-full gap-2 rounded-full"
-            >
+            <Button onClick={signIn} size="lg" className="w-full gap-2 rounded-full">
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -479,9 +432,7 @@ const LoginPage = () => {
             Beta
           </Badge>
           <p className="mt-2 text-[11px] text-muted-foreground">
-            <Trans>
-              Access is by request only. Rights of Admission Reserved.
-            </Trans>
+            <Trans>Access is by request only. Rights of Admission Reserved.</Trans>
           </p>
         </div>
       </div>

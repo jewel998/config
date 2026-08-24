@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
 import type { Firestore } from "firebase/firestore";
+import { useMemo } from "react";
 
 import { db } from "@/lib/firebase";
 import { useAuthStore } from "@/stores/auth-store";
+
 import type { BaseRepository } from "./base-repository";
 import type { RepositoryContext, ValidationError } from "./types";
 
@@ -26,17 +27,11 @@ export function useRepository<
   TCreate extends Record<string, unknown>,
   TUpdate extends Record<string, unknown>,
   R extends BaseRepository<TEntity, TCreate, TUpdate>,
->(
-  RepoClass: new (firestore: Firestore, queryClient: any) => R,
-  ctx: RepositoryContext,
-) {
+>(RepoClass: new (firestore: Firestore, queryClient: any) => R, ctx: RepositoryContext) {
   const user = useAuthStore((s) => s.user);
   const queryClient = useQueryClient();
 
-  const repo = useMemo(
-    () => new RepoClass(db, queryClient),
-    [RepoClass, queryClient],
-  );
+  const repo = useMemo(() => new RepoClass(db, queryClient), [RepoClass, queryClient]);
 
   const authUser = user ? { uid: user.uid, email: user.email } : null;
 

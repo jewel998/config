@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { doc, updateDoc } from "firebase/firestore";
 
-import { db } from "@/lib/firebase";
-import { bumpConfigVersion } from "@/lib/bump-version";
 import { writeAuditEntry, buildConfigAuditEntry } from "@/lib/audit";
+import { bumpConfigVersion } from "@/lib/bump-version";
+import { db } from "@/lib/firebase";
 import type { AuditEntry } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
 

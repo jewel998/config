@@ -47,9 +47,7 @@ function generateSamplePayload(webhook: WebhookConfig): unknown {
           },
           {
             type: "context",
-            elements: [
-              { type: "mrkdwn", text: `${sample.timestamp} • proj_xyz` },
-            ],
+            elements: [{ type: "mrkdwn", text: `${sample.timestamp} • proj_xyz` }],
           },
         ],
       };
@@ -168,12 +166,7 @@ export const WebhookPreview = ({ webhook }: WebhookPreviewProps) => {
 
   if (!show) {
     return (
-      <Button
-        variant="ghost"
-        size="sm"
-        className="h-6 text-xs gap-1"
-        onClick={() => setShow(true)}
-      >
+      <Button variant="ghost" size="sm" className="h-6 text-xs gap-1" onClick={() => setShow(true)}>
         <Eye className="h-3 w-3" />
         <Trans>Preview payload</Trans>
       </Button>

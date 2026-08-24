@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { doc, getDoc } from "firebase/firestore";
+
 import { db } from "@/lib/firebase";
 import type { UserProfile } from "@/lib/team-utils";
 

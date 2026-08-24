@@ -2,10 +2,10 @@ import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
 import { History } from "lucide-react";
 
+import { AuditLogViewer } from "@/components/audit-log-viewer";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
-import { AuditLogViewer } from "@/components/audit-log-viewer";
 import { useProjectStore } from "@/stores/project-store";
 
 const AuditPage = () => {
@@ -13,10 +13,7 @@ const AuditPage = () => {
 
   if (!selectedProjectId) {
     return (
-      <EmptyState
-        icon={History}
-        message={<Trans>Select a project to view audit log.</Trans>}
-      />
+      <EmptyState icon={History} message={<Trans>Select a project to view audit log.</Trans>} />
     );
   }
 
@@ -24,9 +21,7 @@ const AuditPage = () => {
     <PageLayout>
       <PageHeader
         title={<Trans>Audit Log</Trans>}
-        description={
-          <Trans>Track all configuration changes for SOC2 compliance.</Trans>
-        }
+        description={<Trans>Track all configuration changes for SOC2 compliance.</Trans>}
       />
       <AuditLogViewer projectId={selectedProjectId} />
     </PageLayout>

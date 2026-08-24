@@ -9,22 +9,13 @@ import type {
 const KEY_PATTERN = /^[a-zA-Z0-9._]+$/;
 const MAX_KEY_LENGTH = 100;
 const MAX_VALUE_SIZE_BYTES = 1_048_576; // 1 MB
-const VALID_VALUE_TYPES: ConfigValueType[] = [
-  "string",
-  "number",
-  "boolean",
-  "json",
-  "array",
-];
+const VALID_VALUE_TYPES: ConfigValueType[] = ["string", "number", "boolean", "json", "array"];
 
 /**
  * Validates a single raw entry against the Config_DTO schema.
  * Returns a FailedRow if invalid, or null if valid.
  */
-export function validateEntry(
-  entry: RawEntry,
-  rowNumber: number,
-): FailedRow | null {
+export function validateEntry(entry: RawEntry, rowNumber: number): FailedRow | null {
   // Check required fields
   if (entry.key === undefined || entry.key === null || entry.key === "") {
     return {
@@ -40,11 +31,7 @@ export function validateEntry(
       reason: "missing required field: value",
     };
   }
-  if (
-    entry.valueType === undefined ||
-    entry.valueType === null ||
-    entry.valueType === ""
-  ) {
+  if (entry.valueType === undefined || entry.valueType === null || entry.valueType === "") {
     return {
       rowNumber,
       entry: entry as Partial<ImportEntry>,

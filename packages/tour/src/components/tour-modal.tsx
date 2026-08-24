@@ -59,9 +59,7 @@ export function TourModal({
             {description}
           </p>
         )}
-        <div
-          style={{ display: "flex", gap: 8, marginTop: 20, flexWrap: "wrap" }}
-        >
+        <div style={{ display: "flex", gap: 8, marginTop: 20, flexWrap: "wrap" }}>
           {actions?.map((action, i) => (
             <button
               key={i}
@@ -74,14 +72,11 @@ export function TourModal({
               style={{
                 padding: "8px 18px",
                 borderRadius: 999,
-                background:
-                  i === 0 ? "var(--color-primary, #2563eb)" : "transparent",
-                color:
-                  i === 0 ? "#fff" : "var(--color-muted-foreground, #6b7280)",
+                background: i === 0 ? "var(--color-primary, #2563eb)" : "transparent",
+                color: i === 0 ? "#fff" : "var(--color-muted-foreground, #6b7280)",
                 fontSize: 13,
                 fontWeight: 500,
-                border:
-                  i === 0 ? "none" : "1px solid var(--color-border, #e5e7eb)",
+                border: i === 0 ? "none" : "1px solid var(--color-border, #e5e7eb)",
                 cursor: "pointer",
               }}
             >

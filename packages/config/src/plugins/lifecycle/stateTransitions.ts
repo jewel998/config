@@ -34,9 +34,6 @@ export const VALID_TRANSITIONS: Record<LifecycleState, LifecycleState[]> = {
  * @param target - The desired target lifecycle state
  * @returns `true` if the transition is valid, `false` otherwise
  */
-export function validateStateTransition(
-  current: LifecycleState,
-  target: LifecycleState,
-): boolean {
+export function validateStateTransition(current: LifecycleState, target: LifecycleState): boolean {
   return VALID_TRANSITIONS[current]?.includes(target) ?? false;
 }

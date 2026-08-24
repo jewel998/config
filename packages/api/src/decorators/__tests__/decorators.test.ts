@@ -1,37 +1,27 @@
 import { describe, it, expect } from "vitest";
+
+import type { Middleware, Guard, Interceptor, Pipe, ExceptionFilter } from "../../interfaces/index";
 import { Methods } from "../methods";
 import { Status } from "../status";
-import { UseMiddleware } from "../use-middleware";
+import { UseFilters } from "../use-filters";
 import { UseGuards } from "../use-guards";
 import { UseInterceptors } from "../use-interceptors";
+import { UseMiddleware } from "../use-middleware";
 import { UsePipes } from "../use-pipes";
-import { UseFilters } from "../use-filters";
-import type {
-  Middleware,
-  Guard,
-  Interceptor,
-  Pipe,
-  ExceptionFilter,
-} from "../../interfaces/index";
 
 describe("@Methods", () => {
   it("attaches __methods to the class", () => {
     @Methods("GET", "POST")
     class Test {}
 
-    expect((Test as unknown as { __methods: string[] }).__methods).toEqual([
-      "GET",
-      "POST",
-    ]);
+    expect((Test as unknown as { __methods: string[] }).__methods).toEqual(["GET", "POST"]);
   });
 
   it("works with single method", () => {
     @Methods("DELETE")
     class Test {}
 
-    expect((Test as unknown as { __methods: string[] }).__methods).toEqual([
-      "DELETE",
-    ]);
+    expect((Test as unknown as { __methods: string[] }).__methods).toEqual(["DELETE"]);
   });
 });
 
@@ -51,9 +41,7 @@ describe("@UseMiddleware", () => {
     @UseMiddleware(mw)
     class Test {}
 
-    expect(
-      (Test as unknown as { __middleware: Middleware[] }).__middleware,
-    ).toEqual([mw]);
+    expect((Test as unknown as { __middleware: Middleware[] }).__middleware).toEqual([mw]);
   });
 
   it("preserves order", () => {
@@ -63,8 +51,7 @@ describe("@UseMiddleware", () => {
     @UseMiddleware(mw1, mw2)
     class Test {}
 
-    const stored = (Test as unknown as { __middleware: Middleware[] })
-      .__middleware;
+    const stored = (Test as unknown as { __middleware: Middleware[] }).__middleware;
     expect(stored[0]).toBe(mw1);
     expect(stored[1]).toBe(mw2);
   });
@@ -88,9 +75,7 @@ describe("@UseInterceptors", () => {
     @UseInterceptors(i)
     class Test {}
 
-    expect(
-      (Test as unknown as { __interceptors: Interceptor[] }).__interceptors,
-    ).toEqual([i]);
+    expect((Test as unknown as { __interceptors: Interceptor[] }).__interceptors).toEqual([i]);
   });
 });
 
@@ -112,8 +97,6 @@ describe("@UseFilters", () => {
     @UseFilters(f)
     class Test {}
 
-    expect(
-      (Test as unknown as { __filters: ExceptionFilter[] }).__filters,
-    ).toEqual([f]);
+    expect((Test as unknown as { __filters: ExceptionFilter[] }).__filters).toEqual([f]);
   });
 });

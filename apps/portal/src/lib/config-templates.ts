@@ -19,21 +19,17 @@ export const SECTION_HELP: Record<SectionId, SectionHelpConfig> = {
     tip: "Rules are evaluated top-to-bottom by priority. First match wins.",
   },
   rollout: {
-    description:
-      "Gradually roll out this config value to a percentage of users.",
+    description: "Gradually roll out this config value to a percentage of users.",
     tip: "Rollout uses consistent hashing — the same user always gets the same result.",
   },
   overrides: {
-    description:
-      "Force a specific value for individual user IDs, bypassing all other rules.",
+    description: "Force a specific value for individual user IDs, bypassing all other rules.",
   },
   schedule: {
-    description:
-      "Automatically change this config's value at a future date and time.",
+    description: "Automatically change this config's value at a future date and time.",
   },
   prerequisites: {
-    description:
-      "Require other flags to have specific values before this config takes effect.",
+    description: "Require other flags to have specific values before this config takes effect.",
     tip: "Circular dependencies are blocked automatically.",
   },
 };
@@ -96,9 +92,7 @@ export const CONFIG_TEMPLATES: ConfigTemplate[] = [
           value: config.value,
           conditions: [
             {
-              predicates: [
-                { attribute: "plan", operator: "equals", value: "pro" },
-              ],
+              predicates: [{ attribute: "plan", operator: "equals", value: "pro" }],
             },
           ],
         },

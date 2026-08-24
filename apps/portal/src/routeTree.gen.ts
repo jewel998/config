@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root";
-import { Route as IndexRouteImport } from "./routes/index";
 import { Route as ApiKeysRouteImport } from "./routes/api-keys";
 import { Route as AuditRouteImport } from "./routes/audit";
 import { Route as CompareRouteImport } from "./routes/compare";
@@ -17,6 +16,7 @@ import { Route as ConfigsRouteImport } from "./routes/configs";
 import { Route as EnvironmentsRouteImport } from "./routes/environments";
 import { Route as GdprRouteImport } from "./routes/gdpr";
 import { Route as ImportRouteImport } from "./routes/import";
+import { Route as IndexRouteImport } from "./routes/index";
 import { Route as PreferencesRouteImport } from "./routes/preferences";
 import { Route as SegmentsRouteImport } from "./routes/segments";
 import { Route as SettingsRouteImport } from "./routes/settings";

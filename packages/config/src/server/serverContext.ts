@@ -71,9 +71,7 @@ export interface ServerContextOptions {
  * config.getFlag("feature.checkout_v2");
  * ```
  */
-export function serverContext(
-  options?: ServerContextOptions,
-): EvaluationContext {
+export function serverContext(options?: ServerContextOptions): EvaluationContext {
   if (!options) return {};
 
   const { userId, ...attrs } = options;

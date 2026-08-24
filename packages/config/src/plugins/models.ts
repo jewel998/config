@@ -29,8 +29,7 @@ export interface ConfigFlagData {
   // Prerequisites
   prerequisites?: Array<{
     flagKey: string;
-    operator?:
-      "equals" | "not_equals" | "greater_than" | "less_than" | "contains";
+    operator?: "equals" | "not_equals" | "greater_than" | "less_than" | "contains";
     requiredValue: unknown;
   }>;
 }

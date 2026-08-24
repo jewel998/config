@@ -1,8 +1,8 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { useQueryClient } from "@tanstack/react-query";
 import { History, RefreshCw } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 
 import { AuditDiffViewer } from "@/components/audit-diff-viewer";
 import { AuditEntryRow } from "@/components/audit-entry-row";
@@ -21,11 +21,7 @@ import { useAuditLog } from "@/hooks/use-audit-log";
 import { useEnvironments } from "@/hooks/use-environments";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { useUserProfiles } from "@/hooks/use-user-profiles";
-import {
-  ACTION_LABELS,
-  formatResourceName,
-  getResourceCategory,
-} from "@/lib/audit-utils";
+import { ACTION_LABELS, formatResourceName, getResourceCategory } from "@/lib/audit-utils";
 import type { AuditEntry } from "@/lib/types";
 
 // ─── Skeleton ─────────────────────────────────────────────────
@@ -58,8 +54,10 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
     [actionFilter],
   );
 
-  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useAuditLog(projectId, filters);
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useAuditLog(
+    projectId,
+    filters,
+  );
 
   const { data: environments = [] } = useEnvironments(projectId);
   const envMap = useMemo(() => {
@@ -68,14 +66,8 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
     return map;
   }, [environments]);
 
-  const entries = useMemo(
-    () => data?.pages.flatMap((p) => p.entries) ?? [],
-    [data],
-  );
-  const actorIds = useMemo(
-    () => [...new Set(entries.map((e) => e.actorId))],
-    [entries],
-  );
+  const entries = useMemo(() => data?.pages.flatMap((p) => p.entries) ?? [], [data]);
+  const actorIds = useMemo(() => [...new Set(entries.map((e) => e.actorId))], [entries]);
   const { data: profiles = {} } = useUserProfiles(actorIds);
 
   const filtered = useMemo(() => {
@@ -85,18 +77,12 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
       result = result.filter((e) => e.resourcePath.toLowerCase().includes(q));
     }
     if (categoryFilter !== "all") {
-      result = result.filter(
-        (e) => getResourceCategory(e.resourcePath) === categoryFilter,
-      );
+      result = result.filter((e) => getResourceCategory(e.resourcePath) === categoryFilter);
     }
     return result;
   }, [entries, searchQuery, categoryFilter]);
 
-  const sentinelRef = useInfiniteScroll(
-    hasNextPage ?? false,
-    isFetchingNextPage,
-    fetchNextPage,
-  );
+  const sentinelRef = useInfiniteScroll(hasNextPage ?? false, isFetchingNextPage, fetchNextPage);
 
   const getActorName = (actorId: string) => {
     const profile = profiles[actorId];
@@ -182,9 +168,7 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
                   actorName={getActorName(entry.actorId)}
                   envMap={envMap}
                   onViewChanges={
-                    entry.oldValue || entry.newValue
-                      ? () => setDiffEntry(entry)
-                      : undefined
+                    entry.oldValue || entry.newValue ? () => setDiffEntry(entry) : undefined
                   }
                 />
               ))}
@@ -209,20 +193,13 @@ export const AuditLogViewer = ({ projectId }: AuditLogViewerProps) => {
           title={<Trans>Change Details</Trans>}
           description={
             <span className="text-xs text-muted-foreground">
-              <span className="font-medium">
-                {getActorName(diffEntry.actorId)}
-              </span>{" "}
+              <span className="font-medium">{getActorName(diffEntry.actorId)}</span>{" "}
               {ACTION_LABELS[diffEntry.action] ?? diffEntry.action}{" "}
-              <span className="font-mono">
-                {formatResourceName(diffEntry.resourcePath)}
-              </span>
+              <span className="font-mono">{formatResourceName(diffEntry.resourcePath)}</span>
             </span>
           }
         >
-          <AuditDiffViewer
-            oldValue={diffEntry.oldValue}
-            newValue={diffEntry.newValue}
-          />
+          <AuditDiffViewer oldValue={diffEntry.oldValue} newValue={diffEntry.newValue} />
         </ResponsiveModal>
       )}
     </>

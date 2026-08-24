@@ -5,18 +5,12 @@
 // POST /api/v1/config  { data: { clientId: "cid_xxx", keys?: [...] } }
 // ═══════════════════════════════════════════════════════════════
 
-import { onRequest } from "firebase-functions/v2/https";
-import {
-  Methods,
-  UseMiddleware,
-  UseGuards,
-  RequestHandler,
-  createHandler,
-} from "@jewel998/api";
+import { Methods, UseMiddleware, UseGuards, RequestHandler, createHandler } from "@jewel998/api";
 import type { RequestContext, HandlerResponse } from "@jewel998/api";
+import { onRequest } from "firebase-functions/v2/https";
+
 import { MAX_INSTANCES, MIN_INSTANCES, API_REGION } from "../utils/constants";
 import { getDb } from "../utils/firestore";
-import { evaluateConfigsForContext } from "./server-evaluator";
 import {
   ExtractClientIdMiddleware,
   ValidateKeyMethodGuard,
@@ -26,6 +20,7 @@ import {
   ValidateDomainGuard,
   FetchConfigsGuard,
 } from "./guards/index";
+import { evaluateConfigsForContext } from "./server-evaluator";
 
 // ── Handler ──────────────────────────────────────────────────
 
@@ -40,24 +35,13 @@ import {
 )
 class GetConfigHandler extends RequestHandler {
   handle(ctx: RequestContext): HandlerResponse {
-    const {
-      configs,
-      segments,
-      latestUpdate,
-      evaluationMode,
-      projectId,
-      environmentId,
-    } = ctx;
+    const { configs, segments, latestUpdate, evaluationMode, projectId, environmentId } = ctx;
 
     ctx.res.set("X-Config-Project", projectId!);
     ctx.res.set("X-Config-Environment", environmentId!);
 
     if (evaluationMode === "server") {
-      const { data } = evaluateConfigsForContext(
-        configs!,
-        segments!,
-        ctx.userContext ?? null,
-      );
+      const { data } = evaluateConfigsForContext(configs!, segments!, ctx.userContext ?? null);
       ctx.res.set("Cache-Control", "private, max-age=30");
 
       return {

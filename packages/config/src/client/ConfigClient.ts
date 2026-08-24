@@ -1,5 +1,5 @@
-import { withRetry } from "../retry/RetryEngine.js";
 import type { EvaluationContext, EvaluationPlugin } from "../plugins/types.js";
+import { withRetry } from "../retry/RetryEngine.js";
 import type {
   CacheStorage,
   ConfigClient,
@@ -33,9 +33,7 @@ export interface ConfigClientInternals {
 const MIN_FETCH_INTERVAL = 30_000; // Don't re-fetch within 30s
 const CONTEXT_DEBOUNCE_MS = 100; // Batch rapid setContext calls
 
-export const buildConfigClient = (
-  internals: ConfigClientInternals,
-): ConfigClient => {
+export const buildConfigClient = (internals: ConfigClientInternals): ConfigClient => {
   const { cache, fetcher, events, retry, granularity, isDeferred } = internals;
   const plugins = internals.plugins ?? [];
   let evalContext: EvaluationContext = internals.context ?? {};
@@ -122,12 +120,7 @@ export const buildConfigClient = (
           triggerProjectedFetch(key);
           return defaultValue as T | undefined;
         }
-        return valueResolver.resolve<T>(
-          key,
-          evalContext,
-          defaultValue,
-          consentAware,
-        );
+        return valueResolver.resolve<T>(key, evalContext, defaultValue, consentAware);
       }
 
       // No plugins — use simple resolution via ValueResolver
@@ -166,17 +159,11 @@ export const buildConfigClient = (
       await refreshManager.refresh(data);
     },
 
-    on<E extends ConfigEventType>(
-      event: E,
-      callback: ConfigEventCallback<E>,
-    ): void {
+    on<E extends ConfigEventType>(event: E, callback: ConfigEventCallback<E>): void {
       events.on(event, callback);
     },
 
-    off<E extends ConfigEventType>(
-      event: E,
-      callback: ConfigEventCallback<E>,
-    ): void {
+    off<E extends ConfigEventType>(event: E, callback: ConfigEventCallback<E>): void {
       events.off(event, callback);
     },
 

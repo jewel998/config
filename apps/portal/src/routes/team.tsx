@@ -1,18 +1,17 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { arrayRemove, doc, updateDoc } from "firebase/firestore";
 import { Clock, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { arrayRemove, doc, updateDoc } from "firebase/firestore";
-import { useQueryClient } from "@tanstack/react-query";
 
 import { AddMemberModal } from "@/components/add-member-modal";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
 import { PageTourButton } from "@/components/page-tour-button";
-import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,20 +22,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  usePendingInvites,
-  useCreateInvite,
-  useCancelInvite,
-} from "@/hooks/use-pending-invites";
-import { useUserProfiles } from "@/hooks/use-user-profiles";
+import { UserAvatar } from "@/components/user-avatar";
+import { usePendingInvites, useCreateInvite, useCancelInvite } from "@/hooks/use-pending-invites";
 import { useProjects } from "@/hooks/use-projects";
 import { useRBAC } from "@/hooks/use-rbac";
-import { useAuthStore } from "@/stores/auth-store";
-import { useProjectStore } from "@/stores/project-store";
-import { db } from "@/lib/firebase";
+import { useUserProfiles } from "@/hooks/use-user-profiles";
 import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
 import { confirm as confirmDialog } from "@/lib/confirm";
+import { db } from "@/lib/firebase";
 import type { RBACRole } from "@/lib/types";
+import { useAuthStore } from "@/stores/auth-store";
+import { useProjectStore } from "@/stores/project-store";
 
 const TeamPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
@@ -49,12 +45,8 @@ const TeamPage = () => {
   const [showModal, setShowModal] = useState(false);
 
   const allAuthorizedUsers = project?.authorizedUsers ?? [];
-  const authorizedUsers = allAuthorizedUsers.filter(
-    (u) => !u.startsWith("email:"),
-  );
-  const roles =
-    ((project as Record<string, unknown>)?.roles as Record<string, RBACRole>) ??
-    {};
+  const authorizedUsers = allAuthorizedUsers.filter((u) => !u.startsWith("email:"));
+  const roles = ((project as Record<string, unknown>)?.roles as Record<string, RBACRole>) ?? {};
 
   const { data: profiles = {} } = useUserProfiles(authorizedUsers);
   const { data: pendingInvites = [] } = usePendingInvites(selectedProjectId);
@@ -88,8 +80,7 @@ const TeamPage = () => {
       await updateDoc(doc(db, "projects", selectedProjectId), {
         [`roles.${userId}`]: newRole,
       });
-      const memberName =
-        profiles[userId]?.displayName || profiles[userId]?.email || userId;
+      const memberName = profiles[userId]?.displayName || profiles[userId]?.email || userId;
       await writeAuditEntry(
         selectedProjectId,
         buildAuditEntry({
@@ -118,8 +109,7 @@ const TeamPage = () => {
       toast.error(t`Cannot remove the last admin`);
       return;
     }
-    const memberName =
-      profiles[userId]?.displayName || profiles[userId]?.email || userId;
+    const memberName = profiles[userId]?.displayName || profiles[userId]?.email || userId;
     const ok = await confirmDialog({
       title: t`Remove member?`,
       description: t`Remove ${memberName} from this project? They will lose access immediately.`,
@@ -152,21 +142,13 @@ const TeamPage = () => {
     }
   };
 
-  const handleAddUser = async (
-    uid: string,
-    role: RBACRole,
-    displayName?: string,
-  ) => {
+  const handleAddUser = async (uid: string, role: RBACRole, displayName?: string) => {
     try {
       await updateDoc(doc(db, "projects", selectedProjectId), {
         [`roles.${uid}`]: role,
         authorizedUsers: [...authorizedUsers, uid],
       });
-      const memberName =
-        displayName ||
-        profiles[uid]?.displayName ||
-        profiles[uid]?.email ||
-        uid;
+      const memberName = displayName || profiles[uid]?.displayName || profiles[uid]?.email || uid;
       await writeAuditEntry(
         selectedProjectId,
         buildAuditEntry({
@@ -205,10 +187,7 @@ const TeamPage = () => {
           <>
             <PageTourButton flowId="tour-team" label={t`Team guide`} />
             {isAdmin && (
-              <Button
-                className="gap-2 rounded-full"
-                onClick={() => setShowModal(true)}
-              >
+              <Button className="gap-2 rounded-full" onClick={() => setShowModal(true)}>
                 <Plus className="h-4 w-4" />
                 <Trans>Add Member</Trans>
               </Button>
@@ -227,8 +206,7 @@ const TeamPage = () => {
         <CardContent className="space-y-2">
           {authorizedUsers.map((uid) => {
             const profile = profiles[uid];
-            const role =
-              uid === project.ownerId ? "admin" : (roles[uid] ?? "viewer");
+            const role = uid === project.ownerId ? "admin" : (roles[uid] ?? "viewer");
             const isOwner = uid === project.ownerId;
             const isSelf = uid === user?.uid;
             // Can modify: must be admin, can't modify owner, can't modify self
@@ -245,21 +223,15 @@ const TeamPage = () => {
                     photoURL={profile?.photoURL ?? null}
                   />
                   <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">
-                      {profile?.displayName ?? uid}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {profile?.email ?? ""}
-                    </p>
+                    <p className="text-sm font-medium truncate">{profile?.displayName ?? uid}</p>
+                    <p className="text-xs text-muted-foreground truncate">{profile?.email ?? ""}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   {canModifyRole ? (
                     <Select
                       value={role}
-                      onValueChange={(v) =>
-                        handleRoleChange(uid, v as RBACRole)
-                      }
+                      onValueChange={(v) => handleRoleChange(uid, v as RBACRole)}
                     >
                       <SelectTrigger className="h-8 w-28 text-xs">
                         <SelectValue />
@@ -286,11 +258,7 @@ const TeamPage = () => {
                     </Badge>
                   )}
                   {isAdmin && !isOwner && !isSelf && (
-                    <Button
-                      variant="ghost"
-                      size="icon-xs"
-                      onClick={() => handleRemove(uid)}
-                    >
+                    <Button variant="ghost" size="icon-xs" onClick={() => handleRemove(uid)}>
                       <Trash2 className="h-3.5 w-3.5 text-destructive" />
                     </Button>
                   )}
@@ -319,9 +287,7 @@ const TeamPage = () => {
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <div>
                     <p className="text-sm">{invite.email}</p>
-                    <p className="text-xs text-muted-foreground capitalize">
-                      {invite.role}
-                    </p>
+                    <p className="text-xs text-muted-foreground capitalize">{invite.role}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">

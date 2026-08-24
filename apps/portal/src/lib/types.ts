@@ -49,10 +49,7 @@ export const configKeySchema = z
   .string()
   .min(1, "Key is required")
   .max(100, "Key must be 100 characters or less")
-  .regex(
-    /^[a-zA-Z0-9._]+$/,
-    "Only alphanumeric, dots, and underscores allowed",
-  );
+  .regex(/^[a-zA-Z0-9._]+$/, "Only alphanumeric, dots, and underscores allowed");
 
 /** An environment within a project */
 export interface Environment {
@@ -114,7 +111,11 @@ export interface ConfigFlagExtended extends ConfigEntry {
 
 /** Supported operators for prerequisite comparisons */
 export type PrerequisiteOperator =
-  "equals" | "not_equals" | "greater_than" | "less_than" | "contains";
+  | "equals"
+  | "not_equals"
+  | "greater_than"
+  | "less_than"
+  | "contains";
 
 /** Targeting rule for the portal */
 export interface TargetingRule {
@@ -187,8 +188,7 @@ export type RBACRole = "viewer" | "editor" | "admin";
 // ═══════════════════════════════════════════════════════════════
 
 /** Template type identifiers */
-export type TemplateType =
-  "beta-users" | "gradual-rollout" | "internal-only" | "scheduled-launch";
+export type TemplateType = "beta-users" | "gradual-rollout" | "internal-only" | "scheduled-launch";
 
 /** Result of applying a config template */
 export interface TemplateResult {
@@ -309,8 +309,7 @@ export interface RawEntry {
 export type ConflictStrategy = "skip" | "overwrite" | "review";
 
 /** Import job status */
-export type ImportJobStatus =
-  "processing" | "completed" | "failed" | "resolved";
+export type ImportJobStatus = "processing" | "completed" | "failed" | "resolved";
 
 /** Import job document from Firestore */
 export interface ImportJob {

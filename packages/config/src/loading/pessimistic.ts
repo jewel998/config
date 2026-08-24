@@ -3,9 +3,7 @@ import { withRetry } from "../retry/RetryEngine.js";
 import type { LoadingContext, LoadingResult } from "../types.js";
 import { DEFAULT_CACHE_TTL } from "../types.js";
 
-export const executePessimistic = async (
-  ctx: LoadingContext,
-): Promise<LoadingResult> => {
+export const executePessimistic = async (ctx: LoadingContext): Promise<LoadingResult> => {
   const fetchPromise = withRetry(() => ctx.fetcher.fetchAll(), ctx.retry);
 
   const timeoutPromise = new Promise<never>((_, reject) => {

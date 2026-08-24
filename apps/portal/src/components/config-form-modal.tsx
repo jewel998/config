@@ -4,8 +4,6 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { confirm } from "@/lib/confirm";
-
 import { ResponsiveModal } from "@/components/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,16 +22,11 @@ import {
   configValueSchema,
   useSetConfig,
 } from "@/hooks/use-configs";
+import { confirm } from "@/lib/confirm";
 
 type ValueType = ConfigEntry["valueType"];
 
-const VALUE_TYPES: ValueType[] = [
-  "string",
-  "number",
-  "boolean",
-  "json",
-  "array",
-];
+const VALUE_TYPES: ValueType[] = ["string", "number", "boolean", "json", "array"];
 
 interface ConfigFormModalProps {
   open: boolean;
@@ -57,17 +50,12 @@ export const ConfigFormModal = ({
   const setConfig = useSetConfig();
   const sourceConfig = editingConfig ?? duplicateFrom;
   const [key, setKey] = useState(editingConfig?.key ?? "");
-  const [valueType, setValueType] = useState<ValueType>(
-    sourceConfig?.valueType ?? "string",
-  );
+  const [valueType, setValueType] = useState<ValueType>(sourceConfig?.valueType ?? "string");
   const [rawValue, setRawValue] = useState(() => {
     if (!sourceConfig) return "";
     const v = sourceConfig.value;
     if (sourceConfig.valueType === "boolean") return String(v);
-    if (
-      sourceConfig.valueType === "json" ||
-      sourceConfig.valueType === "array"
-    ) {
+    if (sourceConfig.valueType === "json" || sourceConfig.valueType === "array") {
       return typeof v === "string" ? v : JSON.stringify(v, null, 2);
     }
     return String(v ?? "");
@@ -245,9 +233,7 @@ export const ConfigFormModal = ({
           <p className="text-[11px] text-muted-foreground">
             <Trans>Alphanumeric, dots, and underscores only.</Trans>
           </p>
-          {errors.key && (
-            <p className="text-xs text-destructive">{errors.key}</p>
-          )}
+          {errors.key && <p className="text-xs text-destructive">{errors.key}</p>}
         </div>
 
         {/* Type field */}
@@ -255,10 +241,7 @@ export const ConfigFormModal = ({
           <label className="text-sm font-medium">
             <Trans>Type</Trans>
           </label>
-          <Select
-            value={valueType}
-            onValueChange={(v) => handleTypeChange(v as ValueType)}
-          >
+          <Select value={valueType} onValueChange={(v) => handleTypeChange(v as ValueType)}>
             <SelectTrigger className="w-48">
               <SelectValue />
             </SelectTrigger>
@@ -295,11 +278,7 @@ export const ConfigFormModal = ({
             </Select>
           ) : valueType === "json" || valueType === "array" ? (
             <Textarea
-              placeholder={
-                valueType === "json"
-                  ? t`Enter valid JSON`
-                  : t`Enter a JSON array`
-              }
+              placeholder={valueType === "json" ? t`Enter valid JSON` : t`Enter a JSON array`}
               value={rawValue}
               onChange={(e) => {
                 setRawValue(e.target.value);
@@ -327,9 +306,7 @@ export const ConfigFormModal = ({
               }}
             />
           )}
-          {errors.value && (
-            <p className="text-xs text-destructive">{errors.value}</p>
-          )}
+          {errors.value && <p className="text-xs text-destructive">{errors.value}</p>}
         </div>
 
         {/* Validation Rules (collapsible) */}
@@ -345,9 +322,7 @@ export const ConfigFormModal = ({
               <ChevronRight className="h-3.5 w-3.5" />
             )}
             <Trans>Validation Rules</Trans>
-            <span className="text-[10px] text-muted-foreground/60">
-              ({t`optional`})
-            </span>
+            <span className="text-[10px] text-muted-foreground/60">({t`optional`})</span>
           </button>
           {showValidation && (
             <div className="space-y-3 rounded-lg border p-3">
@@ -408,16 +383,13 @@ export const ConfigFormModal = ({
               {(valueType === "json" || valueType === "array") && (
                 <p className="text-xs text-muted-foreground">
                   <Trans>
-                    JSON and array values are validated for correct syntax
-                    automatically.
+                    JSON and array values are validated for correct syntax automatically.
                   </Trans>
                 </p>
               )}
               {valueType === "boolean" && (
                 <p className="text-xs text-muted-foreground">
-                  <Trans>
-                    Boolean values are constrained to true/false by default.
-                  </Trans>
+                  <Trans>Boolean values are constrained to true/false by default.</Trans>
                 </p>
               )}
             </div>
@@ -433,11 +405,7 @@ export const ConfigFormModal = ({
             className="h-auto p-0 text-xs"
             onClick={() => setShowPreview(!showPreview)}
           >
-            {showPreview ? (
-              <Trans>Hide Preview</Trans>
-            ) : (
-              <Trans>Show Preview</Trans>
-            )}
+            {showPreview ? <Trans>Hide Preview</Trans> : <Trans>Show Preview</Trans>}
           </Button>
           {showPreview && (
             <pre className="mt-2 max-h-40 overflow-auto rounded-xl border bg-muted p-3 font-mono text-xs">
@@ -460,11 +428,7 @@ export const ConfigFormModal = ({
               <Trans>Create</Trans>
             )}
           </Button>
-          <Button
-            variant="ghost"
-            className="rounded-full"
-            onClick={() => onOpenChange(false)}
-          >
+          <Button variant="ghost" className="rounded-full" onClick={() => onOpenChange(false)}>
             <Trans>Cancel</Trans>
           </Button>
         </div>

@@ -26,9 +26,7 @@ const SheetOverlay = React.forwardRef<
 ));
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
 
-interface SheetContentProps extends React.ComponentPropsWithoutRef<
-  typeof SheetPrimitive.Content
-> {
+interface SheetContentProps extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content> {
   side?: "top" | "bottom" | "left" | "right";
 }
 
@@ -66,29 +64,14 @@ const SheetContent = React.forwardRef<
 ));
 SheetContent.displayName = "SheetContent";
 
-const SheetHeader = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn(
-      "flex flex-col space-y-2 text-center sm:text-left",
-      className,
-    )}
-    {...props}
-  />
+const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn("flex flex-col space-y-2 text-center sm:text-left", className)} {...props} />
 );
 SheetHeader.displayName = "SheetHeader";
 
-const SheetFooter = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
+const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
-      className,
-    )}
+    className={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)}
     {...props}
   />
 );

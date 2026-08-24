@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { db } from "@/lib/firebase";
 import type { UserProfile } from "@/lib/team-utils";
 
 /**
@@ -15,10 +16,7 @@ export const useSearchUserByEmail = (email: string) => {
     queryKey: ["searchUserByEmail", debouncedEmail],
     queryFn: async () => {
       if (!debouncedEmail) return null;
-      const q = query(
-        collection(db, "users"),
-        where("email", "==", debouncedEmail),
-      );
+      const q = query(collection(db, "users"), where("email", "==", debouncedEmail));
       const snapshot = await getDocs(q);
       if (snapshot.empty) return null;
       const docData = snapshot.docs[0];

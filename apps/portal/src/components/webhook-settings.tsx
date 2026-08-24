@@ -1,10 +1,8 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 import { AlertTriangle, Bell, Plus } from "lucide-react";
 import { useState } from "react";
 
-import { WebhookCard } from "@/components/webhook-card";
-import { WebhookFormModal } from "@/components/webhook-form-modal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,13 +13,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { WebhookCard } from "@/components/webhook-card";
+import { WebhookFormModal } from "@/components/webhook-form-modal";
 import { useRBAC } from "@/hooks/use-rbac";
-import { useWebhooks } from "@/hooks/use-webhooks";
 import {
   useCreateWebhook,
   useUpdateWebhook,
   useDeleteWebhook,
 } from "@/hooks/use-webhook-mutations";
+import { useWebhooks } from "@/hooks/use-webhooks";
 import type { WebhookConfig } from "@/types/webhook";
 
 interface WebhookSettingsProps {
@@ -36,25 +36,17 @@ export const WebhookSettings = ({ projectId }: WebhookSettingsProps) => {
   const deleteWebhook = useDeleteWebhook();
 
   const [showForm, setShowForm] = useState(false);
-  const [editingWebhook, setEditingWebhook] = useState<WebhookConfig | null>(
-    null,
-  );
-  const [deletingWebhook, setDeletingWebhook] = useState<WebhookConfig | null>(
-    null,
-  );
+  const [editingWebhook, setEditingWebhook] = useState<WebhookConfig | null>(null);
+  const [deletingWebhook, setDeletingWebhook] = useState<WebhookConfig | null>(null);
 
   const handleCreate = (
-    data: Parameters<typeof createWebhook.mutate>[0] extends infer T
-      ? Omit<T, "projectId">
-      : never,
+    data: Parameters<typeof createWebhook.mutate>[0] extends infer T ? Omit<T, "projectId"> : never,
   ) => {
     createWebhook.mutate({ projectId, ...data });
   };
 
   const handleUpdate = (
-    data: Parameters<typeof createWebhook.mutate>[0] extends infer T
-      ? Omit<T, "projectId">
-      : never,
+    data: Parameters<typeof createWebhook.mutate>[0] extends infer T ? Omit<T, "projectId"> : never,
   ) => {
     if (!editingWebhook) return;
     updateWebhook.mutate({ projectId, webhookId: editingWebhook.id, data });
@@ -100,9 +92,7 @@ export const WebhookSettings = ({ projectId }: WebhookSettingsProps) => {
               </p>
               {isAdmin && (
                 <p className="text-xs text-muted-foreground">
-                  <Trans>
-                    Add a webhook to receive notifications when configs change.
-                  </Trans>
+                  <Trans>Add a webhook to receive notifications when configs change.</Trans>
                 </p>
               )}
             </div>
@@ -141,10 +131,7 @@ export const WebhookSettings = ({ projectId }: WebhookSettingsProps) => {
       )}
 
       {/* Delete Confirmation */}
-      <Dialog
-        open={!!deletingWebhook}
-        onOpenChange={(open) => !open && setDeletingWebhook(null)}
-      >
+      <Dialog open={!!deletingWebhook} onOpenChange={(open) => !open && setDeletingWebhook(null)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -153,8 +140,7 @@ export const WebhookSettings = ({ projectId }: WebhookSettingsProps) => {
             </DialogTitle>
             <DialogDescription>
               <Trans>
-                Delete "{deletingWebhook?.name}"? This will also remove all
-                delivery history.
+                Delete "{deletingWebhook?.name}"? This will also remove all delivery history.
               </Trans>
             </DialogDescription>
           </DialogHeader>
@@ -166,11 +152,7 @@ export const WebhookSettings = ({ projectId }: WebhookSettingsProps) => {
             >
               <Trans>Cancel</Trans>
             </Button>
-            <Button
-              variant="destructive"
-              className="rounded-full"
-              onClick={handleDelete}
-            >
+            <Button variant="destructive" className="rounded-full" onClick={handleDelete}>
               <Trans>Delete</Trans>
             </Button>
           </DialogFooter>

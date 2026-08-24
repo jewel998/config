@@ -6,6 +6,7 @@
  */
 
 import type { Firestore } from "firebase-admin/firestore";
+
 import { ForbiddenError } from "../../utils/errors";
 
 /**
@@ -43,8 +44,6 @@ export async function validateDomain(
   );
 
   if (!isAllowed) {
-    throw new ForbiddenError(
-      `Origin ${requestDomain} is not in allowedDomains`,
-    );
+    throw new ForbiddenError(`Origin ${requestDomain} is not in allowedDomains`);
   }
 }

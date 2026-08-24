@@ -1,6 +1,6 @@
-import { getDb } from "../utils/firestore";
 import { MAX_DELIVERIES } from "../constants";
 import type { DispatchResult } from "../types";
+import { getDb } from "../utils/firestore";
 
 /**
  * Write a delivery log entry and enforce the 20-entry cap.

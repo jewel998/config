@@ -1,17 +1,11 @@
-import type {
-  ConfigFetcher,
-  GetConfigResponse,
-  HttpTransport,
-} from "../types.js";
+import type { ConfigFetcher, GetConfigResponse, HttpTransport } from "../types.js";
 
 interface VersionResponse {
   version: string;
   changedKeys: string[];
 }
 
-export const createBatchFetcher = (
-  transport: HttpTransport,
-): ConfigFetcher => ({
+export const createBatchFetcher = (transport: HttpTransport): ConfigFetcher => ({
   async fetchAll(): Promise<Record<string, unknown>> {
     const response = await transport.request<GetConfigResponse>("v1/config");
     return response.data;

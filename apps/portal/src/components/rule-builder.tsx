@@ -79,9 +79,7 @@ export const RuleBuilder = ({
       id: crypto.randomUUID(),
       priority: rules.length + 1,
       value: "",
-      conditions: [
-        { predicates: [{ attribute: "", operator: "equals", value: "" }] },
-      ],
+      conditions: [{ predicates: [{ attribute: "", operator: "equals", value: "" }] }],
     };
     onSave([...rules, newRule]);
   };
@@ -127,32 +125,23 @@ export const RuleBuilder = ({
     const newConditions = rule.conditions.map((g, gi) =>
       gi === groupIdx
         ? {
-            predicates: g.predicates.map((p, pi) =>
-              pi === predIdx ? { ...p, ...updates } : p,
-            ),
+            predicates: g.predicates.map((p, pi) => (pi === predIdx ? { ...p, ...updates } : p)),
           }
         : g,
     );
     updateRule(ruleId, { conditions: newConditions });
   };
 
-  const removePredicate = (
-    ruleId: string,
-    groupIdx: number,
-    predIdx: number,
-  ) => {
+  const removePredicate = (ruleId: string, groupIdx: number, predIdx: number) => {
     const rule = rules.find((r) => r.id === ruleId);
     if (!rule) return;
     const newConditions = rule.conditions
       .map((g, gi) =>
-        gi === groupIdx
-          ? { predicates: g.predicates.filter((_, pi) => pi !== predIdx) }
-          : g,
+        gi === groupIdx ? { predicates: g.predicates.filter((_, pi) => pi !== predIdx) } : g,
       )
       .filter((g) => g.predicates.length > 0);
     updateRule(ruleId, {
-      conditions:
-        newConditions.length > 0 ? newConditions : [{ predicates: [] }],
+      conditions: newConditions.length > 0 ? newConditions : [{ predicates: [] }],
     });
   };
 
@@ -192,27 +181,17 @@ export const RuleBuilder = ({
         {rules.length === 0 && (
           <div className="rounded-lg border border-dashed p-6 text-center space-y-4">
             <p className="text-sm text-muted-foreground">
-              <Trans>
-                No targeting rules. All users receive the default value.
-              </Trans>
+              <Trans>No targeting rules. All users receive the default value.</Trans>
             </p>
             {!disabled && (
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 {segments.length > 0 && (
-                  <Button
-                    variant="default"
-                    className="rounded-full gap-2"
-                    onClick={addSegmentRule}
-                  >
+                  <Button variant="default" className="rounded-full gap-2" onClick={addSegmentRule}>
                     <Users className="h-4 w-4" />
                     <Trans>Target a Segment</Trans>
                   </Button>
                 )}
-                <Button
-                  variant="outline"
-                  className="rounded-full gap-2"
-                  onClick={addConditionRule}
-                >
+                <Button variant="outline" className="rounded-full gap-2" onClick={addConditionRule}>
                   <Filter className="h-4 w-4" />
                   <Trans>Custom Condition</Trans>
                 </Button>
@@ -232,11 +211,7 @@ export const RuleBuilder = ({
                 disabled={disabled}
                 valueType={valueType}
                 onChange={(updated: SegmentTargetingRuleUI) => {
-                  onSave(
-                    rules.map((r) =>
-                      r.id === rule.id ? toStorageRule(updated) : r,
-                    ),
-                  );
+                  onSave(rules.map((r) => (r.id === rule.id ? toStorageRule(updated) : r)));
                 }}
                 onRemove={() => removeRule(rule.id)}
               />
@@ -250,9 +225,7 @@ export const RuleBuilder = ({
                 onUpdateRule={(updates) => updateRule(rule.id, updates)}
                 onAddGroup={() => addGroup(rule.id)}
                 onAddPredicate={(gi) => addPredicate(rule.id, gi)}
-                onUpdatePredicate={(gi, pi, updates) =>
-                  updatePredicate(rule.id, gi, pi, updates)
-                }
+                onUpdatePredicate={(gi, pi, updates) => updatePredicate(rule.id, gi, pi, updates)}
                 onRemovePredicate={(gi, pi) => removePredicate(rule.id, gi, pi)}
                 onRemoveGroup={(gi) => removeGroup(rule.id, gi)}
               />
@@ -358,9 +331,7 @@ const TypedValueInput = ({
         value={String(value ?? "")}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        placeholder={
-          valueType === "array" ? t`e.g., ["a","b"]` : t`e.g., {"key": "val"}`
-        }
+        placeholder={valueType === "array" ? t`e.g., ["a","b"]` : t`e.g., {"key": "val"}`}
       />
     );
   }
@@ -406,12 +377,8 @@ const SegmentRuleCard = ({
     onChange({ ...rule, segmentIds: updated });
   };
 
-  const selectedSegments = segments.filter((s) =>
-    rule.segmentIds.includes(s.id),
-  );
-  const availableSegments = segments.filter(
-    (s) => !rule.segmentIds.includes(s.id),
-  );
+  const selectedSegments = segments.filter((s) => rule.segmentIds.includes(s.id));
+  const availableSegments = segments.filter((s) => !rule.segmentIds.includes(s.id));
 
   return (
     <div className="rounded-lg border border-primary/20 bg-primary/[0.02] p-4 space-y-4">
@@ -438,9 +405,7 @@ const SegmentRuleCard = ({
             max={1000}
             className="w-16 h-7 text-xs text-center"
             value={rule.priority}
-            onChange={(e) =>
-              onChange({ ...rule, priority: Number(e.target.value) })
-            }
+            onChange={(e) => onChange({ ...rule, priority: Number(e.target.value) })}
             disabled={disabled}
             title={t`Priority`}
           />
@@ -543,11 +508,7 @@ const ConditionRuleCard = ({
   onUpdateRule: (updates: Partial<TargetingRule>) => void;
   onAddGroup: () => void;
   onAddPredicate: (groupIdx: number) => void;
-  onUpdatePredicate: (
-    groupIdx: number,
-    predIdx: number,
-    updates: Partial<Predicate>,
-  ) => void;
+  onUpdatePredicate: (groupIdx: number, predIdx: number, updates: Partial<Predicate>) => void;
   onRemovePredicate: (groupIdx: number, predIdx: number) => void;
   onRemoveGroup: (groupIdx: number) => void;
 }) => {
@@ -596,20 +557,14 @@ const ConditionRuleCard = ({
             {gi > 0 && (
               <div className="flex items-center gap-2">
                 <div className="h-px flex-1 bg-border" />
-                <span className="text-xs font-medium text-muted-foreground uppercase px-2">
-                  OR
-                </span>
+                <span className="text-xs font-medium text-muted-foreground uppercase px-2">OR</span>
                 <div className="h-px flex-1 bg-border" />
               </div>
             )}
             <div className="rounded-lg border bg-muted/20 p-3 space-y-3">
               {group.predicates.map((pred, pi) => (
                 <div key={pi} className="space-y-1">
-                  {pi > 0 && (
-                    <span className="text-xs font-medium text-muted-foreground">
-                      AND
-                    </span>
-                  )}
+                  {pi > 0 && <span className="text-xs font-medium text-muted-foreground">AND</span>}
                   <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr_auto] gap-2 items-end">
                     <Input
                       className="h-9 text-sm"
@@ -649,9 +604,7 @@ const ConditionRuleCard = ({
                     <Input
                       className="h-9 text-sm"
                       value={String(pred.value)}
-                      onChange={(e) =>
-                        onUpdatePredicate(gi, pi, { value: e.target.value })
-                      }
+                      onChange={(e) => onUpdatePredicate(gi, pi, { value: e.target.value })}
                       disabled={disabled}
                       placeholder={OPERATOR_VALUE_PLACEHOLDERS[pred.operator]}
                     />

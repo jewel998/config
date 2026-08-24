@@ -3,8 +3,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { doc, updateDoc } from "firebase/firestore";
 import { toast } from "sonner";
 
-import { db } from "@/lib/firebase";
 import { writeAuditEntry, buildAuditEntry } from "@/lib/audit";
+import { db } from "@/lib/firebase";
 import { useAuthStore } from "@/stores/auth-store";
 
 export const useUpdateProjectDescription = () => {
@@ -36,9 +36,7 @@ export const useUpdateProjectDescription = () => {
             actorId: user.uid,
             action: "update",
             resourcePath: `project/${projectName || "description"}`,
-            oldValue: oldDescription
-              ? { description: oldDescription }
-              : undefined,
+            oldValue: oldDescription ? { description: oldDescription } : undefined,
             newValue: { description },
           }),
         );

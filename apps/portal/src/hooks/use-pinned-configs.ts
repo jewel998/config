@@ -3,8 +3,7 @@ import { useCallback, useSyncExternalStore } from "react";
 const STORAGE_KEY = "pinned-configs";
 
 /** Get all pinned config keys for a given project+environment */
-const getStorageKey = (projectId: string, envId: string) =>
-  `${STORAGE_KEY}:${projectId}:${envId}`;
+const getStorageKey = (projectId: string, envId: string) => `${STORAGE_KEY}:${projectId}:${envId}`;
 
 const getPinned = (projectId: string, envId: string): string[] => {
   try {
@@ -26,10 +25,7 @@ const setPinned = (projectId: string, envId: string, keys: string[]) => {
 };
 
 /** Hook for managing pinned/favorite configs. Stored in localStorage per project+environment. */
-export const usePinnedConfigs = (
-  projectId: string | null,
-  envId: string | null,
-) => {
+export const usePinnedConfigs = (projectId: string | null, envId: string | null) => {
   const subscribe = useCallback((cb: () => void) => {
     window.addEventListener("pinned-configs-change", cb);
     window.addEventListener("storage", cb);

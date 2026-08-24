@@ -3,7 +3,7 @@ packages:
   - "packages/*"
   - "functions"
 allowBuilds:
-  '@firebase/util': false
+  "@firebase/util": false
   esbuild: false
   protobufjs: false
   unrs-resolver: false

@@ -3,11 +3,7 @@ import { Link2 } from "lucide-react";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useSegmentUsage } from "@/hooks/use-segment-usage";
 
 interface UsageIndicatorProps {
@@ -16,16 +12,8 @@ interface UsageIndicatorProps {
   environmentId: string;
 }
 
-export const UsageIndicator = ({
-  segmentId,
-  projectId,
-  environmentId,
-}: UsageIndicatorProps) => {
-  const { data, isLoading } = useSegmentUsage(
-    projectId,
-    environmentId,
-    segmentId,
-  );
+export const UsageIndicator = ({ segmentId, projectId, environmentId }: UsageIndicatorProps) => {
+  const { data, isLoading } = useSegmentUsage(projectId, environmentId, segmentId);
   const [expanded, setExpanded] = useState(false);
 
   if (isLoading) {
@@ -66,10 +54,7 @@ export const UsageIndicator = ({
       {expanded && data && (
         <div className="mt-1 pl-1 space-y-0.5">
           {data.configKeys.map((key) => (
-            <p
-              key={key}
-              className="text-[10px] font-mono text-muted-foreground"
-            >
+            <p key={key} className="text-[10px] font-mono text-muted-foreground">
               {key}
             </p>
           ))}

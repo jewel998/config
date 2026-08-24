@@ -1,5 +1,6 @@
 import type { Guard, RequestContext } from "@jewel998/api";
 import { PayloadTooLargeError } from "@jewel998/api";
+
 import { MAX_CONTEXT_SIZE_BYTES } from "../../utils/constants";
 import type { UserContext } from "../server-evaluator";
 
@@ -30,8 +31,6 @@ export class ExtractContextGuard implements Guard {
       .filter(Boolean);
 
     ctx.requestedKeys =
-      keysFromQuery ??
-      (req.body?.data?.keys as string[] | undefined) ??
-      undefined;
+      keysFromQuery ?? (req.body?.data?.keys as string[] | undefined) ?? undefined;
   }
 }

@@ -1,12 +1,6 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { FieldValue } from "firebase-admin/firestore";
-import { getDb } from "../utils/firestore";
-import {
-  MAX_BATCH_SIZE,
-  MAX_INSTANCES,
-  FUNCTION_TIMEOUT_SECONDS,
-} from "../utils/constants";
-import { validateEntries } from "../utils/import-validator";
+import { onCall, HttpsError } from "firebase-functions/v2/https";
+
 import type {
   ConflictRow,
   ConflictStrategy,
@@ -14,6 +8,9 @@ import type {
   ImportJob,
   FailedRowDoc,
 } from "../import-export-types";
+import { MAX_BATCH_SIZE, MAX_INSTANCES, FUNCTION_TIMEOUT_SECONDS } from "../utils/constants";
+import { getDb } from "../utils/firestore";
+import { validateEntries } from "../utils/import-validator";
 
 const JOB_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
@@ -65,20 +62,14 @@ export const importConfigs = onCall(
     }
     const projectData = projectSnap.data()!;
     const roles: Record<string, string> = projectData.roles || {};
-    const userRole =
-      projectData.ownerId === uid ? "admin" : (roles[uid] ?? null);
+    const userRole = projectData.ownerId === uid ? "admin" : (roles[uid] ?? null);
 
     if (!userRole || !["admin", "editor"].includes(userRole)) {
-      throw new HttpsError(
-        "permission-denied",
-        "Insufficient permissions for this operation",
-      );
+      throw new HttpsError("permission-denied", "Insufficient permissions for this operation");
     }
 
     // ─── Environment Check ───────────────────────────────────
-    const envRef = projectRef
-      .collection("environments")
-      .doc(data.environmentId);
+    const envRef = projectRef.collection("environments").doc(data.environmentId);
     const envSnap = await envRef.get();
     if (!envSnap.exists) {
       throw new HttpsError("not-found", "Environment not found");
@@ -87,10 +78,7 @@ export const importConfigs = onCall(
 
     // Production environment requires admin
     if (envData.isProduction && userRole !== "admin") {
-      throw new HttpsError(
-        "permission-denied",
-        "Admin role required for production imports",
-      );
+      throw new HttpsError("permission-denied", "Admin role required for production imports");
     }
 
     // ─── Concurrency Guard (transactional to prevent TOCTOU) ──
@@ -159,8 +147,7 @@ export const importConfigs = onCall(
 
     // ─── Create Import Job ───────────────────────────────────
     const now = new Date().toISOString();
-    const totalRows =
-      nonConflicting.length + conflicts.length + validationResult.failed.length;
+    const totalRows = nonConflicting.length + conflicts.length + validationResult.failed.length;
 
     const jobData: ImportJob = {
       id: jobRef.id,
@@ -287,8 +274,7 @@ export const importConfigs = onCall(
             key: entry.key,
             value: entry.value,
             valueType: entry.valueType,
-            reason:
-              error instanceof Error ? error.message : "Firestore write error",
+            reason: error instanceof Error ? error.message : "Firestore write error",
             dismissed: false,
             createdAt: now,
           } satisfies FailedRowDoc);

@@ -22,8 +22,7 @@ export const localeNames: Record<SupportedLocale, string> = {
 
 export const rtlLocales: SupportedLocale[] = ["ar"];
 
-export const isRtl = (locale: SupportedLocale): boolean =>
-  rtlLocales.includes(locale);
+export const isRtl = (locale: SupportedLocale): boolean => rtlLocales.includes(locale);
 
 const STORAGE_KEY = "locale";
 

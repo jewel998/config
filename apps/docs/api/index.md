@@ -261,9 +261,7 @@ import { RateLimitError } from "@jewel998/config";
 
 flags.on("fetchError", ({ error }) => {
   if (error instanceof RateLimitError) {
-    console.warn(
-      `Rate limited — server says retry in ${error.retryAfterSeconds}s`,
-    );
+    console.warn(`Rate limited — server says retry in ${error.retryAfterSeconds}s`);
   }
 });
 ```

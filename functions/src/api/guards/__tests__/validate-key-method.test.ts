@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
 import { MethodNotAllowedError } from "@jewel998/api";
+import { describe, it, expect } from "vitest";
+
 import { ValidateKeyMethodGuard } from "../validate-key-method.guard";
 import { makeCtx, mockReq } from "./helpers";
 
@@ -43,9 +44,7 @@ describe("ValidateKeyMethodGuard", () => {
     try {
       guard.canActivate(ctx);
     } catch (e) {
-      expect((e as MethodNotAllowedError).message).toContain(
-        "Client keys (cid_) require POST",
-      );
+      expect((e as MethodNotAllowedError).message).toContain("Client keys (cid_) require POST");
     }
   });
 
@@ -57,9 +56,7 @@ describe("ValidateKeyMethodGuard", () => {
     try {
       guard.canActivate(ctx);
     } catch (e) {
-      expect((e as MethodNotAllowedError).message).toContain(
-        "Server keys (svr_) require GET",
-      );
+      expect((e as MethodNotAllowedError).message).toContain("Server keys (svr_) require GET");
     }
   });
 });

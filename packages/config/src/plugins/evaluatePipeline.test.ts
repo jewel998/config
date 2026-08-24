@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { evaluatePipeline } from "./evaluatePipeline.js";
 import type { ConfigFlagData } from "./models.js";
 import type {
   EvaluationContext,
@@ -7,7 +8,6 @@ import type {
   PipelineHelpers,
   PipelineStepId,
 } from "./types.js";
-import { evaluatePipeline } from "./evaluatePipeline.js";
 
 // ─── Helpers ─────────────────────────────────────────────────
 

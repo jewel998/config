@@ -1,19 +1,15 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { format } from "date-fns";
 import { Calendar as CalendarIcon, Clock, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -25,29 +21,19 @@ import { combineDateAndTime } from "@/lib/config-utils";
 
 interface DatePickerScheduleProps {
   schedule?: { targetValue: unknown; activateAt: string } | null;
-  onSave: (
-    schedule: { targetValue: unknown; activateAt: string } | null,
-  ) => void;
+  onSave: (schedule: { targetValue: unknown; activateAt: string } | null) => void;
   disabled?: boolean;
 }
 
-export const DatePickerSchedule = ({
-  schedule,
-  onSave,
-  disabled,
-}: DatePickerScheduleProps) => {
+export const DatePickerSchedule = ({ schedule, onSave, disabled }: DatePickerScheduleProps) => {
   const [targetValue, setTargetValue] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [hours, setHours] = useState("09");
   const [minutes, setMinutes] = useState("00");
   const [countdown, setCountdown] = useState("");
 
-  const isApplied = schedule
-    ? Date.parse(schedule.activateAt) <= Date.now()
-    : false;
-  const isPending = schedule
-    ? Date.parse(schedule.activateAt) > Date.now()
-    : false;
+  const isApplied = schedule ? Date.parse(schedule.activateAt) <= Date.now() : false;
+  const isPending = schedule ? Date.parse(schedule.activateAt) > Date.now() : false;
 
   useEffect(() => {
     if (!isPending || !schedule) {
@@ -72,11 +58,7 @@ export const DatePickerSchedule = ({
 
   const handleSave = () => {
     if (!selectedDate) return;
-    const isoString = combineDateAndTime(
-      selectedDate,
-      Number(hours),
-      Number(minutes),
-    );
+    const isoString = combineDateAndTime(selectedDate, Number(hours), Number(minutes));
     const parsed = targetValue || null;
     onSave({ targetValue: parsed, activateAt: isoString });
   };
@@ -113,15 +95,11 @@ export const DatePickerSchedule = ({
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm">
               <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-              <span>
-                {format(new Date(schedule.activateAt), "PPP 'at' HH:mm")}
-              </span>
+              <span>{format(new Date(schedule.activateAt), "PPP 'at' HH:mm")}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">Value:</span>
-              <code className="text-xs font-mono">
-                {JSON.stringify(schedule.targetValue)}
-              </code>
+              <code className="text-xs font-mono">{JSON.stringify(schedule.targetValue)}</code>
             </div>
             {countdown && (
               <div className="flex items-center gap-2 text-sm">
@@ -185,9 +163,7 @@ export const DatePickerSchedule = ({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {Array.from({ length: 24 }, (_, i) =>
-                    String(i).padStart(2, "0"),
-                  ).map((h) => (
+                  {Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0")).map((h) => (
                     <SelectItem key={h} value={h} className="text-xs">
                       {h}
                     </SelectItem>
@@ -200,9 +176,7 @@ export const DatePickerSchedule = ({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {Array.from({ length: 60 }, (_, i) =>
-                    String(i).padStart(2, "0"),
-                  ).map((m) => (
+                  {Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0")).map((m) => (
                     <SelectItem key={m} value={m} className="text-xs">
                       {m}
                     </SelectItem>
@@ -222,12 +196,7 @@ export const DatePickerSchedule = ({
                 <Trans>Schedule</Trans>
               </Button>
               {selectedDate && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="rounded-full"
-                  onClick={handleClear}
-                >
+                <Button variant="ghost" size="sm" className="rounded-full" onClick={handleClear}>
                   <Trans>Clear</Trans>
                 </Button>
               )}

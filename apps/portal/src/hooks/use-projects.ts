@@ -1,20 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  limit as firestoreLimit,
-} from "firebase/firestore";
+import { collection, query, where, getDocs, limit as firestoreLimit } from "firebase/firestore";
 import { useMemo } from "react";
 
+import { ProjectRepository, type ProjectCreateInput } from "@/dao/project.repository";
 import { db } from "@/lib/firebase";
 import type { Project } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
-import {
-  ProjectRepository,
-  type ProjectCreateInput,
-} from "@/dao/project.repository";
 
 export type { Project };
 
@@ -45,10 +36,7 @@ export const useProjects = () => {
 export const useCreateProject = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new ProjectRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new ProjectRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async (name: string) => {
@@ -73,10 +61,7 @@ export const useCreateProject = () => {
 export const useDeleteProject = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new ProjectRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new ProjectRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async ({

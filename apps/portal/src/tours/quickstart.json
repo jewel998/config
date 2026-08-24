@@ -44,10 +44,7 @@
         "type": "modal",
         "title": "🌍 Now add an environment",
         "description": "Environments let you have different config values for development, staging, and production.\n\nThis way, turning on a feature in staging won't affect real users.",
-        "actions": [
-          { "label": "Set one up" },
-          { "label": "Later", "dismiss": true }
-        ]
+        "actions": [{ "label": "Set one up" }, { "label": "Later", "dismiss": true }]
       },
       {
         "id": "nav-settings",
@@ -73,10 +70,7 @@
         "type": "modal",
         "title": "🚀 Create your first feature flag",
         "description": "You have a project and environment set up. Now let's add your first config.\n\n**Use cases:**\n- `feature.dark_mode` = true (toggle UI features)\n- `app.max_upload_mb` = 10 (tune limits without deploying)\n- `feature.checkout_v2` = false (hide unfinished work)",
-        "actions": [
-          { "label": "Let's go" },
-          { "label": "Skip", "dismiss": true }
-        ]
+        "actions": [{ "label": "Let's go" }, { "label": "Skip", "dismiss": true }]
       },
       {
         "id": "nav-configs",

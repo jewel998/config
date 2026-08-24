@@ -4,36 +4,27 @@ import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useMemo } from "react";
 import { toast } from "sonner";
 
-import { db } from "@/lib/firebase";
-import { useAuthStore } from "@/stores/auth-store";
 import {
   WebhookRepository,
   type WebhookCreateInput,
   type WebhookUpdateInput,
 } from "@/dao/webhook.repository";
+import { db } from "@/lib/firebase";
+import { useAuthStore } from "@/stores/auth-store";
 
 // ─── Generated Hooks ──────────────────────────────────────────
 
 export const useCreateWebhook = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new WebhookRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new WebhookRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async (params: {
       projectId: string;
       name: string;
       url: string;
-      format:
-        | "standard"
-        | "slack"
-        | "discord"
-        | "google-chat"
-        | "ms-teams"
-        | "custom";
+      format: "standard" | "slack" | "discord" | "google-chat" | "ms-teams" | "custom";
       eventTypes: string[];
       resourceCategories: string[];
       environments: string[];
@@ -49,9 +40,7 @@ export const useCreateWebhook = () => {
         eventTypes: params.eventTypes,
         resourceCategories: params.resourceCategories,
         environments: params.environments,
-        ...(params.customTemplate
-          ? { customTemplate: params.customTemplate }
-          : {}),
+        ...(params.customTemplate ? { customTemplate: params.customTemplate } : {}),
       };
       await repo.create(input, ctx, authUser);
     },
@@ -73,10 +62,7 @@ export const useCreateWebhook = () => {
 export const useUpdateWebhook = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new WebhookRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new WebhookRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async (params: {
@@ -86,13 +72,7 @@ export const useUpdateWebhook = () => {
         name: string;
         url: string;
         enabled: boolean;
-        format:
-          | "standard"
-          | "slack"
-          | "discord"
-          | "google-chat"
-          | "ms-teams"
-          | "custom";
+        format: "standard" | "slack" | "discord" | "google-chat" | "ms-teams" | "custom";
         eventTypes: string[];
         resourceCategories: string[];
         environments: string[];
@@ -123,10 +103,7 @@ export const useUpdateWebhook = () => {
 export const useDeleteWebhook = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new WebhookRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new WebhookRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async (params: { projectId: string; webhookId: string }) => {
@@ -166,17 +143,10 @@ export const useDeleteWebhook = () => {
 export const useToggleWebhook = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new WebhookRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new WebhookRepository(db, queryClient), [queryClient]);
 
   return useMutation({
-    mutationFn: async (params: {
-      projectId: string;
-      webhookId: string;
-      enabled: boolean;
-    }) => {
+    mutationFn: async (params: { projectId: string; webhookId: string; enabled: boolean }) => {
       if (!user) throw new Error("Not authenticated");
       const ctx = { projectId: params.projectId };
       const authUser = { uid: user.uid, email: user.email };

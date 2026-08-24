@@ -10,6 +10,7 @@ import { i18n } from "./lib/i18n";
 import { ThemeProvider } from "./lib/theme";
 import { routeTree } from "./routeTree.gen";
 import { useAuthStore } from "./stores/auth-store";
+
 import "./index.css";
 import "@jewel998/tour/styles.css";
 

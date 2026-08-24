@@ -1,4 +1,5 @@
 import type { Guard, RequestContext } from "@jewel998/api";
+
 import { fetchConfigs } from "../middleware/fetch-configs";
 
 export class FetchConfigsGuard implements Guard {

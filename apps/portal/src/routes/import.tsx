@@ -15,13 +15,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -37,46 +31,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-
-import {
-  parseCsvFile,
-  parseJsonFile,
-  serializeToCsv,
-} from "@/lib/import-parser";
-import {
-  getPreviewRows,
-  validateEntryCount,
-  validateUpload,
-} from "@/lib/import-upload-validation";
-import type {
-  ConflictStrategy,
-  ImportEntry,
-  RawEntry,
-  ValidationResult,
-} from "@/lib/types";
-import { useImportConfigs } from "@/hooks/use-import";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useEnvironments } from "@/hooks/use-environments";
+import { useImportConfigs } from "@/hooks/use-import";
 import { useProjects } from "@/hooks/use-projects";
-import {
-  useImportWizardStore,
-  type WizardStep,
-} from "@/stores/import-wizard-store";
+import { parseCsvFile, parseJsonFile, serializeToCsv } from "@/lib/import-parser";
+import { getPreviewRows, validateEntryCount, validateUpload } from "@/lib/import-upload-validation";
+import type { ConflictStrategy, ImportEntry, RawEntry, ValidationResult } from "@/lib/types";
+import { useImportWizardStore, type WizardStep } from "@/stores/import-wizard-store";
 import { useProjectStore } from "@/stores/project-store";
 
 // ─── Wizard Steps ────────────────────────────────────────────
 
-const STEPS: WizardStep[] = [
-  "upload",
-  "preview",
-  "validate",
-  "confirm",
-  "results",
-];
+const STEPS: WizardStep[] = ["upload", "preview", "validate", "confirm", "results"];
 
 function ImportPage() {
   const store = useImportWizardStore();
@@ -86,10 +53,8 @@ function ImportPage() {
   const { data: projects = [] } = useProjects();
   const { data: environments = [] } = useEnvironments(projectId);
 
-  const projectName =
-    projects.find((p) => p.id === projectId)?.name ?? projectId;
-  const environmentName =
-    environments.find((e) => e.id === environmentId)?.name ?? environmentId;
+  const projectName = projects.find((p) => p.id === projectId)?.name ?? projectId;
+  const environmentName = environments.find((e) => e.id === environmentId)?.name ?? environmentId;
 
   const stepIndex = STEPS.indexOf(store.step);
 
@@ -114,8 +79,8 @@ function ImportPage() {
         </h2>
         <p className="text-muted-foreground text-sm max-w-[280px]">
           <Trans>
-            Bulk import requires a desktop browser for file uploads, data
-            preview, and conflict resolution. Please switch to a desktop device.
+            Bulk import requires a desktop browser for file uploads, data preview, and conflict
+            resolution. Please switch to a desktop device.
           </Trans>
         </p>
       </div>
@@ -129,9 +94,7 @@ function ImportPage() {
               <Trans>Import Configurations</Trans>
             </h1>
             <p className="text-muted-foreground mt-1">
-              <Trans>
-                Bulk import configuration entries from a CSV or JSON file.
-              </Trans>
+              <Trans>Bulk import configuration entries from a CSV or JSON file.</Trans>
             </p>
           </div>
 
@@ -141,8 +104,7 @@ function ImportPage() {
           {/* Project/Environment Context */}
           {projectId && environmentId && (
             <div className="bg-muted/50 rounded-md px-4 py-2 text-sm">
-              <Trans>Target:</Trans>{" "}
-              <span className="font-medium">{projectName}</span> /{" "}
+              <Trans>Target:</Trans> <span className="font-medium">{projectName}</span> /{" "}
               <span className="font-medium">{environmentName}</span>
             </div>
           )}
@@ -187,11 +149,7 @@ function StepIndicator({ currentStep }: { currentStep: WizardStep }) {
   };
 
   return (
-    <div
-      className="flex items-center gap-2"
-      role="navigation"
-      aria-label={t`Import wizard steps`}
-    >
+    <div className="flex items-center gap-2" role="navigation" aria-label={t`Import wizard steps`}>
       {STEPS.map((step, i) => {
         const isActive = step === currentStep;
         const isPast = STEPS.indexOf(currentStep) > i;
@@ -209,9 +167,7 @@ function StepIndicator({ currentStep }: { currentStep: WizardStep }) {
             >
               {i + 1}
             </div>
-            <span
-              className={`text-sm ${isActive ? "font-medium" : "text-muted-foreground"}`}
-            >
+            <span className={`text-sm ${isActive ? "font-medium" : "text-muted-foreground"}`}>
               {labels[step]}
             </span>
             {i < STEPS.length - 1 && <div className="bg-border h-px w-8" />}
@@ -246,10 +202,7 @@ function UploadStep({ onNext }: { onNext: () => void }) {
         const result = isJson ? parseJsonFile(text) : parseCsvFile(text);
 
         if (result.errors.length > 0 && result.entries.length === 0) {
-          toast.error(
-            result.errors[0]?.message ||
-              t`File is empty or contains no valid rows`,
-          );
+          toast.error(result.errors[0]?.message || t`File is empty or contains no valid rows`);
           return;
         }
 
@@ -327,8 +280,8 @@ allowed.domains,"[""a.com"",""b.com""]",array`;
         </CardTitle>
         <CardDescription>
           <Trans>
-            Upload a CSV or JSON file with your configuration entries. Maximum 5
-            MB, up to 10,000 entries.
+            Upload a CSV or JSON file with your configuration entries. Maximum 5 MB, up to 10,000
+            entries.
           </Trans>
         </CardDescription>
       </CardHeader>
@@ -336,9 +289,7 @@ allowed.domains,"[""a.com"",""b.com""]",array`;
         {/* Drop Zone */}
         <div
           className={`flex min-h-[200px] flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-colors ${
-            isDragging
-              ? "border-primary bg-primary/5"
-              : "border-muted-foreground/25"
+            isDragging ? "border-primary bg-primary/5" : "border-muted-foreground/25"
           }`}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
@@ -378,11 +329,7 @@ allowed.domains,"[""a.com"",""b.com""]",array`;
         <div className="flex gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => downloadTemplate("csv")}
-              >
+              <Button variant="outline" size="sm" onClick={() => downloadTemplate("csv")}>
                 <Download className="mr-2 h-4 w-4" />
                 <Trans>CSV Template</Trans>
               </Button>
@@ -393,19 +340,13 @@ allowed.domains,"[""a.com"",""b.com""]",array`;
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => downloadTemplate("json")}
-              >
+              <Button variant="outline" size="sm" onClick={() => downloadTemplate("json")}>
                 <Download className="mr-2 h-4 w-4" />
                 <Trans>JSON Template</Trans>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <Trans>
-                Download a sample JSON file with the expected format
-              </Trans>
+              <Trans>Download a sample JSON file with the expected format</Trans>
             </TooltipContent>
           </Tooltip>
         </div>
@@ -453,9 +394,7 @@ function PreviewStep() {
             {previewRows.map((entry, i) => (
               <TableRow key={i}>
                 <TableCell className="text-muted-foreground">{i + 1}</TableCell>
-                <TableCell className="font-mono text-sm">
-                  {String(entry.key)}
-                </TableCell>
+                <TableCell className="font-mono text-sm">{String(entry.key)}</TableCell>
                 <TableCell className="max-w-[200px] truncate text-sm">
                   {JSON.stringify(entry.value)}
                 </TableCell>
@@ -476,8 +415,7 @@ function PreviewStep() {
 // ─── Validate Step ───────────────────────────────────────────
 
 function ValidateStep() {
-  const { parsedEntries, validationResult, setValidationResult } =
-    useImportWizardStore();
+  const { parsedEntries, validationResult, setValidationResult } = useImportWizardStore();
 
   // Run client-side validation (mirroring server validator)
   useMemo(() => {
@@ -541,17 +479,13 @@ function ValidateStep() {
               {validCount}
             </p>
             <p className="text-sm text-green-600 dark:text-green-500">
-              <Trans>Valid</Trans> (
-              {total > 0 ? Math.round((validCount / total) * 100) : 0}%)
+              <Trans>Valid</Trans> ({total > 0 ? Math.round((validCount / total) * 100) : 0}%)
             </p>
           </div>
           <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-center dark:border-red-900 dark:bg-red-950">
-            <p className="text-2xl font-semibold text-red-700 dark:text-red-400">
-              {failedCount}
-            </p>
+            <p className="text-2xl font-semibold text-red-700 dark:text-red-400">{failedCount}</p>
             <p className="text-sm text-red-600 dark:text-red-500">
-              <Trans>Failed</Trans> (
-              {total > 0 ? Math.round((failedCount / total) * 100) : 0}%)
+              <Trans>Failed</Trans> ({total > 0 ? Math.round((failedCount / total) * 100) : 0}%)
             </p>
           </div>
         </div>
@@ -579,9 +513,7 @@ function ValidateStep() {
                     <TableCell className="font-mono text-sm">
                       {String(row.entry.key ?? "—")}
                     </TableCell>
-                    <TableCell className="text-destructive text-sm">
-                      {row.reason}
-                    </TableCell>
+                    <TableCell className="text-destructive text-sm">{row.reason}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -619,10 +551,7 @@ function ConfirmStep() {
         environmentId,
         entries: store.validationResult?.valid ?? [],
         conflictStrategy: store.conflictStrategy ?? "skip",
-        reviewDecisions:
-          store.conflictStrategy === "review"
-            ? store.reviewDecisions
-            : undefined,
+        reviewDecisions: store.conflictStrategy === "review" ? store.reviewDecisions : undefined,
       });
       // setImportResult is called inside useImportConfigs before this resolves
       // so by the time we get here, the store already has the result
@@ -639,18 +568,14 @@ function ConfirmStep() {
           <Trans>Confirm Import</Trans>
         </CardTitle>
         <CardDescription>
-          <Trans>
-            Review your import settings and confirm to begin processing.
-          </Trans>
+          <Trans>Review your import settings and confirm to begin processing.</Trans>
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="rounded-lg border p-4">
           <p className="text-sm">
             <Trans>Entries to import:</Trans>{" "}
-            <span className="font-medium">
-              {store.validationResult?.valid.length ?? 0}
-            </span>
+            <span className="font-medium">{store.validationResult?.valid.length ?? 0}</span>
           </p>
         </div>
 
@@ -658,15 +583,13 @@ function ConfirmStep() {
           <div className="space-y-2">
             <p className="text-sm font-medium">
               <Trans>
-                {store.validationResult?.conflicts.length} conflicting entries
-                found. Choose a resolution strategy:
+                {store.validationResult?.conflicts.length} conflicting entries found. Choose a
+                resolution strategy:
               </Trans>
             </p>
             <Select
               value={store.conflictStrategy ?? ""}
-              onValueChange={(v) =>
-                store.setConflictStrategy(v as ConflictStrategy)
-              }
+              onValueChange={(v) => store.setConflictStrategy(v as ConflictStrategy)}
             >
               <SelectTrigger aria-label={t`Conflict resolution strategy`}>
                 <SelectValue placeholder={t`Select strategy`} />
@@ -676,9 +599,7 @@ function ConfirmStep() {
                   <Trans>Skip existing — keep current values</Trans>
                 </SelectItem>
                 <SelectItem value="overwrite">
-                  <Trans>
-                    Overwrite existing — replace with imported values
-                  </Trans>
+                  <Trans>Overwrite existing — replace with imported values</Trans>
                 </SelectItem>
                 <SelectItem value="review">
                   <Trans>Review individually — decide per entry</Trans>
@@ -690,10 +611,7 @@ function ConfirmStep() {
 
         <Button
           onClick={handleConfirm}
-          disabled={
-            importMutation.isPending ||
-            (hasConflicts && !store.conflictStrategy)
-          }
+          disabled={importMutation.isPending || (hasConflicts && !store.conflictStrategy)}
           className="w-full"
         >
           {importMutation.isPending ? (
@@ -769,17 +687,13 @@ function ResultsStep() {
             </p>
           </div>
           <div className="rounded-lg border border-green-200 p-3 text-center dark:border-green-900">
-            <p className="text-lg font-semibold text-green-600">
-              {result.succeeded}
-            </p>
+            <p className="text-lg font-semibold text-green-600">{result.succeeded}</p>
             <p className="text-xs text-green-600">
               <Trans>Succeeded</Trans>
             </p>
           </div>
           <div className="rounded-lg border border-red-200 p-3 text-center dark:border-red-900">
-            <p className="text-lg font-semibold text-red-600">
-              {result.failed}
-            </p>
+            <p className="text-lg font-semibold text-red-600">{result.failed}</p>
             <p className="text-xs text-red-600">
               <Trans>Failed</Trans>
             </p>
@@ -809,12 +723,8 @@ function ResultsStep() {
               <TableBody>
                 {result.failedEntries.map((entry, i) => (
                   <TableRow key={i}>
-                    <TableCell className="font-mono text-sm">
-                      {entry.key}
-                    </TableCell>
-                    <TableCell className="text-destructive text-sm">
-                      {entry.reason}
-                    </TableCell>
+                    <TableCell className="font-mono text-sm">{entry.key}</TableCell>
+                    <TableCell className="text-destructive text-sm">{entry.reason}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

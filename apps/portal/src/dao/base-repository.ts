@@ -1,3 +1,4 @@
+import type { QueryClient } from "@tanstack/react-query";
 import {
   addDoc,
   collection,
@@ -10,14 +11,8 @@ import {
   writeBatch,
   type Firestore,
 } from "firebase/firestore";
-import type { QueryClient } from "@tanstack/react-query";
 
-import type {
-  AuthenticatedUser,
-  AuditContext,
-  RepositoryContext,
-  ValidationError,
-} from "./types";
+import type { AuthenticatedUser, AuditContext, RepositoryContext, ValidationError } from "./types";
 import { RepositoryError } from "./types";
 
 /**
@@ -107,9 +102,7 @@ export abstract class BaseRepository<
 
   // ─── Auth check ────────────────────────────────────────────
 
-  private checkAuth(
-    user: AuthenticatedUser | null,
-  ): asserts user is AuthenticatedUser {
+  private checkAuth(user: AuthenticatedUser | null): asserts user is AuthenticatedUser {
     if (!user || !user.uid) {
       throw new RepositoryError("Not authenticated", "UNAUTHENTICATED");
     }
@@ -117,10 +110,7 @@ export abstract class BaseRepository<
 
   // ─── Audit writing ─────────────────────────────────────────
 
-  private async writeAudit(
-    projectId: string,
-    context: AuditContext,
-  ): Promise<string> {
+  private async writeAudit(projectId: string, context: AuditContext): Promise<string> {
     // Guard: actorId must always be set by the pipeline
     if (!context.actorId) {
       throw new RepositoryError(
@@ -142,12 +132,7 @@ export abstract class BaseRepository<
       sanitized.newValue = JSON.stringify(context.newValue).slice(0, 10_000);
     }
 
-    const auditRef = collection(
-      this.firestore,
-      "projects",
-      projectId,
-      "audit_log",
-    );
+    const auditRef = collection(this.firestore, "projects", projectId, "audit_log");
     const docRef = await addDoc(auditRef, sanitized);
     return docRef.id;
   }
@@ -175,11 +160,7 @@ export abstract class BaseRepository<
     // 2. Validate
     const errors = this.validate(input, "create");
     if (errors.length > 0) {
-      throw new RepositoryError(
-        "Validation failed",
-        "VALIDATION_ERROR",
-        errors,
-      );
+      throw new RepositoryError("Validation failed", "VALIDATION_ERROR", errors);
     }
 
     // 3. Before hook
@@ -220,11 +201,7 @@ export abstract class BaseRepository<
     // 2. Validate
     const errors = this.validate(input, "update");
     if (errors.length > 0) {
-      throw new RepositoryError(
-        "Validation failed",
-        "VALIDATION_ERROR",
-        errors,
-      );
+      throw new RepositoryError("Validation failed", "VALIDATION_ERROR", errors);
     }
 
     // 3. Before hook (can read existing for lock checks etc.)
@@ -242,13 +219,7 @@ export abstract class BaseRepository<
     const entity = { id, ...oldEntity, ...updateData } as unknown as TEntity;
 
     // 5. Audit (mandatory)
-    const auditCtx = this.buildAuditContext(
-      "update",
-      ctx,
-      input,
-      oldEntity,
-      entity,
-    );
+    const auditCtx = this.buildAuditContext("update", ctx, input, oldEntity, entity);
     auditCtx.actorId = user.uid;
     await this.writeAudit(ctx.projectId, auditCtx);
 
@@ -262,11 +233,7 @@ export abstract class BaseRepository<
   }
 
   /** Delete an entity with full pipeline enforcement */
-  async delete(
-    id: string,
-    ctx: RepositoryContext,
-    user: AuthenticatedUser | null,
-  ): Promise<void> {
+  async delete(id: string, ctx: RepositoryContext, user: AuthenticatedUser | null): Promise<void> {
     // 1. Auth
     this.checkAuth(user);
 
@@ -282,12 +249,7 @@ export abstract class BaseRepository<
     await deleteDoc(docRef);
 
     // 4. Audit (mandatory)
-    const auditCtx = this.buildAuditContext(
-      "delete",
-      ctx,
-      undefined,
-      oldEntity,
-    );
+    const auditCtx = this.buildAuditContext("delete", ctx, undefined, oldEntity);
     auditCtx.actorId = user.uid;
     await this.writeAudit(ctx.projectId, auditCtx);
 
@@ -327,8 +289,7 @@ export abstract class BaseRepository<
     this.checkAuth(user);
 
     const succeeded: TEntity[] = [];
-    const failed: Array<{ input: TCreateInput; errors: ValidationError[] }> =
-      [];
+    const failed: Array<{ input: TCreateInput; errors: ValidationError[] }> = [];
     const toWrite: Array<{
       input: TCreateInput;
       data: Record<string, unknown>;
@@ -375,8 +336,7 @@ export abstract class BaseRepository<
             errors: [
               {
                 field: "_write",
-                message:
-                  error instanceof Error ? error.message : "Write failed",
+                message: error instanceof Error ? error.message : "Write failed",
                 code: "WRITE_ERROR",
               },
             ],
@@ -389,13 +349,7 @@ export abstract class BaseRepository<
     if (succeeded.length > 0) {
       // Write individual audit entry for each created item (traceability)
       for (const entity of succeeded) {
-        const itemAudit = this.buildAuditContext(
-          "create",
-          ctx,
-          undefined,
-          null,
-          entity,
-        );
+        const itemAudit = this.buildAuditContext("create", ctx, undefined, null, entity);
         itemAudit.actorId = user!.uid;
         await this.writeAudit(ctx.projectId, itemAudit);
       }
@@ -410,9 +364,7 @@ export abstract class BaseRepository<
           total: inputs.length,
           succeeded: succeeded.length,
           failed: failed.length,
-          keys: succeeded.map(
-            (e) => (e as Record<string, unknown>).key ?? e.id,
-          ),
+          keys: succeeded.map((e) => (e as Record<string, unknown>).key ?? e.id),
         },
       };
       await this.writeAudit(ctx.projectId, summaryAudit);

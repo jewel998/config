@@ -1,22 +1,14 @@
 /// <reference lib="dom" />
 
-import type {
-  BrowserStorageOptions,
-  CacheEntry,
-  CacheStorage,
-} from "../types.js";
+import type { BrowserStorageOptions, CacheEntry, CacheStorage } from "../types.js";
 import { DEFAULT_CACHE_TTL } from "../types.js";
-
 import { memoryStorage } from "./memoryStorage.js";
 
-export const browserStorage = (
-  options?: BrowserStorageOptions,
-): CacheStorage => {
+export const browserStorage = (options?: BrowserStorageOptions): CacheStorage => {
   const prefix = options?.prefix ?? "@jewel998/config";
   const defaultTtl = options?.defaultTtl ?? DEFAULT_CACHE_TTL;
 
-  const isBrowser =
-    typeof window !== "undefined" && typeof window.localStorage !== "undefined";
+  const isBrowser = typeof window !== "undefined" && typeof window.localStorage !== "undefined";
 
   if (!isBrowser) {
     return memoryStorage();

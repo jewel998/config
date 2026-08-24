@@ -1,13 +1,13 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
 import { ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 
 import { EmptyState } from "@/components/empty-state";
+import { GDPRPanel } from "@/components/gdpr-panel";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
-import { GDPRPanel } from "@/components/gdpr-panel";
 import { useExportConfigs } from "@/hooks/use-export";
 import { useProjectStore } from "@/stores/project-store";
 
@@ -48,11 +48,7 @@ const GDPRPage = () => {
     <PageLayout>
       <PageHeader
         title={<Trans>GDPR Compliance</Trans>}
-        description={
-          <Trans>
-            Manage data export and deletion requests for compliance.
-          </Trans>
-        }
+        description={<Trans>Manage data export and deletion requests for compliance.</Trans>}
       />
       <GDPRPanel onExport={handleExport} onDelete={handleDelete} />
     </PageLayout>

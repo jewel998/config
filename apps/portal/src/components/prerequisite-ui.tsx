@@ -1,5 +1,5 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 import { AlertTriangle, Link2, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -14,11 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type {
-  ConfigEntry,
-  ConfigValueType,
-  PrerequisiteOperator,
-} from "@/lib/types";
+import type { ConfigEntry, ConfigValueType, PrerequisiteOperator } from "@/lib/types";
 
 const PREREQ_OPERATORS: {
   value: PrerequisiteOperator;
@@ -76,23 +72,17 @@ export const PrerequisiteUI = ({
 
   const selectedConfig = allConfigs.find((c) => c.key === flagKey);
   const availableFlags = allConfigs.filter(
-    (c) =>
-      c.key !== currentFlagKey &&
-      !prerequisites.some((p) => p.flagKey === c.key),
+    (c) => c.key !== currentFlagKey && !prerequisites.some((p) => p.flagKey === c.key),
   );
 
   const validOperators = selectedConfig
-    ? (OPERATORS_FOR_TYPE[selectedConfig.valueType] ??
-      PREREQ_OPERATORS.map((o) => o.value))
+    ? (OPERATORS_FOR_TYPE[selectedConfig.valueType] ?? PREREQ_OPERATORS.map((o) => o.value))
     : PREREQ_OPERATORS.map((o) => o.value);
 
   const handleAdd = () => {
     if (!flagKey.trim() || prerequisites.length >= 10) return;
     if (flagKey === currentFlagKey) return;
-    onSave([
-      ...prerequisites,
-      { flagKey: flagKey.trim(), operator, requiredValue },
-    ]);
+    onSave([...prerequisites, { flagKey: flagKey.trim(), operator, requiredValue }]);
     setFlagKey("");
     setOperator("equals");
     setRequiredValue("");
@@ -134,10 +124,7 @@ export const PrerequisiteUI = ({
                     <SelectItem key={c.key} value={c.key} className="text-sm">
                       <div className="flex items-center gap-2">
                         <code className="font-mono text-xs">{c.key}</code>
-                        <Badge
-                          variant="outline"
-                          className="text-[10px] px-1 py-0"
-                        >
+                        <Badge variant="outline" className="text-[10px] px-1 py-0">
                           {c.valueType}
                         </Badge>
                       </div>
@@ -155,14 +142,8 @@ export const PrerequisiteUI = ({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {PREREQ_OPERATORS.filter((op) =>
-                    validOperators.includes(op.value),
-                  ).map((op) => (
-                    <SelectItem
-                      key={op.value}
-                      value={op.value}
-                      className="text-sm"
-                    >
+                  {PREREQ_OPERATORS.filter((op) => validOperators.includes(op.value)).map((op) => (
+                    <SelectItem key={op.value} value={op.value} className="text-sm">
                       <span className="font-medium">{op.label}</span>
                       <span className="text-muted-foreground ml-1.5 text-xs">
                         — {op.description}
@@ -199,9 +180,7 @@ export const PrerequisiteUI = ({
         {flagKey === currentFlagKey && (
           <div className="flex items-center gap-2 text-xs text-destructive">
             <AlertTriangle className="h-3.5 w-3.5" />
-            <Trans>
-              Cannot add self as prerequisite (circular dependency).
-            </Trans>
+            <Trans>Cannot add self as prerequisite (circular dependency).</Trans>
           </div>
         )}
 
@@ -213,36 +192,24 @@ export const PrerequisiteUI = ({
         ) : (
           <div className="space-y-2">
             {prerequisites.map((prereq, i) => {
-              const prereqConfig = allConfigs.find(
-                (c) => c.key === prereq.flagKey,
-              );
+              const prereqConfig = allConfigs.find((c) => c.key === prereq.flagKey);
               const opLabel =
-                PREREQ_OPERATORS.find((o) => o.value === prereq.operator)
-                  ?.label ?? prereq.operator;
+                PREREQ_OPERATORS.find((o) => o.value === prereq.operator)?.label ?? prereq.operator;
               return (
-                <div
-                  key={i}
-                  className="flex items-center justify-between rounded-lg border p-3"
-                >
+                <div key={i} className="flex items-center justify-between rounded-lg border p-3">
                   <div className="flex items-center gap-2 flex-wrap min-w-0">
                     <Link2 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                     <code className="text-xs font-mono bg-muted px-1.5 py-0.5 rounded">
                       {prereq.flagKey}
                     </code>
-                    <Badge
-                      variant="secondary"
-                      className="text-[10px] px-1.5 py-0"
-                    >
+                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
                       {opLabel}
                     </Badge>
                     <code className="text-xs font-mono bg-muted px-1.5 py-0.5 rounded">
                       {JSON.stringify(prereq.requiredValue)}
                     </code>
                     {prereqConfig && (
-                      <Badge
-                        variant="outline"
-                        className="text-[10px] px-1 py-0"
-                      >
+                      <Badge variant="outline" className="text-[10px] px-1 py-0">
                         {prereqConfig.valueType}
                       </Badge>
                     )}
@@ -268,9 +235,7 @@ export const PrerequisiteUI = ({
           prerequisites.length < 10 &&
           allConfigs.length > 0 && (
             <p className="text-xs text-muted-foreground text-center">
-              <Trans>
-                All available flags are already added as prerequisites.
-              </Trans>
+              <Trans>All available flags are already added as prerequisites.</Trans>
             </p>
           )}
       </CardContent>
@@ -294,13 +259,7 @@ const TypedPrereqValue = ({
   disabled?: boolean;
 }) => {
   if (disabled || !valueType) {
-    return (
-      <Input
-        className="h-9 text-sm"
-        placeholder={t`Select a flag first`}
-        disabled
-      />
-    );
+    return <Input className="h-9 text-sm" placeholder={t`Select a flag first`} disabled />;
   }
 
   if (valueType === "boolean") {

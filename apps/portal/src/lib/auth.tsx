@@ -1,9 +1,4 @@
-import {
-  onAuthStateChanged,
-  signInWithPopup,
-  signOut,
-  GoogleAuthProvider,
-} from "firebase/auth";
+import { onAuthStateChanged, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
 import type { User } from "firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -73,9 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, loading, accessDenied, signIn, logOut }}
-    >
+    <AuthContext.Provider value={{ user, loading, accessDenied, signIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );

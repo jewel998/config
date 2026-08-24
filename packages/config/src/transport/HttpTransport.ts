@@ -1,10 +1,6 @@
 /// <reference lib="dom" />
 
-import {
-  AuthenticationError,
-  ConfigError,
-  RateLimitError,
-} from "../errors/index.js";
+import { AuthenticationError, ConfigError, RateLimitError } from "../errors/index.js";
 import type { EvaluationContext } from "../plugins/types.js";
 import type { HttpTransport } from "../types.js";
 import { CircuitBreaker } from "./CircuitBreaker.js";
@@ -30,10 +26,7 @@ export const createHttpTransport = (config: TransportConfig): HttpTransport => {
   });
 
   return {
-    async request<T>(
-      endpoint: string,
-      body?: Record<string, unknown>,
-    ): Promise<T> {
+    async request<T>(endpoint: string, body?: Record<string, unknown>): Promise<T> {
       // ── Circuit breaker check ──────────────────────────────
       if (!circuitBreaker.canExecute()) {
         throw (
@@ -121,14 +114,10 @@ export const createHttpTransport = (config: TransportConfig): HttpTransport => {
             break;
           case 429: {
             const retryAfterHeader = response.headers.get("Retry-After");
-            const retryAfterSeconds = retryAfterHeader
-              ? parseInt(retryAfterHeader, 10)
-              : undefined;
+            const retryAfterSeconds = retryAfterHeader ? parseInt(retryAfterHeader, 10) : undefined;
             error = new RateLimitError(
               message,
-              Number.isFinite(retryAfterSeconds)
-                ? retryAfterSeconds
-                : undefined,
+              Number.isFinite(retryAfterSeconds) ? retryAfterSeconds : undefined,
             );
             break;
           }

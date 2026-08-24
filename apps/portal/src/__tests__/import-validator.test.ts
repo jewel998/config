@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {
-  validateImportEntry,
-  validateImportEntries,
-} from "@/lib/import-validator";
+
+import { validateImportEntry, validateImportEntries } from "@/lib/import-validator";
 
 // ─── Base Field Validation ───────────────────────────────────
 
@@ -16,67 +14,40 @@ describe("Import Validator: Base Fields", () => {
   });
 
   it("rejects missing key", () => {
-    const errors = validateImportEntry(
-      { value: "test", valueType: "string" },
-      1,
-    );
+    const errors = validateImportEntry({ value: "test", valueType: "string" }, 1);
     expect(errors).toHaveLength(1);
     expect(errors[0].reason).toContain("missing required field: key");
   });
 
   it("rejects empty key", () => {
-    const errors = validateImportEntry(
-      { key: "", value: "test", valueType: "string" },
-      1,
-    );
+    const errors = validateImportEntry({ key: "", value: "test", valueType: "string" }, 1);
     expect(errors).toHaveLength(1);
     expect(errors[0].reason).toContain("missing required field: key");
   });
 
   it("rejects missing value", () => {
     const errors = validateImportEntry({ key: "test", valueType: "string" }, 1);
-    expect(
-      errors.some((e) => e.reason.includes("missing required field: value")),
-    ).toBe(true);
+    expect(errors.some((e) => e.reason.includes("missing required field: value"))).toBe(true);
   });
 
   it("rejects null value", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: null, valueType: "string" },
-      1,
-    );
-    expect(
-      errors.some((e) => e.reason.includes("missing required field: value")),
-    ).toBe(true);
+    const errors = validateImportEntry({ key: "test", value: null, valueType: "string" }, 1);
+    expect(errors.some((e) => e.reason.includes("missing required field: value"))).toBe(true);
   });
 
   it("rejects missing valueType", () => {
     const errors = validateImportEntry({ key: "test", value: "hello" }, 1);
-    expect(
-      errors.some((e) =>
-        e.reason.includes("missing required field: valueType"),
-      ),
-    ).toBe(true);
+    expect(errors.some((e) => e.reason.includes("missing required field: valueType"))).toBe(true);
   });
 
   it("rejects key with spaces", () => {
-    const errors = validateImportEntry(
-      { key: "has space", value: "x", valueType: "string" },
-      1,
-    );
-    expect(errors.some((e) => e.reason.includes("invalid key format"))).toBe(
-      true,
-    );
+    const errors = validateImportEntry({ key: "has space", value: "x", valueType: "string" }, 1);
+    expect(errors.some((e) => e.reason.includes("invalid key format"))).toBe(true);
   });
 
   it("rejects key with special characters", () => {
-    const errors = validateImportEntry(
-      { key: "key@#$!", value: "x", valueType: "string" },
-      1,
-    );
-    expect(errors.some((e) => e.reason.includes("invalid key format"))).toBe(
-      true,
-    );
+    const errors = validateImportEntry({ key: "key@#$!", value: "x", valueType: "string" }, 1);
+    expect(errors.some((e) => e.reason.includes("invalid key format"))).toBe(true);
   });
 
   it("accepts key with dots and underscores", () => {
@@ -104,13 +75,8 @@ describe("Import Validator: Base Fields", () => {
   });
 
   it("rejects unsupported valueType", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: "x", valueType: "bigint" },
-      1,
-    );
-    expect(
-      errors.some((e) => e.reason.includes("unsupported value type")),
-    ).toBe(true);
+    const errors = validateImportEntry({ key: "test", value: "x", valueType: "bigint" }, 1);
+    expect(errors.some((e) => e.reason.includes("unsupported value type"))).toBe(true);
   });
 });
 
@@ -122,122 +88,71 @@ describe("Import Validator: Value-Type Consistency", () => {
       { key: "test", value: "not_a_number", valueType: "number" },
       1,
     );
-    expect(errors.some((e) => e.reason.includes("invalid number value"))).toBe(
-      true,
-    );
+    expect(errors.some((e) => e.reason.includes("invalid number value"))).toBe(true);
   });
 
   it("accepts numeric string for number type", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: "42", valueType: "number" },
-      1,
-    );
+    const errors = validateImportEntry({ key: "test", value: "42", valueType: "number" }, 1);
     expect(errors).toHaveLength(0);
   });
 
   it("accepts actual number for number type", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: 3.14, valueType: "number" },
-      1,
-    );
+    const errors = validateImportEntry({ key: "test", value: 3.14, valueType: "number" }, 1);
     expect(errors).toHaveLength(0);
   });
 
   it("rejects invalid boolean string", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: "yes", valueType: "boolean" },
-      1,
-    );
-    expect(errors.some((e) => e.reason.includes("invalid boolean value"))).toBe(
-      true,
-    );
+    const errors = validateImportEntry({ key: "test", value: "yes", valueType: "boolean" }, 1);
+    expect(errors.some((e) => e.reason.includes("invalid boolean value"))).toBe(true);
   });
 
   it("accepts 'true' string for boolean type", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: "true", valueType: "boolean" },
-      1,
-    );
+    const errors = validateImportEntry({ key: "test", value: "true", valueType: "boolean" }, 1);
     expect(errors).toHaveLength(0);
   });
 
   it("accepts native boolean for boolean type", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: false, valueType: "boolean" },
-      1,
-    );
+    const errors = validateImportEntry({ key: "test", value: false, valueType: "boolean" }, 1);
     expect(errors).toHaveLength(0);
   });
 
   it("rejects number 1 for boolean type", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: 1, valueType: "boolean" },
-      1,
-    );
-    expect(errors.some((e) => e.reason.includes("invalid boolean value"))).toBe(
-      true,
-    );
+    const errors = validateImportEntry({ key: "test", value: 1, valueType: "boolean" }, 1);
+    expect(errors.some((e) => e.reason.includes("invalid boolean value"))).toBe(true);
   });
 
   it("rejects invalid JSON string for json type", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: "{not json}", valueType: "json" },
-      1,
-    );
-    expect(errors.some((e) => e.reason.includes("invalid JSON value"))).toBe(
-      true,
-    );
+    const errors = validateImportEntry({ key: "test", value: "{not json}", valueType: "json" }, 1);
+    expect(errors.some((e) => e.reason.includes("invalid JSON value"))).toBe(true);
   });
 
   it("accepts valid JSON string for json type", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: '{"a":1}', valueType: "json" },
-      1,
-    );
+    const errors = validateImportEntry({ key: "test", value: '{"a":1}', valueType: "json" }, 1);
     expect(errors).toHaveLength(0);
   });
 
   it("accepts native object for json type", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: { a: 1 }, valueType: "json" },
-      1,
-    );
+    const errors = validateImportEntry({ key: "test", value: { a: 1 }, valueType: "json" }, 1);
     expect(errors).toHaveLength(0);
   });
 
   it("rejects array for json type", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: [1, 2], valueType: "json" },
-      1,
-    );
-    expect(errors.some((e) => e.reason.includes("invalid JSON value"))).toBe(
-      true,
-    );
+    const errors = validateImportEntry({ key: "test", value: [1, 2], valueType: "json" }, 1);
+    expect(errors.some((e) => e.reason.includes("invalid JSON value"))).toBe(true);
   });
 
   it("rejects non-array JSON string for array type", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: '{"a":1}', valueType: "array" },
-      1,
-    );
-    expect(errors.some((e) => e.reason.includes("invalid array value"))).toBe(
-      true,
-    );
+    const errors = validateImportEntry({ key: "test", value: '{"a":1}', valueType: "array" }, 1);
+    expect(errors.some((e) => e.reason.includes("invalid array value"))).toBe(true);
   });
 
   it("accepts valid array JSON string for array type", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: '["a","b"]', valueType: "array" },
-      1,
-    );
+    const errors = validateImportEntry({ key: "test", value: '["a","b"]', valueType: "array" }, 1);
     expect(errors).toHaveLength(0);
   });
 
   it("accepts native array for array type", () => {
-    const errors = validateImportEntry(
-      { key: "test", value: ["a", "b"], valueType: "array" },
-      1,
-    );
+    const errors = validateImportEntry({ key: "test", value: ["a", "b"], valueType: "array" }, 1);
     expect(errors).toHaveLength(0);
   });
 });
@@ -258,9 +173,7 @@ describe("Import Validator: Targeting Rules", () => {
             value: true,
             conditions: [
               {
-                predicates: [
-                  { attribute: "plan", operator: "equals", value: "pro" },
-                ],
+                predicates: [{ attribute: "plan", operator: "equals", value: "pro" }],
               },
             ],
           },
@@ -272,13 +185,8 @@ describe("Import Validator: Targeting Rules", () => {
   });
 
   it("rejects targetingRules that is not an array", () => {
-    const errors = validateImportEntry(
-      { ...base, targetingRules: "invalid" },
-      1,
-    );
-    expect(
-      errors.some((e) => e.reason.includes("targetingRules must be an array")),
-    ).toBe(true);
+    const errors = validateImportEntry({ ...base, targetingRules: "invalid" }, 1);
+    expect(errors.some((e) => e.reason.includes("targetingRules must be an array"))).toBe(true);
   });
 
   it("rejects rule without id", () => {
@@ -296,16 +204,12 @@ describe("Import Validator: Targeting Rules", () => {
     const errors = validateImportEntry(
       {
         ...base,
-        targetingRules: [
-          { id: "r1", priority: 0, value: true, conditions: [] },
-        ],
+        targetingRules: [{ id: "r1", priority: 0, value: true, conditions: [] }],
       },
       1,
     );
     expect(
-      errors.some((e) =>
-        e.reason.includes("priority must be a number between 1 and 1000"),
-      ),
+      errors.some((e) => e.reason.includes("priority must be a number between 1 and 1000")),
     ).toBe(true);
   });
 
@@ -313,9 +217,7 @@ describe("Import Validator: Targeting Rules", () => {
     const errors = validateImportEntry(
       {
         ...base,
-        targetingRules: [
-          { id: "r1", priority: 1001, value: true, conditions: [] },
-        ],
+        targetingRules: [{ id: "r1", priority: 1001, value: true, conditions: [] }],
       },
       1,
     );
@@ -333,9 +235,7 @@ describe("Import Validator: Targeting Rules", () => {
             value: true,
             conditions: [
               {
-                predicates: [
-                  { attribute: "x", operator: "invalid_op", value: "y" },
-                ],
+                predicates: [{ attribute: "x", operator: "invalid_op", value: "y" }],
               },
             ],
           },
@@ -343,9 +243,7 @@ describe("Import Validator: Targeting Rules", () => {
       },
       1,
     );
-    expect(errors.some((e) => e.reason.includes("invalid operator"))).toBe(
-      true,
-    );
+    expect(errors.some((e) => e.reason.includes("invalid operator"))).toBe(true);
   });
 
   it("rejects predicate without attribute", () => {
@@ -363,9 +261,7 @@ describe("Import Validator: Targeting Rules", () => {
       },
       1,
     );
-    expect(errors.some((e) => e.reason.includes("string attribute"))).toBe(
-      true,
-    );
+    expect(errors.some((e) => e.reason.includes("string attribute"))).toBe(true);
   });
 });
 
@@ -381,26 +277,17 @@ describe("Import Validator: Rollout", () => {
 
   it("rejects rolloutPercentage > 100", () => {
     const errors = validateImportEntry({ ...base, rolloutPercentage: 150 }, 1);
-    expect(errors.some((e) => e.reason.includes("between 0 and 100"))).toBe(
-      true,
-    );
+    expect(errors.some((e) => e.reason.includes("between 0 and 100"))).toBe(true);
   });
 
   it("rejects rolloutPercentage < 0", () => {
     const errors = validateImportEntry({ ...base, rolloutPercentage: -5 }, 1);
-    expect(errors.some((e) => e.reason.includes("between 0 and 100"))).toBe(
-      true,
-    );
+    expect(errors.some((e) => e.reason.includes("between 0 and 100"))).toBe(true);
   });
 
   it("rejects non-numeric rolloutPercentage", () => {
-    const errors = validateImportEntry(
-      { ...base, rolloutPercentage: "fifty" },
-      1,
-    );
-    expect(errors.some((e) => e.reason.includes("between 0 and 100"))).toBe(
-      true,
-    );
+    const errors = validateImportEntry({ ...base, rolloutPercentage: "fifty" }, 1);
+    expect(errors.some((e) => e.reason.includes("between 0 and 100"))).toBe(true);
   });
 });
 
@@ -410,31 +297,18 @@ describe("Import Validator: Overrides", () => {
   const base = { key: "test", value: false, valueType: "boolean" };
 
   it("accepts valid overrides object", () => {
-    const errors = validateImportEntry(
-      { ...base, overrides: { user_1: true, user_2: false } },
-      1,
-    );
+    const errors = validateImportEntry({ ...base, overrides: { user_1: true, user_2: false } }, 1);
     expect(errors).toHaveLength(0);
   });
 
   it("rejects overrides that is an array", () => {
-    const errors = validateImportEntry(
-      { ...base, overrides: [true, false] },
-      1,
-    );
-    expect(
-      errors.some((e) => e.reason.includes("overrides must be an object")),
-    ).toBe(true);
+    const errors = validateImportEntry({ ...base, overrides: [true, false] }, 1);
+    expect(errors.some((e) => e.reason.includes("overrides must be an object"))).toBe(true);
   });
 
   it("rejects overrides that is a string", () => {
-    const errors = validateImportEntry(
-      { ...base, overrides: "not an object" },
-      1,
-    );
-    expect(
-      errors.some((e) => e.reason.includes("overrides must be an object")),
-    ).toBe(true);
+    const errors = validateImportEntry({ ...base, overrides: "not an object" }, 1);
+    expect(errors.some((e) => e.reason.includes("overrides must be an object"))).toBe(true);
   });
 });
 
@@ -497,9 +371,7 @@ describe("Import Validator: Prerequisites", () => {
     const errors = validateImportEntry(
       {
         ...base,
-        prerequisites: [
-          { flagKey: "other.flag", operator: "equals", requiredValue: true },
-        ],
+        prerequisites: [{ flagKey: "other.flag", operator: "equals", requiredValue: true }],
       },
       1,
     );
@@ -507,13 +379,8 @@ describe("Import Validator: Prerequisites", () => {
   });
 
   it("rejects prerequisites that is not an array", () => {
-    const errors = validateImportEntry(
-      { ...base, prerequisites: "invalid" },
-      1,
-    );
-    expect(
-      errors.some((e) => e.reason.includes("prerequisites must be an array")),
-    ).toBe(true);
+    const errors = validateImportEntry({ ...base, prerequisites: "invalid" }, 1);
+    expect(errors.some((e) => e.reason.includes("prerequisites must be an array"))).toBe(true);
   });
 
   it("rejects prerequisite without flagKey", () => {
@@ -531,15 +398,11 @@ describe("Import Validator: Prerequisites", () => {
     const errors = validateImportEntry(
       {
         ...base,
-        prerequisites: [
-          { flagKey: "other", operator: "invalid_op", requiredValue: true },
-        ],
+        prerequisites: [{ flagKey: "other", operator: "invalid_op", requiredValue: true }],
       },
       1,
     );
-    expect(errors.some((e) => e.reason.includes("invalid operator"))).toBe(
-      true,
-    );
+    expect(errors.some((e) => e.reason.includes("invalid operator"))).toBe(true);
   });
 
   it("rejects prerequisite without requiredValue", () => {
@@ -592,9 +455,7 @@ describe("Import Validator: Batch Validation", () => {
             value: true,
             conditions: [
               {
-                predicates: [
-                  { attribute: "plan", operator: "equals", value: "pro" },
-                ],
+                predicates: [{ attribute: "plan", operator: "equals", value: "pro" }],
               },
             ],
           },
@@ -603,9 +464,7 @@ describe("Import Validator: Batch Validation", () => {
         rolloutValue: true,
         overrides: { admin_user: true },
         schedule: { targetValue: true, activateAt: "2027-06-01T00:00:00.000Z" },
-        prerequisites: [
-          { flagKey: "feature.a", operator: "equals", requiredValue: true },
-        ],
+        prerequisites: [{ flagKey: "feature.a", operator: "equals", requiredValue: true }],
       },
     ]);
     expect(errors).toHaveLength(0);

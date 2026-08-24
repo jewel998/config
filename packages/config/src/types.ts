@@ -94,16 +94,10 @@ export interface ConfigClient {
   setContext(newContext: EvaluationContext): void;
 
   /** Subscribe to a lifecycle event. */
-  on<E extends ConfigEventType>(
-    event: E,
-    callback: ConfigEventCallback<E>,
-  ): void;
+  on<E extends ConfigEventType>(event: E, callback: ConfigEventCallback<E>): void;
 
   /** Unsubscribe from a lifecycle event. */
-  off<E extends ConfigEventType>(
-    event: E,
-    callback: ConfigEventCallback<E>,
-  ): void;
+  off<E extends ConfigEventType>(event: E, callback: ConfigEventCallback<E>): void;
 
   /** Clean up timers, listeners, and in-flight requests. */
   destroy(): void;
@@ -262,18 +256,9 @@ export interface GetConfigResponse {
 // ═══════════════════════════════════════════════════════════════
 
 export interface EventEmitterInterface {
-  on<E extends ConfigEventType>(
-    event: E,
-    callback: ConfigEventCallback<E>,
-  ): void;
-  off<E extends ConfigEventType>(
-    event: E,
-    callback: ConfigEventCallback<E>,
-  ): void;
-  emit<E extends ConfigEventType>(
-    event: E,
-    payload: ConfigEventPayloads[E],
-  ): void;
+  on<E extends ConfigEventType>(event: E, callback: ConfigEventCallback<E>): void;
+  off<E extends ConfigEventType>(event: E, callback: ConfigEventCallback<E>): void;
+  emit<E extends ConfigEventType>(event: E, payload: ConfigEventPayloads[E]): void;
   removeAllListeners(): void;
 }
 

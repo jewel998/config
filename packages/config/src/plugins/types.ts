@@ -31,9 +31,7 @@ export interface EvaluationContext {
 }
 
 /** Result from a pipeline step */
-export type PipelineStepResult =
-  | { resolved: true; value: unknown }
-  | { resolved: false };
+export type PipelineStepResult = { resolved: true; value: unknown } | { resolved: false };
 
 /** A registered evaluation plugin */
 export interface EvaluationPlugin {

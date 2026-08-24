@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+
 import { FetchConfigsGuard } from "../fetch-configs.guard";
 import { makeCtx } from "./helpers";
 
@@ -51,10 +52,7 @@ describe("FetchConfigsGuard", () => {
     });
     await guard.canActivate(ctx);
 
-    expect(mockFetch).toHaveBeenCalledWith(db, "proj_x", "env_dev", [
-      "flag.a",
-      "flag.b",
-    ]);
+    expect(mockFetch).toHaveBeenCalledWith(db, "proj_x", "env_dev", ["flag.a", "flag.b"]);
   });
 
   it("passes undefined requestedKeys when not set", async () => {
@@ -68,11 +66,6 @@ describe("FetchConfigsGuard", () => {
     const ctx = makeCtx({ db: {} as any, projectId: "p", environmentId: "e" });
     await guard.canActivate(ctx);
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.anything(),
-      "p",
-      "e",
-      undefined,
-    );
+    expect(mockFetch).toHaveBeenCalledWith(expect.anything(), "p", "e", undefined);
   });
 });

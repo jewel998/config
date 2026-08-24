@@ -1,5 +1,5 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 import { Calendar, Clock, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -23,10 +23,16 @@ export const ScheduleUI = ({ schedule, onSave, disabled }: ScheduleUIProps) => {
   const isPending = schedule ? Date.parse(schedule.activateAt) > Date.now() : false;
 
   useEffect(() => {
-    if (!isPending || !schedule) { setCountdown(""); return; }
+    if (!isPending || !schedule) {
+      setCountdown("");
+      return;
+    }
     const update = () => {
       const diff = Date.parse(schedule.activateAt) - Date.now();
-      if (diff <= 0) { setCountdown("Activating..."); return; }
+      if (diff <= 0) {
+        setCountdown("Activating...");
+        return;
+      }
       const h = Math.floor(diff / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
@@ -46,9 +52,19 @@ export const ScheduleUI = ({ schedule, onSave, disabled }: ScheduleUIProps) => {
   return (
     <Card className="rounded-xl">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-base"><Trans>Scheduled Change</Trans></CardTitle>
-        {isPending && <Badge className="rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-xs">Pending</Badge>}
-        {isApplied && <Badge className="rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs">Applied</Badge>}
+        <CardTitle className="text-base">
+          <Trans>Scheduled Change</Trans>
+        </CardTitle>
+        {isPending && (
+          <Badge className="rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-xs">
+            Pending
+          </Badge>
+        )}
+        {isApplied && (
+          <Badge className="rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs">
+            Applied
+          </Badge>
+        )}
       </CardHeader>
       <CardContent className="space-y-3">
         {schedule ? (
@@ -68,7 +84,12 @@ export const ScheduleUI = ({ schedule, onSave, disabled }: ScheduleUIProps) => {
               </div>
             )}
             {!disabled && (
-              <Button variant="outline" size="sm" className="gap-2 rounded-full" onClick={() => onSave(null)}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2 rounded-full"
+                onClick={() => onSave(null)}
+              >
                 <Trash2 className="h-3.5 w-3.5" />
                 {isApplied ? <Trans>Remove</Trans> : <Trans>Cancel</Trans>}
               </Button>
@@ -76,14 +97,24 @@ export const ScheduleUI = ({ schedule, onSave, disabled }: ScheduleUIProps) => {
           </div>
         ) : !disabled ? (
           <div className="space-y-2">
-            <Input placeholder={t`Target value`} value={targetValue} onChange={(e) => setTargetValue(e.target.value)} />
-            <Input type="datetime-local" value={activateAt} onChange={(e) => setActivateAt(e.target.value)} />
+            <Input
+              placeholder={t`Target value`}
+              value={targetValue}
+              onChange={(e) => setTargetValue(e.target.value)}
+            />
+            <Input
+              type="datetime-local"
+              value={activateAt}
+              onChange={(e) => setActivateAt(e.target.value)}
+            />
             <Button size="sm" className="rounded-full" onClick={handleSave} disabled={!activateAt}>
               <Trans>Schedule</Trans>
             </Button>
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground text-center py-4"><Trans>No scheduled changes.</Trans></p>
+          <p className="text-sm text-muted-foreground text-center py-4">
+            <Trans>No scheduled changes.</Trans>
+          </p>
         )}
       </CardContent>
     </Card>

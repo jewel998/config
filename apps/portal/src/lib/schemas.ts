@@ -4,9 +4,18 @@ import { z } from "zod";
 export const predicateSchema = z.object({
   attribute: z.string().min(1).max(128),
   operator: z.enum([
-    "equals", "not_equals", "contains", "starts_with", "ends_with",
-    "in_list", "not_in_list", "greater_than", "less_than",
-    "regex_match", "in_segment", "not_in_segment",
+    "equals",
+    "not_equals",
+    "contains",
+    "starts_with",
+    "ends_with",
+    "in_list",
+    "not_in_list",
+    "greater_than",
+    "less_than",
+    "regex_match",
+    "in_segment",
+    "not_in_segment",
   ]),
   value: z.union([z.string().max(1024), z.number(), z.boolean(), z.array(z.string())]),
 });
@@ -57,17 +66,31 @@ export function validateOverrideType(
   expectedType: "string" | "number" | "boolean" | "json" | "array",
 ): boolean {
   switch (expectedType) {
-    case "string": return typeof value === "string";
-    case "number": return typeof value === "number";
-    case "boolean": return typeof value === "boolean";
+    case "string":
+      return typeof value === "string";
+    case "number":
+      return typeof value === "number";
+    case "boolean":
+      return typeof value === "boolean";
     case "json": {
       if (typeof value !== "string") return false;
-      try { JSON.parse(value); return true; } catch { return false; }
+      try {
+        JSON.parse(value);
+        return true;
+      } catch {
+        return false;
+      }
     }
     case "array": {
       if (typeof value !== "string") return false;
-      try { const p = JSON.parse(value); return Array.isArray(p); } catch { return false; }
+      try {
+        const p = JSON.parse(value);
+        return Array.isArray(p);
+      } catch {
+        return false;
+      }
     }
-    default: return false;
+    default:
+      return false;
   }
 }

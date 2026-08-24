@@ -2,14 +2,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { collection, getDocs } from "firebase/firestore";
 import { useMemo } from "react";
 
-import { db } from "@/lib/firebase";
-import { useAuthStore } from "@/stores/auth-store";
-import type { Environment } from "@/lib/types";
 import {
   EnvironmentRepository,
   type EnvironmentCreateInput,
   type EnvironmentUpdateInput,
 } from "@/dao/environment.repository";
+import { db } from "@/lib/firebase";
+import type { Environment } from "@/lib/types";
+import { useAuthStore } from "@/stores/auth-store";
 
 export type { Environment };
 
@@ -18,12 +18,7 @@ export const useEnvironments = (projectId: string | null) => {
     queryKey: ["environments", projectId],
     queryFn: async () => {
       if (!projectId) return [];
-      const envCollection = collection(
-        db,
-        "projects",
-        projectId,
-        "environments",
-      );
+      const envCollection = collection(db, "projects", projectId, "environments");
       const snapshot = await getDocs(envCollection);
       return snapshot.docs.map((d) => ({
         id: d.id,
@@ -37,10 +32,7 @@ export const useEnvironments = (projectId: string | null) => {
 export const useCreateEnvironment = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new EnvironmentRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new EnvironmentRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async ({
@@ -81,10 +73,7 @@ export const useCreateEnvironment = () => {
 export const useDeleteEnvironment = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new EnvironmentRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new EnvironmentRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async ({
@@ -115,10 +104,7 @@ export const useDeleteEnvironment = () => {
 export const useUpdateEnvironment = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new EnvironmentRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new EnvironmentRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async ({

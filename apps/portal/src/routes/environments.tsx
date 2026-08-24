@@ -17,11 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   useEnvironments,
   useCreateEnvironment,
@@ -54,18 +50,11 @@ const envSchema = z.object({
     ),
 });
 
-const ENV_SUGGESTIONS = [
-  "production",
-  "staging",
-  "development",
-  "qa",
-  "pre-production",
-];
+const ENV_SUGGESTIONS = ["production", "staging", "development", "qa", "pre-production"];
 
 const EnvironmentsPage = () => {
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
-  const { data: environments = [], isLoading } =
-    useEnvironments(selectedProjectId);
+  const { data: environments = [], isLoading } = useEnvironments(selectedProjectId);
   const createEnvironment = useCreateEnvironment();
   const deleteEnvironment = useDeleteEnvironment();
 
@@ -84,10 +73,7 @@ const EnvironmentsPage = () => {
       for (const issue of result.error.issues) {
         if (issue.path[0] === "name") {
           fieldErrors.name = issue.message;
-        } else if (
-          issue.path[0] === "domains" ||
-          issue.path.includes("domains")
-        ) {
+        } else if (issue.path[0] === "domains" || issue.path.includes("domains")) {
           fieldErrors.domains = issue.message;
         }
       }
@@ -139,10 +125,7 @@ const EnvironmentsPage = () => {
 
   if (!selectedProjectId) {
     return (
-      <EmptyState
-        icon={Server}
-        message={<Trans>Select a project to view environments.</Trans>}
-      />
+      <EmptyState icon={Server} message={<Trans>Select a project to view environments.</Trans>} />
     );
   }
 
@@ -165,10 +148,7 @@ const EnvironmentsPage = () => {
         title={<Trans>Environments</Trans>}
         description={<Trans>Manage deployment targets and allowed domains.</Trans>}
         actions={
-          <Button
-            className="gap-2 rounded-full"
-            onClick={() => setShowForm(true)}
-          >
+          <Button className="gap-2 rounded-full" onClick={() => setShowForm(true)}>
             <Plus className="h-4 w-4" />
             <Trans>New Environment</Trans>
           </Button>
@@ -214,9 +194,7 @@ const EnvironmentsPage = () => {
             onKeyDown={(e) => e.key === "Enter" && handleCreate()}
             autoFocus
           />
-          {errors.name && (
-            <p className="text-xs text-destructive">{errors.name}</p>
-          )}
+          {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
           <Input
             placeholder={t`Allowed domains (comma-separated, e.g. example.com, app.example.com)`}
             value={newDomains}
@@ -226,20 +204,14 @@ const EnvironmentsPage = () => {
             }}
             onKeyDown={(e) => e.key === "Enter" && handleCreate()}
           />
-          {errors.domains && (
-            <p className="text-xs text-destructive">{errors.domains}</p>
-          )}
+          {errors.domains && <p className="text-xs text-destructive">{errors.domains}</p>}
           <div className="flex items-center gap-2">
             <Button
               className="w-20 rounded-full"
               onClick={handleCreate}
               disabled={createEnvironment.isPending || !newName.trim()}
             >
-              {createEnvironment.isPending ? (
-                <Spinner />
-              ) : (
-                <Trans>Create</Trans>
-              )}
+              {createEnvironment.isPending ? <Spinner /> : <Trans>Create</Trans>}
             </Button>
             <Button
               variant="ghost"
@@ -270,9 +242,7 @@ const EnvironmentsPage = () => {
                   <Trans>No environments yet</Trans>
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  <Trans>
-                    Add environments like production, staging, or development.
-                  </Trans>
+                  <Trans>Add environments like production, staging, or development.</Trans>
                 </p>
               </div>
               <Button
@@ -323,11 +293,7 @@ const EnvironmentsPage = () => {
                 {env.allowedDomains.length > 0 ? (
                   <div className="flex flex-wrap gap-1">
                     {env.allowedDomains.map((domain) => (
-                      <Badge
-                        key={domain}
-                        variant="secondary"
-                        className="rounded-full text-xs"
-                      >
+                      <Badge key={domain} variant="secondary" className="rounded-full text-xs">
                         {domain}
                       </Badge>
                     ))}

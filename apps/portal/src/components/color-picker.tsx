@@ -20,9 +20,7 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => (
           type="button"
           variant="ghost"
           className={`h-6 w-6 rounded-full p-0 border-2 transition-all ${
-            value === color
-              ? "border-foreground scale-110"
-              : "border-transparent"
+            value === color ? "border-foreground scale-110" : "border-transparent"
           }`}
           style={{ backgroundColor: color }}
           onClick={() => onChange(color)}

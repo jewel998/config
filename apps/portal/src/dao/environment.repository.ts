@@ -56,10 +56,7 @@ export class EnvironmentRepository extends BaseRepository<
     newEntity?: EnvironmentEntity,
   ): AuditContext {
     const name =
-      (input as EnvironmentCreateInput)?.name ??
-      oldEntity?.name ??
-      newEntity?.name ??
-      "unknown";
+      (input as EnvironmentCreateInput)?.name ?? oldEntity?.name ?? newEntity?.name ?? "unknown";
     return {
       actorId: "",
       action: operation,

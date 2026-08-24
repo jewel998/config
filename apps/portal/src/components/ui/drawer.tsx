@@ -1,5 +1,5 @@
-import { Drawer as DrawerPrimitive } from "vaul";
 import type { ComponentProps } from "react";
+import { Drawer as DrawerPrimitive } from "vaul";
 
 import { cn } from "@/lib/utils";
 
@@ -11,14 +11,8 @@ const DrawerTrigger = DrawerPrimitive.Trigger;
 const DrawerPortal = DrawerPrimitive.Portal;
 const DrawerClose = DrawerPrimitive.Close;
 
-const DrawerOverlay = ({
-  className,
-  ...props
-}: ComponentProps<typeof DrawerPrimitive.Overlay>) => (
-  <DrawerPrimitive.Overlay
-    className={cn("fixed inset-0 z-50 bg-black/40", className)}
-    {...props}
-  />
+const DrawerOverlay = ({ className, ...props }: ComponentProps<typeof DrawerPrimitive.Overlay>) => (
+  <DrawerPrimitive.Overlay className={cn("fixed inset-0 z-50 bg-black/40", className)} {...props} />
 );
 
 const DrawerContent = ({
@@ -47,20 +41,11 @@ const DrawerHeader = ({ className, ...props }: ComponentProps<"div">) => (
 );
 
 const DrawerFooter = ({ className, ...props }: ComponentProps<"div">) => (
-  <div
-    className={cn("mt-auto flex flex-col gap-2 px-5 pb-5", className)}
-    {...props}
-  />
+  <div className={cn("mt-auto flex flex-col gap-2 px-5 pb-5", className)} {...props} />
 );
 
-const DrawerTitle = ({
-  className,
-  ...props
-}: ComponentProps<typeof DrawerPrimitive.Title>) => (
-  <DrawerPrimitive.Title
-    className={cn("text-base font-semibold", className)}
-    {...props}
-  />
+const DrawerTitle = ({ className, ...props }: ComponentProps<typeof DrawerPrimitive.Title>) => (
+  <DrawerPrimitive.Title className={cn("text-base font-semibold", className)} {...props} />
 );
 
 const DrawerDescription = ({

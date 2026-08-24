@@ -1,5 +1,5 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -85,18 +85,11 @@ export const RolloutSection = ({
           className="flex-1 h-2"
           disabled={!canEdit || isSaving}
         />
-        <span className="text-sm font-mono w-12 text-right">
-          {pendingPercentage}%
-        </span>
+        <span className="text-sm font-mono w-12 text-right">{pendingPercentage}%</span>
       </div>
 
       {isDirty && canEdit && (
-        <Button
-          size="sm"
-          className="rounded-full gap-1"
-          onClick={handleSave}
-          disabled={isSaving}
-        >
+        <Button size="sm" className="rounded-full gap-1" onClick={handleSave} disabled={isSaving}>
           {isSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
           <Trans>Save</Trans>
         </Button>

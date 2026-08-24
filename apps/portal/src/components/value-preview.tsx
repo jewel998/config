@@ -16,10 +16,7 @@ export const ValuePreview = ({ config }: { config: ConfigEntry }) => {
         </Badge>
       );
     case "json": {
-      const str =
-        typeof config.value === "string"
-          ? config.value
-          : JSON.stringify(config.value);
+      const str = typeof config.value === "string" ? config.value : JSON.stringify(config.value);
       let count = 0;
       try {
         const parsed = JSON.parse(str);
@@ -34,10 +31,7 @@ export const ValuePreview = ({ config }: { config: ConfigEntry }) => {
       );
     }
     case "array": {
-      const str =
-        typeof config.value === "string"
-          ? config.value
-          : JSON.stringify(config.value);
+      const str = typeof config.value === "string" ? config.value : JSON.stringify(config.value);
       let count = 0;
       try {
         const parsed = JSON.parse(str);
@@ -68,10 +62,7 @@ export const ValuePreview = ({ config }: { config: ConfigEntry }) => {
 export const getFullValue = (config: ConfigEntry): string => {
   if (config.valueType === "json" || config.valueType === "array") {
     try {
-      const str =
-        typeof config.value === "string"
-          ? config.value
-          : JSON.stringify(config.value);
+      const str = typeof config.value === "string" ? config.value : JSON.stringify(config.value);
       return JSON.stringify(JSON.parse(str), null, 2);
     } catch {
       return String(config.value);

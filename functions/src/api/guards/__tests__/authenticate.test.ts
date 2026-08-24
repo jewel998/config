@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
 import { UnauthorizedError } from "@jewel998/api";
+import { describe, it, expect, vi } from "vitest";
+
 import { AuthenticateGuard } from "../authenticate.guard";
 import { makeCtx } from "./helpers";
 

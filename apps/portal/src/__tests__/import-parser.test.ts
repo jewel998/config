@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+
 import { parseCsvFile, parseJsonFile } from "@/lib/import-parser";
 
 // ─── CSV Parser ──────────────────────────────────────────────
@@ -124,18 +125,14 @@ describe("JSON Parser", () => {
         key: "feature.x",
         value: false,
         valueType: "boolean",
-        targetingRules: [
-          { id: "r1", priority: 1, value: true, conditions: [] },
-        ],
+        targetingRules: [{ id: "r1", priority: 1, value: true, conditions: [] }],
         rolloutPercentage: 50,
       },
     ]);
     const { entries, errors } = parseJsonFile(json);
     expect(errors).toHaveLength(0);
     expect(entries).toHaveLength(1);
-    expect(
-      (entries[0] as Record<string, unknown>).targetingRules,
-    ).toBeDefined();
+    expect((entries[0] as Record<string, unknown>).targetingRules).toBeDefined();
     expect((entries[0] as Record<string, unknown>).rolloutPercentage).toBe(50);
   });
 

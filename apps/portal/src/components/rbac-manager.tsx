@@ -1,5 +1,5 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -38,10 +38,9 @@ export const RBACManager = ({
   const [inviteId, setInviteId] = useState("");
   const [inviteRole, setInviteRole] = useState<RBACRole>("viewer");
 
-  const isCurrentAdmin =
-    currentUserId === ownerId || roles[currentUserId] === "admin";
-  const adminCount = Object.values(roles).filter((r) => r === "admin").length +
-    (roles[ownerId] !== "admin" ? 1 : 0); // owner is always admin
+  const isCurrentAdmin = currentUserId === ownerId || roles[currentUserId] === "admin";
+  const adminCount =
+    Object.values(roles).filter((r) => r === "admin").length + (roles[ownerId] !== "admin" ? 1 : 0); // owner is always admin
 
   const isLastAdmin = (userId: string) =>
     (userId === ownerId || roles[userId] === "admin") && adminCount <= 1;
@@ -97,10 +96,20 @@ export const RBACManager = ({
                 <SelectItem value="admin">Admin</SelectItem>
               </SelectContent>
             </Select>
-            <Button size="sm" className="rounded-full" onClick={handleInvite} disabled={!inviteId.trim()}>
+            <Button
+              size="sm"
+              className="rounded-full"
+              onClick={handleInvite}
+              disabled={!inviteId.trim()}
+            >
               <Trans>Add</Trans>
             </Button>
-            <Button size="sm" variant="ghost" className="rounded-full" onClick={() => setShowInvite(false)}>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="rounded-full"
+              onClick={() => setShowInvite(false)}
+            >
               <Trans>Cancel</Trans>
             </Button>
           </div>
@@ -117,10 +126,7 @@ export const RBACManager = ({
           const canModify = isCurrentAdmin && !isOwner;
 
           return (
-            <div
-              key={userId}
-              className="flex items-center justify-between gap-3"
-            >
+            <div key={userId} className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2 truncate">
                 <span className="truncate text-sm font-mono">{userId}</span>
                 {isOwner && (
@@ -133,9 +139,7 @@ export const RBACManager = ({
                 {canModify ? (
                   <Select
                     value={role}
-                    onValueChange={(v) =>
-                      onRoleChange(userId, v as RBACRole)
-                    }
+                    onValueChange={(v) => onRoleChange(userId, v as RBACRole)}
                     disabled={isLastAdmin(userId)}
                   >
                     <SelectTrigger className="h-8 w-28 text-xs">
@@ -153,11 +157,7 @@ export const RBACManager = ({
                   </Badge>
                 )}
                 {canModify && !isLastAdmin(userId) && (
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    onClick={() => onRemoveMember(userId)}
-                  >
+                  <Button variant="ghost" size="icon-xs" onClick={() => onRemoveMember(userId)}>
                     <Trash2 className="h-3.5 w-3.5 text-destructive" />
                   </Button>
                 )}

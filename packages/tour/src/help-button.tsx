@@ -17,11 +17,7 @@ interface TourHelpButtonProps {
  *   <TourHelpButton flowId="tour-segments" />
  *   <TourHelpButton flowId="tour-api-keys" label="How do API keys work?" />
  */
-export function TourHelpButton({
-  flowId,
-  label,
-  className,
-}: TourHelpButtonProps) {
+export function TourHelpButton({ flowId, label, className }: TourHelpButtonProps) {
   const { startFlow, reset } = useTour();
 
   const handleClick = () => {

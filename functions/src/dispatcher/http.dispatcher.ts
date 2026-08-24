@@ -32,11 +32,7 @@ export const httpDispatcher: WebhookDispatcher = {
         success: false,
         httpStatus: null,
         duration: Date.now() - start,
-        error: isAbort
-          ? "Request timed out"
-          : err instanceof Error
-            ? err.message
-            : "Unknown error",
+        error: isAbort ? "Request timed out" : err instanceof Error ? err.message : "Unknown error",
       };
     } finally {
       clearTimeout(timer);

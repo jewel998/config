@@ -1,22 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  collection,
-  doc,
-  getDocs,
-  onSnapshot,
-  writeBatch,
-} from "firebase/firestore";
+import { collection, doc, getDocs, onSnapshot, writeBatch } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 
-import { db } from "@/lib/firebase";
-import { bumpConfigVersion } from "@/lib/bump-version";
+import { ConfigRepository } from "@/dao/config.repository";
+import type { ConfigCreateInput } from "@/dao/config.repository";
 import { writeAuditEntry, buildConfigAuditEntry } from "@/lib/audit";
+import { bumpConfigVersion } from "@/lib/bump-version";
+import { db } from "@/lib/firebase";
 import type { ImportEntryFull } from "@/lib/import-types";
 import type { ImportJob, FailedRowDoc, ConflictStrategy } from "@/lib/types";
 import { useAuthStore } from "@/stores/auth-store";
 import { useImportWizardStore } from "@/stores/import-wizard-store";
-import { ConfigRepository } from "@/dao/config.repository";
-import type { ConfigCreateInput } from "@/dao/config.repository";
 
 // ─── Constants ───────────────────────────────────────────────
 
@@ -49,13 +43,7 @@ export const useImportConfigs = () => {
     mutationFn: async (args: ImportConfigsArgs): Promise<ImportResult> => {
       if (!user) throw new Error("Not authenticated");
 
-      const {
-        projectId,
-        environmentId,
-        entries,
-        conflictStrategy,
-        reviewDecisions,
-      } = args;
+      const { projectId, environmentId, entries, conflictStrategy, reviewDecisions } = args;
 
       // Load existing configs to detect conflicts
       const configsColRef = collection(
@@ -112,18 +100,12 @@ export const useImportConfigs = () => {
         key: entry.key,
         value: entry.value,
         valueType: entry.valueType,
-        ...(entry.lifecycleState
-          ? { lifecycleState: entry.lifecycleState }
-          : {}),
-        ...(entry.targetingRules
-          ? { targetingRules: entry.targetingRules }
-          : {}),
+        ...(entry.lifecycleState ? { lifecycleState: entry.lifecycleState } : {}),
+        ...(entry.targetingRules ? { targetingRules: entry.targetingRules } : {}),
         ...(entry.rolloutPercentage !== undefined
           ? { rolloutPercentage: entry.rolloutPercentage }
           : {}),
-        ...(entry.rolloutValue !== undefined
-          ? { rolloutValue: entry.rolloutValue }
-          : {}),
+        ...(entry.rolloutValue !== undefined ? { rolloutValue: entry.rolloutValue } : {}),
         ...(entry.overrides ? { overrides: entry.overrides } : {}),
         ...(entry.schedule ? { schedule: entry.schedule } : {}),
         ...(entry.prerequisites ? { prerequisites: entry.prerequisites } : {}),
@@ -167,10 +149,7 @@ export const useImportConfigs = () => {
 
 // ─── Import Job Real-time Listener (kept for backward compat) ─
 
-export const useImportJob = (
-  projectId: string | null,
-  jobId: string | null,
-) => {
+export const useImportJob = (projectId: string | null, jobId: string | null) => {
   const [job, setJob] = useState<ImportJob | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -199,10 +178,7 @@ export const useImportJob = (
 
 // ─── Failed Rows Paginated Query ─────────────────────────────
 
-export const useFailedRows = (
-  projectId: string | null,
-  jobId: string | null,
-) => {
+export const useFailedRows = (projectId: string | null, jobId: string | null) => {
   const [rows, setRows] = useState<FailedRowDoc[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(false);
@@ -222,20 +198,9 @@ export const useFailedRows = (
         getDocs: getDocsFn,
       } = await import("firebase/firestore");
 
-      const colRef = colFn(
-        db,
-        "projects",
-        projectId,
-        "import_jobs",
-        jobId,
-        "failed_rows",
-      );
+      const colRef = colFn(db, "projects", projectId, "import_jobs", jobId, "failed_rows");
 
-      let q = queryFn(
-        colRef,
-        orderByFn("rowNumber"),
-        limitFn(FAILED_ROWS_PAGE_SIZE + 1),
-      );
+      let q = queryFn(colRef, orderByFn("rowNumber"), limitFn(FAILED_ROWS_PAGE_SIZE + 1));
       if (startAfterDoc) {
         q = queryFn(
           colRef,
@@ -247,9 +212,7 @@ export const useFailedRows = (
 
       const snap = await getDocsFn(q);
       const docs = snap.docs.slice(0, FAILED_ROWS_PAGE_SIZE);
-      const newRows = docs.map(
-        (d) => ({ id: d.id, ...d.data() }) as FailedRowDoc,
-      );
+      const newRows = docs.map((d) => ({ id: d.id, ...d.data() }) as FailedRowDoc);
 
       setRows((prev) => (startAfterDoc ? [...prev, ...newRows] : newRows));
       setHasMore(snap.docs.length > FAILED_ROWS_PAGE_SIZE);

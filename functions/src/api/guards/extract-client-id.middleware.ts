@@ -12,10 +12,7 @@ export class ExtractClientIdMiddleware implements Middleware {
   use(ctx: RequestContext): void {
     const { req } = ctx;
 
-    const clientId =
-      (req.query.clientId as string) ??
-      (req.body?.data?.clientId as string) ??
-      null;
+    const clientId = (req.query.clientId as string) ?? (req.body?.data?.clientId as string) ?? null;
 
     if (!clientId) throw new BadRequestError("clientId is required");
 

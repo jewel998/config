@@ -3,19 +3,13 @@ import { ArrowRight } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import type { LifecycleState } from "@/lib/types";
 
 const STATE_COLORS: Record<LifecycleState, string> = {
   draft: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-  active:
-    "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  stale:
-    "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  active: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  stale: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
   archived: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 };
 
@@ -45,14 +39,11 @@ export const LifecycleStateBadge = ({
     <div className="flex items-center gap-2">
       <Tooltip>
         <TooltipTrigger asChild>
-          <Badge className={`rounded-full text-xs ${STATE_COLORS[state]}`}>
-            {state}
-          </Badge>
+          <Badge className={`rounded-full text-xs ${STATE_COLORS[state]}`}>{state}</Badge>
         </TooltipTrigger>
         {stateChangedAt && (
           <TooltipContent>
-            <Trans>Changed</Trans>{" "}
-            {new Date(stateChangedAt).toLocaleDateString()}
+            <Trans>Changed</Trans> {new Date(stateChangedAt).toLocaleDateString()}
           </TooltipContent>
         )}
       </Tooltip>

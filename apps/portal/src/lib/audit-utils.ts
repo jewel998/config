@@ -13,8 +13,7 @@ import type { LucideIcon } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────
 
-export type ResourceCategory =
-  "config" | "segment" | "api_key" | "project" | "team" | "other";
+export type ResourceCategory = "config" | "segment" | "api_key" | "project" | "team" | "other";
 
 export interface DiffLine {
   key: string;
@@ -25,10 +24,7 @@ export interface DiffLine {
 
 // ─── Constants ────────────────────────────────────────────────
 
-export const CATEGORY_META: Record<
-  ResourceCategory,
-  { label: string; icon: LucideIcon }
-> = {
+export const CATEGORY_META: Record<ResourceCategory, { label: string; icon: LucideIcon }> = {
   config: { label: "Config", icon: Layers },
   segment: { label: "Segment", icon: Users },
   api_key: { label: "API Key", icon: Key },
@@ -81,8 +77,7 @@ export function getResourceCategory(path: string): ResourceCategory {
 
 export function formatResourceName(path: string): string {
   const parts = path.split("/");
-  if (parts.includes("configs") && parts.length >= 4)
-    return parts[parts.length - 1];
+  if (parts.includes("configs") && parts.length >= 4) return parts[parts.length - 1];
   if (parts.includes("apiKeys") && parts.length >= 4) {
     const keyId = parts[parts.length - 1];
     return keyId.startsWith("cid_") ? `API key …${keyId.slice(-6)}` : keyId;
@@ -91,10 +86,8 @@ export function formatResourceName(path: string): string {
   if (parts[0] === "environments" && parts.length === 2) return parts[1];
   if (parts[0] === "segments") return parts[1] ?? "segment";
   if (parts[0] === "project") return parts[1] ?? "project";
-  if (parts[0] === "team" && parts[1] === "members")
-    return parts[2] ?? "member";
-  if (parts[0] === "team" && parts[1] === "invites")
-    return parts[2] ?? "invite";
+  if (parts[0] === "team" && parts[1] === "members") return parts[2] ?? "member";
+  if (parts[0] === "team" && parts[1] === "invites") return parts[2] ?? "invite";
   return parts[parts.length - 1] || path;
 }
 
@@ -127,8 +120,7 @@ function flattenObject(obj: unknown, prefix = ""): Record<string, string> {
   }
   for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
     const p = prefix ? `${prefix}.${key}` : key;
-    if (typeof value === "object" && value !== null)
-      Object.assign(result, flattenObject(value, p));
+    if (typeof value === "object" && value !== null) Object.assign(result, flattenObject(value, p));
     else result[p] = JSON.stringify(value);
   }
   return result;
@@ -140,8 +132,7 @@ export function computeDiff(oldRaw?: string, newRaw?: string): DiffLine[] {
 
   if (oldObj === null && newObj === null) {
     const lines: DiffLine[] = [];
-    if (oldRaw)
-      lines.push({ key: "(value)", type: "removed", oldValue: oldRaw });
+    if (oldRaw) lines.push({ key: "(value)", type: "removed", oldValue: oldRaw });
     if (newRaw) lines.push({ key: "(value)", type: "added", newValue: newRaw });
     return lines;
   }
@@ -154,12 +145,9 @@ export function computeDiff(oldRaw?: string, newRaw?: string): DiffLine[] {
   for (const key of allKeys) {
     const o = oldFlat[key];
     const n = newFlat[key];
-    if (o === undefined && n !== undefined)
-      lines.push({ key, type: "added", newValue: n });
-    else if (o !== undefined && n === undefined)
-      lines.push({ key, type: "removed", oldValue: o });
-    else if (o !== n)
-      lines.push({ key, type: "changed", oldValue: o, newValue: n });
+    if (o === undefined && n !== undefined) lines.push({ key, type: "added", newValue: n });
+    else if (o !== undefined && n === undefined) lines.push({ key, type: "removed", oldValue: o });
+    else if (o !== n) lines.push({ key, type: "changed", oldValue: o, newValue: n });
     else lines.push({ key, type: "unchanged", oldValue: o, newValue: n });
   }
 

@@ -6,8 +6,7 @@ const ACCEPTED_EXTENSIONS = [".csv", ".json"];
 const MAX_PREVIEW_ROWS = 10;
 
 export interface UploadValidationError {
-  code:
-    "invalid_extension" | "file_too_large" | "too_many_entries" | "empty_file";
+  code: "invalid_extension" | "file_too_large" | "too_many_entries" | "empty_file";
   message: string;
 }
 
@@ -45,10 +44,7 @@ export function getPreviewRows<T>(rows: T[]): T[] {
  * Checks run in order: extension → size. Entry count is checked after parsing.
  * Returns null if valid, or an error object.
  */
-export function validateUpload(
-  fileName: string,
-  fileSize: number,
-): UploadValidationError | null {
+export function validateUpload(fileName: string, fileSize: number): UploadValidationError | null {
   if (!isValidFileExtension(fileName)) {
     return {
       code: "invalid_extension",
@@ -70,9 +66,7 @@ export function validateUpload(
  * Validate entry count after parsing.
  * Returns null if valid, or an error object.
  */
-export function validateEntryCount(
-  entries: RawEntry[],
-): UploadValidationError | null {
+export function validateEntryCount(entries: RawEntry[]): UploadValidationError | null {
   if (entries.length === 0) {
     return {
       code: "empty_file",

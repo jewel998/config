@@ -4,19 +4,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-export const CopyButton = ({
-  value,
-  className,
-}: {
-  value: string;
-  className?: string;
-}) => {
+export const CopyButton = ({ value, className }: { value: string; className?: string }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -40,11 +30,7 @@ export const CopyButton = ({
           onClick={handleCopy}
           aria-label="Copy"
         >
-          {copied ? (
-            <Check className="h-3 w-3 text-emerald-500" />
-          ) : (
-            <Copy className="h-3 w-3" />
-          )}
+          {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
         </Button>
       </TooltipTrigger>
       <TooltipContent>{copied ? t`Copied!` : t`Copy`}</TooltipContent>

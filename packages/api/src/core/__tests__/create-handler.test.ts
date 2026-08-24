@@ -1,7 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { mockReq, mockRes } from "../../test-utils";
-import { createHandler } from "../create-handler";
-import { RequestHandler } from "../request-handler";
+
 import {
   Methods,
   Status,
@@ -11,11 +9,7 @@ import {
   UsePipes,
   UseFilters,
 } from "../../decorators/index";
-import {
-  BadRequestError,
-  ForbiddenError,
-  TooManyRequestsError,
-} from "../../errors/index";
+import { BadRequestError, ForbiddenError, TooManyRequestsError } from "../../errors/index";
 import type {
   RequestContext,
   Middleware,
@@ -24,6 +18,9 @@ import type {
   Pipe,
   ExceptionFilter,
 } from "../../interfaces/index";
+import { mockReq, mockRes } from "../../test-utils";
+import { createHandler } from "../create-handler";
+import { RequestHandler } from "../request-handler";
 
 // ═══════════════════════════════════════════════════════════════
 // Response serialization
@@ -245,9 +242,7 @@ describe("@UseGuards", () => {
     const res = mockRes();
     await createHandler(H)(mockReq(), res);
     expect(res._status).toBe(403);
-    expect((res._json as { error: { message: string } }).error.message).toBe(
-      "no",
-    );
+    expect((res._json as { error: { message: string } }).error.message).toBe("no");
   });
 });
 
@@ -496,9 +491,7 @@ describe("default exception handler", () => {
     const res = mockRes();
     await createHandler(H)(mockReq(), res);
     expect(res._status).toBe(500);
-    expect((res._json as { error: { code: string } }).error.code).toBe(
-      "INTERNAL_ERROR",
-    );
+    expect((res._json as { error: { code: string } }).error.code).toBe("INTERNAL_ERROR");
     consoleSpy.mockRestore();
   });
 });
@@ -570,13 +563,6 @@ describe("full pipeline execution order", () => {
     const res = mockRes();
     await createHandler(H)(mockReq(), res);
     expect(res._status).toBe(200);
-    expect(order).toEqual([
-      "mw",
-      "guard",
-      "i-pre",
-      "pipe",
-      "handler",
-      "i-post",
-    ]);
+    expect(order).toEqual(["mw", "guard", "i-pre", "pipe", "handler", "i-post"]);
   });
 });

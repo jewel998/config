@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+
 import type {
   StepCondition,
   TourFlow,
@@ -60,10 +61,7 @@ function saveState(state: TourState) {
 
 // ─── Condition Evaluation ─────────────────────────────────────
 
-function evaluateCondition(
-  condition: StepCondition,
-  context: Record<string, unknown>,
-): boolean {
+function evaluateCondition(condition: StepCondition, context: Record<string, unknown>): boolean {
   const value = context[condition.key];
   const op = condition.op ?? "exists";
 
@@ -164,8 +162,7 @@ export function TourProvider({
   }, [currentFlow, state.currentStepIndex, context]);
 
   const currentStep = useMemo(() => {
-    if (!currentFlow || resolvedStepIndex >= currentFlow.steps.length)
-      return null;
+    if (!currentFlow || resolvedStepIndex >= currentFlow.steps.length) return null;
     return currentFlow.steps[resolvedStepIndex];
   }, [currentFlow, resolvedStepIndex]);
 
@@ -192,11 +189,7 @@ export function TourProvider({
       advanceStep();
     };
 
-    waitCleanupRef.current = setupWait(
-      currentStep.waitFor,
-      advance,
-      currentPathRef,
-    );
+    waitCleanupRef.current = setupWait(currentStep.waitFor, advance, currentPathRef);
 
     return () => {
       waitCleanupRef.current?.();
@@ -281,9 +274,7 @@ export function TourProvider({
       ...s,
       activeFlowId: null,
       currentStepIndex: 0,
-      completedFlows: s.activeFlowId
-        ? [...s.completedFlows, s.activeFlowId]
-        : s.completedFlows,
+      completedFlows: s.activeFlowId ? [...s.completedFlows, s.activeFlowId] : s.completedFlows,
     }));
   }, []);
 
@@ -302,9 +293,7 @@ export function TourProvider({
       activeFlowId: null,
       currentStepIndex: 0,
       dismissed: false,
-      completedFlows: flowId
-        ? s.completedFlows.filter((id) => id !== flowId)
-        : [],
+      completedFlows: flowId ? s.completedFlows.filter((id) => id !== flowId) : [],
     }));
   }, []);
 

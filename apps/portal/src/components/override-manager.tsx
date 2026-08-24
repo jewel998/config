@@ -1,5 +1,5 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -15,13 +15,19 @@ interface OverrideManagerProps {
   disabled?: boolean;
 }
 
-export const OverrideManager = ({ overrides, valueType, onSave, disabled }: OverrideManagerProps) => {
+export const OverrideManager = ({
+  overrides,
+  valueType,
+  onSave,
+  disabled,
+}: OverrideManagerProps) => {
   const [userId, setUserId] = useState("");
   const [value, setValue] = useState("");
 
   const handleAdd = () => {
     if (!userId.trim() || Object.keys(overrides).length >= 100) return;
-    const parsed = valueType === "number" ? Number(value) : valueType === "boolean" ? value === "true" : value;
+    const parsed =
+      valueType === "number" ? Number(value) : valueType === "boolean" ? value === "true" : value;
     onSave({ ...overrides, [userId.trim()]: parsed });
     setUserId("");
     setValue("");
@@ -36,21 +42,42 @@ export const OverrideManager = ({ overrides, valueType, onSave, disabled }: Over
   return (
     <Card className="rounded-xl">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-base"><Trans>Per-User Overrides</Trans></CardTitle>
-        <Badge variant="secondary" className="text-xs">{Object.keys(overrides).length}/100</Badge>
+        <CardTitle className="text-base">
+          <Trans>Per-User Overrides</Trans>
+        </CardTitle>
+        <Badge variant="secondary" className="text-xs">
+          {Object.keys(overrides).length}/100
+        </Badge>
       </CardHeader>
       <CardContent className="space-y-3">
         {!disabled && (
           <div className="flex gap-2">
-            <Input placeholder={t`User ID`} value={userId} onChange={(e) => setUserId(e.target.value)} className="flex-1" />
-            <Input placeholder={t`Value`} value={value} onChange={(e) => setValue(e.target.value)} className="flex-1" />
-            <Button size="sm" className="rounded-full" onClick={handleAdd} disabled={!userId.trim()}>
+            <Input
+              placeholder={t`User ID`}
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
+              className="flex-1"
+            />
+            <Input
+              placeholder={t`Value`}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              className="flex-1"
+            />
+            <Button
+              size="sm"
+              className="rounded-full"
+              onClick={handleAdd}
+              disabled={!userId.trim()}
+            >
               <Plus className="h-3.5 w-3.5" />
             </Button>
           </div>
         )}
         {Object.keys(overrides).length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4"><Trans>No overrides configured.</Trans></p>
+          <p className="text-sm text-muted-foreground text-center py-4">
+            <Trans>No overrides configured.</Trans>
+          </p>
         ) : (
           <div className="space-y-2">
             {Object.entries(overrides).map(([key, val]) => (

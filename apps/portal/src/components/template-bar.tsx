@@ -1,5 +1,5 @@
-import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
 
@@ -12,11 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { CONFIG_TEMPLATES } from "@/lib/config-templates";
 import { shouldConfirmOverwrite } from "@/lib/config-utils";
 import type { ConfigEntry, TargetingRule, TemplateType } from "@/lib/types";
@@ -40,9 +36,7 @@ export const TemplateBar = ({
   schedule,
   onApplyTemplate,
 }: TemplateBarProps) => {
-  const [confirmTemplate, setConfirmTemplate] = useState<TemplateType | null>(
-    null,
-  );
+  const [confirmTemplate, setConfirmTemplate] = useState<TemplateType | null>(null);
 
   const handleClick = (templateId: TemplateType) => {
     const needsConfirm = shouldConfirmOverwrite(templateId, {
@@ -105,8 +99,8 @@ export const TemplateBar = ({
             </DialogTitle>
             <DialogDescription>
               <Trans>
-                This template will replace existing configuration in the target
-                section. This action cannot be undone.
+                This template will replace existing configuration in the target section. This action
+                cannot be undone.
               </Trans>
             </DialogDescription>
           </DialogHeader>

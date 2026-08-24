@@ -18,11 +18,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -30,12 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  type SupportedLocale,
-  loadCatalog,
-  localeNames,
-  storeLocale,
-} from "@/lib/i18n";
+import { type SupportedLocale, loadCatalog, localeNames, storeLocale } from "@/lib/i18n";
 import { type Theme, useTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth-store";
@@ -45,8 +36,7 @@ const TIMEZONE_STORAGE_KEY = "timezone";
 const getStoredTimezone = (): string => {
   try {
     return (
-      localStorage.getItem(TIMEZONE_STORAGE_KEY) ??
-      Intl.DateTimeFormat().resolvedOptions().timeZone
+      localStorage.getItem(TIMEZONE_STORAGE_KEY) ?? Intl.DateTimeFormat().resolvedOptions().timeZone
     );
   } catch {
     return "UTC";
@@ -169,13 +159,13 @@ const RegionCard = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(
-                  Object.entries(localeNames) as [SupportedLocale, string][]
-                ).map(([code, name]) => (
-                  <SelectItem key={code} value={code}>
-                    {name}
-                  </SelectItem>
-                ))}
+                {(Object.entries(localeNames) as [SupportedLocale, string][]).map(
+                  ([code, name]) => (
+                    <SelectItem key={code} value={code}>
+                      {name}
+                    </SelectItem>
+                  ),
+                )}
               </SelectContent>
             </Select>
           </div>
@@ -197,10 +187,7 @@ const RegionCard = () => {
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent
-                className="w-full min-w-[280px] p-0"
-                align="start"
-              >
+              <PopoverContent className="w-full min-w-[280px] p-0" align="start">
                 <Command>
                   <CommandInput placeholder="Search timezones..." />
                   <CommandList>
@@ -209,11 +196,7 @@ const RegionCard = () => {
                     </CommandEmpty>
                     <CommandGroup>
                       {allTimezones.map((tz) => (
-                        <CommandItem
-                          key={tz}
-                          value={tz}
-                          onSelect={() => handleTimezoneChange(tz)}
-                        >
+                        <CommandItem key={tz} value={tz} onSelect={() => handleTimezoneChange(tz)}>
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
@@ -266,15 +249,11 @@ const AccountCard = () => {
         <CardContent className="space-y-6">
           <div className="flex items-center gap-6">
             <Avatar className="h-20 w-20">
-              {user.photoURL && (
-                <AvatarImage src={user.photoURL} alt={user.displayName ?? ""} />
-              )}
+              {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName ?? ""} />}
               <AvatarFallback className="text-lg">{initials}</AvatarFallback>
             </Avatar>
             <div className="space-y-1">
-              <p className="text-lg font-medium">
-                {user.displayName ?? "User"}
-              </p>
+              <p className="text-lg font-medium">{user.displayName ?? "User"}</p>
               <p className="text-sm text-muted-foreground">{user.email}</p>
             </div>
           </div>
@@ -284,9 +263,7 @@ const AccountCard = () => {
               <p className="text-xs font-medium text-muted-foreground">
                 <Trans>Display Name</Trans>
               </p>
-              <p className="mt-1 text-sm">
-                {user.displayName ?? <Trans>Not set</Trans>}
-              </p>
+              <p className="mt-1 text-sm">{user.displayName ?? <Trans>Not set</Trans>}</p>
             </div>
             <div>
               <p className="text-xs font-medium text-muted-foreground">
@@ -298,9 +275,7 @@ const AccountCard = () => {
               <p className="text-xs font-medium text-muted-foreground">
                 <Trans>User ID</Trans>
               </p>
-              <p className="mt-1 font-mono text-xs text-muted-foreground">
-                {user.uid}
-              </p>
+              <p className="mt-1 font-mono text-xs text-muted-foreground">{user.uid}</p>
             </div>
             <div>
               <p className="text-xs font-medium text-muted-foreground">
@@ -327,8 +302,8 @@ const AccountCard = () => {
         <CardContent>
           <p className="text-sm text-muted-foreground">
             <Trans>
-              Account deletion is not yet available. Contact support if you need
-              to delete your account.
+              Account deletion is not yet available. Contact support if you need to delete your
+              account.
             </Trans>
           </p>
         </CardContent>

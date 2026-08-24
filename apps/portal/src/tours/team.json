@@ -9,10 +9,7 @@
         "type": "modal",
         "title": "🤝 Collaborate with your team",
         "description": "Invite teammates with the right level of access:\n\n- **Viewer** — see configs and audit log, can't change anything\n- **Editor** — create/edit configs, segments, targeting rules\n- **Admin** — full control: environments, API keys, team, webhooks\n\n> Give your PM *viewer* access, your backend engineer *editor*.",
-        "actions": [
-          { "label": "Go to Team" },
-          { "label": "Close", "dismiss": true }
-        ]
+        "actions": [{ "label": "Go to Team" }, { "label": "Close", "dismiss": true }]
       },
       {
         "id": "nav-team",

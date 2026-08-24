@@ -1,4 +1,9 @@
-import type { RequestHandler } from "./request-handler";
+import {
+  ApiError,
+  ForbiddenError,
+  MethodNotAllowedError,
+  TooManyRequestsError,
+} from "../errors/index";
 import type {
   Req,
   Res,
@@ -11,12 +16,7 @@ import type {
   RequestContext,
   HandlerResponse,
 } from "../interfaces/index";
-import {
-  ApiError,
-  ForbiddenError,
-  MethodNotAllowedError,
-  TooManyRequestsError,
-} from "../errors/index";
+import type { RequestHandler } from "./request-handler";
 
 export interface CreateHandlerOptions {
   /**
@@ -49,8 +49,7 @@ export function createHandler(
   const exceptionFilters = target.__filters;
 
   const handler = new HandlerClass();
-  const contextFactory =
-    options?.createContext ?? ((req: Req, res: Res) => ({ req, res }));
+  const contextFactory = options?.createContext ?? ((req: Req, res: Res) => ({ req, res }));
 
   return async (req: Req, res: Res): Promise<void> => {
     let ctx: RequestContext | undefined;

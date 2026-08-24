@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { waitForCondition } from "../engine/wait-for.js";
 import { loadTourState, saveTourState } from "../engine/storage.js";
+import { waitForCondition } from "../engine/wait-for.js";
 import type { TourFlow, TourState, TourStep } from "../types.js";
 
 interface UseTourEngineOptions {
@@ -13,9 +13,7 @@ interface UseTourEngineOptions {
 
 export function useTourEngine(options: UseTourEngineOptions) {
   const { flows, getRoutePath, onNavigate, storagePrefix } = options;
-  const [state, setState] = useState<TourState>(() =>
-    loadTourState(storagePrefix),
-  );
+  const [state, setState] = useState<TourState>(() => loadTourState(storagePrefix));
   const cleanupRef = useRef<(() => void) | null>(null);
 
   // Persist state changes
@@ -40,8 +38,7 @@ export function useTourEngine(options: UseTourEngineOptions) {
 
   // Get current flow and step
   const activeFlow = flows.find((f) => f.id === state.activeTourId) ?? null;
-  const currentStep: TourStep | null =
-    activeFlow?.steps[state.currentStepIndex] ?? null;
+  const currentStep: TourStep | null = activeFlow?.steps[state.currentStepIndex] ?? null;
 
   // Check if step should be visible (page matching)
   const isStepVisible = useCallback(() => {
@@ -99,9 +96,7 @@ export function useTourEngine(options: UseTourEngineOptions) {
       ...s,
       activeTourId: null,
       currentStepIndex: 0,
-      dismissedTours: s.activeTourId
-        ? [...s.dismissedTours, s.activeTourId]
-        : s.dismissedTours,
+      dismissedTours: s.activeTourId ? [...s.dismissedTours, s.activeTourId] : s.dismissedTours,
     }));
   }, []);
 
@@ -119,11 +114,7 @@ export function useTourEngine(options: UseTourEngineOptions) {
     if (!currentStep?.waitFor) return;
     if (!isStepVisible()) return;
 
-    const cleanup = waitForCondition(
-      currentStep.waitFor,
-      getRoutePath,
-      nextStep,
-    );
+    const cleanup = waitForCondition(currentStep.waitFor, getRoutePath, nextStep);
     cleanupRef.current = cleanup;
     return cleanup;
   }, [currentStep, isStepVisible, getRoutePath, nextStep]);

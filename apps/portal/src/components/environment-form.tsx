@@ -31,15 +31,9 @@ export const EnvironmentForm = ({
   submitLabel,
 }: EnvironmentFormProps) => {
   const [name, setName] = useState(initialValues?.name ?? "");
-  const [domains, setDomains] = useState(
-    initialValues?.allowedDomains?.join(", ") ?? "",
-  );
-  const [color, setColor] = useState(
-    initialValues?.color ?? DEFAULT_ENV_COLOR,
-  );
-  const [isProduction, setIsProduction] = useState(
-    initialValues?.isProduction ?? false,
-  );
+  const [domains, setDomains] = useState(initialValues?.allowedDomains?.join(", ") ?? "");
+  const [color, setColor] = useState(initialValues?.color ?? DEFAULT_ENV_COLOR);
+  const [isProduction, setIsProduction] = useState(initialValues?.isProduction ?? false);
 
   const handleSubmit = () => {
     if (!name.trim()) return;
@@ -86,12 +80,7 @@ export const EnvironmentForm = ({
         >
           {isPending ? <Spinner /> : (submitLabel ?? <Trans>Save</Trans>)}
         </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          className="rounded-full"
-          onClick={onCancel}
-        >
+        <Button size="sm" variant="ghost" className="rounded-full" onClick={onCancel}>
           <Trans>Cancel</Trans>
         </Button>
       </div>

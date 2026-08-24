@@ -3,7 +3,6 @@ import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
 import { Copy, HelpCircle, Pencil, Plus, Settings, Trash2 } from "lucide-react";
 import { marked } from "marked";
-import { renderMarkdownSafe } from "@/lib/safe-html";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -14,7 +13,6 @@ import { EmptyState } from "@/components/empty-state";
 import { EnvironmentForm } from "@/components/environment-form";
 import { PageHeader } from "@/components/page-header";
 import { PageLayout } from "@/components/page-layout";
-import { WebhookSettings } from "@/components/webhook-settings";
 import { SegmentedControl } from "@/components/segmented-control";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,11 +20,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { WebhookSettings } from "@/components/webhook-settings";
 import {
   useEnvironments,
   useCreateEnvironment,
@@ -36,6 +31,7 @@ import {
 import { useUpdateProjectDescription } from "@/hooks/use-project-description";
 import { useDeleteProject, useProjects } from "@/hooks/use-projects";
 import { useRBAC } from "@/hooks/use-rbac";
+import { renderMarkdownSafe } from "@/lib/safe-html";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProjectStore } from "@/stores/project-store";
 
@@ -90,10 +86,7 @@ const DescriptionSection = ({
   const updateDescription = useUpdateProjectDescription();
 
   const handleSave = () => {
-    updateDescription.mutate(
-      { projectId, description },
-      { onSuccess: () => setEditing(false) },
-    );
+    updateDescription.mutate({ projectId, description }, { onSuccess: () => setEditing(false) });
   };
 
   return (
@@ -160,9 +153,7 @@ const DescriptionSection = ({
             }}
           />
         ) : (
-          <p className="text-sm text-muted-foreground">
-            {t`No description yet.`}
-          </p>
+          <p className="text-sm text-muted-foreground">{t`No description yet.`}</p>
         )}
       </CardContent>
     </Card>
@@ -294,11 +285,7 @@ const EnvironmentsSection = ({
           <Trans>Environments</Trans>
         </CardTitle>
         {!readOnly && (
-          <Button
-            size="sm"
-            className="rounded-full gap-2"
-            onClick={() => setShowForm(true)}
-          >
+          <Button size="sm" className="rounded-full gap-2" onClick={() => setShowForm(true)}>
             <Plus className="h-3.5 w-3.5" />
             <Trans>Add</Trans>
           </Button>
@@ -344,10 +331,7 @@ const EnvironmentsSection = ({
                     />
                     <p className="text-sm font-medium">{env.name}</p>
                     {env.isProduction && (
-                      <Badge
-                        variant="secondary"
-                        className="rounded-full text-xs"
-                      >
+                      <Badge variant="secondary" className="rounded-full text-xs">
                         <Trans>Production</Trans>
                       </Badge>
                     )}
@@ -355,11 +339,7 @@ const EnvironmentsSection = ({
                   {env.allowedDomains.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {env.allowedDomains.map((d) => (
-                        <Badge
-                          key={d}
-                          variant="secondary"
-                          className="rounded-full text-xs"
-                        >
+                        <Badge key={d} variant="secondary" className="rounded-full text-xs">
                           {d}
                         </Badge>
                       ))}
@@ -422,13 +402,7 @@ const EnvironmentsSection = ({
 
 // --- Danger Zone ---
 
-const DangerZone = ({
-  projectId,
-  projectName,
-}: {
-  projectId: string;
-  projectName: string;
-}) => {
+const DangerZone = ({ projectId, projectName }: { projectId: string; projectName: string }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const deleteProject = useDeleteProject();
   const setSelectedProjectId = useProjectStore((s) => s.setSelectedProjectId);
@@ -461,8 +435,8 @@ const DangerZone = ({
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
           <Trans>
-            Deleting a project is irreversible. All environments, configs, and
-            API keys will become inaccessible.
+            Deleting a project is irreversible. All environments, configs, and API keys will become
+            inaccessible.
           </Trans>
         </p>
         <Button
@@ -497,10 +471,7 @@ const SettingsPage = () => {
 
   if (!selectedProjectId) {
     return (
-      <EmptyState
-        icon={Settings}
-        message={<Trans>Select a project to view settings.</Trans>}
-      />
+      <EmptyState icon={Settings} message={<Trans>Select a project to view settings.</Trans>} />
     );
   }
 
@@ -515,9 +486,7 @@ const SettingsPage = () => {
   }
 
   if (!selectedProject) {
-    return (
-      <EmptyState icon={Settings} message={<Trans>Project not found.</Trans>} />
-    );
+    return <EmptyState icon={Settings} message={<Trans>Project not found.</Trans>} />;
   }
 
   const ownerEmail =
@@ -530,16 +499,11 @@ const SettingsPage = () => {
     <PageLayout>
       <PageHeader
         title={<Trans>Project Settings</Trans>}
-        description={
-          <Trans>Manage project configuration and team access.</Trans>
-        }
+        description={<Trans>Manage project configuration and team access.</Trans>}
       />
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <InfoCard
-          label={<Trans>Project Name</Trans>}
-          value={selectedProject.name}
-        />
+        <InfoCard label={<Trans>Project Name</Trans>} value={selectedProject.name} />
         <InfoCard
           label={<Trans>Project ID</Trans>}
           value={selectedProjectId}
@@ -576,12 +540,7 @@ const SettingsPage = () => {
 
       <WebhookSettings projectId={selectedProjectId} />
 
-      {isAdmin && (
-        <DangerZone
-          projectId={selectedProjectId}
-          projectName={selectedProject.name}
-        />
-      )}
+      {isAdmin && <DangerZone projectId={selectedProjectId} projectName={selectedProject.name} />}
     </PageLayout>
   );
 };

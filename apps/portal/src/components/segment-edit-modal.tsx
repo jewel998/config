@@ -14,11 +14,7 @@ interface SegmentEditModalProps {
   segment: Segment;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (data: {
-    name: string;
-    description: string;
-    conditions: PredicateGroup[];
-  }) => void;
+  onSave: (data: { name: string; description: string; conditions: PredicateGroup[] }) => void;
   disabled?: boolean;
 }
 
@@ -31,9 +27,7 @@ export const SegmentEditModal = ({
 }: SegmentEditModalProps) => {
   const [name, setName] = useState(segment.name);
   const [description, setDescription] = useState(segment.description);
-  const [conditions, setConditions] = useState<PredicateGroup[]>(
-    segment.conditions,
-  );
+  const [conditions, setConditions] = useState<PredicateGroup[]>(segment.conditions);
   const [nameError, setNameError] = useState(false);
 
   // Convert conditions to TargetingRule format for the RuleBuilder
@@ -72,9 +66,7 @@ export const SegmentEditModal = ({
       open={open}
       onOpenChange={onOpenChange}
       title={<Trans>Edit Segment</Trans>}
-      description={
-        <Trans>Update the segment name, description, and conditions.</Trans>
-      }
+      description={<Trans>Update the segment name, description, and conditions.</Trans>}
     >
       <div className="space-y-4">
         <div className="space-y-2">
@@ -117,11 +109,7 @@ export const SegmentEditModal = ({
           <label className="text-sm font-medium">
             <Trans>Conditions</Trans>
           </label>
-          <RuleBuilder
-            rules={rulesFromConditions}
-            onSave={handleRuleSave}
-            disabled={disabled}
-          />
+          <RuleBuilder rules={rulesFromConditions} onSave={handleRuleSave} disabled={disabled} />
         </div>
 
         <div className="flex items-center gap-2 pt-2">
@@ -132,11 +120,7 @@ export const SegmentEditModal = ({
           >
             <Trans>Save</Trans>
           </Button>
-          <Button
-            variant="ghost"
-            className="rounded-full"
-            onClick={() => onOpenChange(false)}
-          >
+          <Button variant="ghost" className="rounded-full" onClick={() => onOpenChange(false)}>
             <Trans>Cancel</Trans>
           </Button>
         </div>

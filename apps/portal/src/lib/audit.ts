@@ -54,14 +54,8 @@ export function buildConfigAuditEntry(params: {
     timestamp: new Date().toISOString(),
     action: params.action,
     resourcePath: `environments/${params.environmentId}/configs/${params.configKey}`,
-    oldValue:
-      params.oldValue !== undefined
-        ? JSON.stringify(params.oldValue)
-        : undefined,
-    newValue:
-      params.newValue !== undefined
-        ? JSON.stringify(params.newValue)
-        : undefined,
+    oldValue: params.oldValue !== undefined ? JSON.stringify(params.oldValue) : undefined,
+    newValue: params.newValue !== undefined ? JSON.stringify(params.newValue) : undefined,
   };
 }
 
@@ -80,13 +74,7 @@ export function buildAuditEntry(params: {
     timestamp: new Date().toISOString(),
     action: params.action,
     resourcePath: params.resourcePath,
-    oldValue:
-      params.oldValue !== undefined
-        ? JSON.stringify(params.oldValue)
-        : undefined,
-    newValue:
-      params.newValue !== undefined
-        ? JSON.stringify(params.newValue)
-        : undefined,
+    oldValue: params.oldValue !== undefined ? JSON.stringify(params.oldValue) : undefined,
+    newValue: params.newValue !== undefined ? JSON.stringify(params.newValue) : undefined,
   };
 }

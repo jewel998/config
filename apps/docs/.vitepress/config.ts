@@ -1,6 +1,6 @@
+import taskLists from "markdown-it-task-lists";
 import { defineConfig } from "vitepress";
 import { withMermaid } from "vitepress-plugin-mermaid";
-import taskLists from "markdown-it-task-lists";
 
 export default withMermaid(
   defineConfig({
@@ -101,9 +101,7 @@ export default withMermaid(
           ],
         },
       ],
-      socialLinks: [
-        { icon: "github", link: "https://github.com/jewel998/config" },
-      ],
+      socialLinks: [{ icon: "github", link: "https://github.com/jewel998/config" }],
     },
   }),
 );

@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { ConditionSummary } from "@/components/condition-summary";
 import { ResponsiveModal } from "@/components/responsive-modal";
 import { SegmentEditModal } from "@/components/segment-edit-modal";
-import { UsageIndicator } from "@/components/usage-indicator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { UsageIndicator } from "@/components/usage-indicator";
 import type { Segment, PredicateGroup } from "@/lib/types";
 
 interface SegmentManagerProps {
@@ -116,9 +116,7 @@ export const SegmentManager = ({
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium truncate">{seg.name}</p>
                 {seg.description && (
-                  <p className="text-xs text-muted-foreground truncate">
-                    {seg.description}
-                  </p>
+                  <p className="text-xs text-muted-foreground truncate">{seg.description}</p>
                 )}
                 <div className="mt-1">
                   <ConditionSummary conditions={seg.conditions} />
@@ -156,9 +154,7 @@ export const SegmentManager = ({
         open={showCreateModal}
         onOpenChange={setShowCreateModal}
         title={<Trans>Create Segment</Trans>}
-        description={
-          <Trans>Define a reusable audience group for targeting rules.</Trans>
-        }
+        description={<Trans>Define a reusable audience group for targeting rules.</Trans>}
       >
         <div className="space-y-4">
           <div className="space-y-2">
@@ -219,10 +215,7 @@ export const SegmentManager = ({
       )}
 
       {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={!!deletingSegment}
-        onOpenChange={(open) => !open && setDeletingSegment(null)}
-      >
+      <Dialog open={!!deletingSegment} onOpenChange={(open) => !open && setDeletingSegment(null)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -231,8 +224,8 @@ export const SegmentManager = ({
             </DialogTitle>
             <DialogDescription>
               <Trans>
-                Are you sure you want to delete "{deletingSegment?.name}"? This
-                action cannot be undone.
+                Are you sure you want to delete "{deletingSegment?.name}"? This action cannot be
+                undone.
               </Trans>
             </DialogDescription>
           </DialogHeader>
@@ -244,11 +237,7 @@ export const SegmentManager = ({
             >
               <Trans>Cancel</Trans>
             </Button>
-            <Button
-              variant="destructive"
-              className="rounded-full"
-              onClick={handleDeleteConfirm}
-            >
+            <Button variant="destructive" className="rounded-full" onClick={handleDeleteConfirm}>
               <Trans>Delete</Trans>
             </Button>
           </DialogFooter>

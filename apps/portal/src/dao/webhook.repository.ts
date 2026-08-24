@@ -1,12 +1,7 @@
 import { collection, getDocs } from "firebase/firestore";
 
 import { BaseRepository } from "./base-repository";
-import type {
-  AuditContext,
-  AuthenticatedUser,
-  RepositoryContext,
-  ValidationError,
-} from "./types";
+import type { AuditContext, AuthenticatedUser, RepositoryContext, ValidationError } from "./types";
 import { RepositoryError } from "./types";
 
 // ─── Entity Types ────────────────────────────────────────────
@@ -16,8 +11,7 @@ export interface WebhookEntity {
   name: string;
   url: string;
   enabled: boolean;
-  format:
-    "standard" | "slack" | "discord" | "google-chat" | "ms-teams" | "custom";
+  format: "standard" | "slack" | "discord" | "google-chat" | "ms-teams" | "custom";
   eventTypes: string[];
   resourceCategories: string[];
   environments: string[];
@@ -29,8 +23,7 @@ export interface WebhookEntity {
 export interface WebhookCreateInput {
   name: string;
   url: string;
-  format:
-    "standard" | "slack" | "discord" | "google-chat" | "ms-teams" | "custom";
+  format: "standard" | "slack" | "discord" | "google-chat" | "ms-teams" | "custom";
   eventTypes: string[];
   resourceCategories: string[];
   environments: string[];
@@ -42,8 +35,7 @@ export interface WebhookUpdateInput {
   name?: string;
   url?: string;
   enabled?: boolean;
-  format?:
-    "standard" | "slack" | "discord" | "google-chat" | "ms-teams" | "custom";
+  format?: "standard" | "slack" | "discord" | "google-chat" | "ms-teams" | "custom";
   eventTypes?: string[];
   resourceCategories?: string[];
   environments?: string[];
@@ -82,10 +74,7 @@ export class WebhookRepository extends BaseRepository<
     newEntity?: WebhookEntity,
   ): AuditContext {
     const name =
-      (input as WebhookCreateInput)?.name ??
-      oldEntity?.name ??
-      newEntity?.name ??
-      "unknown";
+      (input as WebhookCreateInput)?.name ?? oldEntity?.name ?? newEntity?.name ?? "unknown";
     return {
       actorId: "",
       action: operation,

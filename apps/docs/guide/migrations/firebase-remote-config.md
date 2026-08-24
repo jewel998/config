@@ -115,11 +115,7 @@ Firebase Remote Config conditions use device attributes and user properties. Map
 
 ```typescript
 // Before (Firebase Remote Config)
-import {
-  getRemoteConfig,
-  getValue,
-  fetchAndActivate,
-} from "firebase/remote-config";
+import { getRemoteConfig, getValue, fetchAndActivate } from "firebase/remote-config";
 const rc = getRemoteConfig(app);
 rc.defaultConfig = { feature_dark_mode: false };
 await fetchAndActivate(rc);

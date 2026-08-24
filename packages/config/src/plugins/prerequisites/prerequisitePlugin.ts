@@ -32,9 +32,7 @@ export interface PrerequisitePluginOptions {
  * Circular dependency detection uses a module-level evaluation stack (Set)
  * that tracks which flags are currently being evaluated for prerequisites.
  */
-export function prerequisitePlugin(
-  options?: PrerequisitePluginOptions,
-): EvaluationPlugin {
+export function prerequisitePlugin(options?: PrerequisitePluginOptions): EvaluationPlugin {
   const maxDepth = options?.maxDepth ?? 5;
 
   /** Tracks flags currently being evaluated for prerequisites (cycle detection) */
@@ -75,20 +73,11 @@ export function prerequisitePlugin(
       try {
         // Evaluate each prerequisite
         for (const prerequisite of flag.prerequisites) {
-          const resolvedValue = helpers.evaluateFlag(
-            prerequisite.flagKey,
-            context,
-          );
+          const resolvedValue = helpers.evaluateFlag(prerequisite.flagKey, context);
 
           // Evaluate using the specified operator (defaults to "equals")
           const op = prerequisite.operator ?? "equals";
-          if (
-            !evaluatePrerequisiteOp(
-              resolvedValue,
-              op,
-              prerequisite.requiredValue,
-            )
-          ) {
+          if (!evaluatePrerequisiteOp(resolvedValue, op, prerequisite.requiredValue)) {
             return { resolved: true, value: flag.value };
           }
         }
@@ -106,11 +95,7 @@ export function prerequisitePlugin(
 /**
  * Evaluate a prerequisite comparison using the specified operator.
  */
-function evaluatePrerequisiteOp(
-  actual: unknown,
-  operator: string,
-  expected: unknown,
-): boolean {
+function evaluatePrerequisiteOp(actual: unknown, operator: string, expected: unknown): boolean {
   switch (operator) {
     case "equals":
       return actual === expected || String(actual) === String(expected);

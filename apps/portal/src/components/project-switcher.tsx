@@ -15,11 +15,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Spinner } from "@/components/ui/spinner";
 import { useProjects, useCreateProject } from "@/hooks/use-projects";
 import { cn } from "@/lib/utils";
@@ -87,9 +83,7 @@ export const ProjectSwitcher = () => {
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      selectedProjectId === project.id
-                        ? "opacity-100"
-                        : "opacity-0",
+                      selectedProjectId === project.id ? "opacity-100" : "opacity-0",
                     )}
                   />
                   <span className="truncate">{project.name}</span>

@@ -6,6 +6,7 @@
  */
 
 import type { Firestore } from "firebase-admin/firestore";
+
 import type { ConfigDoc, SegmentDoc } from "../server-evaluator";
 
 export interface FetchConfigsResult {
@@ -52,11 +53,7 @@ export async function fetchConfigs(
         )
       : configsRef.get().then((snapshot) => snapshot.docs);
 
-  const segmentsPromise = db
-    .collection("projects")
-    .doc(projectId)
-    .collection("segments")
-    .get();
+  const segmentsPromise = db.collection("projects").doc(projectId).collection("segments").get();
 
   const envPromise = db
     .collection("projects")

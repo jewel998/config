@@ -2,26 +2,19 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { collection, getDocs } from "firebase/firestore";
 import { useMemo } from "react";
 
-import { db } from "@/lib/firebase";
-import {
-  type ConfigEntry,
-  configKeySchema,
-  configValueSchema,
-} from "@/lib/types";
-import { useAuthStore } from "@/stores/auth-store";
 import {
   ConfigRepository,
   type ConfigCreateInput,
   type ConfigUpdateInput,
 } from "@/dao/config.repository";
+import { db } from "@/lib/firebase";
+import { type ConfigEntry, configKeySchema, configValueSchema } from "@/lib/types";
+import { useAuthStore } from "@/stores/auth-store";
 
 export type { ConfigEntry };
 export { configKeySchema, configValueSchema };
 
-export const useConfigs = (
-  projectId: string | null,
-  environmentId: string | null,
-) => {
+export const useConfigs = (projectId: string | null, environmentId: string | null) => {
   return useQuery({
     queryKey: ["configs", projectId, environmentId],
     queryFn: async () => {
@@ -47,10 +40,7 @@ export const useConfigs = (
 export const useSetConfig = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new ConfigRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new ConfigRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async ({
@@ -86,10 +76,7 @@ export const useSetConfig = () => {
 export const useDeleteConfig = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new ConfigRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new ConfigRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async ({
@@ -120,10 +107,7 @@ export const useDeleteConfig = () => {
 export const usePromoteConfigs = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new ConfigRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new ConfigRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async ({
@@ -166,10 +150,7 @@ export const usePromoteConfigs = () => {
 export const useToggleConfigLock = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const repo = useMemo(
-    () => new ConfigRepository(db, queryClient),
-    [queryClient],
-  );
+  const repo = useMemo(() => new ConfigRepository(db, queryClient), [queryClient]);
 
   return useMutation({
     mutationFn: async ({

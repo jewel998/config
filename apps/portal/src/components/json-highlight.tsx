@@ -30,57 +30,38 @@ const tokenize = (json: string): ReactNode[] => {
       // Add plain text before this match
       if (match.index > lastIndex) {
         parts.push(
-          <span key={`${lineIdx}-${lastIndex}`}>
-            {line.slice(lastIndex, match.index)}
-          </span>,
+          <span key={`${lineIdx}-${lastIndex}`}>{line.slice(lastIndex, match.index)}</span>,
         );
       }
 
       if (match[1]) {
         // Object key
         parts.push(
-          <span
-            key={`${lineIdx}-${match.index}`}
-            className="text-blue-600 dark:text-blue-400"
-          >
+          <span key={`${lineIdx}-${match.index}`} className="text-blue-600 dark:text-blue-400">
             {match[1]}
           </span>,
         );
         // Include the colon
-        const afterKey = line.slice(
-          match.index + match[1].length,
-          match.index + match[0].length,
-        );
-        parts.push(
-          <span key={`${lineIdx}-${match.index}-colon`}>{afterKey}</span>,
-        );
+        const afterKey = line.slice(match.index + match[1].length, match.index + match[0].length);
+        parts.push(<span key={`${lineIdx}-${match.index}-colon`}>{afterKey}</span>);
       } else if (match[2]) {
         // String value
         parts.push(
-          <span
-            key={`${lineIdx}-${match.index}`}
-            className="text-green-600 dark:text-green-400"
-          >
+          <span key={`${lineIdx}-${match.index}`} className="text-green-600 dark:text-green-400">
             {match[2]}
           </span>,
         );
       } else if (match[3]) {
         // Boolean or null
         parts.push(
-          <span
-            key={`${lineIdx}-${match.index}`}
-            className="text-purple-600 dark:text-purple-400"
-          >
+          <span key={`${lineIdx}-${match.index}`} className="text-purple-600 dark:text-purple-400">
             {match[3]}
           </span>,
         );
       } else if (match[4]) {
         // Number
         parts.push(
-          <span
-            key={`${lineIdx}-${match.index}`}
-            className="text-amber-600 dark:text-amber-400"
-          >
+          <span key={`${lineIdx}-${match.index}`} className="text-amber-600 dark:text-amber-400">
             {match[4]}
           </span>,
         );

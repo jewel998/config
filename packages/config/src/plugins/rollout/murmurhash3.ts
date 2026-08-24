@@ -19,11 +19,7 @@ export function murmurhash3_32(key: string, seed: number = 0): number {
   let i = 0;
   while (i + 4 <= len) {
     let k1 =
-      (bytes[i]! |
-        (bytes[i + 1]! << 8) |
-        (bytes[i + 2]! << 16) |
-        (bytes[i + 3]! << 24)) >>>
-      0;
+      (bytes[i]! | (bytes[i + 1]! << 8) | (bytes[i + 2]! << 16) | (bytes[i + 3]! << 24)) >>> 0;
     k1 = Math.imul(k1, c1) >>> 0;
     k1 = ((k1 << 15) | (k1 >>> 17)) >>> 0;
     k1 = Math.imul(k1, c2) >>> 0;

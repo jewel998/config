@@ -30,10 +30,7 @@ export function waitForCondition(
   }
 }
 
-function waitForClick(
-  target: string | undefined,
-  onResolved: () => void,
-): () => void {
+function waitForClick(target: string | undefined, onResolved: () => void): () => void {
   const el = target ? document.querySelector(target) : document;
   if (!el) {
     onResolved();
@@ -44,10 +41,7 @@ function waitForClick(
   return () => el.removeEventListener("click", handler);
 }
 
-function waitForElementVisible(
-  selector: string,
-  onResolved: () => void,
-): () => void {
+function waitForElementVisible(selector: string, onResolved: () => void): () => void {
   // Check immediately
   if (document.querySelector(selector)) {
     onResolved();
@@ -64,10 +58,7 @@ function waitForElementVisible(
   return () => observer.disconnect();
 }
 
-function waitForElementHidden(
-  selector: string,
-  onResolved: () => void,
-): () => void {
+function waitForElementHidden(selector: string, onResolved: () => void): () => void {
   // Check immediately
   if (!document.querySelector(selector)) {
     onResolved();
@@ -116,10 +107,7 @@ function waitForDelay(ms: number, onResolved: () => void): () => void {
   return () => clearTimeout(timer);
 }
 
-function waitForFormSubmit(
-  selector: string | undefined,
-  onResolved: () => void,
-): () => void {
+function waitForFormSubmit(selector: string | undefined, onResolved: () => void): () => void {
   const el = selector ? document.querySelector(selector) : document;
   if (!el) {
     onResolved();

@@ -39,15 +39,7 @@ export function TourProvider({
     onNavigate,
     storagePrefix,
   });
-  const {
-    currentStep,
-    isStepVisible,
-    nextStep,
-    dismiss,
-    goToStep,
-    startTour,
-    activeFlow,
-  } = engine;
+  const { currentStep, isStepVisible, nextStep, dismiss, goToStep, startTour, activeFlow } = engine;
 
   const contextValue: TourContextValue = {
     startTour,

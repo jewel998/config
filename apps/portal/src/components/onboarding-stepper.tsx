@@ -63,34 +63,22 @@ export const OnboardingStepper = () => {
     );
   };
 
-  const currentStep = !stepState.projectCreated
-    ? 0
-    : !stepState.environmentCreated
-      ? 1
-      : 2;
+  const currentStep = !stepState.projectCreated ? 0 : !stepState.environmentCreated ? 1 : 2;
 
   const steps = [
     {
       title: <Trans>Create your first project</Trans>,
-      description: (
-        <Trans>Projects group environments and configurations together.</Trans>
-      ),
+      description: <Trans>Projects group environments and configurations together.</Trans>,
     },
     {
       title: <Trans>Add an environment</Trans>,
       description: (
-        <Trans>
-          Environments define deployment targets like production or staging.
-        </Trans>
+        <Trans>Environments define deployment targets like production or staging.</Trans>
       ),
     },
     {
       title: <Trans>You're all set!</Trans>,
-      description: (
-        <Trans>
-          Start configuring your environments with secrets and settings.
-        </Trans>
-      ),
+      description: <Trans>Start configuring your environments with secrets and settings.</Trans>,
     },
   ];
 
@@ -135,9 +123,7 @@ export const OnboardingStepper = () => {
                   </div>
                 ) : (
                   <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-dashed border-muted-foreground/30 bg-background">
-                    <span className="text-xs text-muted-foreground">
-                      {idx + 1}
-                    </span>
+                    <span className="text-xs text-muted-foreground">{idx + 1}</span>
                   </div>
                 )}
               </div>
@@ -154,9 +140,7 @@ export const OnboardingStepper = () => {
                 >
                   {step.title}
                 </h3>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {step.description}
-                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground">{step.description}</p>
 
                 {/* Step 1: Create project form */}
                 {idx === 0 && isCurrent && (
@@ -164,9 +148,7 @@ export const OnboardingStepper = () => {
                     <Input
                       value={projectName}
                       onChange={(e) => setProjectName(e.target.value)}
-                      onKeyDown={(e) =>
-                        e.key === "Enter" && handleCreateProject()
-                      }
+                      onKeyDown={(e) => e.key === "Enter" && handleCreateProject()}
                       placeholder={t`Project name`}
                       className="h-9 text-sm"
                       autoFocus
@@ -177,11 +159,7 @@ export const OnboardingStepper = () => {
                       onClick={handleCreateProject}
                       disabled={createProject.isPending || !projectName.trim()}
                     >
-                      {createProject.isPending ? (
-                        <Spinner />
-                      ) : (
-                        <Trans>Create</Trans>
-                      )}
+                      {createProject.isPending ? <Spinner /> : <Trans>Create</Trans>}
                     </Button>
                   </div>
                 )}
@@ -203,11 +181,7 @@ export const OnboardingStepper = () => {
                       onClick={handleCreateEnv}
                       disabled={createEnvironment.isPending || !envName.trim()}
                     >
-                      {createEnvironment.isPending ? (
-                        <Spinner />
-                      ) : (
-                        <Trans>Create</Trans>
-                      )}
+                      {createEnvironment.isPending ? <Spinner /> : <Trans>Create</Trans>}
                     </Button>
                   </div>
                 )}

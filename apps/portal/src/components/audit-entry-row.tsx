@@ -21,12 +21,7 @@ interface AuditEntryRowProps {
   onViewChanges?: () => void;
 }
 
-export const AuditEntryRow = ({
-  entry,
-  actorName,
-  envMap,
-  onViewChanges,
-}: AuditEntryRowProps) => {
+export const AuditEntryRow = ({ entry, actorName, envMap, onViewChanges }: AuditEntryRowProps) => {
   const category = getResourceCategory(entry.resourcePath);
   const catMeta = CATEGORY_META[category];
   const ActionIcon = ACTION_ICONS[entry.action] ?? History;
@@ -47,30 +42,19 @@ export const AuditEntryRow = ({
           <span className="text-muted-foreground">
             {ACTION_LABELS[entry.action] ?? entry.action}
           </span>{" "}
-          <span className="font-medium font-mono">
-            {formatResourceName(entry.resourcePath)}
-          </span>
+          <span className="font-medium font-mono">{formatResourceName(entry.resourcePath)}</span>
         </p>
 
         <div className="flex items-center gap-2 flex-wrap">
-          <Badge
-            variant="secondary"
-            className="text-[10px] px-1.5 py-0 rounded-full"
-          >
+          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 rounded-full">
             {catMeta.label}
           </Badge>
           {envId && (
-            <Badge
-              variant="outline"
-              className="text-[10px] px-1.5 py-0 rounded-full font-mono"
-            >
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 rounded-full font-mono">
               {envMap[envId] || envId}
             </Badge>
           )}
-          <DateDisplay
-            date={entry.timestamp}
-            className="text-[11px] text-muted-foreground"
-          />
+          <DateDisplay date={entry.timestamp} className="text-[11px] text-muted-foreground" />
           {hasChanges && onViewChanges && (
             <button
               type="button"

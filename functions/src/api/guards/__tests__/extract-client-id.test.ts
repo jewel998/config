@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
 import { BadRequestError } from "@jewel998/api";
+import { describe, it, expect } from "vitest";
+
 import { ExtractClientIdMiddleware } from "../extract-client-id.middleware";
 import { makeCtx, mockReq } from "./helpers";
 

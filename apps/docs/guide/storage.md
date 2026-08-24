@@ -220,11 +220,7 @@ const idbStorage = async (): Promise<CacheStorage> => {
       return undefined; // Simplified
     },
     set<T>(key: string, value: T, ttl?: number): void {
-      db.put(
-        "flags",
-        { value, expiresAt: Date.now() + (ttl ?? 604_800_000) },
-        key,
-      );
+      db.put("flags", { value, expiresAt: Date.now() + (ttl ?? 604_800_000) }, key);
     },
     delete(key: string): void {
       db.delete("flags", key);

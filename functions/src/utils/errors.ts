@@ -104,9 +104,7 @@ export function withErrorHandler(
         if (error instanceof TooManyRequestsError && error.retryAfter != null) {
           res.set("Retry-After", String(error.retryAfter));
         }
-        res
-          .status(error.statusCode)
-          .json({ error: { code: error.code, message: error.message } });
+        res.status(error.statusCode).json({ error: { code: error.code, message: error.message } });
       } else {
         console.error("Unhandled error:", error);
         res.status(500).json({

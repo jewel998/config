@@ -1,8 +1,6 @@
-import {
-  beforeUserCreated,
-  beforeUserSignedIn,
-} from "firebase-functions/v2/identity";
 import { HttpsError } from "firebase-functions/v2/https";
+import { beforeUserCreated, beforeUserSignedIn } from "firebase-functions/v2/identity";
+
 import { getDb } from "../utils/firestore";
 
 /**
@@ -43,9 +41,7 @@ async function checkAccessControl(email: string | undefined): Promise<void> {
           return;
         }
       } catch {
-        console.warn(
-          `[accessControl] Invalid regex pattern: "${pattern}" — skipping`,
-        );
+        console.warn(`[accessControl] Invalid regex pattern: "${pattern}" — skipping`);
       }
     }
 
@@ -57,10 +53,7 @@ async function checkAccessControl(email: string | undefined): Promise<void> {
   } catch (error) {
     if (error instanceof HttpsError) throw error;
     console.error("[accessControl] Error checking access:", error);
-    throw new HttpsError(
-      "internal",
-      "Unable to verify access. Please try again later.",
-    );
+    throw new HttpsError("internal", "Unable to verify access. Please try again later.");
   }
 }
 

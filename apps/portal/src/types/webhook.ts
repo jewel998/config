@@ -6,8 +6,7 @@ export interface WebhookConfig {
   eventTypes: string[];
   resourceCategories: string[];
   environments: string[];
-  format:
-    "standard" | "slack" | "discord" | "google-chat" | "ms-teams" | "custom";
+  format: "standard" | "slack" | "discord" | "google-chat" | "ms-teams" | "custom";
   createdAt: string;
   updatedAt: string;
   customTemplate?: string;

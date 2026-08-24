@@ -5,9 +5,7 @@ import type { EvaluationContext, PipelineHelpers } from "../types.js";
 import { prerequisitePlugin } from "./prerequisitePlugin.js";
 
 /** Utility to build minimal PipelineHelpers with overridable evaluateFlag */
-function makeHelpers(
-  overrides: Partial<PipelineHelpers> = {},
-): PipelineHelpers {
+function makeHelpers(overrides: Partial<PipelineHelpers> = {}): PipelineHelpers {
   return {
     evaluateFlag: () => undefined,
     emitError: vi.fn(),
@@ -100,9 +98,7 @@ describe("prerequisitePlugin", () => {
       const flag = makeFlag({
         value: 42,
         valueType: "number",
-        prerequisites: [
-          { flagKey: "feature.nonexistent", requiredValue: true },
-        ],
+        prerequisites: [{ flagKey: "feature.nonexistent", requiredValue: true }],
       });
       const context: EvaluationContext = { userId: "user-1" };
       const helpers = makeHelpers({
@@ -260,9 +256,7 @@ describe("prerequisitePlugin", () => {
             key: `feature.level${i}`,
             value: `default-${i}`,
             prerequisites:
-              i < 4
-                ? [{ flagKey: `feature.level${i + 1}`, requiredValue: true }]
-                : undefined,
+              i < 4 ? [{ flagKey: `feature.level${i + 1}`, requiredValue: true }] : undefined,
           }),
         );
       }
@@ -287,9 +281,7 @@ describe("prerequisitePlugin", () => {
       const result = plugin.evaluate(flags[0], context, helpers);
       // Depth should be exceeded at level 3 (0, 1, 2 in stack, trying to add 3)
       expect(result).toEqual({ resolved: true, value: "default-0" });
-      expect(emitError).toHaveBeenCalledWith(
-        expect.stringContaining("depth exceeded"),
-      );
+      expect(emitError).toHaveBeenCalledWith(expect.stringContaining("depth exceeded"));
     });
 
     it("uses default maxDepth of 5", () => {
@@ -305,9 +297,7 @@ describe("prerequisitePlugin", () => {
             key: `feature.deep${i}`,
             value: `default-${i}`,
             prerequisites:
-              i < 6
-                ? [{ flagKey: `feature.deep${i + 1}`, requiredValue: true }]
-                : undefined,
+              i < 6 ? [{ flagKey: `feature.deep${i + 1}`, requiredValue: true }] : undefined,
           }),
         );
       }
@@ -331,9 +321,7 @@ describe("prerequisitePlugin", () => {
 
       const result = plugin.evaluate(flags[0], context, helpers);
       expect(result).toEqual({ resolved: true, value: "default-0" });
-      expect(emitError).toHaveBeenCalledWith(
-        expect.stringContaining("depth exceeded"),
-      );
+      expect(emitError).toHaveBeenCalledWith(expect.stringContaining("depth exceeded"));
     });
 
     it("allows evaluation within max depth limit", () => {

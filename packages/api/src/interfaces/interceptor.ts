@@ -10,8 +10,5 @@ import type { HandlerResponse } from "./response";
  * You can modify it before returning.
  */
 export interface Interceptor {
-  intercept(
-    ctx: RequestContext,
-    next: () => Promise<HandlerResponse>,
-  ): Promise<HandlerResponse>;
+  intercept(ctx: RequestContext, next: () => Promise<HandlerResponse>): Promise<HandlerResponse>;
 }

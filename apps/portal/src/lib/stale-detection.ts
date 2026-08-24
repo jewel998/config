@@ -11,9 +11,7 @@ const STALE_THRESHOLD_DAYS = 90;
  * - aging: updated 30-90 days ago
  * - stale: not updated in over 90 days
  */
-export const getStalenessLevel = (
-  updatedAt: string | undefined,
-): StalenessLevel => {
+export const getStalenessLevel = (updatedAt: string | undefined): StalenessLevel => {
   if (!updatedAt) return "stale";
 
   const days = differenceInDays(new Date(), new Date(updatedAt));

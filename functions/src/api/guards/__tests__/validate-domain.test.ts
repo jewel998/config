@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
 import { ForbiddenError } from "@jewel998/api";
+import { describe, it, expect, vi } from "vitest";
+
 import { ValidateDomainGuard } from "../validate-domain.guard";
 import { makeCtx } from "./helpers";
 
@@ -38,12 +39,7 @@ describe("ValidateDomainGuard", () => {
     });
 
     await guard.canActivate(ctx);
-    expect(mockValidateDomain).toHaveBeenCalledWith(
-      ctx.db,
-      "proj1",
-      "env1",
-      "https://allowed.com",
-    );
+    expect(mockValidateDomain).toHaveBeenCalledWith(ctx.db, "proj1", "env1", "https://allowed.com");
   });
 
   it("propagates error from validateDomain", async () => {

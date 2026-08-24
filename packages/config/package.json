@@ -2,32 +2,38 @@
   "name": "@jewel998/config",
   "version": "0.2.2",
   "private": false,
-  "type": "module",
-  "sideEffects": false,
   "description": "Free, self-hosted feature flags and remote configuration SDK",
-  "author": "Jyotirmoy Barman",
+  "keywords": [
+    "a-b-testing",
+    "configuration",
+    "feature-flags",
+    "feature-toggles",
+    "firebase",
+    "remote-config",
+    "rollout",
+    "sdk",
+    "self-hosted",
+    "targeting"
+  ],
   "homepage": "https://github.com/jewel998/config#readme",
   "bugs": {
     "url": "https://github.com/jewel998/config/issues"
   },
-  "keywords": [
-    "feature-flags",
-    "remote-config",
-    "feature-toggles",
-    "self-hosted",
-    "firebase",
-    "sdk",
-    "configuration",
-    "targeting",
-    "rollout",
-    "a-b-testing"
-  ],
+  "license": "Elastic-2.0",
+  "author": "Jyotirmoy Barman",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jewel998/config.git",
     "directory": "packages/config"
   },
-  "license": "Elastic-2.0",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "sideEffects": false,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -72,15 +78,6 @@
       "import": "./dist/plugins/overrides/index.js"
     }
   },
-  "files": [
-    "dist/**/*.js",
-    "dist/**/*.d.ts",
-    "README.md",
-    "LICENSE"
-  ],
-  "engines": {
-    "node": ">=22.0.0"
-  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
@@ -91,5 +88,8 @@
   "devDependencies": {
     "typescript": "^5.9.3",
     "vitest": "^4.1.10"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

@@ -77,10 +77,7 @@ export class SegmentRepository extends BaseRepository<
     newEntity?: SegmentEntity,
   ): AuditContext {
     const name =
-      (input as SegmentCreateInput)?.name ??
-      oldEntity?.name ??
-      newEntity?.name ??
-      "unknown";
+      (input as SegmentCreateInput)?.name ?? oldEntity?.name ?? newEntity?.name ?? "unknown";
     return {
       actorId: "",
       action: operation,

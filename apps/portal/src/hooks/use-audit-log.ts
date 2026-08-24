@@ -39,15 +39,10 @@ export const useAuditLog = (
 
       constraints.push(limit(PAGE_SIZE));
 
-      const q = query(
-        collection(db, "projects", projectId, "audit_log"),
-        ...constraints,
-      );
+      const q = query(collection(db, "projects", projectId, "audit_log"), ...constraints);
 
       const snapshot = await getDocs(q);
-      const entries = snapshot.docs.map(
-        (d) => ({ id: d.id, ...d.data() }) as AuditEntry,
-      );
+      const entries = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as AuditEntry);
       const lastDoc = snapshot.docs[snapshot.docs.length - 1] ?? null;
 
       return { entries, lastDoc };

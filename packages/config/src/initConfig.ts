@@ -14,6 +14,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 import { createConfig } from "./createConfig.js";
+import type { EvaluationContext } from "./plugins/types.js";
 import type {
   CacheStorage,
   ConfigClient,
@@ -21,7 +22,6 @@ import type {
   ConfigEventType,
   CreateConfigOptions,
 } from "./types.js";
-import type { EvaluationContext } from "./plugins/types.js";
 
 export interface InitConfigOptions {
   /** Required. API key from the portal (cid_ for client, svr_ for server). */
@@ -131,14 +131,9 @@ export function initConfig(options: InitConfigOptions): Flags {
 
   async function checkVersion(): Promise<void> {
     try {
-      const res = await fetch(
-        `${baseUrl}/v1/version?clientId=${options.clientId}`,
-        {
-          headers: cachedVersion
-            ? { "If-None-Match": `"${cachedVersion}"` }
-            : {},
-        },
-      );
+      const res = await fetch(`${baseUrl}/v1/version?clientId=${options.clientId}`, {
+        headers: cachedVersion ? { "If-None-Match": `"${cachedVersion}"` } : {},
+      });
 
       // 304 = version unchanged, no action needed
       if (res.status === 304) return;

@@ -21,9 +21,7 @@ export function SegmentedControl<T extends string>({
         <Button
           key={option.value}
           variant={value === option.value ? "default" : "ghost"}
-          className={`rounded-full h-auto ${
-            isSmall ? "px-3 py-1 text-xs" : "px-4 py-2 text-sm"
-          }`}
+          className={`rounded-full h-auto ${isSmall ? "px-3 py-1 text-xs" : "px-4 py-2 text-sm"}`}
           onClick={() => onChange(option.value)}
         >
           {option.label}

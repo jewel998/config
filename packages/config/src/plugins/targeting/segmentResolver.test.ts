@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { resolveSegment } from "./segmentResolver.js";
+
 import type { Segment } from "../models.js";
+import { resolveSegment } from "./segmentResolver.js";
 
 function makeSegment(overrides: Partial<Segment> = {}): Segment {
   return {
@@ -49,9 +50,7 @@ describe("resolveSegment", () => {
         "seg-1": makeSegment({
           conditions: [
             {
-              predicates: [
-                { attribute: "plan", operator: "equals", value: "enterprise" },
-              ],
+              predicates: [{ attribute: "plan", operator: "equals", value: "enterprise" }],
             },
           ],
         }),
@@ -64,9 +63,7 @@ describe("resolveSegment", () => {
         "seg-1": makeSegment({
           conditions: [
             {
-              predicates: [
-                { attribute: "plan", operator: "equals", value: "free" },
-              ],
+              predicates: [{ attribute: "plan", operator: "equals", value: "free" }],
             },
           ],
         }),
@@ -81,14 +78,10 @@ describe("resolveSegment", () => {
         "seg-1": makeSegment({
           conditions: [
             {
-              predicates: [
-                { attribute: "country", operator: "equals", value: "DE" },
-              ],
+              predicates: [{ attribute: "country", operator: "equals", value: "DE" }],
             },
             {
-              predicates: [
-                { attribute: "country", operator: "equals", value: "US" },
-              ],
+              predicates: [{ attribute: "country", operator: "equals", value: "US" }],
             },
           ],
         }),
@@ -135,9 +128,7 @@ describe("resolveSegment", () => {
         "seg-1": makeSegment({
           conditions: [
             {
-              predicates: [
-                { attribute: "segment", operator: "in_segment", value: "other-seg" },
-              ],
+              predicates: [{ attribute: "segment", operator: "in_segment", value: "other-seg" }],
             },
           ],
         }),
@@ -184,9 +175,7 @@ describe("resolveSegment", () => {
         "seg-1": makeSegment({
           conditions: [
             {
-              predicates: [
-                { attribute: "email", operator: "regex_match", value: "[invalid(" },
-              ],
+              predicates: [{ attribute: "email", operator: "regex_match", value: "[invalid(" }],
             },
           ],
         }),
@@ -202,9 +191,7 @@ describe("resolveSegment", () => {
         "seg-1": makeSegment({
           conditions: [
             {
-              predicates: [
-                { attribute: "email", operator: "contains", value: "@example" },
-              ],
+              predicates: [{ attribute: "email", operator: "contains", value: "@example" }],
             },
           ],
         }),
@@ -217,9 +204,7 @@ describe("resolveSegment", () => {
         "seg-1": makeSegment({
           conditions: [
             {
-              predicates: [
-                { attribute: "age", operator: "greater_than", value: 25 },
-              ],
+              predicates: [{ attribute: "age", operator: "greater_than", value: 25 }],
             },
           ],
         }),
@@ -232,9 +217,7 @@ describe("resolveSegment", () => {
         "seg-1": makeSegment({
           conditions: [
             {
-              predicates: [
-                { attribute: "nonexistent", operator: "equals", value: "test" },
-              ],
+              predicates: [{ attribute: "nonexistent", operator: "equals", value: "test" }],
             },
           ],
         }),

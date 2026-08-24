@@ -1,6 +1,7 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { Check, ChevronsUpDown } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,19 +12,13 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useEnvironments } from "@/hooks/use-environments";
 import { cn } from "@/lib/utils";
 import { useProjectStore } from "@/stores/project-store";
-import { useState } from "react";
 
 export const EnvironmentSwitcher = () => {
-  const { selectedProjectId, selectedEnvironmentId, setSelectedEnvironmentId } =
-    useProjectStore();
+  const { selectedProjectId, selectedEnvironmentId, setSelectedEnvironmentId } = useProjectStore();
   const { data: environments = [] } = useEnvironments(selectedProjectId);
 
   const selectedEnv = environments.find((e) => e.id === selectedEnvironmentId);
@@ -74,9 +69,7 @@ export const EnvironmentSwitcher = () => {
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      selectedEnvironmentId === env.id
-                        ? "opacity-100"
-                        : "opacity-0",
+                      selectedEnvironmentId === env.id ? "opacity-100" : "opacity-0",
                     )}
                   />
                   <span

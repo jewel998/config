@@ -36,9 +36,7 @@ export const CommandPalette = () => {
   const { data: projects = [] } = useProjects();
   const selectedProjectId = useProjectStore((s) => s.selectedProjectId);
   const setSelectedProjectId = useProjectStore((s) => s.setSelectedProjectId);
-  const setSelectedEnvironmentId = useProjectStore(
-    (s) => s.setSelectedEnvironmentId,
-  );
+  const setSelectedEnvironmentId = useProjectStore((s) => s.setSelectedEnvironmentId);
   const { data: environments = [] } = useEnvironments(selectedProjectId);
 
   useEffect(() => {
@@ -71,9 +69,7 @@ export const CommandPalette = () => {
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <Command>
-          <CommandInput
-            placeholder={t`Search commands, projects, environments...`}
-          />
+          <CommandInput placeholder={t`Search commands, projects, environments...`} />
           <CommandList>
             <CommandEmpty>
               <Trans>No results found.</Trans>
@@ -81,77 +77,55 @@ export const CommandPalette = () => {
 
             {/* Navigation */}
             <CommandGroup heading={t`Navigation`}>
-              <CommandItem
-                onSelect={() => runAction(() => navigate({ to: "/configs" }))}
-              >
+              <CommandItem onSelect={() => runAction(() => navigate({ to: "/configs" }))}>
                 <Layers className="h-4 w-4" />
                 <span>
                   <Trans>Configs</Trans>
                 </span>
               </CommandItem>
-              <CommandItem
-                onSelect={() => runAction(() => navigate({ to: "/compare" }))}
-              >
+              <CommandItem onSelect={() => runAction(() => navigate({ to: "/compare" }))}>
                 <GitCompare className="h-4 w-4" />
                 <span>
                   <Trans>Compare Environments</Trans>
                 </span>
               </CommandItem>
-              <CommandItem
-                onSelect={() => runAction(() => navigate({ to: "/api-keys" }))}
-              >
+              <CommandItem onSelect={() => runAction(() => navigate({ to: "/api-keys" }))}>
                 <Key className="h-4 w-4" />
                 <span>
                   <Trans>API Keys</Trans>
                 </span>
               </CommandItem>
-              <CommandItem
-                onSelect={() => runAction(() => navigate({ to: "/settings" }))}
-              >
+              <CommandItem onSelect={() => runAction(() => navigate({ to: "/settings" }))}>
                 <Settings className="h-4 w-4" />
                 <span>
                   <Trans>Project Settings</Trans>
                 </span>
               </CommandItem>
-              <CommandItem
-                onSelect={() =>
-                  runAction(() => navigate({ to: "/preferences" }))
-                }
-              >
+              <CommandItem onSelect={() => runAction(() => navigate({ to: "/preferences" }))}>
                 <SlidersHorizontal className="h-4 w-4" />
                 <span>
                   <Trans>Preferences</Trans>
                 </span>
               </CommandItem>
-              <CommandItem
-                onSelect={() =>
-                  runAction(() => navigate({ to: "/segments" }))
-                }
-              >
+              <CommandItem onSelect={() => runAction(() => navigate({ to: "/segments" }))}>
                 <Users className="h-4 w-4" />
                 <span>
                   <Trans>Segments</Trans>
                 </span>
               </CommandItem>
-              <CommandItem
-                onSelect={() => runAction(() => navigate({ to: "/audit" }))}
-              >
+              <CommandItem onSelect={() => runAction(() => navigate({ to: "/audit" }))}>
                 <History className="h-4 w-4" />
                 <span>
                   <Trans>Audit Log</Trans>
                 </span>
               </CommandItem>
-              <CommandItem
-                onSelect={() => runAction(() => navigate({ to: "/team" }))}
-              >
+              <CommandItem onSelect={() => runAction(() => navigate({ to: "/team" }))}>
                 <UsersRound className="h-4 w-4" />
                 <span>
                   <Trans>Team & Access</Trans>
                 </span>
               </CommandItem>
-              <CommandItem
-                onSelect={() => runAction(() => navigate({ to: "/gdpr" }))}
-              >
+              <CommandItem onSelect={() => runAction(() => navigate({ to: "/gdpr" }))}>
                 <ShieldAlert className="h-4 w-4" />
                 <span>
                   <Trans>GDPR & Privacy</Trans>
@@ -176,9 +150,7 @@ export const CommandPalette = () => {
                   >
                     <span
                       className={`h-2 w-2 rounded-full ${
-                        project.id === selectedProjectId
-                          ? "bg-primary"
-                          : "bg-muted-foreground/30"
+                        project.id === selectedProjectId ? "bg-primary" : "bg-muted-foreground/30"
                       }`}
                     />
                     <span>{project.name}</span>
