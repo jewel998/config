@@ -34,7 +34,22 @@ export const useAuthStore = create<AuthState>((set) => ({
   signIn: async () => {
     set({ accessDenied: false });
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error: unknown) {
+      const firebaseError = error as { code?: string; message?: string };
+      // Blocking function rejected the sign-in (access control)
+      if (
+        firebaseError.code === "auth/internal-error" ||
+        firebaseError.message?.includes("PERMISSION_DENIED") ||
+        firebaseError.message?.includes("not authorized")
+      ) {
+        set({ accessDenied: true, loading: false });
+        return;
+      }
+      // Rethrow other errors (network issues, popup closed, etc.)
+      throw error;
+    }
   },
 
   logOut: async () => {

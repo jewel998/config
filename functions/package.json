@@ -16,6 +16,7 @@
     "firebase-functions": "^7.3.2"
   },
   "devDependencies": {
+    "@jewel998/api": "workspace:*",
     "fast-check": "^4.9.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
