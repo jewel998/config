@@ -32,12 +32,12 @@
       {
         "source": "/api/getConfig",
         "function": "getConfig",
-        "region": "us-central1"
+        "region": "asia-south1"
       },
       {
         "source": "/api/getVersion",
         "function": "getVersion",
-        "region": "us-central1"
+        "region": "asia-south1"
       }
     ],
     "headers": [

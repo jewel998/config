@@ -42,24 +42,24 @@ export async function fetchConfigs(
     .doc(environmentId)
     .collection("configs");
 
-  // Fetch config documents (projected or full)
-  let configDocs: FirebaseFirestore.DocumentSnapshot[];
-  if (keys && keys.length > 0 && keys.length <= 10) {
-    const docs = await Promise.all(
-      keys.map((key) => configsRef.doc(key).get()),
-    );
-    configDocs = docs.filter((d) => d.exists);
-  } else {
-    const snapshot = await configsRef.get();
-    configDocs = snapshot.docs;
-  }
+  // Fetch config documents and segments in PARALLEL
+  const configsPromise: Promise<FirebaseFirestore.DocumentSnapshot[]> =
+    keys && keys.length > 0 && keys.length <= 10
+      ? Promise.all(keys.map((key) => configsRef.doc(key).get())).then((docs) =>
+          docs.filter((d) => d.exists),
+        )
+      : configsRef.get().then((snapshot) => snapshot.docs);
 
-  // Fetch segments
-  const segmentsSnapshot = await db
+  const segmentsPromise = db
     .collection("projects")
     .doc(projectId)
     .collection("segments")
     .get();
+
+  const [configDocs, segmentsSnapshot] = await Promise.all([
+    configsPromise,
+    segmentsPromise,
+  ]);
 
   const segments: Record<string, SegmentDoc> = {};
   for (const doc of segmentsSnapshot.docs) {

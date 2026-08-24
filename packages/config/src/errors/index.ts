@@ -25,6 +25,17 @@ export class ConfigError extends Error {
   }
 }
 
+export class RateLimitError extends ConfigError {
+  /** Seconds to wait before retrying (from server Retry-After header) */
+  public readonly retryAfterSeconds: number | undefined;
+
+  constructor(message: string, retryAfterSeconds?: number) {
+    super(message, "RATE_LIMITED");
+    this.name = "RateLimitError";
+    this.retryAfterSeconds = retryAfterSeconds;
+  }
+}
+
 export class InitializationError extends ConfigError {
   constructor(
     message: string,

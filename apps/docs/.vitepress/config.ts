@@ -24,8 +24,12 @@ export default withMermaid(
           items: [
             { text: "Quick Start", link: "/guide/getting-started" },
             { text: "Self-Hosting Guide", link: "/guide/self-hosting" },
+            { text: "Loading Strategies", link: "/guide/loading-strategies" },
             { text: "Storage & Caching", link: "/guide/storage" },
             { text: "Configuration Scopes", link: "/guide/scopes" },
+            { text: "Migration Guides", link: "/guide/migrations" },
+            { text: "Backup & Restore", link: "/guide/backup-restore" },
+            { text: "Versioning", link: "/guide/versioning" },
           ],
         },
         {

@@ -128,13 +128,14 @@ sequenceDiagram
 
 ### Error Codes
 
-| Status | Code              | Cause                               |
-| ------ | ----------------- | ----------------------------------- |
-| 400    | BAD_REQUEST       | Missing clientId                    |
-| 401    | UNAUTHORIZED      | Invalid or revoked clientId         |
-| 403    | FORBIDDEN         | Domain not in allowedDomains        |
-| 413    | PAYLOAD_TOO_LARGE | Context exceeds 10KB                |
-| 500    | INTERNAL_ERROR    | Firestore index missing or DB error |
+| Status | Code              | Cause                                             |
+| ------ | ----------------- | ------------------------------------------------- |
+| 400    | BAD_REQUEST       | Missing clientId                                  |
+| 401    | UNAUTHORIZED      | Invalid or revoked clientId                       |
+| 403    | FORBIDDEN         | Domain not in allowedDomains                      |
+| 413    | PAYLOAD_TOO_LARGE | Context exceeds 10KB                              |
+| 429    | TOO_MANY_REQUESTS | Rate limit exceeded (includes Retry-After header) |
+| 500    | INTERNAL_ERROR    | Firestore index missing or DB error               |
 
 ---
 
@@ -337,6 +338,42 @@ Deploy specific functions:
 
 ```bash
 firebase deploy --only functions:getConfig,functions:getVersion --project your-project-id
+```
+
+### Configuration Constants
+
+All function behavior is controlled via `functions/src/utils/constants.ts`:
+
+| Constant                 | Default         | Description                                                   |
+| ------------------------ | --------------- | ------------------------------------------------------------- |
+| `API_REGION`             | `"asia-south1"` | Region for API functions. Must match your Firestore location. |
+| `MAX_INSTANCES`          | `10`            | Maximum concurrent function instances                         |
+| `MIN_INSTANCES`          | `0`             | Minimum warm instances (0 = free, 1+ eliminates cold starts)  |
+| `RATE_LIMIT_ENABLED`     | `true`          | Whether server-side rate limiting is active                   |
+| `RATE_LIMIT_CLIENT_RPM`  | `300`           | Max requests/minute for `cid_` keys                           |
+| `RATE_LIMIT_SERVER_RPM`  | `120`           | Max requests/minute for `svr_` keys                           |
+| `MAX_CONTEXT_SIZE_BYTES` | `10240`         | Maximum context payload size (10KB)                           |
+| `CDN_CACHE_SECONDS`      | `60`            | Default CDN cache duration                                    |
+| `MAX_BATCH_SIZE`         | `500`           | Firestore batch write limit                                   |
+
+#### Changing the Region
+
+1. Edit `API_REGION` in `functions/src/utils/constants.ts`
+2. Update the `region` values in `firebase.json` hosting rewrites to match
+3. Ensure your Firestore database is in the same region (cross-region adds 200-400ms per query)
+4. Redeploy: `firebase deploy --only functions,hosting`
+
+::: warning Region + Firestore must match
+If your functions are in `asia-south1` but Firestore is in `us-central1`, every Firestore query adds a cross-continent round-trip. Always create your Firestore database in the same region as your functions.
+:::
+
+#### Eliminating Cold Starts
+
+Set `MIN_INSTANCES = 1` to keep one function instance warm at all times. This eliminates the 2-4 second cold start penalty but costs ~$3-5/month on the Blaze plan.
+
+```typescript
+// functions/src/utils/constants.ts
+export const MIN_INSTANCES = 1; // $0 when set to 0, ~$3-5/mo when 1
 ```
 
 ### Required APIs

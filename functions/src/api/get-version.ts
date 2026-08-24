@@ -3,8 +3,13 @@ import { getDb } from "../utils/firestore.js";
 import { BadRequestError, withErrorHandler } from "../utils/errors.js";
 import { assertMethod } from "../utils/request.js";
 import { sendSuccess } from "../utils/response.js";
-import { MAX_INSTANCES } from "../utils/constants.js";
+import {
+  MAX_INSTANCES,
+  MIN_INSTANCES,
+  API_REGION,
+} from "../utils/constants.js";
 import { authenticateClient } from "./middleware/authenticate.js";
+import { checkRateLimit } from "./middleware/rate-limit.js";
 
 /**
  * GET /api/version?clientId=cid_xxx
@@ -19,7 +24,13 @@ import { authenticateClient } from "./middleware/authenticate.js";
  * ~800 function calls/5min (well within free tier).
  */
 export const getVersion = onRequest(
-  { cors: true, maxInstances: MAX_INSTANCES },
+  {
+    cors: true,
+    maxInstances: MAX_INSTANCES,
+    minInstances: MIN_INSTANCES,
+    region: API_REGION,
+    memory: "256MiB",
+  },
   withErrorHandler(async (req, res) => {
     assertMethod(req, "GET", "POST");
 
@@ -34,8 +45,11 @@ export const getVersion = onRequest(
 
     const db = getDb();
 
-    // Authenticate and resolve project + environment
-    const { projectId, environmentId } = await authenticateClient(db, clientId);
+    // Rate limit + authenticate in parallel
+    const [, { projectId, environmentId }] = await Promise.all([
+      checkRateLimit(db, clientId),
+      authenticateClient(db, clientId),
+    ]);
 
     // Read the environment's version info (single doc read)
     const envDoc = await db

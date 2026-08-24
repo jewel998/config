@@ -11,7 +11,12 @@ import {
   setCdnCache,
   setPrivateCache,
 } from "../utils/response.js";
-import { MAX_INSTANCES, MAX_CONTEXT_SIZE_BYTES } from "../utils/constants.js";
+import {
+  MAX_INSTANCES,
+  MAX_CONTEXT_SIZE_BYTES,
+  MIN_INSTANCES,
+  API_REGION,
+} from "../utils/constants.js";
 import {
   evaluateConfigsForContext,
   type UserContext,
@@ -19,6 +24,7 @@ import {
 import { authenticateClient } from "./middleware/authenticate.js";
 import { validateDomain } from "./middleware/validate-domain.js";
 import { fetchConfigs } from "./middleware/fetch-configs.js";
+import { checkRateLimit } from "./middleware/rate-limit.js";
 
 /**
  * GET  /api/getConfig?clientId=cid_xxx
@@ -36,9 +42,20 @@ import { fetchConfigs } from "./middleware/fetch-configs.js";
  *   - Cloud Function: only on cache miss ($0.40 / million invocations)
  *   - Firestore reads: 2 per invocation (clientId lookup + configs)
  *   - With 60s CDN: 10K polls/hour = ~60 function calls/hour = FREE tier
+ *
+ * Performance:
+ *   - Rate limit + authenticate run in parallel
+ *   - Domain validation + config/segment fetch run in parallel
+ *   - Total: 2 sequential Firestore round-trips (down from 4)
  */
 export const getConfig = onRequest(
-  { cors: true, maxInstances: MAX_INSTANCES },
+  {
+    cors: true,
+    maxInstances: MAX_INSTANCES,
+    minInstances: MIN_INSTANCES,
+    region: API_REGION,
+    memory: "256MiB",
+  },
   withErrorHandler(async (req, res) => {
     assertMethod(req, "GET", "POST");
 
@@ -54,14 +71,17 @@ export const getConfig = onRequest(
 
     const db = getDb();
 
-    // 1. Authenticate
-    const { projectId, environmentId } = await authenticateClient(db, clientId);
+    // ── Phase 1: Rate limit + Authenticate (parallel) ──────────
+    const [, authResult] = await Promise.all([
+      checkRateLimit(db, clientId),
+      authenticateClient(db, clientId),
+    ]);
 
-    // 2. Domain validation
+    const { projectId, environmentId } = authResult;
+
+    // ── Phase 2: Domain validation + Fetch data (parallel) ─────
     const origin = req.headers.origin ?? req.headers.referer ?? "";
-    await validateDomain(db, projectId, environmentId, origin);
 
-    // 3. Determine evaluation mode from key prefix
     const isServerKey = clientId.startsWith("svr_");
     const evaluationMode = isServerKey ? "client" : "server";
 
@@ -78,7 +98,7 @@ export const getConfig = onRequest(
       }
     }
 
-    // 4. Extract optional key filter
+    // Extract optional key filter
     const requestedKeys: string[] | undefined =
       (req.query.keys as string)
         ?.split(",")
@@ -87,15 +107,13 @@ export const getConfig = onRequest(
       (req.body?.data?.keys as string[] | undefined) ??
       undefined;
 
-    // 5. Fetch configs and segments
-    const { configs, segments, latestUpdate } = await fetchConfigs(
-      db,
-      projectId,
-      environmentId,
-      requestedKeys,
-    );
+    // Run domain validation and data fetching in parallel
+    const [, { configs, segments, latestUpdate }] = await Promise.all([
+      validateDomain(db, projectId, environmentId, origin),
+      fetchConfigs(db, projectId, environmentId, requestedKeys),
+    ]);
 
-    // 6. Build response based on evaluation mode
+    // ── Phase 3: Build response ────────────────────────────────
     if (evaluationMode === "server") {
       const { data } = evaluateConfigsForContext(
         configs,

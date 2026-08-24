@@ -61,8 +61,11 @@ export class PayloadTooLargeError extends ApiError {
 }
 
 export class TooManyRequestsError extends ApiError {
-  constructor(message: string) {
+  public readonly retryAfter?: number;
+
+  constructor(message: string, retryAfter?: number) {
     super(429, "TOO_MANY_REQUESTS", message);
+    this.retryAfter = retryAfter;
   }
 }
 
@@ -98,6 +101,9 @@ export function withErrorHandler(
       await handler(req, res);
     } catch (error) {
       if (error instanceof ApiError) {
+        if (error instanceof TooManyRequestsError && error.retryAfter != null) {
+          res.set("Retry-After", String(error.retryAfter));
+        }
         res
           .status(error.statusCode)
           .json({ error: { code: error.code, message: error.message } });

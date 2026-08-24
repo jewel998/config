@@ -250,4 +250,20 @@ config.on("fetchError", ({ error, willRetry }) => {
 });
 ```
 
-This prevents SDK errors from appearing in your Sentry or error tracking.
+### Rate Limit Handling
+
+When the server returns a 429, the SDK creates a `RateLimitError` that includes the server-specified retry delay from the `Retry-After` header. The retry engine waits exactly that long before retrying (instead of generic exponential backoff).
+
+```ts
+import { RateLimitError } from "@jewel998/config";
+
+flags.on("fetchError", ({ error }) => {
+  if (error instanceof RateLimitError) {
+    console.warn(
+      `Rate limited — server says retry in ${error.retryAfterSeconds}s`,
+    );
+  }
+});
+```
+
+The SDK retries rate-limited requests up to `maxRetries` times (default: 3). If all retries are exhausted, the SDK falls back to cached or default values.

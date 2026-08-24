@@ -1,6 +1,10 @@
 /// <reference lib="dom" />
 
-import { AuthenticationError, ConfigError } from "../errors/index.js";
+import {
+  AuthenticationError,
+  ConfigError,
+  RateLimitError,
+} from "../errors/index.js";
 import type { EvaluationContext } from "../plugins/types.js";
 import type { HttpTransport } from "../types.js";
 import { CircuitBreaker } from "./CircuitBreaker.js";
@@ -100,9 +104,19 @@ export const createHttpTransport = (config: TransportConfig): HttpTransport => {
           case 413:
             error = new ConfigError(message, "PAYLOAD_TOO_LARGE");
             break;
-          case 429:
-            error = new ConfigError(message, "RATE_LIMITED");
+          case 429: {
+            const retryAfterHeader = response.headers.get("Retry-After");
+            const retryAfterSeconds = retryAfterHeader
+              ? parseInt(retryAfterHeader, 10)
+              : undefined;
+            error = new RateLimitError(
+              message,
+              Number.isFinite(retryAfterSeconds)
+                ? retryAfterSeconds
+                : undefined,
+            );
             break;
+          }
           case 500:
           case 502:
           case 503:
