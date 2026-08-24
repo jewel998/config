@@ -17,7 +17,7 @@ export const createProjectedFetcher = (
 
   return {
     async fetchAll(): Promise<Record<string, unknown>> {
-      const response = await transport.request<GetConfigResponse>("getConfig");
+      const response = await transport.request<GetConfigResponse>("v1/config");
       return response.data;
     },
 
@@ -36,7 +36,7 @@ export const createProjectedFetcher = (
 
               try {
                 const response = await transport.request<GetConfigResponse>(
-                  "getConfig",
+                  "v1/config",
                   {
                     keys: batchedKeys,
                   },
@@ -63,7 +63,7 @@ export const createProjectedFetcher = (
     },
 
     async checkVersion(): Promise<{ version: string; changedKeys: string[] }> {
-      const response = await transport.request<VersionResponse>("getVersion");
+      const response = await transport.request<VersionResponse>("v1/version");
       return {
         version: String(response.version),
         changedKeys: response.changedKeys ?? [],

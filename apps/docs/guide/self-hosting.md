@@ -209,7 +209,7 @@ After deployment, verify everything works:
 
 ```bash
 # Check the API is reachable
-curl -s https://your-project.web.app/api/getVersion
+curl -s https://your-project.web.app/api/v1/version
 # Expected: {"error":{"code":"BAD_REQUEST","message":"clientId is required"}}
 # This is correct — it means the function is running!
 
@@ -222,8 +222,8 @@ open https://your-project.web.app
 | Endpoint                                                        | Purpose                                   |
 | --------------------------------------------------------------- | ----------------------------------------- |
 | `https://your-project.web.app`                                  | Admin portal                              |
-| `https://your-project.web.app/api/getConfig`                    | Config delivery API (via hosting rewrite) |
-| `https://your-project.web.app/api/getVersion`                   | Lightweight version check                 |
+| `https://your-project.web.app/api/v1/config`                    | Config delivery API (via hosting rewrite) |
+| `https://your-project.web.app/api/v1/version`                   | Lightweight version check                 |
 | `https://asia-south1-your-project.cloudfunctions.net/getConfig` | Direct function URL (fallback)            |
 
 ::: tip Region configuration
@@ -342,7 +342,7 @@ Then update `firebase.json` rewrites to match:
 
 ```json
 {
-  "source": "/api/getConfig",
+  "source": "/api/v1/config",
   "function": "getConfig",
   "region": "asia-south1"
 }
@@ -400,7 +400,7 @@ With properly matched regions (functions + Firestore in same region):
 - **Use `browserStorage()`** in the SDK — cached values persist across page loads, eliminating API calls on return visits
 - **Set longer `pollInterval`** — 10-15 minutes instead of 5 if you don't need instant flag propagation
 - **Use key filtering** — Pass `keys` parameter to fetch only the flags you need (projected read)
-- **CDN is your friend** — Firebase Hosting CDN caches `/api/getVersion` for 15s and `/api/getConfig` (client mode) for 60s at edge nodes worldwide. Most requests never reach your function.
+- **CDN is your friend** — Firebase Hosting CDN caches `/api/v1/version` for 15s and `/api/v1/config` (client mode) for 60s at edge nodes worldwide. Most requests never reach your function.
 
 ## Updating to New Versions
 
@@ -430,7 +430,7 @@ firebase deploy --only firestore:indexes --project your-project-id
 
 ### CORS errors calling the API
 
-If you see CORS errors when calling `https://your-project.web.app/api/getConfig`:
+If you see CORS errors when calling `https://your-project.web.app/api/v1/config`:
 
 1. Ensure hosting is deployed: `firebase deploy --only hosting`
 2. The hosting config includes CORS headers for `/api/**`
@@ -576,9 +576,9 @@ router.on("routeChange", () => flags.refresh());
 
 | Endpoint                       | Firestore Reads                     | Function Cost | CDN-Cacheable?         |
 | ------------------------------ | ----------------------------------- | ------------- | ---------------------- |
-| `/api/getVersion`              | 1 (environment doc)                 | ~$0.0000004   | ✅ 15s                 |
-| `/api/getConfig` (server mode) | 2-3 (clientId + configs + segments) | ~$0.0000012   | ❌ (varies by context) |
-| `/api/getConfig` (client mode) | 2-3 (same)                          | ~$0.0000012   | ✅ 60s                 |
+| `/api/v1/version`              | 1 (environment doc)                 | ~$0.0000004   | ✅ 15s                 |
+| `/api/v1/config` (server mode) | 2-3 (clientId + configs + segments) | ~$0.0000012   | ❌ (varies by context) |
+| `/api/v1/config` (client mode) | 2-3 (same)                          | ~$0.0000012   | ✅ 60s                 |
 
 At the free tier limits (2M invocations/month + 50K reads/day), you can serve **~50,000 active users** polling every 5 minutes at zero cost.
 

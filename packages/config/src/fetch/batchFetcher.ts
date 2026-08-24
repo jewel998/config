@@ -13,18 +13,18 @@ export const createBatchFetcher = (
   transport: HttpTransport,
 ): ConfigFetcher => ({
   async fetchAll(): Promise<Record<string, unknown>> {
-    const response = await transport.request<GetConfigResponse>("getConfig");
+    const response = await transport.request<GetConfigResponse>("v1/config");
     return response.data;
   },
 
   async fetchKeys(_keys: string[]): Promise<Record<string, unknown>> {
     // Batch mode always fetches everything
-    const response = await transport.request<GetConfigResponse>("getConfig");
+    const response = await transport.request<GetConfigResponse>("v1/config");
     return response.data;
   },
 
   async checkVersion(): Promise<{ version: string; changedKeys: string[] }> {
-    const response = await transport.request<VersionResponse>("getVersion");
+    const response = await transport.request<VersionResponse>("v1/version");
     return {
       version: String(response.version),
       changedKeys: response.changedKeys ?? [],

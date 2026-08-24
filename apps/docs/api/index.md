@@ -140,7 +140,7 @@ config.getFlag("feature.new_checkout"); // → true
 The API returns full flag data (targeting rules, segments, rollout percentages). The SDK evaluates everything locally using the plugin pipeline. Best for advanced frontend scenarios that need instant re-evaluation without network round-trips.
 
 ::: warning Browser-only SDK
-The `@jewel998/config` SDK is browser-only — it throws an error if `window` is undefined. For Node.js/server-side usage, call the `/api/getConfig` endpoint directly with a `svr_` key and evaluate locally using your own logic, or use the server evaluator from the functions package.
+The `@jewel998/config` SDK is browser-only — it throws an error if `window` is undefined. For Node.js/server-side usage, call the `/api/v1/config` endpoint directly with a `svr_` key and evaluate locally using your own logic, or use the server evaluator from the functions package.
 :::
 
 ```ts
@@ -199,7 +199,7 @@ const context = mergeContext(autoContext(), {
 
 ### Version-Gated Refresh
 
-When `refresh()` is called, the SDK first calls `/api/getVersion` (tiny response: version number + changed keys). If the version matches the cached one, the full `/api/getConfig` call is skipped entirely. This means most refresh cycles cost almost nothing.
+When `refresh()` is called, the SDK first calls `/api/v1/version` (tiny response: version number + changed keys). If the version matches the cached one, the full `/api/v1/config` call is skipped entirely. This means most refresh cycles cost almost nothing.
 
 ```ts
 // This only hits /getConfig if the version has actually changed

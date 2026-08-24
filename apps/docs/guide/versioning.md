@@ -55,7 +55,7 @@ git tag -l "v*"
 
 Each environment maintains a `configVersion` counter that increments on every change:
 
-- The SDK polls `/api/getVersion` to check the current version number
+- The SDK polls `/api/v1/version` to check the current version number
 - If the version hasn't changed, no full config fetch is needed (saves bandwidth and cost)
 - The version is per-environment — changes in staging don't affect production's version
 

@@ -226,7 +226,7 @@ API keys always bind to a specific environment scope, ensuring complete data iso
 Here's how Context, Segments, and Scopes work in concert:
 
 ```
-Request: SDK sends clientId + context to /api/getConfig
+Request: SDK sends clientId + context to /api/v1/config
          ↓
 Step 1 (Scope): clientId resolves → Project "Dashboard" + Environment "Production"
          ↓

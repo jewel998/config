@@ -132,7 +132,7 @@ export function initConfig(options: InitConfigOptions): Flags {
   async function checkVersion(): Promise<void> {
     try {
       const res = await fetch(
-        `${baseUrl}/getVersion?clientId=${options.clientId}`,
+        `${baseUrl}/v1/version?clientId=${options.clientId}`,
         {
           headers: cachedVersion
             ? { "If-None-Match": `"${cachedVersion}"` }

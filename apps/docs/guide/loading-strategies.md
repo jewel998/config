@@ -114,7 +114,7 @@ The SDK blocks initialization until the API responds (or a timeout is reached). 
 
 ```
 1. createConfig() called
-2. Start fetch to /api/getConfig
+2. Start fetch to /api/v1/config
 3. Wait for response (or timeout)
 4. If success: return with real data → no flash, no defaults
 5. If timeout/error: fall back to cache or defaults → emit "fetchError"

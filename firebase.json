@@ -30,12 +30,12 @@
     "public": "apps/portal/dist",
     "rewrites": [
       {
-        "source": "/api/getConfig",
+        "source": "/api/v1/config",
         "function": "getConfig",
         "region": "asia-south1"
       },
       {
-        "source": "/api/getVersion",
+        "source": "/api/v1/version",
         "function": "getVersion",
         "region": "asia-south1"
       }

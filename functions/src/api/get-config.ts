@@ -27,8 +27,8 @@ import { fetchConfigs } from "./middleware/fetch-configs.js";
 import { checkRateLimit } from "./middleware/rate-limit.js";
 
 /**
- * GET  /api/getConfig?clientId=cid_xxx
- * POST /api/getConfig  { data: { clientId: "cid_xxx", keys?: ["a","b"] } }
+ * GET  /api/v1/config?clientId=cid_xxx
+ * POST /api/v1/config  { data: { clientId: "cid_xxx", keys?: ["a","b"] } }
  *
  * Config delivery API for the @jewel998/config SDK.
  *

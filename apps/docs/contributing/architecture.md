@@ -20,8 +20,8 @@ flowchart LR
     end
 
     App --> SDK
-    SDK -->|"GET /api/getVersion"| CDN
-    SDK -->|"POST /api/getConfig"| CDN
+    SDK -->|"GET /api/v1/version"| CDN
+    SDK -->|"POST /api/v1/config"| CDN
     CDN -->|cache miss| CF
     CF -->|read/write| FS
     Portal -->|mutations| FS

@@ -105,7 +105,7 @@ config.getFlag("feature.checkout_v2"); // Evaluated locally — no round-trip
 │  const flags = initConfig({ clientId, baseUrl })    │
 │  flags.get("feature.dark_mode") → true              │
 └──────────────────────┬──────────────────────────────┘
-                       │ POST /api/getConfig
+                       │ POST /api/v1/config
                        ▼
 ┌──────────────────────────────────────────────────────┐
 │ Your Firebase Hosting (CDN cached)                   │
@@ -137,7 +137,7 @@ config.getFlag("feature.checkout_v2"); // Evaluated locally — no round-trip
 
 ## API Reference
 
-### POST /api/getConfig
+### POST /api/v1/config
 
 The SDK calls this endpoint. Mode is determined by the API key prefix.
 

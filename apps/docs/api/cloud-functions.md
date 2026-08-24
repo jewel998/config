@@ -6,8 +6,8 @@ All Cloud Functions deployed as part of @jewel998/config, their purposes, and ho
 
 | Function          | Type              | Trigger               | Purpose                                         |
 | ----------------- | ----------------- | --------------------- | ----------------------------------------------- |
-| `getConfig`       | HTTP (onRequest)  | `POST /api/getConfig` | Deliver resolved config values to the SDK       |
-| `getVersion`      | HTTP (onRequest)  | `GET /api/getVersion` | Lightweight version check for polling           |
+| `getConfig`       | HTTP (onRequest)  | `POST /api/v1/config` | Deliver resolved config values to the SDK       |
+| `getVersion`      | HTTP (onRequest)  | `GET /api/v1/version` | Lightweight version check for polling           |
 | `validateSignIn`  | Blocking          | Before user sign-in   | Enforce access control (email/domain allowlist) |
 | `onAuditCreated`  | Firestore Trigger | New audit log entry   | Dispatch webhooks to configured endpoints       |
 | `importConfigs`   | Callable (onCall) | Portal / programmatic | Bulk import configs with validation             |
@@ -70,7 +70,7 @@ flowchart TB
 ## getConfig
 
 **Type:** HTTP onRequest (CORS enabled)  
-**URL:** `POST https://your-project.web.app/api/getConfig`  
+**URL:** `POST https://your-project.web.app/api/v1/config`  
 **CDN Cache:** 60s for client-mode (`svr_` keys return full data, CDN-cacheable), private for server-mode (`cid_` keys return user-specific resolved values, not cacheable)
 
 ### Flow
@@ -82,7 +82,7 @@ sequenceDiagram
     participant getConfig
     participant Firestore
 
-    SDK->>CDN: POST /api/getConfig {clientId}
+    SDK->>CDN: POST /api/v1/config {clientId}
     CDN->>CDN: Cache hit?
     alt Cache hit
         CDN-->>SDK: Cached response
@@ -142,7 +142,7 @@ sequenceDiagram
 ## getVersion
 
 **Type:** HTTP onRequest (CORS enabled)  
-**URL:** `GET https://your-project.web.app/api/getVersion?clientId=cid_xxx`  
+**URL:** `GET https://your-project.web.app/api/v1/version?clientId=cid_xxx`  
 **CDN Cache:** 15s (public)
 
 ### Flow
@@ -154,7 +154,7 @@ sequenceDiagram
     participant getVersion
     participant Firestore
 
-    SDK->>CDN: GET /api/getVersion?clientId=cid_xxx
+    SDK->>CDN: GET /api/v1/version?clientId=cid_xxx
     Note over SDK,CDN: If-None-Match: "42"
     CDN->>getVersion: Forward (cache miss)
     getVersion->>Firestore: Authenticate clientId
