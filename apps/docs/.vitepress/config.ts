@@ -1,5 +1,6 @@
 import { defineConfig } from "vitepress";
 import { withMermaid } from "vitepress-plugin-mermaid";
+import taskLists from "markdown-it-task-lists";
 
 export default withMermaid(
   defineConfig({
@@ -8,6 +9,11 @@ export default withMermaid(
       "A free, self-hostable feature flag and remote configuration platform for startups.",
     base: "/config/",
     sitemap: { hostname: "https://jewel998.github.io/config/" },
+    markdown: {
+      config: (md) => {
+        md.use(taskLists);
+      },
+    },
     themeConfig: {
       siteTitle: "Docs",
       logoLink: "https://jewel998.github.io/config/",
