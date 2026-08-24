@@ -344,30 +344,120 @@ firebase deploy --only functions:getConfig,functions:getVersion --project your-p
 
 All function behavior is controlled via `functions/src/utils/constants.ts`:
 
-| Constant                 | Default         | Description                                                   |
-| ------------------------ | --------------- | ------------------------------------------------------------- |
-| `API_REGION`             | `"asia-south1"` | Region for API functions. Must match your Firestore location. |
-| `MAX_INSTANCES`          | `10`            | Maximum concurrent function instances                         |
-| `MIN_INSTANCES`          | `0`             | Minimum warm instances (0 = free, 1+ eliminates cold starts)  |
-| `RATE_LIMIT_ENABLED`     | `true`          | Whether server-side rate limiting is active                   |
-| `RATE_LIMIT_CLIENT_RPM`  | `300`           | Max requests/minute for `cid_` keys                           |
-| `RATE_LIMIT_SERVER_RPM`  | `120`           | Max requests/minute for `svr_` keys                           |
-| `MAX_CONTEXT_SIZE_BYTES` | `10240`         | Maximum context payload size (10KB)                           |
-| `CDN_CACHE_SECONDS`      | `60`            | Default CDN cache duration                                    |
-| `MAX_BATCH_SIZE`         | `500`           | Firestore batch write limit                                   |
+| Constant                 | Default         | Description                                                  |
+| ------------------------ | --------------- | ------------------------------------------------------------ |
+| `API_REGION`             | `"asia-south1"` | Region for HTTP API functions (getConfig, getVersion)        |
+| `MAX_INSTANCES`          | `10`            | Maximum concurrent function instances                        |
+| `MIN_INSTANCES`          | `0`             | Minimum warm instances (0 = free, 1+ eliminates cold starts) |
+| `RATE_LIMIT_ENABLED`     | `true`          | Whether server-side rate limiting is active                  |
+| `RATE_LIMIT_CLIENT_RPM`  | `300`           | Max requests/minute for `cid_` keys                          |
+| `RATE_LIMIT_SERVER_RPM`  | `120`           | Max requests/minute for `svr_` keys                          |
+| `MAX_CONTEXT_SIZE_BYTES` | `10240`         | Maximum context payload size (10KB)                          |
+| `CDN_CACHE_SECONDS`      | `60`            | Default CDN cache duration                                   |
+| `MAX_BATCH_SIZE`         | `500`           | Firestore batch write limit                                  |
 
-#### Changing the Region
+### Changing the Region
 
-1. Edit `API_REGION` in `functions/src/utils/constants.ts`
-2. Update the `region` values in `firebase.json` hosting rewrites to match
-3. Ensure your Firestore database is in the same region (cross-region adds 200-400ms per query)
-4. Redeploy: `firebase deploy --only functions,hosting`
+The codebase defaults to **`asia-south1` (Mumbai)**. If your users are in a different geography, you need to change the region in **three places** before deploying:
 
-::: warning Region + Firestore must match
-If your functions are in `asia-south1` but Firestore is in `us-central1`, every Firestore query adds a cross-continent round-trip. Always create your Firestore database in the same region as your functions.
+#### Step 1: Change the function region
+
+Edit `functions/src/utils/constants.ts`:
+
+```typescript
+// Change to the region closest to your users and Firestore database
+export const API_REGION = "us-central1"; // or "europe-west1", "asia-southeast1", etc.
+```
+
+This controls the region for `getConfig` and `getVersion` (the HTTP API functions).
+
+#### Step 2: Change the hosting rewrites
+
+Edit `firebase.json` — update the `region` field in both rewrites to match:
+
+```json
+{
+  "hosting": {
+    "rewrites": [
+      {
+        "source": "/api/v1/config",
+        "function": "getConfig",
+        "region": "us-central1" // ← Must match API_REGION
+      },
+      {
+        "source": "/api/v1/version",
+        "function": "getVersion",
+        "region": "us-central1" // ← Must match API_REGION
+      }
+    ]
+  }
+}
+```
+
+::: danger Rewrites MUST match the function region
+If the region in `firebase.json` doesn't match the region your functions are actually deployed to, the hosting rewrites will return 404 errors. These two values must always be in sync.
 :::
 
-#### Eliminating Cold Starts
+#### Step 3: Create Firestore in the same region
+
+Your Firestore database **must** be in the same region as your functions. When creating your Firebase project:
+
+1. Firebase Console → Firestore Database → Create database
+2. Select the **same region** as your `API_REGION`
+
+If your Firestore is already in a different region, you cannot move it. Either:
+
+- Change `API_REGION` to match your existing Firestore region, or
+- Create a new Firestore database in the correct region (see [Backup & Restore](/guide/backup-restore))
+
+#### Available Regions
+
+| Region                 | Location      | Best For                              |
+| ---------------------- | ------------- | ------------------------------------- |
+| `asia-south1`          | Mumbai, India | South Asia (default in this codebase) |
+| `us-central1`          | Iowa, USA     | North America                         |
+| `europe-west1`         | Belgium       | Europe                                |
+| `asia-southeast1`      | Singapore     | Southeast Asia, Oceania               |
+| `asia-east1`           | Taiwan        | East Asia                             |
+| `asia-northeast1`      | Tokyo         | Japan, Korea                          |
+| `australia-southeast1` | Sydney        | Australia, New Zealand                |
+| `southamerica-east1`   | São Paulo     | South America                         |
+
+::: tip Choosing a region
+Pick the region closest to the majority of your users. The Firebase Hosting CDN caches responses at edge nodes globally, so even users far from your function region will get fast responses on cache hits. The region mainly affects cache-miss latency and cold-start responsiveness.
+:::
+
+#### What about other functions?
+
+The `API_REGION` constant applies to `getConfig` and `getVersion` only. The other functions (`onAuditCreated`, `importConfigs`, `exportConfigs`, etc.) deploy to the default region or can be configured individually:
+
+| Function          | Region Behavior          | Notes                                                  |
+| ----------------- | ------------------------ | ------------------------------------------------------ |
+| `getConfig`       | Uses `API_REGION`        | SDK-facing, latency-critical                           |
+| `getVersion`      | Uses `API_REGION`        | SDK-facing, latency-critical                           |
+| `validateSignIn`  | Firebase default         | Blocking function — region is managed by Firebase Auth |
+| `validateCreate`  | Firebase default         | Blocking function — region is managed by Firebase Auth |
+| `onAuditCreated`  | Firestore trigger region | Must match your Firestore database region              |
+| `importConfigs`   | Default (us-central1)    | Portal-facing, not latency-critical                    |
+| `exportConfigs`   | Default (us-central1)    | Portal-facing, not latency-critical                    |
+| `retryFailedRows` | Default (us-central1)    | Portal-facing, not latency-critical                    |
+| `testWebhook`     | Default (us-central1)    | Portal-facing, not latency-critical                    |
+
+For `onAuditCreated` (the Firestore trigger), ensure it's deployed in the same region as your Firestore database. If you're using a non-default region, update its configuration:
+
+```typescript
+// functions/src/triggers/on-audit-created.ts
+export const createOnAuditCreated = () =>
+  onDocumentCreated(
+    {
+      document: "projects/{projectId}/audit_log/{entryId}",
+      region: "us-central1", // ← Change to match your Firestore region
+    },
+    async (event) => { ... }
+  );
+```
+
+### Eliminating Cold Starts
 
 Set `MIN_INSTANCES = 1` to keep one function instance warm at all times. This eliminates the 2-4 second cold start penalty but costs ~$3-5/month on the Blaze plan.
 
@@ -385,17 +475,3 @@ The following GCP APIs must be enabled (the CLI enables them automatically on fi
 - Artifact Registry API
 - Eventarc API (for Firestore triggers)
 - Cloud Run API
-
-### Regions
-
-| Function       | Region      | Why                                                               |
-| -------------- | ----------- | ----------------------------------------------------------------- |
-| getConfig      | us-central1 | Close to CDN edge, lowest latency                                 |
-| getVersion     | us-central1 | Same as getConfig                                                 |
-| onAuditCreated | us-central1 | Default (configure region in code if your Firestore is elsewhere) |
-| Callables      | us-central1 | Default                                                           |
-| validateSignIn | us-central1 | Global (runs before auth)                                         |
-
-::: tip Changing Regions
-All functions default to `us-central1`. If your Firestore database is in a different region, you can set the `region` option in each function's configuration object (e.g., `onDocumentCreated({ document: "...", region: "europe-west1" })`). Deploy Firestore triggers in the same region as your database for lowest latency.
-:::
