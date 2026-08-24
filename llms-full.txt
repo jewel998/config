@@ -1,0 +1,533 @@
+# @jewel998/config — Complete Documentation
+
+> Free, self-hosted feature flag and remote configuration SDK. Replaces LaunchDarkly at $0/month. Runs entirely on Firebase free tier.
+
+- GitHub: https://github.com/jewel998/config
+- npm: https://www.npmjs.com/package/@jewel998/config
+- Docs: https://jewel998.github.io/config/
+- License: Elastic License 2.0
+
+---
+
+## Installation
+
+```bash
+npm install @jewel998/config
+```
+
+---
+
+## Quick Start (Frontend / Client-side)
+
+```typescript
+import { initConfig, autoContext } from "@jewel998/config";
+
+const flags = initConfig({
+  clientId: "cid_xxx",           // From Portal → API Keys
+  baseUrl: "https://your-project.web.app/api",
+  defaults: {
+    "feature.dark_mode": false,
+    "app.upload_limit": 50,
+    "feature.new_checkout": false,
+  },
+  context: autoContext({ userId: "user_123", plan: "pro" }),
+});
+
+// Instant read — returns default before API responds
+flags.get("feature.dark_mode"); // → false
+
+// After API resolves
+flags.on("updated", ({ keys }) => {
+  flags.get("feature.dark_mode"); // → true
+});
+```
+
+## Quick Start (Server-side / Backend with local evaluation)
+
+```typescript
+import { createConfig } from "@jewel998/config";
+import { targetingPlugin } from "@jewel998/config/targeting";
+import { rolloutPlugin } from "@jewel998/config/rollout";
+
+const config = createConfig({
+  clientId: "svr_xxx",
+  baseUrl: "https://your-project.web.app/api",
+  plugins: [targetingPlugin(), rolloutPlugin()],
+  context: { userId: "user_123", attributes: { plan: "pro", country: "US" } },
+});
+
+config.getFlag("feature.checkout_v2"); // Evaluated locally — no round-trip
+```
+
+---
+
+## Concepts & Glossary
+
+- **Config / Feature Flag** — A key-value pair that controls application behavior at runtime. Types: boolean, string, number, JSON, array.
+- **Context** — User attributes sent to the API for evaluation (userId, plan, country, etc.).
+- **Segments** — Reusable audience groups defined by conditions on context attributes.
+- **Targeting Rules** — Rules matching context or segment membership to return specific values. Evaluated in priority order.
+- **Rollouts** — Percentage-based gradual release using deterministic hashing (MurmurHash3).
+- **Prerequisites** — Flag dependencies where Flag B requires Flag A to meet a condition.
+- **Scheduling** — One-shot time-based flag activation at a specific date/time.
+- **Environments** — Isolated deployment stages (dev/staging/prod) with independent configs.
+- **API Keys** — Client keys (cid_) = server-side evaluation. Server keys (svr_) = client-side evaluation.
+- **Evaluation Pipeline** — Order: archived → prerequisites → overrides → schedule → targeting → rollout → default.
+- **Loading Strategies** — optimistic (instant defaults), pessimistic (blocks until fetch), deferred (manual trigger).
+- **Circuit Breaker** — Stops requests for 5 min after fatal errors (401/403).
+- **RBAC** — Viewer (read), Editor (read/write configs), Admin (full access).
+
+---
+
+## SDK API Reference
+
+### initConfig(options) → Flags
+
+Primary entry point. Returns instant defaults, resolves to real values in background.
+
+#### InitConfigOptions
+
+| Property       | Type                  | Default             | Description                                    |
+| -------------- | --------------------- | ------------------- | ---------------------------------------------- |
+| clientId       | string                | (required)          | API key from Portal (cid_ or svr_)             |
+| baseUrl        | string                | Demo instance URL   | Your self-hosted Firebase API URL              |
+| defaults       | Record<string, any>   | {}                  | Fallback values returned instantly             |
+| context        | EvaluationContext     | {}                  | User context for targeting                     |
+| pollInterval   | number                | 300000 (5 min)      | Version poll interval ms (0 to disable)        |
+| storage        | CacheStorage          | memoryStorage()     | Cache adapter                                  |
+
+#### Flags methods
+
+| Method       | Signature                          | Description                               |
+| ------------ | ---------------------------------- | ----------------------------------------- |
+| get          | <T>(key: string) => T              | Get a flag value (default until resolved) |
+| flag         | (key: string) => boolean           | Get boolean flag (false if missing)       |
+| all          | () => Record<string, unknown>      | Get all values                            |
+| setContext   | (ctx: EvaluationContext) => void   | Update context (triggers re-fetch)        |
+| refresh      | () => Promise<void>                | Force re-fetch from API                   |
+| on           | (event, callback) => void          | Subscribe to events                       |
+| off          | (event, callback) => void          | Unsubscribe                               |
+
+### createConfig(options) → ConfigClient
+
+Advanced entry point with full control over loading, plugins, and caching.
+
+#### CreateConfigOptions
+
+| Property          | Type                                          | Default        | Description                              |
+| ----------------- | --------------------------------------------- | -------------- | ---------------------------------------- |
+| clientId          | string                                        | (required)     | API key (prefix determines eval mode)    |
+| loadingStrategy   | "optimistic" | "pessimistic" | "deferred"    | "optimistic"   | How data is loaded on init               |
+| fetchGranularity  | "batch" | "projected"                       | "batch"        | Fetch all keys or only requested ones    |
+| storage           | CacheStorage                                  | memoryStorage  | Cache adapter                            |
+| plugins           | EvaluationPlugin[]                            | []             | Client-mode evaluation plugins           |
+| context           | EvaluationContext                             | {}             | User context                             |
+| retry             | RetryConfig                                   | 3 retries      | Retry config for failed fetches          |
+| timeout           | number                                        | 10000          | Pessimistic mode timeout (ms)            |
+| baseUrl           | string                                        | Demo URL       | Custom API endpoint                      |
+| consentAware      | boolean                                       | false          | GDPR mode: defaults until consent        |
+
+#### ConfigClient methods
+
+| Method       | Signature                            | Description                              |
+| ------------ | ------------------------------------ | ---------------------------------------- |
+| getValue     | <T>(key: string, default?: T) => T   | Get a typed config value                 |
+| getFlag      | (key: string) => boolean             | Get boolean flag                         |
+| getAll       | () => Record<string, unknown>        | Get all key-value pairs                  |
+| refresh      | () => Promise<void>                  | Version-gated re-fetch                   |
+| setContext   | (ctx: EvaluationContext) => void     | Update context                           |
+| on/off       | (event, callback) => void            | Event subscription                       |
+| destroy      | () => void                           | Cleanup timers and state                 |
+
+### EvaluationContext
+
+```typescript
+interface EvaluationContext {
+  userId?: string;
+  attributes?: Record<string, string | number | boolean | string[]>;
+  consentGranted?: boolean;
+}
+```
+
+### autoContext(overrides?)
+
+Auto-detects browser/device attributes and merges with provided overrides.
+
+Detected attributes: browser, browserVersion, os, device, screenWidth, screenHeight, locale, timezone.
+
+```typescript
+import { autoContext } from "@jewel998/config";
+const ctx = autoContext({ userId: "user_123", plan: "pro" });
+```
+
+### mergeContext(base, overrides)
+
+Deep-merge contexts. Override values take precedence.
+
+```typescript
+import { autoContext, mergeContext } from "@jewel998/config";
+const context = mergeContext(autoContext(), { userId: "user_123", attributes: { plan: "pro" } });
+```
+
+---
+
+## Package Exports
+
+| Export Path                      | Description                    |
+| -------------------------------- | ------------------------------ |
+| @jewel998/config                 | Main SDK (initConfig, etc.)    |
+| @jewel998/config/server          | Server utilities               |
+| @jewel998/config/storage         | Memory storage adapter         |
+| @jewel998/config/targeting       | Targeting evaluation plugin    |
+| @jewel998/config/rollout         | Percentage rollout plugin      |
+| @jewel998/config/schedule        | Scheduling plugin              |
+| @jewel998/config/prerequisites   | Flag prerequisites plugin      |
+| @jewel998/config/lifecycle       | Lifecycle hooks plugin         |
+| @jewel998/config/overrides       | Local overrides plugin         |
+| @jewel998/config/management      | Management API client          |
+
+---
+
+## Events
+
+| Event        | Payload                                                    | Description           |
+| ------------ | ---------------------------------------------------------- | --------------------- |
+| ready        | { loadingStrategy, cachedKeys }                            | SDK initialized       |
+| updated      | { keys: string[], source: "background"|"refresh"|"version-check" } | Values changed |
+| fetchError   | { error, retryCount, willRetry }                           | Fetch failed          |
+| revoked      | { clientId, message }                                      | API key revoked       |
+
+---
+
+## API Key Types
+
+| Prefix | Type   | Use In              | Behavior                                              |
+| ------ | ------ | ------------------- | ----------------------------------------------------- |
+| cid_   | Client | Frontend            | API evaluates targeting server-side, returns values   |
+| svr_   | Server | Frontend (advanced) | Returns full flag data for local evaluation           |
+
+---
+
+## Loading Strategies
+
+### Optimistic (default)
+
+Instant init with defaults/cache. Background fetch. Emits "updated" on resolve.
+
+```typescript
+const flags = initConfig({ clientId: "cid_xxx", defaults: {...} });
+flags.get("key"); // → default (instant)
+flags.on("updated", () => { /* re-render */ });
+```
+
+### Pessimistic
+
+Blocks until API responds or timeout.
+
+```typescript
+const config = createConfig({
+  clientId: "cid_xxx",
+  loadingStrategy: "pessimistic",
+  timeout: 5000,
+});
+await config.ready();
+config.getFlag("key"); // → real value
+```
+
+### Deferred
+
+No network until you trigger manually.
+
+```typescript
+const config = createConfig({
+  clientId: "cid_xxx",
+  loadingStrategy: "deferred",
+});
+// Later:
+config.setContext({ userId: "user_123" });
+await config.refresh();
+```
+
+---
+
+## Storage & Caching
+
+### memoryStorage() (default)
+
+Does not persist across reloads. Lost on page unload.
+
+### browserStorage(options?)
+
+Persists in localStorage across page reloads and tabs.
+
+```typescript
+import { initConfig, browserStorage } from "@jewel998/config";
+const flags = initConfig({
+  clientId: "cid_xxx",
+  storage: browserStorage({ prefix: "myapp", defaultTtl: 86_400_000 }),
+});
+```
+
+Options: prefix (string, default "@jewel998/config"), defaultTtl (number, default 7 days in ms).
+
+### Custom CacheStorage interface
+
+```typescript
+interface CacheStorage {
+  get<T>(key: string): T | undefined;
+  set<T>(key: string, value: T, ttl?: number): void;
+  delete(key: string): void;
+  clear(): void;
+}
+```
+
+---
+
+## Segments
+
+Reusable audience groups defined by conditions on user context attributes. Define once, reference in targeting rules across many flags.
+
+### Condition Logic (DNF)
+
+- Conditions within a group = AND
+- Groups connected by OR
+
+### Supported Operators
+
+equals, not_equals, contains, starts_with, ends_with, in_list, not_in_list, greater_than, less_than, regex_match
+
+---
+
+## Targeting Rules
+
+Rules evaluated in priority order. First match wins. Two types:
+
+1. Segment-based (recommended) — pick segments, assign value
+2. Condition-based (advanced) — custom attribute conditions
+
+### Evaluation Pipeline Order
+
+1. Archived → 2. Prerequisites → 3. Overrides → 4. Schedule → 5. Targeting Rules → 6. Rollout → 7. Default
+
+---
+
+## Percentage Rollouts
+
+Deterministic bucketing: `MurmurHash3(flagKey + ":" + userId) % 100`
+
+- Same user always gets same bucket for a given flag
+- Different flags give different buckets
+- Increasing percentage is additive (existing users keep the feature)
+- Requires userId in context
+
+---
+
+## Prerequisites
+
+Flag dependencies. "Feature B only active if Feature A meets condition."
+
+Operators: equals, not_equals, greater_than, less_than, contains.
+
+Circular dependency protection: self-reference detected, circular chains broken, max 5 levels deep.
+
+---
+
+## Scheduling
+
+One-shot time-based flag activation. Once activateAt time passes, scheduled value is returned permanently.
+
+Priority: Prerequisites → Overrides → **Schedule** → Targeting → Rollout → Default.
+
+---
+
+## Environments
+
+Fully isolated deployment stages. Each has own configs, API keys, targeting rules, domain restrictions.
+
+---
+
+## Team & RBAC
+
+| Role   | Configs    | Segments   | API Keys | Settings | Team |
+| ------ | ---------- | ---------- | -------- | -------- | ---- |
+| Viewer | Read       | Read       | Read     | Read     | Read |
+| Editor | Read/Write | Read/Write | Read     | Read     | Read |
+| Admin  | Full       | Full       | Full     | Full     | Full |
+
+---
+
+## Webhooks
+
+Real-time HTTP notifications on config changes. Supports: Slack, Discord, Google Chat, MS Teams, custom templates.
+
+Filters: event types, resource categories, environments.
+
+Custom templates use {{variable}} syntax with dot-notation access.
+
+---
+
+## Audit Log
+
+Every portal change recorded: actor, action, resource, timestamp, old/new values, diff viewer.
+
+---
+
+## Import / Export
+
+Import: CSV or JSON. Conflict resolution: skip, overwrite, review.
+The portal writes imports directly to Firestore (no Cloud Function needed).
+Export: Full project or user-specific (GDPR Article 20). 24-hour download links. Uses the `exportConfigs` cloud function.
+
+---
+
+## Cloud Functions (Deployed)
+
+| Function          | Trigger                 | Purpose                                     |
+| ----------------- | ----------------------- | ------------------------------------------- |
+| getConfig         | POST /api/v1/config     | Deliver resolved config values to SDK       |
+| getVersion        | GET /api/v1/version     | Lightweight version check for polling       |
+| validateSignIn    | Before user sign-in     | Enforce access control                      |
+| onAuditCreated    | Firestore trigger       | Dispatch webhooks                           |
+| exportConfigs     | Callable                | Export project data as JSON                 |
+| testWebhook       | Callable                | Send test payload to webhook URL            |
+
+### POST /api/v1/config
+
+Request:
+```json
+{
+  "data": {
+    "clientId": "cid_xxx",
+    "context": { "userId": "user_123", "attributes": { "plan": "pro" } }
+  }
+}
+```
+
+Response (cid_ key):
+```json
+{
+  "data": { "feature.dark_mode": true, "app.upload_limit": 200 },
+  "version": "3",
+  "timestamp": "2025-01-15T09:30:00.000Z"
+}
+```
+
+Response (svr_ key):
+```json
+{
+  "data": {
+    "feature.dark_mode": { "key": "feature.dark_mode", "value": false, "targetingRules": [...] }
+  },
+  "segments": { "seg_beta": { "id": "...", "conditions": [...] } },
+  "version": "3"
+}
+```
+
+Error codes: 400 BAD_REQUEST, 401 UNAUTHORIZED, 403 FORBIDDEN, 413 PAYLOAD_TOO_LARGE, 429 TOO_MANY_REQUESTS, 500 INTERNAL_ERROR.
+
+### GET /api/v1/version?clientId=cid_xxx
+
+Response:
+```json
+{ "version": "43", "changedKeys": ["feature.dark_mode"] }
+```
+
+Supports If-None-Match → 304 if unchanged.
+
+---
+
+## Error Handling
+
+The SDK never throws. Errors emitted via "fetchError" event.
+
+```typescript
+flags.on("fetchError", ({ error, willRetry }) => {
+  console.warn("Config fetch failed:", error.message);
+});
+```
+
+### Circuit Breaker
+
+CLOSED → normal | OPEN → blocks 5 min after 400/401/403 | HALF_OPEN → probes after cooldown.
+
+### Rate Limit Handling
+
+429 responses include Retry-After header. SDK waits the specified duration.
+
+```typescript
+import { RateLimitError } from "@jewel998/config";
+flags.on("fetchError", ({ error }) => {
+  if (error instanceof RateLimitError) {
+    console.warn(`Retry in ${error.retryAfterSeconds}s`);
+  }
+});
+```
+
+---
+
+## Self-Hosting
+
+```bash
+git clone https://github.com/jewel998/config && cd config
+firebase use --add your-project-id
+pnpm install
+pnpm --filter @jewel998/config-portal run build
+firebase deploy --force
+```
+
+Requirements: Node.js 22+, pnpm 9+, Firebase CLI, Firebase Blaze plan.
+
+### Cost
+
+| Scale              | Monthly Cost | Notes                                   |
+| ------------------ | ------------ | --------------------------------------- |
+| 1–1,000 users      | $0           | Within Firebase Spark free tier         |
+| 1,000–50,000 users | $0           | CDN handles most polls at edge          |
+| 50,000–100,000     | $0–5         | May exceed free function invocations    |
+| 100,000+           | $5–15        | Blaze plan with minimal overage         |
+
+---
+
+## Performance
+
+- Region match (functions + Firestore) = most important factor
+- CDN cache hit: 10-50ms
+- Warm function, same-region: 100-200ms
+- Cold start: 2-4s (eliminate with MIN_INSTANCES=1, ~$3-5/mo)
+- Use browserStorage() to eliminate API calls on return visits
+- Version polling checks 100-byte response every 5 min
+
+---
+
+## Architecture
+
+```
+App (SDK) → Firebase Hosting CDN → Cloud Function (getConfig) → Firestore
+Portal (React SPA) → Firestore (direct reads/writes with security rules)
+```
+
+## Monorepo Structure
+
+```
+apps/portal/    — Admin portal (React + Vite + TanStack Router)
+apps/landing/   — Marketing site (Astro + React)
+apps/docs/      — Documentation (VitePress)
+packages/api/   — Internal micro-framework for Cloud Functions
+packages/config/ — SDK (@jewel998/config)
+packages/tour/  — Tour framework
+functions/      — Firebase Cloud Functions
+```
+
+---
+
+## Comparison vs Competitors
+
+- vs LaunchDarkly: $0/month vs $10+/user/month. Self-hosted. Same core features.
+- vs Firebase Remote Config: Targeting rules, segments, rollouts, audit log, RBAC.
+- vs Unleash: No Docker/Postgres. Firebase-native. Free tier handles most apps.
+
+---
+
+## License
+
+Elastic License 2.0 — Use, modify, self-host freely. Cannot provide as managed service to third parties.
