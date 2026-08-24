@@ -24,15 +24,15 @@ The SDK is designed to minimize API costs by default. Here's how each feature sa
 
 ### Built-in Cost Savings
 
-| Feature                   | How It Saves Money                                                                                                                                                 |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Version-gated refresh** | `refresh()` calls `/getVersion` first (1 Firestore read, ~100 bytes). Only fetches full config if version changed. 95%+ of refresh cycles cost almost nothing.     |
-| **CDN caching**           | `/getVersion` cached 15s, `/getConfig` (client mode) cached 60s. At 10K users polling every 5 min, CDN serves 99% — only ~60 function calls/hour actually execute. |
-| **Circuit breaker**       | On 401/403, SDK stops all requests for 5 minutes. Prevents runaway costs from misconfigured clients.                                                               |
-| **Request deduplication** | Multiple `refresh()` calls within the same tick share a single network request.                                                                                    |
-| **30s stale check**       | `setContext()` skips re-fetch if the last fetch was <30s ago. Prevents unnecessary calls during rapid user interactions.                                           |
-| **7-day cache TTL**       | Once fetched, values persist in memory/localStorage for 7 days. Page refreshes use cached data immediately.                                                        |
-| **Conditional requests**  | `/getVersion` supports `If-None-Match` (ETag). When version is unchanged, server returns 304 with zero body.                                                       |
+| Feature                   | How It Saves Money                                                                                                                                                         |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Version-gated refresh** | `refresh()` calls `/api/v1/version` first (1 Firestore read, ~100 bytes). Only fetches full config if version changed. 95%+ of refresh cycles cost almost nothing.         |
+| **CDN caching**           | `/api/v1/version` cached 15s, `/api/v1/config` (client mode) cached 60s. At 10K users polling every 5 min, CDN serves 99% — only ~60 function calls/hour actually execute. |
+| **Circuit breaker**       | On 401/403, SDK stops all requests for 5 minutes. Prevents runaway costs from misconfigured clients.                                                                       |
+| **Request deduplication** | Multiple `refresh()` calls within the same tick share a single network request.                                                                                            |
+| **30s stale check**       | `setContext()` skips re-fetch if the last fetch was <30s ago. Prevents unnecessary calls during rapid user interactions.                                                   |
+| **7-day cache TTL**       | Once fetched, values persist in memory/localStorage for 7 days. Page refreshes use cached data immediately.                                                                |
+| **Conditional requests**  | `/api/v1/version` supports `If-None-Match` (ETag). When version is unchanged, server returns 304 with zero body.                                                           |
 
 ### Recommended Configuration for Cost Efficiency
 

@@ -204,7 +204,7 @@ const context = mergeContext(autoContext(), {
 When `refresh()` is called, the SDK first calls `/api/v1/version` (tiny response: version number + changed keys). If the version matches the cached one, the full `/api/v1/config` call is skipped entirely. This means most refresh cycles cost almost nothing.
 
 ```ts
-// This only hits /getConfig if the version has actually changed
+// This only hits /api/v1/config if the version has actually changed
 await config.refresh();
 ```
 
