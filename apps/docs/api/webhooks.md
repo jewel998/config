@@ -13,8 +13,8 @@ When any change happens in the portal (config created, targeting rule updated, f
 1. Writes an audit log entry
 2. Evaluates all active webhooks against their filters
 3. Formats the payload according to the webhook's configured format
-4. Dispatches HTTP POST requests to matching endpoints
-5. Logs the delivery result (success/failure)
+4. Dispatches HTTP requests to matching endpoints in parallel
+5. Logs the outcome (success / rejection / error) to Cloud Function logs
 
 ## Setup
 
@@ -269,11 +269,11 @@ Each webhook can be configured with filters to limit which events trigger a deli
 ## Delivery
 
 - Webhooks are delivered as HTTP POST requests with `Content-Type: application/json`.
+- The HTTP method defaults to POST and is controlled by the provider — overridable per platform if needed.
 - All webhook URLs must use HTTPS.
 - Deliveries time out after 10 seconds.
-- Failed deliveries are logged but not retried automatically.
+- Failed deliveries are logged to Cloud Function logs but not retried automatically.
 - Each project supports up to 10 webhooks.
-- Up to 20 delivery log entries are kept per webhook (oldest pruned).
 
 ## HTTP Headers
 
@@ -284,16 +284,6 @@ Every webhook delivery includes these headers:
 | `Content-Type`        | `application/json`          |
 | `X-Webhook-Id`        | The webhook's ID            |
 | `X-Webhook-Timestamp` | Unix epoch of dispatch time |
-
-## Delivery Log
-
-Each webhook keeps the last 20 delivery attempts visible in the portal:
-
-- **Timestamp** — When the delivery was attempted
-- **Status** — HTTP status code (or `null` if network failure)
-- **Duration** — Response time in milliseconds
-- **Success** — Whether a 2xx response was received
-- **Error** — Error message if delivery failed
 
 ## Testing
 

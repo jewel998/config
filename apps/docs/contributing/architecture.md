@@ -256,3 +256,4 @@ accessControl/default            — Sign-in allowlist (emails + regex patterns)
 - **Plugin pipeline** — Tree-shakeable evaluation steps for client-side and server-side mode
 - **CDN caching** — Firebase Hosting CDN absorbs 99%+ of read traffic
 - **`.unref()` on server timers** — Background refresh intervals don't prevent Node.js process exit
+- **Webhook provider hierarchy** — `WebhookFormatter` (Template Method) separates notification content from platform envelope; `WebhookProvider` owns dispatch lifecycle; `WebhookProviderFactory` (Factory) maps format strings to provider classes. Adding a new platform = one formatter + one provider + one registry entry.

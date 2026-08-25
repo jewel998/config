@@ -238,17 +238,19 @@ sequenceDiagram
     Firestore->>onAuditCreated: Trigger (new document)
     onAuditCreated->>Firestore: Read enabled webhooks
     onAuditCreated->>onAuditCreated: Filter pipeline<br/>(eventType, resource, environment)
-    onAuditCreated->>onAuditCreated: Format payload<br/>(Slack, Discord, Standard, etc.)
-    onAuditCreated->>Webhook: HTTP POST (parallel dispatch)
+    onAuditCreated->>onAuditCreated: Factory creates provider<br/>(Slack, Discord, Standard, etc.)
+    onAuditCreated->>onAuditCreated: Provider builds formatted payload
+    onAuditCreated->>Webhook: HTTP dispatch (parallel, per provider method)
     Webhook-->>onAuditCreated: Response
-    onAuditCreated->>Firestore: Write delivery log
+    onAuditCreated->>onAuditCreated: Log outcome to console
 ```
 
 ### Design Patterns Used
 
 - **Chain of Responsibility** — Filter pipeline (event type → resource category → environment)
-- **Strategy** — Formatter registry (standard, slack, discord, google-chat, ms-teams, custom)
-- **Adapter** — WebhookDispatcher interface (injectable for testing)
+- **Template Method** — `WebhookFormatter` base class owns `formatTitle/Body/Fields/Footer` defaults; subclasses override only what differs and implement `buildRequestBody()` for the platform envelope
+- **Factory** — `WebhookProviderFactory` maps `webhook.format` to the correct `WebhookProvider` subclass; adding a new platform requires one registry entry
+- **Adapter** — `WebhookDispatcher` interface (injectable for testing; swap `httpDispatcher` for a Cloud Tasks dispatcher without touching any other code)
 
 ---
 
@@ -283,7 +285,7 @@ sequenceDiagram
 **Type:** Callable (onCall)  
 **Auth:** Firebase Auth required (admin role)
 
-Sends a sample audit event payload to a webhook URL for testing. Uses the same formatter and dispatcher as `onAuditCreated`.
+Sends a sample audit event payload to a webhook URL for testing. Uses the same `WebhookProviderFactory` and `WebhookProvider` hierarchy as `onAuditCreated` — identical code path, with a `test: true` flag injected into the payload. Outcome is logged to console only.
 
 ---
 

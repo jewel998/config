@@ -47,22 +47,16 @@ For the "custom" format, use `{{variable}}` syntax to build your own payload:
 
 Available variables: `action`, `resourceCategory`, `resourcePath`, `resourceName`, `environment`, `actorId`, `timestamp`, `oldValue`, `newValue`, `projectId`, `webhookId`.
 
-## Delivery Log
+## Delivery Outcomes
 
-Each webhook keeps the last 20 delivery attempts showing:
-
-- Timestamp
-- HTTP status code
-- Success/failure
-- Response time (ms)
-- Error message (if failed)
+Webhook delivery outcomes are logged to Cloud Function logs (Google Cloud Logging), not stored in Firestore. Check your Firebase project's function logs to see delivery successes, rejections (non-2xx), and unexpected errors.
 
 ## Limits
 
 - Maximum 10 webhooks per project
 - 10-second timeout per dispatch
 - HTTPS URLs only
-- No automatic retries (failures are logged)
+- No automatic retries (failures are logged to Cloud Function logs)
 
 ## Handling Failures
 

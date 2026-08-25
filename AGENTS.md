@@ -113,6 +113,13 @@ firebase deploy
 - `packages/config/src/cache/` — Storage adapters
 - `functions/src/api/get-config.ts` — Main API endpoint
 - `functions/src/utils/constants.ts` — Function configuration (region, rate limits, etc.)
+- `functions/src/formatters/webhook-formatter.ts` — Abstract base class for all webhook formatters (formatTitle, formatBody, formatPrimaryFields, formatSecondaryFields, formatFooter, buildRequestBody)
+- `functions/src/formatters/` — Concrete formatter classes (Standard, Slack, Discord, MsTeams, GoogleChat, Custom)
+- `functions/src/providers/webhook-provider.ts` — Abstract base class for webhook providers (owns dispatch lifecycle, HTTP method, trigger())
+- `functions/src/providers/` — Concrete provider classes; each instantiates its formatter via createFormatter()
+- `functions/src/providers/webhook-provider-factory.ts` — Factory that maps webhook.format to the correct provider class
+- `functions/src/dispatcher/dispatch-webhook.ts` — Thin helper: factory.create() + provider.trigger()
+- `functions/src/triggers/on-audit-created.ts` — Firestore trigger that drives the full webhook dispatch pipeline
 - `apps/portal/src/` — Portal React app
 
 ## Testing Guidelines
