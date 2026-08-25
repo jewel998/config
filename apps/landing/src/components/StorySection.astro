@@ -60,23 +60,23 @@ import StoryInteractive from "./StoryInteractive";
       <div class="story-step" data-step="5">
         <div class="step-content">
           <span class="step-badge dev">Developer</span>
-          <h3>Monday: gradual rollout to Pro users</h3>
-          <p>Enterprise went great over the weekend. Now Emma adds a 50% rollout for Pro users. The system uses deterministic hashing (MurmurHash3) — Priya gets it, but another Pro user doesn't. Same user always gets the same result, no session stickiness needed.</p>
+          <h3>Monday: canary rollout to Pro users</h3>
+          <p>Enterprise went great over the weekend. Emma adds a 50% canary rollout for Pro users. This is <strong>sticky bucketing</strong> — MurmurHash3 deterministically assigns each userId to a bucket. Priya gets it, another Pro user doesn't. The same user always lands in the same bucket across sessions and devices — a key requirement for valid canary analysis.</p>
           <div class="step-detail glass-card">
             <code>hash("new_checkout:priya_id") % 100 → 34 &lt; 50</code>
-            <span>Priya is in. Consistent across sessions and devices.</span>
+            <span>Sticky bucketing. Consistent across sessions and devices.</span>
           </div>
         </div>
       </div>
 
       <div class="story-step" data-step="6">
         <div class="step-content">
-          <span class="step-badge kill">Emergency</span>
-          <h3>Bug found — killed in 2 seconds flat</h3>
-          <p>A payment edge case surfaces on Tuesday. Emma toggles the flag off in the portal. Within 2 seconds, every user's next request resolves to false. No deploy pipeline, no rollback, no hotfix branch. The old checkout is back for everyone instantly. Fix the bug, re-enable when ready.</p>
+          <span class="step-badge kill">Kill Switch</span>
+          <h3>Bug found — kill switch in 2 seconds flat</h3>
+          <p>A payment edge case surfaces on Tuesday. Emma hits the kill switch in the portal — sets the flag to false for all users. Within 2 seconds every user's next request resolves to false. No deploy pipeline, no rollback, no hotfix branch. The old checkout is back for everyone. Fix the bug, re-enable the canary when ready.</p>
           <div class="step-detail glass-card">
             <code>feature.new_checkout → false (all users)</code>
-            <span>Propagation: &lt;2 seconds. Zero downtime.</span>
+            <span>Kill switch. Propagation: &lt;2 seconds. Zero downtime.</span>
           </div>
         </div>
       </div>
