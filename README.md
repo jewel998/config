@@ -12,12 +12,16 @@ A free, self-hostable feature flag and remote configuration platform. Deploy to 
 ## Features
 
 - **Feature flags** — Boolean, string, number, JSON, array value types
-- **Targeting rules** — Serve different values based on user attributes (plan, country, etc.)
-- **Segments** — Reusable audience groups with one-click targeting
-- **Percentage rollouts** — Gradually roll out features with deterministic bucketing
-- **Prerequisites** — Flag dependencies with operator support (equals, greater_than, etc.)
-- **Scheduling** — Schedule config changes for a future date/time
-- **Environments** — Separate dev/staging/production configs
+- **A/B testing & multivariate testing** — Targeting rules with variant arms; sticky bucketing keeps users in a consistent group
+- **Canary releases & progressive delivery** — Percentage rollouts with deterministic bucketing (MurmurHash3); ramp 5% → 100% safely
+- **Kill switch** — Instantly revert any feature to its safe state with zero code deploy
+- **Targeting rules** — User segmentation: serve different values based on attributes (plan, country, role, etc.)
+- **Segments** — Reusable audience cohorts with one-click targeting across all flags
+- **Ring deployments** — Combine segments + rollouts to release through internal → beta → general rings
+- **Dark launch** — Deploy code behind a flag, activate on schedule without a new deploy
+- **Timed release** — Schedule flag changes for a precise date/time
+- **Prerequisites / guard flags** — Dependency-based feature gating; prevent inconsistent feature states
+- **Environments** — Separate dev/staging/production configs, keys, and targeting rules
 - **Audit log** — Track every change with actor, timestamp, and diff viewer
 - **Webhooks** — Notify Slack, Discord, Google Chat, MS Teams, or custom endpoints
 - **RBAC** — Viewer, Editor, Admin roles per project
