@@ -14,7 +14,7 @@ export const httpDispatcher: WebhookDispatcher = {
 
     try {
       const response = await fetch(url, {
-        method: "POST",
+        method: options.method,
         headers: options.headers,
         body: JSON.stringify(payload),
         signal: controller.signal,

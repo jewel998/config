@@ -1,15 +1,19 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 
-import { DISPATCH_TIMEOUT_MS } from "../constants";
-import { writeDeliveryLog } from "../delivery/write-delivery-log";
-import { httpDispatcher } from "../dispatcher/http.dispatcher";
-import { getFormatter } from "../formatters/registry";
-import type { AuditEntry, WebhookConfig } from "../types";
+import { WebhookProvider } from "../providers/webhook-provider";
+import { WebhookProviderFactory } from "../providers/webhook-provider-factory";
+import type { WebhookConfig } from "../types";
 import { getDb } from "../utils/firestore";
 
 /**
  * Callable function for testing webhook delivery.
- * Sends a sample payload to the configured URL and returns the result.
+ *
+ * Uses the same WebhookProvider + WebhookFormatter hierarchy as real dispatches:
+ *   1. Build a canonical test AuditEntry via WebhookProvider.buildTestEntry()
+ *   2. Create the correct provider via WebhookProviderFactory.create()
+ *   3. Trigger with mutatePayload to inject the test flag
+ *
+ * Outcome is logged to console only — no Firestore writes.
  */
 export const testWebhook = onCall<{ projectId: string; webhookId: string }>(async (request) => {
   if (!request.auth) {
@@ -46,41 +50,29 @@ export const testWebhook = onCall<{ projectId: string; webhookId: string }>(asyn
     throw new HttpsError("not-found", "Webhook not found");
   }
 
-  const webhook = {
-    id: webhookDoc.id,
-    ...webhookDoc.data(),
-  } as WebhookConfig;
+  const webhook = { id: webhookDoc.id, ...webhookDoc.data() } as WebhookConfig;
 
-  // Build sample test payload
-  const testEntry: AuditEntry = {
-    action: "update",
-    actorId: request.auth.uid,
-    timestamp: new Date().toISOString(),
-    resourcePath: "environments/test/configs/sample.flag",
-    oldValue: JSON.stringify({ value: false }),
-    newValue: JSON.stringify({ value: true }),
-  };
+  // Build canonical test entry, create provider — same path as real dispatches
+  const testEntry = WebhookProvider.buildTestEntry(request.auth.uid);
+  const provider = WebhookProviderFactory.create(webhook, testEntry, projectId);
 
-  const formatter = getFormatter(webhook.format);
-  const payload = formatter.format(testEntry, webhook, projectId);
-
-  // Add test flag
-  if (typeof payload === "object" && payload !== null) {
-    (payload as Record<string, unknown>).test = true;
-  }
-
-  // Dispatch
-  const result = await httpDispatcher.dispatch(webhook.url, payload, {
-    timeout: DISPATCH_TIMEOUT_MS,
-    headers: {
-      "Content-Type": formatter.contentType,
-      "X-Webhook-Id": webhook.id,
-      "X-Webhook-Timestamp": String(Math.floor(Date.now() / 1000)),
+  const result = await provider.trigger({
+    mutatePayload: (payload) => {
+      payload.test = true;
     },
   });
 
-  // Write delivery log
-  await writeDeliveryLog(projectId, webhookId, result, "test", true);
+  if (result.success) {
+    console.log(
+      `[testWebhook] Delivered webhook ${webhookId} (${webhook.format}) ` +
+        `— HTTP ${result.httpStatus} in ${result.duration}ms`,
+    );
+  } else {
+    console.error(
+      `[testWebhook] Failed to deliver webhook ${webhookId} (${webhook.format}) ` +
+        `— ${result.error ?? `HTTP ${result.httpStatus}`}`,
+    );
+  }
 
   return {
     success: result.success,

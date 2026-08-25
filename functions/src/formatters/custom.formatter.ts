@@ -1,55 +1,62 @@
-import type { AuditEntry, PayloadFormatter, WebhookConfig } from "../types";
-import {
-  getEnvironmentFromPath,
-  getResourceCategory,
-  formatResourceName,
-} from "../utils/audit-utils";
+import { WebhookFormatter } from "./webhook-formatter";
 
 /**
- * Custom template-based formatter.
+ * CustomFormatter — user-defined template with {{dot.notation}} interpolation.
  *
- * Reads the `customTemplate` field from the webhook config and interpolates
- * variables using {{dot.notation}} syntax.
+ * This formatter intentionally does NOT use the inherited format methods
+ * (formatTitle, formatBody, formatFields, formatSecondaryFields, formatFooter).
+ * The customTemplate string on the webhook config is the sole source of truth
+ * for the payload shape. Overriding those methods on this class has no effect.
  *
- * If the template is valid JSON, it parses and interpolates within it.
- * If it's plain text, it wraps the result in a standard `{ "text": "..." }` body.
+ * buildRequestBody() interpolates the template string with a fixed variable
+ * map and either parses the result as JSON (if valid) or wraps it in
+ * { text: "..." } for plain-text templates.
+ *
+ * Available template variables:
+ *   {{action}}              — e.g. "update"
+ *   {{resource.category}}   — e.g. "config"
+ *   {{resource.path}}       — full Firestore path
+ *   {{resource.name}}       — leaf resource name
+ *   {{environment}}         — environment name or ""
+ *   {{actor.id}}            — actorId from the audit entry
+ *   {{timestamp}}           — ISO timestamp
+ *   {{project.id}}          — projectId
+ *   {{changes.old}}         — raw old value string or ""
+ *   {{changes.new}}         — raw new value string or ""
+ *   {{webhook.id}}          — webhook document ID
  */
-export const customFormatter: PayloadFormatter = {
-  contentType: "application/json",
-
-  format(entry: AuditEntry, webhook: WebhookConfig, projectId: string) {
-    const template = webhook.customTemplate ?? "";
-    const environment = getEnvironmentFromPath(entry.resourcePath);
+export class CustomFormatter extends WebhookFormatter {
+  buildRequestBody(): unknown {
+    const template = this.webhook.customTemplate ?? "";
+    const { action, resourceName, category, environment } = this.ctx;
 
     const vars: Record<string, unknown> = {
-      action: entry.action,
+      action,
       resource: {
-        category: getResourceCategory(entry.resourcePath),
-        path: entry.resourcePath,
-        name: formatResourceName(entry.resourcePath),
+        category,
+        path: this.entry.resourcePath,
+        name: resourceName,
       },
       environment: environment ?? "",
-      actor: { id: entry.actorId },
-      timestamp: entry.timestamp,
-      project: { id: projectId },
+      actor: { id: this.entry.actorId },
+      timestamp: this.entry.timestamp,
+      project: { id: this.projectId },
       changes: {
-        old: entry.oldValue ?? "",
-        new: entry.newValue ?? "",
+        old: this.entry.oldValue ?? "",
+        new: this.entry.newValue ?? "",
       },
-      webhook: { id: webhook.id },
+      webhook: { id: this.webhook.id },
     };
 
     const interpolated = interpolate(template, vars);
 
-    // Try to parse as JSON — if it's valid JSON, return the parsed object
     try {
       return JSON.parse(interpolated);
     } catch {
-      // Plain text: wrap in a standard body
       return { text: interpolated };
     }
-  },
-};
+  }
+}
 
 function interpolate(template: string, vars: Record<string, unknown>): string {
   return template.replace(/\{\{([^}]+)\}\}/g, (_, path: string) => {

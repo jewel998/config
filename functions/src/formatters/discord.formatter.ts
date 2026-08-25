@@ -1,9 +1,4 @@
-import type { AuditEntry, PayloadFormatter, WebhookConfig } from "../types";
-import {
-  getEnvironmentFromPath,
-  getResourceCategory,
-  formatResourceName,
-} from "../utils/audit-utils";
+import { WebhookFormatter } from "./webhook-formatter";
 
 const ACTION_COLORS: Record<string, number> = {
   create: 0x57f287, // green
@@ -12,43 +7,32 @@ const ACTION_COLORS: Record<string, number> = {
   state_change: 0xfee75c, // yellow
 };
 
-const ACTION_EMOJI: Record<string, string> = {
-  create: "🟢",
-  update: "🔔",
-  delete: "🗑️",
-  state_change: "🔄",
-};
-
-export const discordFormatter: PayloadFormatter = {
-  contentType: "application/json",
-
-  format(entry: AuditEntry, _webhook: WebhookConfig, projectId: string) {
-    const action = entry.action;
-    const emoji = ACTION_EMOJI[action] ?? "🔔";
-    const color = ACTION_COLORS[action] ?? 0x5865f2;
-    const resourceName = formatResourceName(entry.resourcePath);
-    const category = getResourceCategory(entry.resourcePath);
-    const environment = getEnvironmentFromPath(entry.resourcePath) ?? "—";
+/**
+ * DiscordFormatter — Discord embed envelope.
+ *
+ * buildRequestBody() maps title/fields/footer into a Discord embed object.
+ * Fields become inline embed fields. Footer becomes the embed footer text.
+ */
+export class DiscordFormatter extends WebhookFormatter {
+  buildRequestBody(): unknown {
+    const title = this.formatTitle();
+    const fields = this.formatFields();
+    const footer = this.formatFooter();
+    const color = ACTION_COLORS[this.ctx.action] ?? 0x5865f2;
 
     return {
       embeds: [
         {
-          title: `${emoji} Config ${capitalize(action)}d`,
+          title,
           color,
-          fields: [
-            { name: "Resource", value: resourceName, inline: true },
-            { name: "Category", value: category, inline: true },
-            { name: "Environment", value: environment, inline: true },
-            { name: "Action", value: action, inline: true },
-            { name: "Actor", value: entry.actorId, inline: true },
-          ],
-          footer: { text: `${entry.timestamp} • ${projectId}` },
+          fields: fields.map((f) => ({
+            name: f.label,
+            value: f.value,
+            inline: true,
+          })),
+          footer: { text: footer },
         },
       ],
     };
-  },
-};
-
-function capitalize(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
+  }
 }

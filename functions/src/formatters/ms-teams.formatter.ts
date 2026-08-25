@@ -1,26 +1,16 @@
-import type { AuditEntry, PayloadFormatter, WebhookConfig } from "../types";
-import {
-  getEnvironmentFromPath,
-  getResourceCategory,
-  formatResourceName,
-} from "../utils/audit-utils";
+import { WebhookFormatter } from "./webhook-formatter";
 
-const ACTION_EMOJI: Record<string, string> = {
-  create: "🟢",
-  update: "🔔",
-  delete: "🗑️",
-  state_change: "🔄",
-};
-
-export const msTeamsFormatter: PayloadFormatter = {
-  contentType: "application/json",
-
-  format(entry: AuditEntry, _webhook: WebhookConfig, projectId: string) {
-    const action = entry.action;
-    const emoji = ACTION_EMOJI[action] ?? "🔔";
-    const resourceName = formatResourceName(entry.resourcePath);
-    const category = getResourceCategory(entry.resourcePath);
-    const environment = getEnvironmentFromPath(entry.resourcePath) ?? "—";
+/**
+ * MsTeamsFormatter — Microsoft Teams Adaptive Card envelope.
+ *
+ * buildRequestBody() maps title/fields/footer into an Adaptive Card body.
+ * Fields become a FactSet. Footer becomes a subtle TextBlock.
+ */
+export class MsTeamsFormatter extends WebhookFormatter {
+  buildRequestBody(): unknown {
+    const title = this.formatTitle();
+    const fields = this.formatFields();
+    const footer = this.formatFooter();
 
     return {
       type: "message",
@@ -34,24 +24,20 @@ export const msTeamsFormatter: PayloadFormatter = {
             body: [
               {
                 type: "TextBlock",
-                text: `${emoji} Config ${capitalize(action)}d`,
+                text: title,
                 weight: "Bolder",
                 size: "Medium",
               },
               {
                 type: "FactSet",
-                facts: [
-                  { title: "Resource", value: resourceName },
-                  { title: "Category", value: category },
-                  { title: "Environment", value: environment },
-                  { title: "Action", value: action },
-                  { title: "Actor", value: entry.actorId },
-                  { title: "Project", value: projectId },
-                ],
+                facts: fields.map((f) => ({
+                  title: f.label,
+                  value: f.value,
+                })),
               },
               {
                 type: "TextBlock",
-                text: entry.timestamp,
+                text: footer,
                 isSubtle: true,
                 size: "Small",
               },
@@ -60,9 +46,5 @@ export const msTeamsFormatter: PayloadFormatter = {
         },
       ],
     };
-  },
-};
-
-function capitalize(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
+  }
 }

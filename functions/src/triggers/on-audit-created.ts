@@ -1,10 +1,8 @@
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 
-import { DISPATCH_TIMEOUT_MS } from "../constants";
-import { writeDeliveryLog } from "../delivery/write-delivery-log";
+import { dispatchWebhook } from "../dispatcher/dispatch-webhook";
 import { httpDispatcher } from "../dispatcher/http.dispatcher";
 import { evaluateFilters } from "../filters/pipeline";
-import { getFormatter } from "../formatters/registry";
 import type { AuditEntry, WebhookConfig, WebhookDispatcher } from "../types";
 import { getDb } from "../utils/firestore";
 
@@ -12,6 +10,9 @@ import { getDb } from "../utils/firestore";
  * Firestore trigger: fires when a new audit log entry is created.
  * Reads all enabled webhooks for the project, applies the filter pipeline,
  * formats payloads via the formatter registry, and dispatches via the adapter.
+ *
+ * Delivery outcomes are logged to console only — no Firestore writes on
+ * success or failure.
  */
 export function createOnAuditCreated(dispatcher: WebhookDispatcher = httpDispatcher) {
   return onDocumentCreated(
@@ -50,44 +51,45 @@ export function createOnAuditCreated(dispatcher: WebhookDispatcher = httpDispatc
           ...doc.data(),
         })) as WebhookConfig[];
 
-        // Filter pipeline (Chain of Responsibility)
+        // Filter pipeline
         const matching = webhooks.filter((wh) => evaluateFilters(wh, entry));
         if (matching.length === 0) return;
 
-        // Format + Dispatch (Strategy + Adapter)
+        // Dispatch all matching webhooks — each failure is isolated
         const results = await Promise.allSettled(
-          matching.map(async (wh) => {
-            const formatter = getFormatter(wh.format);
-            const payload = formatter.format(entry, wh, projectId);
-            return dispatcher.dispatch(wh.url, payload, {
-              timeout: DISPATCH_TIMEOUT_MS,
-              headers: {
-                "Content-Type": formatter.contentType,
-                "X-Webhook-Id": wh.id,
-                "X-Webhook-Timestamp": String(Math.floor(Date.now() / 1000)),
-              },
-            });
-          }),
+          matching.map((wh) => dispatchWebhook(wh, entry, projectId, { dispatcher })),
         );
 
-        // Write delivery logs
-        await Promise.all(
-          results.map((result, i) => {
-            const dispatchResult =
-              result.status === "fulfilled"
-                ? result.value
-                : {
-                    success: false,
-                    httpStatus: null,
-                    duration: 0,
-                    error: String(result.reason),
-                  };
-            return writeDeliveryLog(projectId, matching[i].id, dispatchResult, entryId, false);
-          }),
-        );
+        // Log outcome per webhook — no Firestore writes
+        results.forEach((result, i) => {
+          const wh = matching[i];
+
+          if (result.status === "fulfilled" && result.value.success) {
+            // Delivery succeeded
+            console.log(
+              `[onAuditCreated] Delivered webhook ${wh.id} (${wh.format}) ` +
+                `for entry ${entryId} — HTTP ${result.value.httpStatus} ` +
+                `in ${result.value.duration}ms`,
+            );
+          } else if (result.status === "fulfilled" && !result.value.success) {
+            // Delivery reached the target but was rejected (non-2xx response)
+            console.error(
+              `[onAuditCreated] Webhook ${wh.id} (${wh.format}) rejected ` +
+                `for entry ${entryId} — ${result.value.error ?? `HTTP ${result.value.httpStatus}`}`,
+            );
+          } else if (result.status === "rejected") {
+            // Unexpected error — formatter threw, dispatcher crashed, etc.
+            // This is a programming/infrastructure error, not a delivery failure.
+            console.error(
+              `[onAuditCreated] Unexpected error dispatching webhook ${wh.id} (${wh.format}) ` +
+                `for entry ${entryId} — ${String(result.reason)}`,
+            );
+          }
+        });
       } catch (error) {
         console.error(
-          `[onAuditCreated] Failed to process audit entry ${entryId} in project ${projectId}:`,
+          `[onAuditCreated] Unexpected error processing entry ${entryId} ` +
+            `in project ${projectId}:`,
           error,
         );
       }

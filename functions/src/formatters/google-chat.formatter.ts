@@ -1,46 +1,39 @@
-import type { AuditEntry, PayloadFormatter, WebhookConfig } from "../types";
-import {
-  getEnvironmentFromPath,
-  getResourceCategory,
-  formatResourceName,
-} from "../utils/audit-utils";
+import { WebhookFormatter } from "./webhook-formatter";
 
-export const googleChatFormatter: PayloadFormatter = {
-  contentType: "application/json",
-
-  format(entry: AuditEntry, webhook: WebhookConfig, projectId: string) {
-    const action = entry.action;
-    const resourceName = formatResourceName(entry.resourcePath);
-    const category = getResourceCategory(entry.resourcePath);
-    const environment = getEnvironmentFromPath(entry.resourcePath) ?? "—";
-
-    const widgets = [
-      { decoratedText: { topLabel: "Action", text: action } },
-      { decoratedText: { topLabel: "Resource", text: resourceName } },
-      { decoratedText: { topLabel: "Category", text: category } },
-      { decoratedText: { topLabel: "Environment", text: environment } },
-      { decoratedText: { topLabel: "Actor", text: entry.actorId } },
-      { decoratedText: { topLabel: "Timestamp", text: entry.timestamp } },
-      { decoratedText: { topLabel: "Project", text: projectId } },
-    ];
+/**
+ * GoogleChatFormatter — Google Chat Card v2 envelope.
+ *
+ * buildRequestBody() maps title/body/fields into a cardsV2 structure.
+ * Fields become decoratedText widgets. Body becomes the card subtitle.
+ */
+export class GoogleChatFormatter extends WebhookFormatter {
+  buildRequestBody(): unknown {
+    const title = this.formatTitle();
+    const body = this.formatBody();
+    const fields = this.formatFields();
 
     return {
       cardsV2: [
         {
-          cardId: webhook.id,
+          cardId: this.webhook.id,
           card: {
             header: {
-              title: `Config ${capitalize(action)}d`,
-              subtitle: resourceName,
+              title,
+              subtitle: body,
             },
-            sections: [{ widgets }],
+            sections: [
+              {
+                widgets: fields.map((f) => ({
+                  decoratedText: {
+                    topLabel: f.label,
+                    text: f.value,
+                  },
+                })),
+              },
+            ],
           },
         },
       ],
     };
-  },
-};
-
-function capitalize(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
+  }
 }

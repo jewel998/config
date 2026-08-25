@@ -1,77 +1,58 @@
-import type { AuditEntry, PayloadFormatter, WebhookConfig } from "../types";
-import {
-  getEnvironmentFromPath,
-  getResourceCategory,
-  formatResourceName,
-} from "../utils/audit-utils";
+import { truncate } from "./utils";
+import type { FormatterField } from "./webhook-formatter";
+import { WebhookFormatter } from "./webhook-formatter";
 
-const ACTION_EMOJI: Record<string, string> = {
-  create: "🟢",
-  update: "🔵",
-  delete: "🔴",
-  state_change: "🟡",
-};
+/**
+ * SlackFormatter — Slack Block Kit envelope.
+ *
+ * Overrides formatSecondaryFields to append a changes diff row when the
+ * entry has old/new values. buildRequestBody() maps the two field groups
+ * into separate Slack sections — primary fields in the first section,
+ * secondary (+ optional changes) in the second.
+ */
+export class SlackFormatter extends WebhookFormatter {
+  override formatSecondaryFields(): FormatterField[] {
+    const base = super.formatSecondaryFields();
 
-export const slackFormatter: PayloadFormatter = {
-  contentType: "application/json",
-
-  format(entry: AuditEntry, _webhook: WebhookConfig, projectId: string) {
-    const action = entry.action;
-    const emoji = ACTION_EMOJI[action] ?? "🔔";
-    const resourceName = formatResourceName(entry.resourcePath);
-    const category = getResourceCategory(entry.resourcePath);
-    const environment = getEnvironmentFromPath(entry.resourcePath) ?? "—";
-
-    const blocks: unknown[] = [
-      {
-        type: "header",
-        text: {
-          type: "plain_text",
-          text: `${emoji} ${capitalize(category)} ${capitalize(action)}d`,
-        },
-      },
-      {
-        type: "section",
-        fields: [
-          { type: "mrkdwn", text: `*Resource:*\n${resourceName}` },
-          { type: "mrkdwn", text: `*Environment:*\n${environment}` },
-        ],
-      },
-      {
-        type: "section",
-        fields: [
-          { type: "mrkdwn", text: `*Action:*\n${action}` },
-          { type: "mrkdwn", text: `*Actor:*\n${entry.actorId}` },
-        ],
-      },
-    ];
-
-    // Add changes summary if available
-    if (entry.oldValue || entry.newValue) {
-      const oldStr = entry.oldValue ? truncate(entry.oldValue, 100) : "—";
-      const newStr = entry.newValue ? truncate(entry.newValue, 100) : "—";
-      blocks.push({
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `*Changes:*\n\`${oldStr}\` → \`${newStr}\``,
-        },
-      });
+    if (this.entry.oldValue || this.entry.newValue) {
+      const oldStr = this.entry.oldValue ? truncate(this.entry.oldValue, 100) : "—";
+      const newStr = this.entry.newValue ? truncate(this.entry.newValue, 100) : "—";
+      base.push({ label: "Changes", value: `\`${oldStr}\` → \`${newStr}\`` });
     }
 
-    blocks.push({
-      type: "context",
-      elements: [{ type: "mrkdwn", text: `${entry.timestamp} • ${projectId}` }],
+    return base;
+  }
+
+  buildRequestBody(): unknown {
+    const title = this.formatTitle();
+    const primaryFields = this.formatPrimaryFields();
+    const secondaryFields = this.formatSecondaryFields();
+    const footer = this.formatFooter();
+
+    const toMrkdwn = (f: FormatterField) => ({
+      type: "mrkdwn",
+      text: `*${f.label}:*\n${f.value}`,
     });
 
-    return { blocks };
-  },
-};
-
-function capitalize(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-function truncate(s: string, max: number): string {
-  return s.length > max ? s.slice(0, max) + "…" : s;
+    return {
+      blocks: [
+        {
+          type: "header",
+          text: { type: "plain_text", text: title },
+        },
+        {
+          type: "section",
+          fields: primaryFields.map(toMrkdwn),
+        },
+        {
+          type: "section",
+          fields: secondaryFields.map(toMrkdwn),
+        },
+        {
+          type: "context",
+          elements: [{ type: "mrkdwn", text: footer }],
+        },
+      ],
+    };
+  }
 }

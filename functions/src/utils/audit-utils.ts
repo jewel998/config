@@ -1,6 +1,13 @@
 import type { WebhookResourceCategory } from "../types";
 
-export function getResourceCategory(path: string): WebhookResourceCategory {
+/**
+ * Maps a Firestore resource path to a category.
+ *
+ * Returns null for unrecognised paths instead of silently defaulting to
+ * "config", so callers can decide how to handle unknown resources (e.g.
+ * the filter skips the webhook, the formatter uses a fallback label).
+ */
+export function getResourceCategory(path: string): WebhookResourceCategory | null {
   if (path.includes("configs")) return "config";
   if (path.includes("segments")) return "segment";
   if (path.includes("apiKeys") || path.includes("clientIds")) return "api_key";
@@ -12,7 +19,8 @@ export function getResourceCategory(path: string): WebhookResourceCategory {
     !path.includes("/apiKeys/")
   )
     return "environment";
-  return "config"; // default fallback
+
+  return null;
 }
 
 export function getEnvironmentFromPath(path: string): string | null {

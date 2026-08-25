@@ -1,29 +1,30 @@
-import type { AuditEntry, PayloadFormatter, WebhookConfig, WebhookPayload } from "../types";
-import {
-  getEnvironmentFromPath,
-  getResourceCategory,
-  formatResourceName,
-} from "../utils/audit-utils";
+import type { WebhookPayload } from "../types";
+import { WebhookFormatter } from "./webhook-formatter";
 
-export const standardFormatter: PayloadFormatter = {
-  contentType: "application/json",
+/**
+ * StandardFormatter — flat JSON payload.
+ * No platform-specific envelope. Bypasses formatTitle/Fields/Footer and
+ * maps the entry directly to the WebhookPayload shape.
+ */
+export class StandardFormatter extends WebhookFormatter {
+  buildRequestBody(): WebhookPayload {
+    const { action, resourceName, category, environment } = this.ctx;
 
-  format(entry: AuditEntry, webhook: WebhookConfig, projectId: string): WebhookPayload {
     return {
-      action: entry.action,
-      resourceCategory: getResourceCategory(entry.resourcePath),
-      resourcePath: entry.resourcePath,
-      resourceName: formatResourceName(entry.resourcePath),
-      environment: getEnvironmentFromPath(entry.resourcePath),
-      actorId: entry.actorId,
-      timestamp: entry.timestamp,
-      oldValue: entry.oldValue ? tryParse(entry.oldValue) : null,
-      newValue: entry.newValue ? tryParse(entry.newValue) : null,
-      projectId,
-      webhookId: webhook.id,
+      action,
+      resourceCategory: category,
+      resourcePath: this.entry.resourcePath,
+      resourceName,
+      environment,
+      actorId: this.entry.actorId,
+      timestamp: this.entry.timestamp,
+      oldValue: this.entry.oldValue ? tryParse(this.entry.oldValue) : null,
+      newValue: this.entry.newValue ? tryParse(this.entry.newValue) : null,
+      projectId: this.projectId,
+      webhookId: this.webhook.id,
     };
-  },
-};
+  }
+}
 
 function tryParse(raw: string): unknown {
   try {

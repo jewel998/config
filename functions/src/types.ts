@@ -24,17 +24,6 @@ export type WebhookResourceCategory =
   | "team"
   | "environment";
 
-export interface WebhookDelivery {
-  id: string;
-  timestamp: string;
-  httpStatus: number | null;
-  success: boolean;
-  duration: number;
-  error: string | null;
-  auditEntryId: string;
-  isTest: boolean;
-}
-
 export interface AuditEntry {
   action: string;
   actorId: string;
@@ -44,16 +33,10 @@ export interface AuditEntry {
   newValue?: string;
 }
 
-// ─── Strategy Pattern: Payload Formatter Interface ────────────
-
-export interface PayloadFormatter {
-  format(entry: AuditEntry, webhook: WebhookConfig, projectId: string): unknown;
-  contentType: string;
-}
-
 // ─── Adapter Pattern: Dispatcher Interface ────────────────────
 
 export interface DispatchOptions {
+  method: string;
   timeout: number;
   headers: Record<string, string>;
 }
