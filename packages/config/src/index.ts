@@ -66,6 +66,7 @@ export {
   ConfigError,
   InitializationError,
   RateLimitError,
+  SdkError,
   TimeoutError,
 } from "./errors/index.js";
-export type { ConfigErrorCode } from "./errors/index.js";
+export type { ConfigErrorCode, SdkErrorType } from "./errors/index.js";

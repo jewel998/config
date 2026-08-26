@@ -171,7 +171,7 @@ export interface ConfigEventPayloads {
   ready: { loadingStrategy: LoadingStrategy; cachedKeys: number };
   updated: {
     keys: string[];
-    source: "background" | "refresh" | "version-check";
+    source: "background" | "refresh" | "version-check" | "prefetch" | "page" | "idle";
   };
   fetchError: { error: Error; retryCount: number; willRetry: boolean };
   revoked: { clientId: string; message: string };

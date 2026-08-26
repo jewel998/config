@@ -59,3 +59,30 @@ export class AuthenticationError extends ConfigError {
     this.name = "AuthenticationError";
   }
 }
+
+// ─── SDK-level errors for initConfig / get() ──────────────────
+
+/**
+ * Error type passed to onError and thrown by get() on failure.
+ *
+ * type:
+ *   TIMEOUT       — get() waited longer than global timeout, no default provided
+ *   FETCH_FAILED  — network error or non-2xx response during any tier fetch
+ *   KEY_NOT_FOUND — key does not exist in the project
+ *   AUTH          — 401/403 from the API (circuit breaker opens)
+ *   RATE_LIMITED  — 429 from the API
+ */
+export type SdkErrorType = "TIMEOUT" | "FETCH_FAILED" | "KEY_NOT_FOUND" | "AUTH" | "RATE_LIMITED";
+
+export class SdkError extends Error {
+  override name = "SdkError";
+
+  constructor(
+    public readonly type: SdkErrorType,
+    message: string,
+    public readonly key?: string,
+    public readonly cause?: Error,
+  ) {
+    super(message);
+  }
+}
