@@ -23,8 +23,8 @@ export interface FetchConfigsResult {
 /**
  * Fetch config documents and segments from Firestore.
  *
- * If `keys` is provided and has 10 or fewer entries, fetches only those
- * specific documents (projected read). Otherwise fetches all configs.
+ * If `keys` is provided, fetches only those specific documents in parallel
+ * batches (no size limit). Otherwise fetches all configs via collection scan.
  *
  * @param db - Firestore instance
  * @param projectId - The project document ID
@@ -47,10 +47,8 @@ export async function fetchConfigs(
 
   // Fetch config documents and segments in PARALLEL
   const configsPromise: Promise<FirebaseFirestore.DocumentSnapshot[]> =
-    keys && keys.length > 0 && keys.length <= 10
-      ? Promise.all(keys.map((key) => configsRef.doc(key).get())).then((docs) =>
-          docs.filter((d) => d.exists),
-        )
+    keys && keys.length > 0
+      ? fetchDocsByKeys(configsRef, keys)
       : configsRef.get().then((snapshot) => snapshot.docs);
 
   const segmentsPromise = db.collection("projects").doc(projectId).collection("segments").get();
@@ -109,4 +107,28 @@ export async function fetchConfigs(
   }
 
   return { configs, segments, version, latestUpdate };
+}
+
+/**
+ * Fetch specific config documents by key in parallel batches.
+ *
+ * Firestore has no hard limit on parallel doc.get() calls, but we batch
+ * into chunks of 30 to avoid overwhelming the connection pool.
+ */
+const BATCH_SIZE = 30;
+
+async function fetchDocsByKeys(
+  ref: FirebaseFirestore.CollectionReference,
+  keys: string[],
+): Promise<FirebaseFirestore.DocumentSnapshot[]> {
+  const chunks: string[][] = [];
+  for (let i = 0; i < keys.length; i += BATCH_SIZE) {
+    chunks.push(keys.slice(i, i + BATCH_SIZE));
+  }
+
+  const results = await Promise.all(
+    chunks.map((chunk) => Promise.all(chunk.map((key) => ref.doc(key).get()))),
+  );
+
+  return results.flat().filter((d) => d.exists);
 }

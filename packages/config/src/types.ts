@@ -7,6 +7,9 @@ import type { EvaluationContext, EvaluationPlugin } from "./plugins/types.js";
 /** Loading strategy for SDK initialization */
 export type LoadingStrategy = "optimistic" | "pessimistic" | "deferred";
 
+/** Fetch tier for priority-based key fetching */
+export type FetchTier = "critical" | "page" | "prefetch";
+
 /** Evaluation mode for the SDK */
 export type EvaluationMode = "server" | "client";
 
