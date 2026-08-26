@@ -56,21 +56,30 @@ import { initConfig, autoContext } from "@jewel998/config";
 
 const flags = initConfig({
   clientId: "cid_xxx", // From your Portal → API Keys
-  baseUrl: "https://your-project.web.app/api", // Your Firebase URL
+  baseUrl: "https://your-project.web.app/api",
+  prefetch: ["app.maintenance_mode"], // Fetch these immediately, block ready()
   defaults: {
     "feature.dark_mode": false,
     "app.upload_limit": 50,
   },
   context: autoContext({ userId: "user_123", plan: "pro" }),
+  onError: (err) => console.error(err.type, err.key),
 });
 
-// Instant — returns default value, no loading state
-flags.get("feature.dark_mode"); // → false
+// Wait for prefetched keys before rendering
+await flags.ready();
 
-// After API responds, returns resolved value
-flags.on("updated", () => {
-  flags.get("feature.dark_mode"); // → true (matched targeting rule)
-});
+// Instant — in memory or has a default
+const darkMode = await flags.get<boolean>("feature.dark_mode"); // → true
+
+// Declare page-level keys (Tier 2, fire-and-forget)
+flags.prefetch(["feature.new_checkout", "app.upload_limit"]);
+
+// React to any key changing
+flags.on("updated", ({ keys }) => rerender());
+
+// React to a specific key changing
+flags.on("updated:feature.dark_mode", (value) => applyTheme(value));
 ```
 
 ### API Key Types

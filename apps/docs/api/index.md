@@ -6,51 +6,57 @@ The `@jewel998/config` SDK provides a simple interface for fetching and evaluati
 
 ## initConfig (Recommended)
 
-The primary entry point. Returns a `Flags` instance that immediately serves default values, then resolves to real values from your self-hosted API.
+The primary entry point. Returns a `Flags` instance with three-tier priority fetching.
 
 ```ts
 import { initConfig, autoContext } from "@jewel998/config";
 
 const flags = initConfig({
   clientId: "cid_xxx",
-  baseUrl: "https://your-project.web.app/api", // Your Firebase deployment
-  defaults: {
-    "feature.dark_mode": false,
-    "app.upload_limit": 50,
-  },
+  baseUrl: "https://your-project.web.app/api",
+  prefetch: ["app.maintenance_mode"], // Tier 1 — blocks ready()
+  defaults: { "feature.dark_mode": false },
   context: autoContext({ userId: "user_123", plan: "pro" }),
+  onError: (err) => console.error(err.type, err.key),
 });
 
-flags.get("feature.dark_mode"); // → false (instant, from defaults)
-// ...API responds...
-flags.get("feature.dark_mode"); // → true (resolved from server)
+await flags.ready(); // wait for Tier 1
+const darkMode = await flags.get<boolean>("feature.dark_mode"); // → false
 ```
 
 ## InitConfigOptions
 
-| Property       | Type                  | Default                               | Description                                                      |
-| -------------- | --------------------- | ------------------------------------- | ---------------------------------------------------------------- |
-| `clientId`     | `string`              | (required)                            | API key from your Portal (cid_ or svr_)                          |
-| `baseUrl`      | `string`              | `https://jewel998-config.web.app/api` | Your self-hosted Firebase API URL                                |
-| `defaults`     | `Record<string, any>` | `{}`                                  | Fallback values returned instantly before API responds           |
-| `context`      | `EvaluationContext`   | `{}`                                  | User context for targeting. Use `autoContext()`                  |
-| `pollInterval` | `number`              | `300000` (5 min)                      | Version polling interval in ms. Set to `0` to disable polling.   |
-| `storage`      | `CacheStorage`        | `memoryStorage()`                     | Cache adapter. Use `browserStorage()` to persist across reloads. |
+| Property       | Type                      | Default                               | Description                                                                 |
+| -------------- | ------------------------- | ------------------------------------- | --------------------------------------------------------------------------- |
+| `clientId`     | `string`                  | (required)                            | API key from your Portal (cid_ or svr_)                                     |
+| `prefetch`     | `string[]`                | `[]`                                  | Tier 1 keys — fetched immediately, block `ready()` resolution               |
+| `baseUrl`      | `string`                  | `https://jewel998-config.web.app/api` | Your self-hosted Firebase API URL                                           |
+| `defaults`     | `Record<string, unknown>` | `{}`                                  | Fallback values — `get()` resolves instantly when a default exists          |
+| `context`      | `EvaluationContext`       | `{}`                                  | User context for targeting. Use `autoContext()`                             |
+| `timeout`      | `number`                  | `30000` (30s)                         | `get()` timeout for keys with no default. Calls `onError`, rejects Promise. |
+| `pollInterval` | `number`                  | `300000` (5 min)                      | Version polling interval in ms. Set to `0` to disable.                      |
+| `storage`      | `CacheStorage`            | `memoryStorage()`                     | Cache adapter. Use `browserStorage()` to persist across reloads.            |
+| `onError`      | `(err: SdkError) => void` | `undefined`                           | Global error handler — called on every error across all tiers               |
 
 ## Flags Interface
 
-| Method       | Signature                          | Description                                    |
-| ------------ | ---------------------------------- | ---------------------------------------------- |
-| `get`        | `<T>(key: string) => T`            | Get a flag value (default until resolved)      |
-| `flag`       | `(key: string) => boolean`         | Get a boolean flag (false if missing)          |
-| `all`        | `() => Record<string, unknown>`    | Get all values (defaults merged with resolved) |
-| `setContext` | `(ctx: EvaluationContext) => void` | Update user context (triggers re-fetch)        |
-| `refresh`    | `() => Promise<void>`              | Force re-fetch from API                        |
-| `on`         | `(event, callback) => void`        | Subscribe to events                            |
-| `off`        | `(event, callback) => void`        | Unsubscribe                                    |
+| Method       | Signature                                | Description                                                                       |
+| ------------ | ---------------------------------------- | --------------------------------------------------------------------------------- |
+| `ready`      | `() => Promise<void>`                    | Resolves when Tier 1 (init prefetch) keys are ready. Instant if none declared.    |
+| `prefetch`   | `(keys: string[]) => void`               | Tier 2 fetch hint — fire-and-forget. Already-fetched keys are skipped.            |
+| `get`        | `<T>(key, defaultValue?) => Promise<T>`  | Get a typed value. Instant from cache/default. Suspends if unfetched, no default. |
+| `all`        | `() => Promise<Record<string, unknown>>` | Snapshot of all fetched values merged with defaults. No waiting.                  |
+| `setContext` | `(ctx: EvaluationContext) => void`       | Fire-and-forget context update. Re-fetches fetched keys debounced 100ms.          |
+| `refresh`    | `() => Promise<void>`                    | Re-fetch all already-fetched keys in tier order.                                  |
+| `on`         | `(event: string, cb) => void`            | Subscribe to events (see Events table below)                                      |
+| `off`        | `(event: string, cb) => void`            | Unsubscribe from events                                                           |
 
-::: info No destroy() on Flags
-The `Flags` object returned by `initConfig` does not expose a `destroy()` method. Polling timers are automatically cleared when the page unloads. If you need explicit cleanup (e.g., in a SPA route unmount), use `createConfig` which returns a `ConfigClient` with `destroy()`.
+::: info flag() removed
+The `flag()` method has been removed. Use `get<boolean>("key")` instead.
+:::
+
+::: info get() is now async
+`get()` returns a `Promise<T>`. If the key is in memory, cache, or has a default, it resolves on the next microtask (effectively instant). If the key hasn't been fetched yet and no default is provided, it suspends until the idle fetch or `refresh()` delivers it, or rejects after the global timeout.
 :::
 
 ## createConfig (Advanced)
@@ -192,12 +198,43 @@ const context = mergeContext(autoContext(), {
 
 ## Events
 
-| Event        | Payload                                                                | Description           |
-| ------------ | ---------------------------------------------------------------------- | --------------------- |
-| `ready`      | `{ loadingStrategy, cachedKeys }`                                      | SDK initialized       |
-| `updated`    | `{ keys: string[], source: "background"\|"refresh"\|"version-check" }` | Config values changed |
-| `fetchError` | `{ error, retryCount, willRetry }`                                     | Fetch failed          |
-| `revoked`    | `{ clientId, message }`                                                | API key revoked       |
+| Event              | Payload                              | Description                                      |
+| ------------------ | ------------------------------------ | ------------------------------------------------ |
+| `updated`          | `{ keys: string[], source: string }` | Any keys updated (batch, one event per fetch)    |
+| `updated:key.name` | `value: unknown`                     | Specific key updated — fires with new value      |
+| `fetchError`       | `{ error, retryCount, willRetry }`   | A fetch failed                                   |
+| `ready`            | `{ loadingStrategy, cachedKeys }`    | SDK initialized (emitted by `createConfig` only) |
+| `revoked`          | `{ clientId, message }`              | API key revoked                                  |
+
+### Key-Specific Events
+
+Subscribe to a single key changing without filtering the batch `updated` event:
+
+```ts
+flags.on("updated:feature.dark_mode", (value) => {
+  applyTheme(value as boolean);
+});
+
+flags.off("updated:feature.dark_mode", handler);
+```
+
+### SdkError (onError / get() rejection)
+
+```ts
+interface SdkError {
+  type: "TIMEOUT" | "FETCH_FAILED" | "KEY_NOT_FOUND" | "AUTH" | "RATE_LIMITED";
+  key?: string; // which key triggered the error
+  cause?: Error; // underlying Error object
+}
+```
+
+| Type            | When                                                      |
+| --------------- | --------------------------------------------------------- |
+| `TIMEOUT`       | `get()` waited longer than global timeout with no default |
+| `FETCH_FAILED`  | Network error or non-2xx response                         |
+| `KEY_NOT_FOUND` | Key does not exist in the project                         |
+| `AUTH`          | 401/403 — circuit breaker opens                           |
+| `RATE_LIMITED`  | 429 from the API                                          |
 
 ### Version-Gated Refresh
 

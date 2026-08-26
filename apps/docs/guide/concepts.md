@@ -40,7 +40,13 @@ A quick reference of key terminology used throughout the documentation, mapped t
 
 **Evaluation Pipeline** — The order in which flags are resolved: archived → prerequisites → overrides → schedule → targeting → rollout → default. [Learn more →](/contributing/architecture)
 
-**Loading Strategies** — How the SDK fetches on init: **optimistic** (instant defaults, background fetch), **pessimistic** (blocks until data arrives), **deferred** (manual trigger). [Learn more →](/guide/loading-strategies)
+**Loading Strategies** — How the SDK fetches on init: **optimistic** (instant defaults, background fetch), **pessimistic** (blocks until data arrives), **deferred** (manual trigger). Used by `createConfig`. [Learn more →](/guide/loading-strategies)
+
+**Tier-Based Fetching** — `initConfig` fetches keys in three priority tiers: **Tier 1** (`prefetch` option, blocks `ready()`), **Tier 2** (`flags.prefetch(keys)` per route, fire-and-forget), **Tier 3** (full idle fetch via `requestIdleCallback`). Designed for projects with 100s–1000s of flag keys. [Learn more →](/guide/fetch-flow)
+
+**`ready()`** — A Promise on the `Flags` object that resolves when Tier 1 keys have been fetched. Use `await flags.ready()` before rendering to ensure critical values are available. Resolves instantly if no `prefetch` keys are declared.
+
+**`onError`** — Global error handler passed to `initConfig`. Called on every SDK-level error (`TIMEOUT`, `FETCH_FAILED`, `KEY_NOT_FOUND`, `AUTH`, `RATE_LIMITED`). `get()` also rejects with the same typed `SdkError` when no default is provided.
 
 **Circuit Breaker** — The SDK stops retrying for 5 minutes after 401/403 errors, preventing wasted requests on misconfigured clients. [Learn more →](/api/)
 

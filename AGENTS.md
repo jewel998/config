@@ -47,8 +47,23 @@ functions/     — Firebase Cloud Functions (API + webhooks + auth)
 
 The SDK (`packages/config/`) has two entry points:
 
-1. `initConfig()` — Simple, recommended. Returns `Flags` object with instant defaults + background fetch + polling.
+1. `initConfig()` — Simple, recommended. Returns `Flags` object with three-tier priority fetching, async `get()`, `ready()` promise, and `prefetch()`.
 2. `createConfig()` — Advanced. Supports loading strategies, plugins, consent-aware mode.
+
+### initConfig — Three-Tier Fetch Model
+
+```
+Tier 1 — PREFETCH (init)   prefetch: [...] option, blocks ready()
+Tier 2 — PAGE (runtime)    flags.prefetch(keys) per route, fire-and-forget
+Tier 3 — IDLE              fetchAll() via requestIdleCallback after Tier 1
+```
+
+- `get<T>(key, defaultValue?)` — async, resolves instantly from cache/default, suspends until idle fetch or refresh if no default
+- `ready()` — Promise resolving when Tier 1 keys are fetched
+- `setContext()` — fire-and-forget, re-fetches only already-fetched keys in tier order
+- `on("updated:key.name", cb)` — key-specific event subscription
+- `onError` — global typed error handler (SdkError: TIMEOUT | FETCH_FAILED | KEY_NOT_FOUND | AUTH | RATE_LIMITED)
+- `flag()` method removed — use `get<boolean>()`
 
 ### Evaluation Pipeline (server-side, in getConfig function)
 
