@@ -55,6 +55,7 @@ export default withMermaid(
           items: [
             { text: "Loading Strategies", link: "/guide/loading-strategies" },
             { text: "Storage & Caching", link: "/guide/storage" },
+            { text: "Fetch Flow", link: "/guide/fetch-flow" },
             { text: "Configuration Scopes", link: "/guide/scopes" },
           ],
         },
