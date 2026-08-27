@@ -75,7 +75,7 @@ flags.on("updated:feature.dark_mode", (value) => {
 
 ## How It Works
 
-The SDK uses a three-tier fetch model designed for large flag sets (100s–1000s of keys):
+The SDK uses a [three-tier fetch model](/guide/fetch-flow) designed for large flag sets (100s–1000s of keys):
 
 1. **Tier 1 — Prefetch** (`prefetch` option): fetched immediately at init. `ready()` blocks until these resolve. Use for values your app cannot render without.
 2. **Tier 2 — Page** (`flags.prefetch(keys)`): fetched on demand per route/component. Fire-and-forget.
@@ -98,7 +98,7 @@ const flags = initConfig({
   context:      autoContext({ ... }), // User attributes for targeting
   pollInterval: 300_000,             // Version polling (default: 5 min, 0 = disabled)
   timeout:      30_000,              // get() timeout with no default (default: 30s)
-  storage:      browserStorage(),    // Cache adapter (default: memoryStorage)
+  storage:      browserStorage(),    // [Cache adapter](/guide/storage) (default: memoryStorage)
   onError:      (err) => { ... },   // Global error handler
 });
 ```
@@ -139,10 +139,10 @@ try {
 
 ## API Key Types
 
-| Prefix | Use In              | Behavior                                                     |
-| ------ | ------------------- | ------------------------------------------------------------ |
-| `cid_` | Frontend            | API evaluates targeting server-side, returns only values     |
-| `svr_` | Frontend (advanced) | API returns full flag data for local evaluation with plugins |
+| Prefix | Use In           | Behavior                                                     |
+| ------ | ---------------- | ------------------------------------------------------------ |
+| `cid_` | Frontend         | API evaluates targeting server-side, returns only values     |
+| `svr_` | Backend / Server | API returns full flag data for local evaluation with plugins |
 
 ## Next Steps
 

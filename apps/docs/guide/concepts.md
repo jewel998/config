@@ -26,7 +26,7 @@ A quick reference of key terminology used throughout the documentation, mapped t
 
 **Ring Deployment** — Releasing through concentric rings of users by risk tolerance (internal → beta cohort → general). Implemented by combining targeting rules (ring 0/1) with rollout percentage (ring 2/3). [Learn more →](/features/rollouts)
 
-**Feature Gating** — Restricting a feature to users who meet a condition (plan, role, entitlement). Implemented via targeting rules. **Dependency-based feature gating** — gating one flag on the state of another — is implemented via prerequisites. [Learn more →](/features/targeting)
+**Feature Gating** — Restricting a feature to users who meet a condition (plan, role, entitlement). Implemented via targeting rules. **Dependency-based feature gating** — gating one flag on the state of another — is implemented via [prerequisites](/features/prerequisites). [Learn more →](/features/targeting)
 
 **Dark Launch** — Deploying code behind a `false` flag (invisible to users) and scheduling or manually activating it later. Decouples code deploy from feature release. [Learn more →](/features/scheduling)
 
@@ -44,9 +44,9 @@ A quick reference of key terminology used throughout the documentation, mapped t
 
 **Tier-Based Fetching** — `initConfig` fetches keys in three priority tiers: **Tier 1** (`prefetch` option, blocks `ready()`), **Tier 2** (`flags.prefetch(keys)` per route, fire-and-forget), **Tier 3** (full idle fetch via `requestIdleCallback`). Designed for projects with 100s–1000s of flag keys. [Learn more →](/guide/fetch-flow)
 
-**`ready()`** — A Promise on the `Flags` object that resolves when Tier 1 keys have been fetched. Use `await flags.ready()` before rendering to ensure critical values are available. Resolves instantly if no `prefetch` keys are declared.
+**`ready()`** — A Promise on the `Flags` object that resolves when Tier 1 keys have been fetched. Use `await flags.ready()` before rendering to ensure critical values are available. Resolves instantly if no `prefetch` keys are declared. [Learn more →](/api/)
 
-**`onError`** — Global error handler passed to `initConfig`. Called on every SDK-level error (`TIMEOUT`, `FETCH_FAILED`, `KEY_NOT_FOUND`, `AUTH`, `RATE_LIMITED`). `get()` also rejects with the same typed `SdkError` when no default is provided.
+**`onError`** — Global error handler passed to `initConfig`. Called on every SDK-level error (`TIMEOUT`, `FETCH_FAILED`, `KEY_NOT_FOUND`, `AUTH`, `RATE_LIMITED`). `get()` also rejects with the same typed `SdkError` when no default is provided. [Learn more →](/api/)
 
 **Circuit Breaker** — The SDK stops retrying for 5 minutes after 401/403 errors, preventing wasted requests on misconfigured clients. [Learn more →](/api/)
 

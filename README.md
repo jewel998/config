@@ -1,5 +1,7 @@
 # @jewel998/config
 
+> See also: [Getting Started](/guide/getting-started) · [SDK Reference](/api/) · [Self-Hosting](/guide/self-hosting) · [Cloud Functions](/api/cloud-functions)
+
 [![npm version](https://img.shields.io/npm/v/@jewel998/config)](https://www.npmjs.com/package/@jewel998/config)
 [![npm downloads](https://img.shields.io/npm/dm/@jewel998/config)](https://www.npmjs.com/package/@jewel998/config)
 [![license](https://img.shields.io/npm/l/@jewel998/config)](./LICENSE)
@@ -116,7 +118,7 @@ config.getFlag("feature.checkout_v2"); // Evaluated locally — no round-trip
 │                                                     │
 │  import { initConfig } from "@jewel998/config"      │
 │  const flags = initConfig({ clientId, baseUrl })    │
-│  flags.get("feature.dark_mode") → true              │
+│  await flags.get("feature.dark_mode") → true        │
 └──────────────────────┬──────────────────────────────┘
                        │ POST /api/v1/config
                        ▼

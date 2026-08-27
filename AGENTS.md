@@ -1,5 +1,7 @@
 # AGENTS.md — AI Coding Assistant Context
 
+> See also: [README](/README.md) · [SDK Reference](/api/) · [Contributing](/contributing/development) · [Cloud Functions](/api/cloud-functions)
+
 This file provides context for AI coding assistants (Copilot, Cursor, Kiro, Claude, etc.) working on this repository.
 
 ## Project Overview
@@ -39,7 +41,7 @@ functions/     — Firebase Cloud Functions (API + webhooks + auth)
 - No default exports — use named exports everywhere
 - Strict TypeScript — no `any`, no implicit returns
 - SDK is browser-only (throws if `window` is undefined)
-- API key prefix determines evaluation mode: `cid_` = server-side, `svr_` = client-side
+- API key prefix determines evaluation mode: `cid_` (client key) → server-side evaluation by API; `svr_` (server key) → client-side/local evaluation via plugins
 - Config keys use dot notation: `feature.dark_mode`, `app.upload_limit`
 - Firestore security rules enforce RBAC (not application code)
 
@@ -63,7 +65,6 @@ Tier 3 — IDLE              fetchAll() via requestIdleCallback after Tier 1
 - `setContext()` — fire-and-forget, re-fetches only already-fetched keys in tier order
 - `on("updated:key.name", cb)` — key-specific event subscription
 - `onError` — global typed error handler (SdkError: TIMEOUT | FETCH_FAILED | KEY_NOT_FOUND | AUTH | RATE_LIMITED)
-- `flag()` method removed — use `get<boolean>()`
 
 ### Evaluation Pipeline (server-side, in getConfig function)
 

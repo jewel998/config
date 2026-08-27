@@ -2,7 +2,7 @@
 
 > See also: [Loading Strategies](/guide/loading-strategies) · [Storage & Caching](/guide/storage) · [Cloud Functions](/api/cloud-functions)
 
-The `@jewel998/config` SDK provides a simple interface for fetching and evaluating feature flags and remote configuration.
+The `@jewel998/config` SDK provides a simple interface for fetching and evaluating feature flags and remote configuration values from your self-hosted Firebase deployment.
 
 ## initConfig (Recommended)
 
@@ -40,16 +40,16 @@ const darkMode = await flags.get<boolean>("feature.dark_mode"); // → false
 
 ## Flags Interface
 
-| Method       | Signature                                | Description                                                                       |
-| ------------ | ---------------------------------------- | --------------------------------------------------------------------------------- |
-| `ready`      | `() => Promise<void>`                    | Resolves when Tier 1 (init prefetch) keys are ready. Instant if none declared.    |
-| `prefetch`   | `(keys: string[]) => void`               | Tier 2 fetch hint — fire-and-forget. Already-fetched keys are skipped.            |
-| `get`        | `<T>(key, defaultValue?) => Promise<T>`  | Get a typed value. Instant from cache/default. Suspends if unfetched, no default. |
-| `all`        | `() => Promise<Record<string, unknown>>` | Snapshot of all fetched values merged with defaults. No waiting.                  |
-| `setContext` | `(ctx: EvaluationContext) => void`       | Fire-and-forget context update. Re-fetches fetched keys debounced 100ms.          |
-| `refresh`    | `() => Promise<void>`                    | Re-fetch all already-fetched keys in tier order.                                  |
-| `on`         | `(event: string, cb) => void`            | Subscribe to events (see Events table below)                                      |
-| `off`        | `(event: string, cb) => void`            | Unsubscribe from events                                                           |
+| Method       | Signature                                                 | Description                                                                       |
+| ------------ | --------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `ready`      | `() => Promise<void>`                                     | Resolves when Tier 1 (init prefetch) keys are ready. Instant if none declared.    |
+| `prefetch`   | `(keys: string[]) => void`                                | Tier 2 fetch hint — fire-and-forget. Already-fetched keys are skipped.            |
+| `get`        | `<T>(key: string, defaultValue?: T) => Promise<T>`        | Get a typed value. Instant from cache/default. Suspends if unfetched, no default. |
+| `all`        | `() => Promise<Record<string, unknown>>`                  | Snapshot of all fetched values merged with defaults. No waiting.                  |
+| `setContext` | `(ctx: EvaluationContext) => void`                        | Fire-and-forget context update. Re-fetches fetched keys debounced 100ms.          |
+| `refresh`    | `() => Promise<void>`                                     | Re-fetch all already-fetched keys in tier order.                                  |
+| `on`         | `(event: string, cb: (payload: unknown) => void) => void` | Subscribe to events (see Events table below)                                      |
+| `off`        | `(event: string, cb) => void`                             | Unsubscribe from events                                                           |
 
 ::: info flag() removed
 The `flag()` method has been removed. Use `get<boolean>("key")` instead.
@@ -82,7 +82,7 @@ const config = createConfig({
 | Property           | Type                                          | Default           | Description                                                                                          |
 | ------------------ | --------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------- |
 | `clientId`         | `string`                                      | (required)        | API key from Portal → API Keys. Prefix determines evaluation mode: `cid_` = server, `svr_` = client. |
-| `loadingStrategy`  | `"optimistic" \| "pessimistic" \| "deferred"` | `"optimistic"`    | How data is loaded on init                                                                           |
+| `loadingStrategy`  | `"optimistic" \| "pessimistic" \| "deferred"` | `"optimistic"`    | How data is loaded on init. [Learn more →](/guide/loading-strategies)                                |
 | `fetchGranularity` | `"batch" \| "projected"`                      | `"batch"`         | Fetch all keys or only requested ones                                                                |
 | `storage`          | `CacheStorage`                                | `memoryStorage()` | Cache adapter (memory or browser localStorage)                                                       |
 | `plugins`          | `EvaluationPlugin[]`                          | `[]`              | Plugins for client-mode local evaluation (svr_ keys only)                                            |
@@ -98,16 +98,16 @@ The evaluation mode is determined by the `clientId` prefix — not a configurati
 
 ## ConfigClient
 
-| Method       | Signature                            | Description                                            |
-| ------------ | ------------------------------------ | ------------------------------------------------------ |
-| `getValue`   | `<T>(key: string, default?: T) => T` | Get a typed config value                               |
-| `getFlag`    | `(key: string) => boolean`           | Get a boolean flag (false if missing)                  |
-| `getAll`     | `() => Record<string, unknown>`      | Get all config key-value pairs                         |
-| `refresh`    | `() => Promise<void>`                | Version-gated re-fetch (skips if unchanged)            |
-| `setContext` | `(ctx: EvaluationContext) => void`   | Update user context (triggers re-fetch in server mode) |
-| `on`         | `(event, callback) => void`          | Subscribe to lifecycle events                          |
-| `off`        | `(event, callback) => void`          | Unsubscribe from events                                |
-| `destroy`    | `() => void`                         | Clean up timers, listeners, and circuit breaker state  |
+| Method       | Signature                                                 | Description                                            |
+| ------------ | --------------------------------------------------------- | ------------------------------------------------------ |
+| `getValue`   | `<T>(key: string, defaultValue?: T) => T`                 | Get a typed config value                               |
+| `getFlag`    | `(key: string) => boolean`                                | Get a boolean flag (false if missing)                  |
+| `getAll`     | `() => Record<string, unknown>`                           | Get all config key-value pairs                         |
+| `refresh`    | `() => Promise<void>`                                     | Version-gated re-fetch (skips if unchanged)            |
+| `setContext` | `(ctx: EvaluationContext) => void`                        | Update user context (triggers re-fetch in server mode) |
+| `on`         | `(event: string, cb: (payload: unknown) => void) => void` | Subscribe to lifecycle events                          |
+| `off`        | `(event, callback) => void`                               | Unsubscribe from events                                |
+| `destroy`    | `() => void`                                              | Clean up timers, listeners, and circuit breaker state  |
 
 ## EvaluationContext
 

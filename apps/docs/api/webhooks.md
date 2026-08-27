@@ -10,7 +10,7 @@ Webhooks deliver real-time HTTP notifications when configuration changes occur i
 
 When any change happens in the portal (config created, targeting rule updated, flag deleted), the system:
 
-1. Writes an audit log entry
+1. Writes an [audit log](/features/audit-log) entry
 2. Evaluates all active webhooks against their filters
 3. Formats the payload according to the webhook's configured format
 4. Dispatches HTTP requests to matching endpoints in parallel

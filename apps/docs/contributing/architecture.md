@@ -2,7 +2,7 @@
 
 > See also: [Cloud Functions](/api/cloud-functions) · [SDK Reference](/api/) · [Contributing](/contributing/development)
 
-A high-level view of how @jewel998/config is structured and how the pieces interact.
+A high-level view of how @jewel998/config is structured and how the pieces interact — from the browser SDK through Firebase Hosting CDN, Cloud Functions, and Firestore.
 
 ## System Architecture
 
@@ -168,6 +168,8 @@ The SDK (client mode) and Cloud Functions (server mode) share the same evaluatio
 ```
 
 Both the server-side evaluator (`functions/src/api/server-evaluator.ts`) and the SDK pipeline (`packages/config/src/plugins/evaluatePipeline.ts`) implement this exact order.
+
+See [Prerequisites](/features/prerequisites), [Scheduling](/features/scheduling), [Targeting Rules](/features/targeting), and [Percentage Rollouts](/features/rollouts) for details on each step.
 
 ## Cloud Functions
 

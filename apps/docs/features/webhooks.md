@@ -39,13 +39,13 @@ For the "custom" format, use `{{variable}}` syntax to build your own payload:
 
 ```json
 {
-  "text": "{{action}} on {{resourceName}} by {{actorId}}",
+  "text": "{{action}} on {{resource.name}} by {{actor.id}}",
   "environment": "{{environment}}",
-  "changes": "{{oldValue}} → {{newValue}}"
+  "changes": "{{changes.old}} → {{changes.new}}"
 }
 ```
 
-Available variables: `action`, `resourceCategory`, `resourcePath`, `resourceName`, `environment`, `actorId`, `timestamp`, `oldValue`, `newValue`, `projectId`, `webhookId`.
+Available variables: `action`, `resource.category`, `resource.path`, `resource.name`, `environment`, `actor.id`, `timestamp`, `project.id`, `changes.old`, `changes.new`, `webhook.id`. See the [Webhook API reference](/api/webhooks) for the full variable list with examples.
 
 ## Delivery Outcomes
 
@@ -64,11 +64,11 @@ Since webhooks are not retried automatically, consider these patterns on the con
 
 - **Idempotent endpoints** — Design your webhook receiver to handle duplicate deliveries safely
 - **Dead-letter queue** — Use a service like AWS SQS or Google Cloud Tasks as your webhook URL, then process from there with built-in retry
-- **Monitoring** — Check the delivery log in the portal periodically for failed deliveries
+- **Monitoring** — Check your Firebase project's Cloud Function logs for delivery failures and rejections
 - **Fallback polling** — For critical integrations, also poll the audit log API as a backup
 
 ::: tip Future improvement
-Automatic retry with exponential backoff is planned for a future release. For now, the delivery log gives you visibility into failures so you can manually investigate.
+Automatic retry with exponential backoff is planned for a future release.
 :::
 
 </div>
