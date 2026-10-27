@@ -18,6 +18,12 @@ class TestableConfigRepository extends ConfigRepository {
   public testDocumentId(input: ConfigCreateInput) {
     return this.documentId(input);
   }
+
+  public testNormalize(input: ConfigCreateInput | ConfigUpdateInput) {
+    // normalizeInputValues is private; reach it for testing.
+    (this as unknown as { normalizeInputValues: (i: unknown) => void }).normalizeInputValues(input);
+    return input;
+  }
 }
 
 // Use null for Firestore since we're only testing validation
@@ -36,6 +42,62 @@ describe("ConfigRepository: Document ID", () => {
     expect(repo.testDocumentId({ key: "app.list", value: "[]", valueType: "array" })).toBe(
       "app.list",
     );
+  });
+});
+
+// ─── Value Normalization (store arrays/json natively) ────────
+
+describe("ConfigRepository: Value Normalization", () => {
+  it("parses an array string into a native array", () => {
+    const out = repo.testNormalize({ key: "k", value: "[1, 2, 3]", valueType: "array" });
+    expect(out.value).toEqual([1, 2, 3]);
+  });
+
+  it("parses a json string into a native object", () => {
+    const out = repo.testNormalize({ key: "k", value: '{"a":1}', valueType: "json" });
+    expect(out.value).toEqual({ a: 1 });
+  });
+
+  it("leaves an already-native array untouched (idempotent)", () => {
+    const out = repo.testNormalize({ key: "k", value: [1, 2], valueType: "array" });
+    expect(out.value).toEqual([1, 2]);
+  });
+
+  it("does not parse string/number/boolean values", () => {
+    expect(repo.testNormalize({ key: "k", value: "hello", valueType: "string" }).value).toBe(
+      "hello",
+    );
+    expect(repo.testNormalize({ key: "k", value: "true", valueType: "boolean" }).value).toBe(
+      "true",
+    );
+  });
+
+  it("normalizes nested rolloutValue and schedule.targetValue (template paths)", () => {
+    const out = repo.testNormalize({
+      key: "k",
+      value: "[1]",
+      valueType: "array",
+      rolloutValue: "[2]",
+      schedule: { targetValue: "[3]", activateAt: "2099-01-01T00:00:00.000Z" },
+    });
+    expect(out.value).toEqual([1]);
+    expect((out as { rolloutValue: unknown }).rolloutValue).toEqual([2]);
+    expect((out as { schedule: { targetValue: unknown } }).schedule.targetValue).toEqual([3]);
+  });
+
+  it("normalizes override values", () => {
+    const out = repo.testNormalize({
+      key: "k",
+      value: "[1]",
+      valueType: "array",
+      overrides: { "user-1": "[9]" },
+    });
+    expect((out as { overrides: Record<string, unknown> }).overrides["user-1"]).toEqual([9]);
+  });
+
+  it("leaves an unparseable array string unchanged (validation rejects it elsewhere)", () => {
+    const out = repo.testNormalize({ key: "k", value: "[not json", valueType: "array" });
+    expect(out.value).toBe("[not json");
   });
 });
 

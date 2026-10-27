@@ -316,12 +316,75 @@ export class ConfigRepository extends BaseRepository<
     return input.key;
   }
 
+  /**
+   * Parse a value that should be an array/json into a real JS value, so it is
+   * stored in Firestore as a native array/map — NOT as a (pretty-printed) JSON
+   * string. Storing the string wastes space, and the server-evaluator returns
+   * config.value verbatim, so a string would reach the SDK as a string with no
+   * signal to parse it. Idempotent: a value that is already parsed is returned
+   * as-is. On unparseable input it returns the value unchanged (validation has
+   * already rejected invalid JSON/array before this runs).
+   */
+  private normalizeTypedValue(value: unknown, valueType?: string): unknown {
+    if ((valueType !== "array" && valueType !== "json") || typeof value !== "string") {
+      return value;
+    }
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  }
+
+  /**
+   * Normalize every value-bearing field on a create/update input in place, so
+   * array/json values are stored natively. Covers the base value plus the
+   * parallel value fields that carry the same typed value (rolloutValue and
+   * schedule.targetValue) — templates copy config.value into these, so they
+   * must be normalized too. overrides values are per-user copies of the same
+   * typed value and are normalized as well.
+   */
+  private normalizeInputValues(input: ConfigCreateInput | ConfigUpdateInput): void {
+    const valueType = (input as { valueType?: string }).valueType;
+    const rec = input as Record<string, unknown>;
+
+    if ("value" in rec) {
+      rec.value = this.normalizeTypedValue(rec.value, valueType);
+    }
+    if ("rolloutValue" in rec && rec.rolloutValue !== undefined) {
+      rec.rolloutValue = this.normalizeTypedValue(rec.rolloutValue, valueType);
+    }
+    if (rec.schedule && typeof rec.schedule === "object") {
+      const schedule = rec.schedule as { targetValue?: unknown };
+      if ("targetValue" in schedule) {
+        schedule.targetValue = this.normalizeTypedValue(schedule.targetValue, valueType);
+      }
+    }
+    if (rec.overrides && typeof rec.overrides === "object") {
+      const overrides = rec.overrides as Record<string, unknown>;
+      for (const k of Object.keys(overrides)) {
+        overrides[k] = this.normalizeTypedValue(overrides[k], valueType);
+      }
+    }
+  }
+
+  protected async beforeCreate(
+    input: ConfigCreateInput,
+    _ctx: RepositoryContext,
+    _user: AuthenticatedUser,
+  ): Promise<void> {
+    this.normalizeInputValues(input);
+  }
+
   protected async beforeUpdate(
     id: string,
     input: ConfigUpdateInput,
     ctx: RepositoryContext,
     _user: AuthenticatedUser,
   ): Promise<void> {
+    // Normalize array/json values to native types before persisting.
+    this.normalizeInputValues(input);
+
     // Locked config check
     if (input._allowLockedOverride) return;
     const existing = await this.getById(id, ctx);
