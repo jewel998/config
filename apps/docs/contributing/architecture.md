@@ -173,14 +173,14 @@ See [Prerequisites](/features/prerequisites), [Scheduling](/features/scheduling)
 
 ## Cloud Functions
 
-| Function         | Type              | Purpose                                    |
-| ---------------- | ----------------- | ------------------------------------------ |
-| `getConfig`      | HTTP              | Config delivery API (CDN-cached)           |
-| `getVersion`     | HTTP              | Lightweight version check (CDN-cached 15s) |
-| `validateSignIn` | Blocking Auth     | Email/domain allowlist enforcement         |
-| `onAuditCreated` | Firestore Trigger | Webhook dispatch on audit entries          |
-| `exportConfigs`  | Callable          | Project data export (GDPR)                 |
-| `testWebhook`    | Callable          | Test webhook delivery                      |
+| Function         | Type              | Purpose                                               |
+| ---------------- | ----------------- | ----------------------------------------------------- |
+| `getConfig`      | HTTP              | Config delivery API (CDN-cached)                      |
+| `getVersion`     | HTTP              | Lightweight version check (CDN-cached, default 5 min) |
+| `validateSignIn` | Blocking Auth     | Email/domain allowlist enforcement                    |
+| `onAuditCreated` | Firestore Trigger | Webhook dispatch on audit entries                     |
+| `exportConfigs`  | Callable          | Project data export (GDPR)                            |
+| `testWebhook`    | Callable          | Test webhook delivery                                 |
 
 ### API Framework (`@jewel998/api`)
 

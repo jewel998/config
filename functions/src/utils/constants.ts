@@ -5,6 +5,36 @@
 /** Default CDN cache duration in seconds */
 export const CDN_CACHE_SECONDS = 60;
 
+/**
+ * CDN (shared) cache duration in seconds for the /api/v1/version endpoint.
+ *
+ * This is the change-propagation latency: a config change is picked up by a
+ * client no later than the next time it re-polls /version past this cache
+ * window. Larger = fewer getVersion invocations, slower propagation.
+ *
+ * Configured at deploy time via the VERSION_CACHE_SECONDS environment
+ * variable (see functions/.env.example). Defaults to 300 (5 minutes).
+ * Invalid or non-positive values fall back to the default.
+ *
+ * NOTE: changing this requires redeploying the functions — CDN cache
+ * directives are emitted in the response header and cannot change at runtime.
+ */
+export const VERSION_CACHE_SECONDS: number = (() => {
+  const raw = process.env.VERSION_CACHE_SECONDS;
+  const parsed = raw ? Number(raw) : NaN;
+  return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 300;
+})();
+
+/**
+ * Browser (client) cache duration in seconds for the /api/v1/version endpoint.
+ * Kept short relative to the shared CDN window. Two-thirds of the CDN value,
+ * capped at 60s, so the browser revalidates against the CDN reasonably often.
+ */
+export const VERSION_BROWSER_CACHE_SECONDS: number = Math.min(
+  60,
+  Math.max(1, Math.floor(VERSION_CACHE_SECONDS / 2)),
+);
+
 /** Maximum function instances per handler */
 export const MAX_INSTANCES = 10;
 

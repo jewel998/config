@@ -114,7 +114,7 @@ Source: `functions/src/`. Region: `asia-south1` (`functions/src/utils/constants.
 
 ### 3.2 Server-side evaluation pipeline (cid_)
 
-`archived → prerequisites → overrides → schedule → targeting → rollout → default`. Source: `functions/src/api/server-evaluator.ts`. Caching: cid_ responses `private, max-age=30` (per-user, not CDN-shared); svr_ `public, max-age=30, s-maxage=60`; version `max-age=10, s-maxage=15`.
+`archived → prerequisites → overrides → schedule → targeting → rollout → default`. Source: `functions/src/api/server-evaluator.ts`. Caching: cid_ responses `private, max-age=30` (per-user, not CDN-shared); svr_ `public, max-age=30, s-maxage=60`; version `s-maxage` set by `VERSION_CACHE_SECONDS` (default 300 / 5 min, see `functions/src/utils/constants.ts`).
 
 ### 3.3 Rate limits & payload caps
 

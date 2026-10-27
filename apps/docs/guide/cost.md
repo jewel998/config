@@ -14,7 +14,7 @@ Understand the cost profile of your @jewel998/config deployment and optimize for
 | 50,000   | 432M                | ~50,000              | ~150,000       |             ~40,000 | $0*       |
 | 100,000+ | —                   | —                    | —              |                   — | ~$5-15/mo |
 
-*CDN absorbs 99%+ of version polls (15s cache). Actual function invocations are a fraction of raw request count.
+*CDN absorbs 99%+ of version polls (default 5 min cache, `VERSION_CACHE_SECONDS`). Actual function invocations are a fraction of raw request count.
 
 Firebase free tier limits: 2M function invocations/month, 50K Firestore reads/day, 10GB hosting bandwidth.
 
@@ -24,15 +24,15 @@ The SDK is designed to minimize API costs by default. Here's how each feature sa
 
 ### Built-in Cost Savings
 
-| Feature                   | How It Saves Money                                                                                                                                                         |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Version-gated refresh** | `refresh()` calls `/api/v1/version` first (1 Firestore read, ~100 bytes). Only fetches full config if version changed. 95%+ of refresh cycles cost almost nothing.         |
-| **CDN caching**           | `/api/v1/version` cached 15s, `/api/v1/config` (client mode) cached 60s. At 10K users polling every 5 min, CDN serves 99% — only ~60 function calls/hour actually execute. |
-| **Circuit breaker**       | On 401/403, SDK stops all requests for 5 minutes. Prevents runaway costs from misconfigured clients.                                                                       |
-| **Request deduplication** | Multiple `refresh()` calls within the same tick share a single network request.                                                                                            |
-| **30s stale check**       | `setContext()` skips re-fetch if the last fetch was <30s ago. Prevents unnecessary calls during rapid user interactions.                                                   |
-| **7-day cache TTL**       | Once fetched, values persist in memory/localStorage for 7 days. Page refreshes use cached data immediately.                                                                |
-| **Conditional requests**  | `/api/v1/version` supports `If-None-Match` (ETag). When version is unchanged, server returns 304 with zero body.                                                           |
+| Feature                   | How It Saves Money                                                                                                                                                                                                                                                                                                               |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Version-gated refresh** | `refresh()` calls `/api/v1/version` first (1 Firestore read, ~100 bytes). Only fetches full config if version changed. 95%+ of refresh cycles cost almost nothing.                                                                                                                                                               |
+| **CDN caching**           | `/api/v1/version` is cached at the CDN edge (default 5 min, `VERSION_CACHE_SECONDS`), so version polls rarely reach the function. The `/api/v1/config` response is per-user (server-evaluated) and therefore **not** CDN-cached — cost is controlled by fetching it only when the version or context changes, not by caching it. |
+| **Circuit breaker**       | On 401/403, SDK stops all requests for 5 minutes. Prevents runaway costs from misconfigured clients.                                                                                                                                                                                                                             |
+| **Request deduplication** | Multiple `refresh()` calls within the same tick share a single network request.                                                                                                                                                                                                                                                  |
+| **30s stale check**       | `setContext()` skips re-fetch if the last fetch was <30s ago. Prevents unnecessary calls during rapid user interactions.                                                                                                                                                                                                         |
+| **7-day cache TTL**       | Once fetched, values persist in memory/localStorage for 7 days. Page refreshes use cached data immediately.                                                                                                                                                                                                                      |
+| **Conditional requests**  | `/api/v1/version` supports `If-None-Match` (ETag). When version is unchanged, server returns 304 with zero body.                                                                                                                                                                                                                 |
 
 ### Recommended Configuration for Cost Efficiency
 
@@ -116,11 +116,10 @@ router.on("routeChange", () => flags.refresh());
 
 ### Cost Breakdown by API Call
 
-| Endpoint                       | Firestore Reads                     | Function Cost | CDN-Cacheable?         |
-| ------------------------------ | ----------------------------------- | ------------- | ---------------------- |
-| `/api/v1/version`              | 1 (environment doc)                 | ~$0.0000004   | ✅ 15s                 |
-| `/api/v1/config` (server mode) | 2-3 (clientId + configs + segments) | ~$0.0000012   | ❌ (varies by context) |
-| `/api/v1/config` (client mode) | 2-3 (same)                          | ~$0.0000012   | ✅ 60s                 |
+| Endpoint          | Firestore Reads                     | Function Cost | CDN-Cacheable?                  |
+| ----------------- | ----------------------------------- | ------------- | ------------------------------- |
+| `/api/v1/version` | 1 (environment doc)                 | ~$0.0000004   | ✅ 5 min (configurable)         |
+| `/api/v1/config`  | 2-3 (clientId + configs + segments) | ~$0.0000012   | ❌ (per-user, server-evaluated) |
 
 At the free tier limits (2M invocations/month + 50K reads/day), you can serve **~50,000 active users** polling every 5 minutes at zero cost.
 

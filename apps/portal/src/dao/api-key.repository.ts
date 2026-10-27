@@ -102,20 +102,29 @@ export class ApiKeyRepository extends BaseRepository<
   // ─── Lifecycle Hooks ─────────────────────────────────────────
 
   /**
-   * Generate a token and write the document with the token as the ID
-   * (overriding the default addDoc behavior from BaseRepository).
+   * Generate a token and inject it (plus the initial status/metadata) into
+   * the input so the base create() writes it along with the rest.
    */
   protected async beforeCreate(
     input: ApiKeyCreateInput,
     ctx: RepositoryContext,
     user: AuthenticatedUser,
   ): Promise<void> {
-    // We generate and inject the token into the input so
-    // the base create() writes it along with the rest.
     const token = generateToken(input.type);
     (input as Record<string, unknown>).token = token;
     (input as Record<string, unknown>).status = "active";
     (input as Record<string, unknown>).revokedAt = null;
     (input as Record<string, unknown>).createdBy = user.uid;
+  }
+
+  /**
+   * Use the generated token as the Firestore document ID (instead of an
+   * auto-generated ID). The token is injected onto the input by beforeCreate,
+   * which the pipeline runs before documentId(). This is what lets revoke and
+   * delete address the document directly via update(token) / delete(token);
+   * with an auto-ID those calls target a non-existent doc and fail.
+   */
+  protected documentId(input: ApiKeyCreateInput, _ctx: RepositoryContext): string | null {
+    return (input as Record<string, unknown>).token as string;
   }
 }

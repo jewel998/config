@@ -98,7 +98,7 @@ const flags = initConfig({
   context:      autoContext({ ... }), // User attributes for targeting
   pollInterval: 300_000,             // Version polling (default: 5 min, 0 = disabled)
   timeout:      30_000,              // get() timeout with no default (default: 30s)
-  storage:      browserStorage(),    // [Cache adapter](/guide/storage) (default: memoryStorage)
+  storage:      browserStorage(),    // [Cache adapter](/guide/storage) (default; pass memoryStorage() to opt out)
   onError:      (err) => { ... },   // Global error handler
 });
 ```

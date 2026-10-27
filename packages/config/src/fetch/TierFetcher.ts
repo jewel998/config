@@ -85,6 +85,15 @@ export class TierFetcher {
     return this.fetcher.fetchKeys(keys);
   }
 
+  /**
+   * Record keys as fetched under a tier WITHOUT performing a network fetch.
+   * Used when values are hydrated from persistent storage (the boot gate),
+   * so later context re-fetches correctly scope to these keys.
+   */
+  markFetched(keys: string[], tier: FetchTier): void {
+    this.recordKeys(keys, tier);
+  }
+
   // ─── Waiter management ───────────────────────────────────────
 
   /**

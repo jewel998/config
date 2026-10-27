@@ -138,7 +138,7 @@ sequenceDiagram
 
 **Type:** HTTP onRequest (CORS enabled)  
 **URL:** `GET https://your-project.web.app/api/v1/version?clientId=cid_xxx`  
-**CDN Cache:** 15s (public)
+**CDN Cache:** 5 minutes (public), configurable via the `VERSION_CACHE_SECONDS` environment variable. This value is your change-propagation latency — see [Tuning change propagation](#tuning-change-propagation) below.
 
 ### Flow
 
@@ -307,17 +307,17 @@ firebase deploy --only functions:getConfig,functions:getVersion --project your-p
 
 All function behavior is controlled via `functions/src/utils/constants.ts`:
 
-| Constant                 | Default         | Description                                                  |
-| ------------------------ | --------------- | ------------------------------------------------------------ |
-| `API_REGION`             | `"asia-south1"` | Region for HTTP API functions (getConfig, getVersion)        |
-| `MAX_INSTANCES`          | `10`            | Maximum concurrent function instances                        |
-| `MIN_INSTANCES`          | `0`             | Minimum warm instances (0 = free, 1+ eliminates cold starts) |
-| `RATE_LIMIT_ENABLED`     | `true`          | Whether server-side rate limiting is active                  |
-| `RATE_LIMIT_CLIENT_RPM`  | `300`           | Max requests/minute for `cid_` keys                          |
-| `RATE_LIMIT_SERVER_RPM`  | `120`           | Max requests/minute for `svr_` keys                          |
-| `MAX_CONTEXT_SIZE_BYTES` | `10240`         | Maximum context payload size (10KB)                          |
-| `CDN_CACHE_SECONDS`      | `60`            | Default CDN cache duration                                   |
-| `MAX_BATCH_SIZE`         | `500`           | Firestore batch write limit                                  |
+| Constant                 | Default         | Description                                                                                      |
+| ------------------------ | --------------- | ------------------------------------------------------------------------------------------------ |
+| `API_REGION`             | `"asia-south1"` | Region for HTTP API functions (getConfig, getVersion)                                            |
+| `MAX_INSTANCES`          | `10`            | Maximum concurrent function instances                                                            |
+| `MIN_INSTANCES`          | `0`             | Minimum warm instances (0 = free, 1+ eliminates cold starts)                                     |
+| `RATE_LIMIT_ENABLED`     | `true`          | Whether server-side rate limiting is active                                                      |
+| `RATE_LIMIT_CLIENT_RPM`  | `300`           | Max requests/minute for `cid_` keys                                                              |
+| `RATE_LIMIT_SERVER_RPM`  | `120`           | Max requests/minute for `svr_` keys                                                              |
+| `MAX_CONTEXT_SIZE_BYTES` | `10240`         | Maximum context payload size (10KB)                                                              |
+| `VERSION_CACHE_SECONDS`  | `300`           | CDN cache (seconds) for `/api/v1/version` — the change-propagation latency (deploy-time env var) |
+| `MAX_BATCH_SIZE`         | `500`           | Firestore batch write limit                                                                      |
 
 ### Changing the Region
 
@@ -388,6 +388,33 @@ If your Firestore is already in a different region, you cannot move it. Either:
 
 ::: tip Choosing a region
 Pick the region closest to the majority of your users. The Firebase Hosting CDN caches responses at edge nodes globally, so even users far from your function region will get fast responses on cache hits. The region mainly affects cache-miss latency and cold-start responsiveness.
+:::
+
+### Tuning change propagation
+
+The SDK keeps config calls cheap by polling the lightweight `/api/v1/version` endpoint and fetching full config only when the version (or the client's context) changes. The CDN caches `/api/v1/version` responses, so most polls are served from the edge and never invoke the function.
+
+The CDN cache window for `/api/v1/version` **is your change-propagation latency**: a config change reaches a client no later than the next time it re-polls past the cached window. It is set at deploy time via the `VERSION_CACHE_SECONDS` environment variable (default **300** seconds / 5 minutes):
+
+```bash
+# functions/.env (see functions/.env.example)
+VERSION_CACHE_SECONDS=300
+```
+
+| Value | Change propagation | `getVersion` invocations |
+| ----- | ------------------ | ------------------------ |
+| `15`  | ~15 seconds        | Highest                  |
+| `60`  | ~1 minute          | Lower                    |
+| `300` | ~5 minutes         | Lowest (default)         |
+
+A larger value means fewer function invocations and lower cost, but slower propagation of config changes. Lower it if you need snappier flag changes.
+
+::: warning Requires a redeploy
+`VERSION_CACHE_SECONDS` is read at runtime from the deploy environment, but changing it requires redeploying the functions (`firebase deploy --only functions`). CDN cache directives are emitted in the response header, so they cannot change without a new deploy — Firebase Hosting has no cache-purge API.
+:::
+
+::: tip Client poll interval is separate
+`VERSION_CACHE_SECONDS` controls the shared CDN cache. Each SDK instance also has its own `pollInterval` option (default 5 minutes) that controls how often that client checks `/version`. Lowering the CDN window alone does nothing if clients poll less often — tune both together. See [Loading Strategies](/guide/loading-strategies).
 :::
 
 #### What about other functions?

@@ -67,7 +67,7 @@ With properly matched regions (functions + Firestore in same region):
 | Scenario                                                       | Latency     |
 | -------------------------------------------------------------- | ----------- |
 | CDN cache hit (version poll)                                   | 10-50ms     |
-| CDN cache hit (config fetch, client mode)                      | 10-50ms     |
+| Config fetch (per-user, warm function)                         | 100-200ms   |
 | Warm function, same-region Firestore                           | 100-200ms   |
 | Cold start (no minInstances)                                   | 2000-4000ms |
 | Cross-region Firestore (e.g., functions in Mumbai, DB in Iowa) | 500-1000ms  |
@@ -77,7 +77,7 @@ With properly matched regions (functions + Firestore in same region):
 - **Use `browserStorage()`** in the SDK — cached values persist across page loads, eliminating API calls on return visits. See [Storage & Caching](/guide/storage) for configuration options.
 - **Set longer `pollInterval`** — 10-15 minutes instead of 5 if you don't need instant flag propagation
 - **Use key filtering** — Pass `keys` parameter to fetch only the flags you need (projected read)
-- **CDN is your friend** — Firebase Hosting CDN caches `/api/v1/version` for 15s and `/api/v1/config` (client mode) for 60s at edge nodes worldwide. Most requests never reach your function.
+- **CDN is your friend** — Firebase Hosting CDN caches `/api/v1/version` at edge nodes worldwide (default 5 min, set by `VERSION_CACHE_SECONDS`). Most version polls never reach your function, and the full config fetch runs only when the version or the client's context changes.
 
 ## Related
 

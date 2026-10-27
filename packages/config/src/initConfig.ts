@@ -27,7 +27,7 @@
 //   Re-fetches only already-fetched keys in tier order.
 // ═══════════════════════════════════════════════════════════════
 
-import { memoryStorage } from "./cache/memoryStorage.js";
+import { browserStorage } from "./cache/browserStorage.js";
 import { SdkError, ConfigError } from "./errors/index.js";
 import { TypedEventEmitter } from "./events/EventEmitter.js";
 import { createProjectedFetcher } from "./fetch/projectedFetcher.js";
@@ -42,6 +42,32 @@ const DEFAULT_BASE_URL = "https://jewel998-config.web.app/api";
 const DEFAULT_TIMEOUT_MS = 30_000;
 const CONTEXT_DEBOUNCE_MS = 100;
 const MIN_REFETCH_INTERVAL_MS = 30_000;
+
+/** Reserved storage keys for persisted gating metadata. */
+const VERSION_STORAGE_KEY = "__version__";
+const CONTEXT_FINGERPRINT_STORAGE_KEY = "__ctx__";
+
+/**
+ * Stable string fingerprint of an evaluation context. Keys are sorted so the
+ * same context always produces the same fingerprint regardless of insertion
+ * order. Used to detect when context changed across loads (which invalidates
+ * persisted values even if the config version is unchanged).
+ */
+function contextFingerprint(ctx: EvaluationContext): string {
+  const stable = (value: unknown): unknown => {
+    if (value === null || typeof value !== "object") return value;
+    if (Array.isArray(value)) return value.map(stable);
+    const obj = value as Record<string, unknown>;
+    const sorted: Record<string, unknown> = {};
+    for (const k of Object.keys(obj).sort()) sorted[k] = stable(obj[k]);
+    return sorted;
+  };
+  try {
+    return JSON.stringify(stable(ctx ?? {}));
+  } catch {
+    return "";
+  }
+}
 
 // ─── Public types ──────────────────────────────────────────────
 
@@ -71,7 +97,13 @@ export interface InitConfigOptions {
    */
   baseUrl?: string;
 
-  /** Cache storage adapter. Default: memoryStorage() */
+  /**
+   * Cache storage adapter. Default: `browserStorage()` (localStorage), which
+   * persists values and the config version across page loads so a reload or
+   * return visit skips the `/config` fetch when nothing changed. Falls back to
+   * in-memory automatically when `localStorage` is unavailable (SSR / Node /
+   * server keys). Pass `memoryStorage()` explicitly to opt out of persistence.
+   */
   storage?: CacheStorage;
 
   /**
@@ -177,7 +209,7 @@ export function initConfig(options: InitConfigOptions): Flags {
   const defaults = options.defaults ?? {};
   const pollInterval = options.pollInterval ?? 300_000;
   const baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
-  const storage = options.storage ?? memoryStorage();
+  const storage = options.storage ?? browserStorage();
   const retry = { ...DEFAULT_RETRY };
   const timeoutMs = options.timeout ?? DEFAULT_TIMEOUT_MS;
   const onError = options.onError;
@@ -200,6 +232,25 @@ export function initConfig(options: InitConfigOptions): Flags {
   // ── In-memory data store ─────────────────────────────────────
   const data: Record<string, unknown> = {};
 
+  // Version known to the SDK. Hydrated from persistent storage on init so a
+  // reload can skip the config fetch when the version is unchanged.
+  let cachedVersion: string | null = storage.get<string>(VERSION_STORAGE_KEY) ?? null;
+  const currentFingerprint = contextFingerprint(currentContext);
+
+  // If the persisted context fingerprint differs from this init's context, any
+  // persisted per-user values are stale — drop the persisted version so the
+  // boot gate re-fetches rather than serving values evaluated for old context.
+  if (storage.get<string>(CONTEXT_FINGERPRINT_STORAGE_KEY) !== currentFingerprint) {
+    cachedVersion = null;
+  }
+
+  /** Persist the current version + context fingerprint next to the values. */
+  function persistVersion(version: string): void {
+    cachedVersion = version;
+    storage.set(VERSION_STORAGE_KEY, version, DEFAULT_CACHE_TTL);
+    storage.set(CONTEXT_FINGERPRINT_STORAGE_KEY, currentFingerprint, DEFAULT_CACHE_TTL);
+  }
+
   function applyResult(result: Record<string, unknown>): string[] {
     const keys = Object.keys(result);
     for (const key of keys) {
@@ -219,16 +270,67 @@ export function initConfig(options: InitConfigOptions): Flags {
     events.emit("updated", { keys, source });
   }
 
-  // ── Tier 1: init prefetch ────────────────────────────────────
+  // ── Remote version check (shared by boot gate + polling) ─────
+  async function fetchRemoteVersion(): Promise<string | null> {
+    try {
+      const res = await fetch(`${baseUrl}/v1/version?clientId=${options.clientId}`, {
+        headers: cachedVersion ? { "If-None-Match": `"${cachedVersion}"` } : {},
+      });
+      // 304 => unchanged from the version we sent in If-None-Match.
+      if (res.status === 304) return cachedVersion;
+      if (!res.ok) return null;
+      const { version } = (await res.json()) as { version: string };
+      return version ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  /** True when every key is already present in persistent storage. */
+  function allKeysCached(keys: string[]): boolean {
+    return keys.every((k) => storage.get(k) !== undefined);
+  }
+
+  function hydrateFromStorage(keys: string[]): string[] {
+    const hydrated: string[] = [];
+    for (const key of keys) {
+      const cached = storage.get(key);
+      if (cached !== undefined) {
+        data[key] = cached;
+        hydrated.push(key);
+      }
+    }
+    return hydrated;
+  }
+
+  // ── Tier 1: init prefetch (version-gated against persisted cache) ─
   const readyPromise: Promise<void> =
     initPrefetch.length > 0
       ? (async () => {
           try {
+            // Boot gate: if we have a persisted version and values, confirm the
+            // remote version matches before spending a /config call. On match,
+            // serve from storage and skip the fetch entirely.
+            if (cachedVersion !== null && allKeysCached(initPrefetch)) {
+              const remote = await fetchRemoteVersion();
+              if (remote !== null && remote === cachedVersion) {
+                const hydrated = hydrateFromStorage(initPrefetch);
+                tierFetcher.markFetched(initPrefetch, "prefetch");
+                emitUpdated(hydrated, "prefetch");
+                return;
+              }
+              // Version advanced (or unknown) — fall through to a real fetch.
+              if (remote !== null) cachedVersion = remote;
+            }
+
             const result = await withRetry(
               () => tierFetcher.fetchTier(initPrefetch, "prefetch"),
               retry,
             );
             const fetched = applyResult(result);
+            // Record the version these values correspond to.
+            const v = await fetchRemoteVersion();
+            if (v !== null) persistVersion(v);
             tierFetcher.notifyWaiters(result);
             emitUpdated(fetched, "prefetch");
           } catch (err) {
@@ -249,12 +351,21 @@ export function initConfig(options: InitConfigOptions): Flags {
         })()
       : Promise.resolve();
 
-  // ── Tier 3: idle fetch ───────────────────────────────────────
+  // ── Tier 3: idle fetch (skipped when the full snapshot is fresh) ──
   readyPromise.then(() => {
     scheduleIdleFetch(async () => {
       try {
+        // If we already hold the full snapshot for the current version,
+        // there is nothing to fill in — skip the idle /config call.
+        if (cachedVersion !== null && storage.get("__all__") !== undefined) {
+          const remote = await fetchRemoteVersion();
+          if (remote !== null && remote === cachedVersion) return;
+          if (remote !== null) cachedVersion = remote;
+        }
         const result = await tierFetcher.fetchAll();
         const fetched = applyResult(result);
+        const v = await fetchRemoteVersion();
+        if (v !== null) persistVersion(v);
         tierFetcher.notifyWaiters(result);
         emitUpdated(fetched, "idle");
       } catch {
@@ -265,27 +376,16 @@ export function initConfig(options: InitConfigOptions): Flags {
   });
 
   // ── Version polling ──────────────────────────────────────────
-  let cachedVersion: string | null = null;
-
   async function checkVersion(): Promise<void> {
-    try {
-      const res = await fetch(`${baseUrl}/v1/version?clientId=${options.clientId}`, {
-        headers: cachedVersion ? { "If-None-Match": `"${cachedVersion}"` } : {},
-      });
-      if (res.status === 304) return;
-      if (!res.ok) return;
-
-      const { version } = (await res.json()) as { version: string };
-      if (cachedVersion === null) {
-        cachedVersion = version;
-        return;
-      }
-      if (version !== cachedVersion) {
-        cachedVersion = version;
-        await doRefresh();
-      }
-    } catch {
-      // Silently ignore polling errors
+    const version = await fetchRemoteVersion();
+    if (version === null) return;
+    if (cachedVersion === null) {
+      persistVersion(version);
+      return;
+    }
+    if (version !== cachedVersion) {
+      persistVersion(version);
+      await doRefresh();
     }
   }
 

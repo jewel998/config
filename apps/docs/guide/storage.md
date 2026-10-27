@@ -6,14 +6,39 @@ The SDK provides pluggable storage adapters that control where resolved config v
 
 ## Storage Adapters
 
-### Memory Storage (default)
+### Browser Storage (localStorage) — default
 
 ```typescript
 import { initConfig } from "@jewel998/config";
 
 const flags = initConfig({
   clientId: "cid_xxx",
-  // memoryStorage is used by default — no need to specify
+  // browserStorage() is used by default — no need to specify.
+  // Falls back to in-memory automatically when localStorage is
+  // unavailable (SSR / Node / server keys).
+});
+```
+
+Because values **and the config version** are persisted, a reload or return visit checks the lightweight `/api/v1/version` endpoint first and **skips the `/config` fetch entirely when nothing changed** — the main lever for cutting per-user function invocations and data transfer. A fetch happens only when the version advances or the user context changes.
+
+| Property                     | Value                                  |
+| ---------------------------- | -------------------------------------- |
+| Persists across page reloads | ✅ Yes                                 |
+| Persists across tabs         | ✅ Yes (shared localStorage)           |
+| TTL                          | 7 days (configurable)                  |
+| Storage limit                | ~5-10 MB (browser limit)               |
+| Best for                     | Reducing API calls, offline-first apps |
+
+### Memory Storage (opt-out)
+
+Pass `memoryStorage()` explicitly to disable cross-load persistence (e.g. for a short-lived SPA that always re-fetches on mount, or to avoid writing to `localStorage`):
+
+```typescript
+import { initConfig, memoryStorage } from "@jewel998/config";
+
+const flags = initConfig({
+  clientId: "cid_xxx",
+  storage: memoryStorage(),
 });
 ```
 
@@ -24,25 +49,6 @@ const flags = initConfig({
 | TTL                          | 7 days (or until page unload)   |
 | Storage limit                | Limited by available RAM        |
 | Best for                     | SPAs that always fetch on mount |
-
-### Browser Storage (localStorage)
-
-```typescript
-import { initConfig, browserStorage } from "@jewel998/config";
-
-const flags = initConfig({
-  clientId: "cid_xxx",
-  storage: browserStorage(),
-});
-```
-
-| Property                     | Value                                  |
-| ---------------------------- | -------------------------------------- |
-| Persists across page reloads | ✅ Yes                                 |
-| Persists across tabs         | ✅ Yes (shared localStorage)           |
-| TTL                          | 7 days (configurable)                  |
-| Storage limit                | ~5-10 MB (browser limit)               |
-| Best for                     | Reducing API calls, offline-first apps |
 
 #### Browser Storage Options
 

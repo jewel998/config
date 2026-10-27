@@ -26,17 +26,17 @@ const darkMode = await flags.get<boolean>("feature.dark_mode"); // → false
 
 ## InitConfigOptions
 
-| Property       | Type                      | Default                               | Description                                                                 |
-| -------------- | ------------------------- | ------------------------------------- | --------------------------------------------------------------------------- |
-| `clientId`     | `string`                  | (required)                            | API key from your Portal (cid_ or svr_)                                     |
-| `prefetch`     | `string[]`                | `[]`                                  | Tier 1 keys — fetched immediately, block `ready()` resolution               |
-| `baseUrl`      | `string`                  | `https://jewel998-config.web.app/api` | Your self-hosted Firebase API URL                                           |
-| `defaults`     | `Record<string, unknown>` | `{}`                                  | Fallback values — `get()` resolves instantly when a default exists          |
-| `context`      | `EvaluationContext`       | `{}`                                  | User context for targeting. Use `autoContext()`                             |
-| `timeout`      | `number`                  | `30000` (30s)                         | `get()` timeout for keys with no default. Calls `onError`, rejects Promise. |
-| `pollInterval` | `number`                  | `300000` (5 min)                      | Version polling interval in ms. Set to `0` to disable.                      |
-| `storage`      | `CacheStorage`            | `memoryStorage()`                     | Cache adapter. Use `browserStorage()` to persist across reloads.            |
-| `onError`      | `(err: SdkError) => void` | `undefined`                           | Global error handler — called on every error across all tiers               |
+| Property       | Type                      | Default                               | Description                                                                                                                               |
+| -------------- | ------------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `clientId`     | `string`                  | (required)                            | API key from your Portal (cid_ or svr_)                                                                                                   |
+| `prefetch`     | `string[]`                | `[]`                                  | Tier 1 keys — fetched immediately, block `ready()` resolution                                                                             |
+| `baseUrl`      | `string`                  | `https://jewel998-config.web.app/api` | Your self-hosted Firebase API URL                                                                                                         |
+| `defaults`     | `Record<string, unknown>` | `{}`                                  | Fallback values — `get()` resolves instantly when a default exists                                                                        |
+| `context`      | `EvaluationContext`       | `{}`                                  | User context for targeting. Use `autoContext()`                                                                                           |
+| `timeout`      | `number`                  | `30000` (30s)                         | `get()` timeout for keys with no default. Calls `onError`, rejects Promise.                                                               |
+| `pollInterval` | `number`                  | `300000` (5 min)                      | Version polling interval in ms. Set to `0` to disable.                                                                                    |
+| `storage`      | `CacheStorage`            | `browserStorage()`                    | Cache adapter. Persists values + version across reloads so unchanged configs skip the `/config` fetch. Pass `memoryStorage()` to opt out. |
+| `onError`      | `(err: SdkError) => void` | `undefined`                           | Global error handler — called on every error across all tiers                                                                             |
 
 ## Flags Interface
 

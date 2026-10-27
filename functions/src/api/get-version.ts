@@ -9,7 +9,13 @@ import { Methods, UseMiddleware, UseGuards, RequestHandler, createHandler } from
 import type { RequestContext, HandlerResponse } from "@jewel998/api";
 import { onRequest } from "firebase-functions/v2/https";
 
-import { MAX_INSTANCES, MIN_INSTANCES, API_REGION } from "../utils/constants";
+import {
+  MAX_INSTANCES,
+  MIN_INSTANCES,
+  API_REGION,
+  VERSION_CACHE_SECONDS,
+  VERSION_BROWSER_CACHE_SECONDS,
+} from "../utils/constants";
 import { getDb } from "../utils/firestore";
 import { ExtractClientIdMiddleware, RateLimitMiddleware, AuthenticateGuard } from "./guards/index";
 
@@ -31,7 +37,13 @@ class GetVersionHandler extends RequestHandler {
     const version = envData.configVersion ?? "0";
     const changedKeys: string[] = envData.lastChangedKeys ?? [];
 
-    ctx.res.set("Cache-Control", "public, max-age=10, s-maxage=15");
+    // CDN caches the version for VERSION_CACHE_SECONDS (deploy-time env var,
+    // default 5 min) — this is the change-propagation latency. The ETag lets
+    // the browser revalidate cheaply (304) within that window.
+    ctx.res.set(
+      "Cache-Control",
+      `public, max-age=${VERSION_BROWSER_CACHE_SECONDS}, s-maxage=${VERSION_CACHE_SECONDS}`,
+    );
     ctx.res.set("ETag", `"${version}"`);
 
     if (ctx.req.headers["if-none-match"] === `"${version}"`) {
