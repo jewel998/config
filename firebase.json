@@ -21,6 +21,7 @@
     }
   },
   "hosting": {
+    "site": "jewel998-config",
     "public": "apps/portal/dist",
     "rewrites": [
       {

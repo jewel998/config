@@ -435,7 +435,7 @@ msgid "Copy"
 msgstr "Copiar"
 
 #: src/components/config-form-modal.tsx:428
-#: src/components/onboarding-stepper.tsx:165
+#: src/components/onboarding-stepper.tsx:166
 #: src/components/onboarding-stepper.tsx:195
 #: src/components/segment-manager.tsx:190
 #: src/components/webhook-form-modal.tsx:284
@@ -1498,7 +1498,7 @@ msgstr "Project description (markdown supported)"
 msgid "Project ID"
 msgstr "ID del proyecto"
 
-#: src/components/onboarding-stepper.tsx:155
+#: src/components/onboarding-stepper.tsx:156
 #: src/components/project-switcher.tsx:105
 msgid "Project name"
 msgstr "Project name"
@@ -2217,7 +2217,7 @@ msgstr "You cannot change your own role"
 msgid "You don't have permission to create projects."
 msgstr ""
 
-#: src/components/onboarding-stepper.tsx:170
+#: src/components/onboarding-stepper.tsx:171
 msgid "You don't have permission to create projects. Ask a platform admin to grant you the CREATE_PROJECT permission."
 msgstr ""
 
