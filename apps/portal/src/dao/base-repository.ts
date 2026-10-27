@@ -6,6 +6,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  runTransaction,
   setDoc,
   updateDoc,
   writeBatch,
@@ -100,6 +101,19 @@ export abstract class BaseRepository<
     _user: AuthenticatedUser,
   ): Promise<void> {}
 
+  /**
+   * Returns the desired document ID for a create, or null to use a
+   * Firestore auto-generated ID (the default).
+   *
+   * When a non-null ID is returned, create() writes atomically via a
+   * transaction that FAILS if a document with that ID already exists
+   * (RepositoryError "ALREADY_EXISTS"), guaranteeing ID uniqueness with no
+   * check-then-write race.
+   */
+  protected documentId(_input: TCreateInput, _ctx: RepositoryContext): string | null {
+    return null;
+  }
+
   // ─── Auth check ────────────────────────────────────────────
 
   private checkAuth(user: AuthenticatedUser | null): asserts user is AuthenticatedUser {
@@ -171,8 +185,30 @@ export abstract class BaseRepository<
     const colRef = collection(this.firestore, colPath);
     const now = new Date().toISOString();
     const data = { ...input, createdAt: now, updatedAt: now };
-    const docRef = await addDoc(colRef, data);
-    const entity = { id: docRef.id, ...data } as unknown as TEntity;
+
+    const desiredId = this.documentId(input, ctx);
+    let entity: TEntity;
+
+    if (desiredId !== null) {
+      // Keyed write: the document ID is meaningful (e.g. a config key).
+      // Use a transaction so "fail if already exists" is atomic — no
+      // check-then-write race between concurrent creators.
+      const docRef = doc(this.firestore, colPath, desiredId);
+      await runTransaction(this.firestore, async (tx) => {
+        const existing = await tx.get(docRef);
+        if (existing.exists()) {
+          throw new RepositoryError(
+            `A record with id "${desiredId}" already exists`,
+            "ALREADY_EXISTS",
+          );
+        }
+        tx.set(docRef, data as Record<string, unknown>);
+      });
+      entity = { id: desiredId, ...data } as unknown as TEntity;
+    } else {
+      const docRef = await addDoc(colRef, data);
+      entity = { id: docRef.id, ...data } as unknown as TEntity;
+    }
 
     // 5. Audit (mandatory — NOT in try/catch)
     const auditCtx = this.buildAuditContext("create", ctx, input, null, entity);

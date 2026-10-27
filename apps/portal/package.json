@@ -49,6 +49,7 @@
   "devDependencies": {
     "@lingui/cli": "^6.5.0",
     "@lingui/conf": "^6.5.0",
+    "@lingui/format-po": "^6.5.0",
     "@lingui/macro": "^5.9.5",
     "@lingui/vite-plugin": "^6.5.0",
     "@tailwindcss/vite": "^4.1.0",

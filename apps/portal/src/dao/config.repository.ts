@@ -306,6 +306,16 @@ export class ConfigRepository extends BaseRepository<
 
   // ─── Lifecycle Hooks ───────────────────────────────────────
 
+  /**
+   * Configs are keyed by their config key — the document ID IS the key.
+   * This aligns with the `{configKey}` Firestore rules wildcard and makes
+   * key uniqueness enforceable: create() writes atomically and fails with
+   * "ALREADY_EXISTS" if the key is already taken.
+   */
+  protected documentId(input: ConfigCreateInput): string {
+    return input.key;
+  }
+
   protected async beforeUpdate(
     id: string,
     input: ConfigUpdateInput,

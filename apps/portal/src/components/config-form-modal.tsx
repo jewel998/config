@@ -164,13 +164,19 @@ export const ConfigFormModal = ({
         key: keyResult.data!,
         value: parsedValue,
         valueType,
+        isEdit: !!editingConfig,
       },
       {
         onSuccess: () => {
           toast.success(editingConfig ? t`Config updated` : t`Config created`);
           onOpenChange(false);
         },
-        onError: () => {
+        onError: (err) => {
+          const code = (err as { code?: string })?.code;
+          if (code === "ALREADY_EXISTS") {
+            setErrors({ key: t`A config with this key already exists` });
+            return;
+          }
           toast.error(t`Failed to save config`);
         },
       },
@@ -284,7 +290,7 @@ export const ConfigFormModal = ({
                 setRawValue(e.target.value);
                 setErrors((prev) => ({ ...prev, value: undefined }));
               }}
-              className="min-h-24 font-mono text-xs"
+              className="max-h-72 min-h-24 w-full resize-y overflow-auto whitespace-pre-wrap break-all font-mono text-xs"
             />
           ) : valueType === "number" ? (
             <Input
@@ -408,7 +414,7 @@ export const ConfigFormModal = ({
             {showPreview ? <Trans>Hide Preview</Trans> : <Trans>Show Preview</Trans>}
           </Button>
           {showPreview && (
-            <pre className="mt-2 max-h-40 overflow-auto rounded-xl border bg-muted p-3 font-mono text-xs">
+            <pre className="mt-2 max-h-40 w-full overflow-auto whitespace-pre-wrap break-all rounded-xl border bg-muted p-3 font-mono text-xs">
               {getPreviewOutput()}
             </pre>
           )}

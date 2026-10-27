@@ -168,6 +168,9 @@ importers:
       '@lingui/conf':
         specifier: ^6.5.0
         version: 6.5.0
+      '@lingui/format-po':
+        specifier: ^6.5.0
+        version: 6.5.0
       '@lingui/macro':
         specifier: ^5.9.5
         version: 5.9.5(babel-plugin-macros@3.1.0)(react@19.2.8)

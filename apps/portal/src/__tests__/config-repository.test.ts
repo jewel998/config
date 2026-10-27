@@ -14,10 +14,30 @@ class TestableConfigRepository extends ConfigRepository {
   public testValidate(input: ConfigCreateInput | ConfigUpdateInput, op: "create" | "update") {
     return this.validate(input, op);
   }
+
+  public testDocumentId(input: ConfigCreateInput) {
+    return this.documentId(input);
+  }
 }
 
 // Use null for Firestore since we're only testing validation
 const repo = new TestableConfigRepository(null as any, null);
+
+// ─── Document ID (key-as-ID) ─────────────────────────────────
+
+describe("ConfigRepository: Document ID", () => {
+  it("uses the config key as the document ID", () => {
+    expect(
+      repo.testDocumentId({ key: "feature.dark_mode", value: true, valueType: "boolean" }),
+    ).toBe("feature.dark_mode");
+  });
+
+  it("uses the key as ID regardless of valueType (incl. array)", () => {
+    expect(repo.testDocumentId({ key: "app.list", value: "[]", valueType: "array" })).toBe(
+      "app.list",
+    );
+  });
+});
 
 // ─── Create Validation ───────────────────────────────────────
 

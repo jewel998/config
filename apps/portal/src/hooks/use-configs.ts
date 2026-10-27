@@ -49,18 +49,26 @@ export const useSetConfig = () => {
       key,
       value,
       valueType,
+      isEdit,
     }: {
       projectId: string;
       environmentId: string;
       key: string;
       value: unknown;
       valueType: ConfigEntry["valueType"];
+      isEdit?: boolean;
     }) => {
       if (!user) throw new Error("Not authenticated");
       const ctx = { projectId, environmentId };
       const authUser = { uid: user.uid, email: user.email };
-      const input: ConfigCreateInput = { key, value, valueType };
-      await repo.create(input, ctx, authUser);
+      if (isEdit) {
+        // Editing an existing key updates in place (doc ID = key).
+        await repo.update(key, { value, valueType }, ctx, authUser);
+      } else {
+        // Creating a new key: atomic create that fails if the key exists.
+        const input: ConfigCreateInput = { key, value, valueType };
+        await repo.create(input, ctx, authUser);
+      }
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({

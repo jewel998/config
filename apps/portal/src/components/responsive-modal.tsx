@@ -39,7 +39,7 @@ export const ResponsiveModal = ({
             <DialogTitle>{title}</DialogTitle>
             {description && <DialogDescription>{description}</DialogDescription>}
           </DialogHeader>
-          <div className="space-y-5">{children}</div>
+          <div className="max-h-[70vh] space-y-5 overflow-y-auto">{children}</div>
         </DialogContent>
       </Dialog>
     );
