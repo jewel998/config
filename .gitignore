@@ -16,6 +16,9 @@ dist
 .vitepress/cache
 _site
 
+# Transient deploy manifest backup (functions)
+functions/package.json.deploybak
+
 # Generated at publish time (copied from root)
 packages/config/README.md
 packages/config/LICENSE
