@@ -40,16 +40,16 @@ const darkMode = await flags.get<boolean>("feature.dark_mode"); // → false
 
 ## Flags Interface
 
-| Method       | Signature                                                 | Description                                                                       |
-| ------------ | --------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `ready`      | `() => Promise<void>`                                     | Resolves when Tier 1 (init prefetch) keys are ready. Instant if none declared.    |
-| `prefetch`   | `(keys: string[]) => void`                                | Tier 2 fetch hint — fire-and-forget. Already-fetched keys are skipped.            |
-| `get`        | `<T>(key: string, defaultValue?: T) => Promise<T>`        | Get a typed value. Instant from cache/default. Suspends if unfetched, no default. |
-| `all`        | `() => Promise<Record<string, unknown>>`                  | Snapshot of all fetched values merged with defaults. No waiting.                  |
-| `setContext` | `(ctx: EvaluationContext) => void`                        | Fire-and-forget context update. Re-fetches fetched keys debounced 100ms.          |
-| `refresh`    | `() => Promise<void>`                                     | Re-fetch all already-fetched keys in tier order.                                  |
-| `on`         | `(event: string, cb: (payload: unknown) => void) => void` | Subscribe to events (see Events table below)                                      |
-| `off`        | `(event: string, cb) => void`                             | Unsubscribe from events                                                           |
+| Method       | Signature                                                                            | Description                                                                           |
+| ------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| `ready`      | `() => Promise<void>`                                                                | Resolves when Tier 1 (init prefetch) keys are ready. Instant if none declared.        |
+| `prefetch`   | `(keys: string[]) => void`                                                           | Tier 2 fetch hint — fire-and-forget. Already-fetched keys are skipped.                |
+| `get`        | `<T>(key: string) => Promise<T>` / `<T>(key: string, defaultValue: T) => Promise<T>` | Get a typed value. Instant from cache/default. Suspends if unfetched with no default. |
+| `all`        | `() => Promise<Record<string, unknown>>`                                             | Snapshot of all fetched values merged with defaults. No waiting.                      |
+| `setContext` | `(ctx: EvaluationContext) => void`                                                   | Fire-and-forget context update. Re-fetches fetched keys debounced 100ms.              |
+| `refresh`    | `() => Promise<void>`                                                                | Re-fetch all already-fetched keys in tier order.                                      |
+| `on`         | `(event: string, cb: (payload: unknown) => void) => void`                            | Subscribe to events (see Events table below)                                          |
+| `off`        | `(event: string, cb) => void`                                                        | Unsubscribe from events                                                               |
 
 ::: info flag() removed
 The `flag()` method has been removed. Use `get<boolean>("key")` instead.
@@ -98,16 +98,16 @@ The evaluation mode is determined by the `clientId` prefix — not a configurati
 
 ## ConfigClient
 
-| Method       | Signature                                                 | Description                                            |
-| ------------ | --------------------------------------------------------- | ------------------------------------------------------ |
-| `getValue`   | `<T>(key: string, defaultValue?: T) => T`                 | Get a typed config value                               |
-| `getFlag`    | `(key: string) => boolean`                                | Get a boolean flag (false if missing)                  |
-| `getAll`     | `() => Record<string, unknown>`                           | Get all config key-value pairs                         |
-| `refresh`    | `() => Promise<void>`                                     | Version-gated re-fetch (skips if unchanged)            |
-| `setContext` | `(ctx: EvaluationContext) => void`                        | Update user context (triggers re-fetch in server mode) |
-| `on`         | `(event: string, cb: (payload: unknown) => void) => void` | Subscribe to lifecycle events                          |
-| `off`        | `(event, callback) => void`                               | Unsubscribe from events                                |
-| `destroy`    | `() => void`                                              | Clean up timers, listeners, and circuit breaker state  |
+| Method       | Signature                                                 | Description                                                                       |
+| ------------ | --------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `getValue`   | `<T>(key: string, defaultValue?: T) => T \| undefined`    | Get a typed config value (returns `defaultValue`, else `undefined`, when missing) |
+| `getFlag`    | `(key: string) => boolean`                                | Get a boolean flag (false if missing)                                             |
+| `getAll`     | `() => Record<string, unknown>`                           | Get all config key-value pairs                                                    |
+| `refresh`    | `() => Promise<void>`                                     | Version-gated re-fetch (skips if unchanged)                                       |
+| `setContext` | `(ctx: EvaluationContext) => void`                        | Update user context (triggers re-fetch in server mode)                            |
+| `on`         | `(event: string, cb: (payload: unknown) => void) => void` | Subscribe to lifecycle events                                                     |
+| `off`        | `(event, callback) => void`                               | Unsubscribe from events                                                           |
+| `destroy`    | `() => void`                                              | Clean up timers, listeners, and circuit breaker state                             |
 
 ## EvaluationContext
 
@@ -265,7 +265,10 @@ const newConfig = createConfig({ clientId: "cid_fixed_key", ... });
 
 ## Error Codes
 
-The SDK maps HTTP status codes to typed error codes:
+The SDK uses two distinct error taxonomies. Know which one you are handling:
+
+- **`SdkError.type`** (the table above) — the 5 values surfaced to your `onError` handler and `get()` rejections: `TIMEOUT`, `FETCH_FAILED`, `KEY_NOT_FOUND`, `AUTH`, `RATE_LIMITED`. This is what consumer code inspects.
+- **`ConfigErrorCode`** (the table below) — the lower-level HTTP-status mapping used internally to drive retry and circuit-breaker behavior, carried on `ConfigError` (and subclasses like `RateLimitError`). HTTP status codes map to these codes:
 
 | HTTP Status | Error Code              | Retries? | Circuit? |
 | ----------- | ----------------------- | -------- | -------- |

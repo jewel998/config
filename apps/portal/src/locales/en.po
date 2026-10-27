@@ -75,7 +75,7 @@ msgstr "Add a new configuration entry."
 msgid "Add a webhook to receive notifications when configs change."
 msgstr "Add a webhook to receive notifications when configs change."
 
-#: src/components/onboarding-stepper.tsx:74
+#: src/components/onboarding-stepper.tsx:76
 msgid "Add an environment"
 msgstr "Add an environment"
 
@@ -437,8 +437,8 @@ msgid "Copy"
 msgstr "Copy"
 
 #: src/components/config-form-modal.tsx:428
-#: src/components/onboarding-stepper.tsx:162
-#: src/components/onboarding-stepper.tsx:184
+#: src/components/onboarding-stepper.tsx:165
+#: src/components/onboarding-stepper.tsx:195
 #: src/components/segment-manager.tsx:190
 #: src/components/webhook-form-modal.tsx:284
 #: src/routes/environments.tsx:214
@@ -462,7 +462,8 @@ msgstr "Create an environment first to manage configs."
 msgid "Create Environment"
 msgstr "Create Environment"
 
-#: src/components/project-switcher.tsx:123
+#: src/components/project-switcher.tsx:126
+#: src/components/project-switcher.tsx:139
 msgid "Create new project"
 msgstr "Create new project"
 
@@ -470,7 +471,7 @@ msgstr "Create new project"
 msgid "Create Segment"
 msgstr "Create Segment"
 
-#: src/components/onboarding-stepper.tsx:70
+#: src/components/onboarding-stepper.tsx:72
 msgid "Create your first project"
 msgstr "Create your first project"
 
@@ -652,7 +653,7 @@ msgstr "Duplicate Config"
 msgid "e.g. ^https?://"
 msgstr "e.g. ^https?://"
 
-#: src/components/onboarding-stepper.tsx:174
+#: src/components/onboarding-stepper.tsx:185
 msgid "e.g. production, staging"
 msgstr "e.g. production, staging"
 
@@ -759,7 +760,7 @@ msgstr "Environment cloned"
 msgid "Environment created"
 msgstr "Environment created"
 
-#: src/components/onboarding-stepper.tsx:57
+#: src/components/onboarding-stepper.tsx:59
 msgid "Environment created!"
 msgstr "Environment created!"
 
@@ -791,7 +792,7 @@ msgstr "Environments"
 msgid "Environments are in sync"
 msgstr "Environments are in sync"
 
-#: src/components/onboarding-stepper.tsx:76
+#: src/components/onboarding-stepper.tsx:78
 msgid "Environments define deployment targets like production or staging."
 msgstr "Environments define deployment targets like production or staging."
 
@@ -845,14 +846,14 @@ msgstr "Failed to clone environment"
 msgid "Failed to copy"
 msgstr "Failed to copy"
 
-#: src/components/onboarding-stepper.tsx:60
+#: src/components/onboarding-stepper.tsx:62
 #: src/routes/environments.tsx:99
 #: src/routes/settings.tsx:193
 msgid "Failed to create environment"
 msgstr "Failed to create environment"
 
-#: src/components/onboarding-stepper.tsx:44
-#: src/components/project-switcher.tsx:46
+#: src/components/onboarding-stepper.tsx:46
+#: src/components/project-switcher.tsx:49
 msgid "Failed to create project"
 msgstr "Failed to create project"
 
@@ -1006,7 +1007,7 @@ msgstr "Generate Key"
 msgid "Get started with a template or create your own."
 msgstr "Get started with a template or create your own."
 
-#: src/components/onboarding-stepper.tsx:198
+#: src/components/onboarding-stepper.tsx:209
 msgid "Go to Environments"
 msgstr "Go to Environments"
 
@@ -1115,7 +1116,7 @@ msgstr "Language & Region"
 msgid "Learn how this works"
 msgstr "Learn how this works"
 
-#: src/components/onboarding-stepper.tsx:92
+#: src/components/onboarding-stepper.tsx:94
 msgid "Let's get you set up in a few quick steps."
 msgstr "Let's get you set up in a few quick steps."
 
@@ -1291,7 +1292,7 @@ msgstr "No prerequisites configured."
 msgid "No project or environment selected"
 msgstr "No project or environment selected"
 
-#: src/components/project-switcher.tsx:71
+#: src/components/project-switcher.tsx:74
 msgid "No projects found."
 msgstr "No projects found."
 
@@ -1479,11 +1480,11 @@ msgstr "Profile"
 msgid "Project"
 msgstr "Project"
 
-#: src/components/project-switcher.tsx:43
+#: src/components/project-switcher.tsx:46
 msgid "Project created"
 msgstr "Project created"
 
-#: src/components/onboarding-stepper.tsx:41
+#: src/components/onboarding-stepper.tsx:43
 msgid "Project created successfully!"
 msgstr "Project created successfully!"
 
@@ -1499,8 +1500,8 @@ msgstr "Project description (markdown supported)"
 msgid "Project ID"
 msgstr "Project ID"
 
-#: src/components/onboarding-stepper.tsx:152
-#: src/components/project-switcher.tsx:102
+#: src/components/onboarding-stepper.tsx:155
+#: src/components/project-switcher.tsx:105
 msgid "Project name"
 msgstr "Project name"
 
@@ -1521,7 +1522,7 @@ msgstr "Project Settings"
 msgid "Projects"
 msgstr "Projects"
 
-#: src/components/onboarding-stepper.tsx:71
+#: src/components/onboarding-stepper.tsx:73
 msgid "Projects group environments and configurations together."
 msgstr "Projects group environments and configurations together."
 
@@ -1659,7 +1660,7 @@ msgstr "Search configs..."
 msgid "Search environments..."
 msgstr "Search environments..."
 
-#: src/components/project-switcher.tsx:68
+#: src/components/project-switcher.tsx:71
 msgid "Search projects..."
 msgstr "Search projects..."
 
@@ -1777,7 +1778,7 @@ msgstr "Select an environment from the top bar to manage API keys."
 msgid "Select env"
 msgstr "Select env"
 
-#: src/components/project-switcher.tsx:61
+#: src/components/project-switcher.tsx:64
 msgid "Select project"
 msgstr "Select project"
 
@@ -1873,7 +1874,7 @@ msgstr "Stale"
 msgid "Standard JSON"
 msgstr "Standard JSON"
 
-#: src/components/onboarding-stepper.tsx:81
+#: src/components/onboarding-stepper.tsx:83
 msgid "Start configuring your environments with secrets and settings."
 msgstr "Start configuring your environments with secrets and settings."
 
@@ -2185,7 +2186,7 @@ msgstr "Webhook updated"
 msgid "Webhooks"
 msgstr "Webhooks"
 
-#: src/components/onboarding-stepper.tsx:89
+#: src/components/onboarding-stepper.tsx:91
 msgid "Welcome to Config Portal"
 msgstr "Welcome to Config Portal"
 
@@ -2214,11 +2215,19 @@ msgstr "You"
 msgid "You cannot change your own role"
 msgstr "You cannot change your own role"
 
+#: src/components/project-switcher.tsx:144
+msgid "You don't have permission to create projects."
+msgstr "You don't have permission to create projects."
+
+#: src/components/onboarding-stepper.tsx:170
+msgid "You don't have permission to create projects. Ask a platform admin to grant you the CREATE_PROJECT permission."
+msgstr "You don't have permission to create projects. Ask a platform admin to grant you the CREATE_PROJECT permission."
+
 #: src/routes/configs.tsx:320
 msgid "You have view-only access to this project."
 msgstr "You have view-only access to this project."
 
-#: src/components/onboarding-stepper.tsx:80
+#: src/components/onboarding-stepper.tsx:82
 msgid "You're all set!"
 msgstr "You're all set!"
 

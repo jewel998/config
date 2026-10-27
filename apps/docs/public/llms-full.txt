@@ -131,7 +131,7 @@ Advanced entry point with full control over loading, plugins, and caching.
 
 | Method       | Signature                            | Description                              |
 | ------------ | ------------------------------------ | ---------------------------------------- |
-| getValue     | <T>(key: string, default?: T) => T   | Get a typed config value                 |
+| getValue     | <T>(key: string, default?: T) => T \| undefined | Get a typed config value (default/undefined if missing) |
 | getFlag      | (key: string) => boolean             | Get boolean flag                         |
 | getAll       | () => Record<string, unknown>        | Get all key-value pairs                  |
 | refresh      | () => Promise<void>                  | Version-gated re-fetch                   |

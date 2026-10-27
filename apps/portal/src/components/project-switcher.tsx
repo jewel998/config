@@ -17,6 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Spinner } from "@/components/ui/spinner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { usePermissions } from "@/hooks/use-permissions";
 import { useProjects, useCreateProject } from "@/hooks/use-projects";
 import { cn } from "@/lib/utils";
 import { useProjectStore } from "@/stores/project-store";
@@ -24,6 +26,7 @@ import { useProjectStore } from "@/stores/project-store";
 export const ProjectSwitcher = () => {
   const { data: projects = [] } = useProjects();
   const createProject = useCreateProject();
+  const { canCreateProject } = usePermissions();
   const { selectedProjectId, setSelectedProjectId } = useProjectStore();
 
   const selectedProject = projects.find((p) => p.id === selectedProjectId);
@@ -112,7 +115,7 @@ export const ProjectSwitcher = () => {
                   <Plus className="h-3.5 w-3.5" />
                 </Button>
               </div>
-            ) : (
+            ) : canCreateProject ? (
               <Button
                 variant="ghost"
                 size="sm"
@@ -122,6 +125,25 @@ export const ProjectSwitcher = () => {
                 <FolderPlus className="h-4 w-4" />
                 <Trans>Create new project</Trans>
               </Button>
+            ) : (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="block w-full">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start gap-2 text-sm"
+                      disabled
+                    >
+                      <FolderPlus className="h-4 w-4" />
+                      <Trans>Create new project</Trans>
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <Trans>You don't have permission to create projects.</Trans>
+                </TooltipContent>
+              </Tooltip>
             )}
           </div>
         </Command>

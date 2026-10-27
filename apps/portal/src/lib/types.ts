@@ -184,6 +184,21 @@ export interface ProjectWithRBAC extends Project {
 export type RBACRole = "viewer" | "editor" | "admin";
 
 // ═══════════════════════════════════════════════════════════════
+// Platform Access (capability grants keyed by email)
+// ═══════════════════════════════════════════════════════════════
+
+/** Platform-level capability keys. Mirror of functions PLATFORM_PERMISSIONS. */
+export type PlatformPermission = "PORTAL" | "CREATE_PROJECT";
+
+/** platformAccess/{email} document shape. */
+export interface PlatformAccess {
+  permissions: PlatformPermission[];
+  isSuperAdmin: boolean;
+  addedBy: string;
+  addedAt: string;
+}
+
+// ═══════════════════════════════════════════════════════════════
 // Config UX Overhaul Types
 // ═══════════════════════════════════════════════════════════════
 

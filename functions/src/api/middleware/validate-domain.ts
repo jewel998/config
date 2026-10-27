@@ -2,7 +2,9 @@
  * Domain validation middleware.
  *
  * Checks that the request origin is in the environment's allowedDomains list.
- * If no allowedDomains are configured, all origins are permitted.
+ * If no allowedDomains are configured, all origins are permitted. localhost is
+ * NOT special — to develop locally, add `localhost` (or `127.0.0.1`) to the
+ * environment's allowedDomains like any other origin.
  */
 
 import type { Firestore } from "firebase-admin/firestore";
@@ -26,6 +28,14 @@ export async function validateDomain(
 ): Promise<void> {
   if (!origin) return;
 
+  let requestDomain: string;
+  try {
+    requestDomain = new URL(origin).hostname;
+  } catch {
+    // Malformed Origin/Referer — treat as no origin rather than hard-failing.
+    return;
+  }
+
   const envDoc = await db
     .collection("projects")
     .doc(projectId)
@@ -38,7 +48,6 @@ export async function validateDomain(
   const allowedDomains: string[] = envDoc.data()?.allowedDomains ?? [];
   if (allowedDomains.length === 0) return;
 
-  const requestDomain = new URL(origin).hostname;
   const isAllowed = allowedDomains.some(
     (d) => requestDomain === d || requestDomain.endsWith(`.${d}`),
   );

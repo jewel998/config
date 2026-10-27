@@ -3,6 +3,11 @@ import { initializeApp } from "firebase-admin/app";
 import { getConfig } from "./api/get-config";
 import { getVersion } from "./api/get-version";
 import { exportConfigs } from "./callables/export-configs";
+import {
+  grantPlatformAccess,
+  revokePlatformAccess,
+  listPlatformAccess,
+} from "./callables/platform-access";
 import { testWebhook } from "./callables/test-webhook";
 import { validateSignIn, validateCreate } from "./identity/validate-sign-in";
 import { createOnAuditCreated } from "./triggers/on-audit-created";
@@ -12,4 +17,14 @@ initializeApp();
 
 // Export Cloud Functions
 export const onAuditCreated = createOnAuditCreated();
-export { testWebhook, exportConfigs, validateSignIn, validateCreate, getConfig, getVersion };
+export {
+  testWebhook,
+  exportConfigs,
+  validateSignIn,
+  validateCreate,
+  getConfig,
+  getVersion,
+  grantPlatformAccess,
+  revokePlatformAccess,
+  listPlatformAccess,
+};

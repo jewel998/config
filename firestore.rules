@@ -10,7 +10,7 @@ service cloud.firestore {
         && (resource.data.ownerId == request.auth.uid
             || request.auth.uid in resource.data.authorizedUsers
             || ('email:' + request.auth.token.email) in resource.data.authorizedUsers);
-      allow create: if request.auth != null;
+      allow create: if request.auth != null && hasPlatformPermission('CREATE_PROJECT');
       // Update: admin OR self-claiming an invite
       allow update: if request.auth != null
         && (hasRole(projectId, 'admin') || isSelfClaim(projectId));
@@ -87,9 +87,26 @@ service cloud.firestore {
     }
 
     // User profiles — email immutable after creation
-    // Read restricted to authenticated users who share at least one project
+    //
+    // Read policy:
+    //   - get  (single doc): your OWN profile always; any OTHER user's profile
+    //     only if you are an email-verified signed-in user. This covers
+    //     own-profile sync and team-member profile lookups by known UID.
+    //   - list (query): email-verified signed-in users only. The portal only
+    //     ever lists this collection with an `email ==` filter (invite search),
+    //     which fundamentally needs to resolve users you do not yet share a
+    //     project with; verification blocks anonymous/unverified enumeration.
+    //
+    // NOTE: Firestore rules cannot restrict reads to "shares a project" without
+    // breaking the invite-by-email search, so verification is the tightest gate
+    // that keeps all portal read paths working. The config-delivery API never
+    // reads this collection — it runs through Cloud Functions on the Admin SDK,
+    // which bypasses these rules entirely, so the SDK has no access here.
     match /users/{userId} {
-      allow read: if request.auth != null;
+      allow get: if request.auth != null
+        && (request.auth.uid == userId || request.auth.token.email_verified == true);
+      allow list: if request.auth != null
+        && request.auth.token.email_verified == true;
       allow create: if request.auth != null
         && request.auth.uid == userId
         && request.resource.data.email == request.auth.token.email
@@ -121,6 +138,19 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Platform access — capability grants keyed by email.
+    //   { permissions: string[], isSuperAdmin: bool, addedBy, addedAt }
+    // Read: a user may read ONLY their own grant (to gate their UI and to let
+    //   the hasPlatformPermission() rule self-reference). No enumeration.
+    // Write: Cloud Functions (Admin SDK) ONLY — a client can never grant itself
+    //   a permission or super-admin. All grants go through the grantPlatformAccess
+    //   callable, which enforces super-admin server-side via a Functions secret.
+    match /platformAccess/{email} {
+      allow read: if request.auth != null
+        && request.auth.token.email == email;
+      allow create, update, delete: if false;
+    }
+
     // Allowed users — gate for portal login
     // Only project admins can add (validated via the invite flow)
     match /allowedUsers/{email} {
@@ -139,6 +169,19 @@ service cloud.firestore {
     }
 
     // Helper functions
+    function hasPlatformPermission(permission) {
+      let email = request.auth.token.email;
+      let path = /databases/$(database)/documents/platformAccess/$(email);
+      return exists(path)
+        && (
+          get(path).data.isSuperAdmin == true
+          || (
+            'permissions' in get(path).data
+            && permission in get(path).data.permissions
+          )
+        );
+    }
+
     function isProjectMember(projectId) {
       let project = get(/databases/$(database)/documents/projects/$(projectId));
       return !('deletedAt' in project.data)

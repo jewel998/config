@@ -290,9 +290,11 @@ In the portal, go to your environment settings and add **Allowed Domains**:
 
 - Production: `yourdomain.com`, `www.yourdomain.com`
 - Staging: `staging.yourdomain.com`
-- Development: `localhost`
+- Development: `localhost`, `127.0.0.1`
 
-This restricts which origins can call your API — requests from other domains get a 403.
+This restricts which origins can call your API — requests from other domains get
+a 403. To develop against the API from a local dev server, add `localhost`
+(and/or `127.0.0.1`) here; it is treated like any other origin.
 
 ### Configure Access Control
 

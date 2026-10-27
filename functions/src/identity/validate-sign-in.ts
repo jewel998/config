@@ -2,6 +2,44 @@ import { HttpsError } from "firebase-functions/v2/https";
 import { beforeUserCreated, beforeUserSignedIn } from "firebase-functions/v2/identity";
 
 import { getDb } from "../utils/firestore";
+import { getSuperAdminEmail, PLATFORM_PERMISSIONS } from "./platform-access";
+
+/**
+ * Ensure the bootstrap super-admin (SUPER_ADMIN_EMAIL) has a platformAccess
+ * doc with isSuperAdmin + all permissions, plus portal access. Best-effort:
+ * never throws, so a write hiccup can't lock the owner out of sign-in.
+ */
+async function ensureSuperAdminProvisioned(email: string): Promise<void> {
+  try {
+    const db = getDb();
+    const ref = db.collection("platformAccess").doc(email);
+    const existing = await ref.get();
+    if (!existing.exists || existing.data()?.isSuperAdmin !== true) {
+      await ref.set(
+        {
+          permissions: [...PLATFORM_PERMISSIONS],
+          isSuperAdmin: true,
+          addedBy: "bootstrap:SUPER_ADMIN_EMAIL",
+          addedAt: new Date().toISOString(),
+        },
+        { merge: true },
+      );
+    }
+    await db
+      .collection("allowedUsers")
+      .doc(email)
+      .set(
+        {
+          addedBy: "bootstrap:SUPER_ADMIN_EMAIL",
+          addedAt: new Date().toISOString(),
+          reason: "super-admin",
+        },
+        { merge: true },
+      );
+  } catch (error) {
+    console.error("[ensureSuperAdminProvisioned] best-effort provisioning failed:", error);
+  }
+}
 
 /**
  * Shared access control check.
@@ -15,6 +53,29 @@ async function checkAccessControl(email: string | undefined): Promise<void> {
 
   const normalizedEmail = email.toLowerCase();
   const db = getDb();
+
+  // Bootstrap super-admin always passes the gate, even on a fresh deploy where
+  // no accessControl/allowedUsers docs exist yet (chicken-and-egg). Provision
+  // their platform grant on the way through.
+  if (getSuperAdminEmail() === normalizedEmail) {
+    await ensureSuperAdminProvisioned(normalizedEmail);
+    return;
+  }
+
+  // A dashboard-granted PORTAL permission is sufficient for sign-in. This is
+  // the managed path that replaces hand-editing accessControl/allowedUsers.
+  try {
+    const grant = await db.collection("platformAccess").doc(normalizedEmail).get();
+    if (grant.exists) {
+      const data = grant.data()!;
+      if (data.isSuperAdmin === true) return;
+      const permissions: string[] = data.permissions ?? [];
+      if (permissions.includes("PORTAL")) return;
+    }
+  } catch (error) {
+    console.error("[accessControl] platformAccess lookup failed:", error);
+    // Fall through to the legacy accessControl check below.
+  }
 
   try {
     const configDoc = await db.collection("accessControl").doc("default").get();

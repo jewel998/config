@@ -38,9 +38,20 @@ For additional security, you can set **allowed domains** per environment:
 
 - Production: `myapp.com`, `www.myapp.com`
 - Staging: `staging.myapp.com`
-- Development: `localhost`
+- Development: `localhost`, `127.0.0.1`
 
-Requests from non-allowed domains are rejected with a 403 error.
+A request whose `Origin` (or `Referer`) host is not an exact match or a subdomain
+of an allowed domain is rejected with a **403**. If `allowedDomains` is empty,
+all origins are permitted. `localhost` is not special — to call the API from a
+local dev server, add `localhost` (and/or `127.0.0.1`) to the environment's
+allowed domains.
+
+::: warning 403 opens the SDK circuit breaker
+A 403 is a fatal error: the SDK's circuit breaker stops all requests for 5
+minutes (see [SDK Reference](/api/)). If requests 403 because the origin isn't
+allowlisted — including a local dev server you forgot to add — the SDK will
+appear to go silent. Check `allowedDomains` first.
+:::
 
 ## Environment Colors
 

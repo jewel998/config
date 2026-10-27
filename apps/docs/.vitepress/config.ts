@@ -62,6 +62,7 @@ export default withMermaid(
         {
           text: "Core Features",
           items: [
+            { text: "Overview", link: "/features/overview" },
             { text: "Segments", link: "/features/segments" },
             { text: "Targeting Rules", link: "/features/targeting" },
             { text: "Percentage Rollouts", link: "/features/rollouts" },

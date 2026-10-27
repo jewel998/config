@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { useCreateEnvironment } from "@/hooks/use-environments";
+import { usePermissions } from "@/hooks/use-permissions";
 import { useCreateProject } from "@/hooks/use-projects";
 import { cn } from "@/lib/utils";
 import { useProjectStore } from "@/stores/project-store";
@@ -22,6 +23,7 @@ export const OnboardingStepper = () => {
   const { selectedProjectId, setSelectedProjectId } = useProjectStore();
   const createProject = useCreateProject();
   const createEnvironment = useCreateEnvironment();
+  const { canCreateProject } = usePermissions();
   const navigate = useNavigate();
 
   const [stepState, setStepState] = useState<StepState>({
@@ -143,26 +145,35 @@ export const OnboardingStepper = () => {
                 <p className="mt-0.5 text-xs text-muted-foreground">{step.description}</p>
 
                 {/* Step 1: Create project form */}
-                {idx === 0 && isCurrent && (
-                  <div className="mt-3 flex items-center gap-2">
-                    <Input
-                      value={projectName}
-                      onChange={(e) => setProjectName(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && handleCreateProject()}
-                      placeholder={t`Project name`}
-                      className="h-9 text-sm"
-                      autoFocus
-                    />
-                    <Button
-                      size="sm"
-                      className="h-9 w-20 shrink-0 rounded-full"
-                      onClick={handleCreateProject}
-                      disabled={createProject.isPending || !projectName.trim()}
-                    >
-                      {createProject.isPending ? <Spinner /> : <Trans>Create</Trans>}
-                    </Button>
-                  </div>
-                )}
+                {idx === 0 &&
+                  isCurrent &&
+                  (canCreateProject ? (
+                    <div className="mt-3 flex items-center gap-2">
+                      <Input
+                        value={projectName}
+                        onChange={(e) => setProjectName(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleCreateProject()}
+                        placeholder={t`Project name`}
+                        className="h-9 text-sm"
+                        autoFocus
+                      />
+                      <Button
+                        size="sm"
+                        className="h-9 w-20 shrink-0 rounded-full"
+                        onClick={handleCreateProject}
+                        disabled={createProject.isPending || !projectName.trim()}
+                      >
+                        {createProject.isPending ? <Spinner /> : <Trans>Create</Trans>}
+                      </Button>
+                    </div>
+                  ) : (
+                    <p className="mt-3 rounded-md bg-[var(--muted)] px-3 py-2 text-xs text-[var(--muted-foreground)]">
+                      <Trans>
+                        You don't have permission to create projects. Ask a platform admin to grant
+                        you the CREATE_PROJECT permission.
+                      </Trans>
+                    </p>
+                  ))}
 
                 {/* Step 2: Create environment form */}
                 {idx === 1 && isCurrent && (
