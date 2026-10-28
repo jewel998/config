@@ -29,7 +29,7 @@ flowchart TD
     C -->|No| E[ready resolves instantly]
 
     D --> F{Fetch succeeds?}
-    F -->|Yes| G[Store in cache + memory\nEmit updated per key]
+    F -->|Yes| G[Store in cache + memory\nPersist config version from response\nEmit updated per key]
     F -->|No| H[Call onError handler\nFall back to defaults]
 
     G --> I[ready resolves]
@@ -37,7 +37,7 @@ flowchart TD
 
     I --> J[Schedule idle fetch\nrequestIdleCallback]
     J --> K[Tier 3: fetchAll\nall remaining keys]
-    K --> L[Store in cache + memory\nEmit updated per key]
+    K --> L[Store in cache + memory\nPersist config version from response\nEmit updated per key]
 ```
 
 ## `flags.get(key)` Resolution
@@ -87,6 +87,8 @@ flowchart TD
 ## Version Polling
 
 Every `pollInterval` (default 5 min) the SDK polls `/v1/version`. On version change, `refresh()` is called internally — only fetching already-fetched keys, never triggering a full re-fetch of all keys.
+
+The version used for this comparison is persisted from the `/config` response itself — each config fetch returns the current `version`, which the SDK stores alongside the values. On a reload or return visit the SDK checks `/v1/version` first; when it matches the persisted version and the user context is unchanged, the `/config` fetch is skipped entirely and values are served from storage. See [Storage & Caching](/guide/storage) for how persistence enables this.
 
 ## Key Deduplication
 

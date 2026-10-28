@@ -65,7 +65,7 @@ export const buildConfigClient = (internals: ConfigClientInternals): ConfigClien
       batchFetchTriggered = true;
       void (async () => {
         try {
-          const result = await withRetry(() => fetcher.fetchAll(), retry);
+          const { data: result } = await withRetry(() => fetcher.fetchAll(), retry);
           cache.set("__all__", result, DEFAULT_CACHE_TTL);
           for (const [key, value] of Object.entries(result)) {
             cache.set(key, value, DEFAULT_CACHE_TTL);
@@ -91,7 +91,7 @@ export const buildConfigClient = (internals: ConfigClientInternals): ConfigClien
 
     void (async () => {
       try {
-        const result = await fetcher.fetchKeys([key]);
+        const { data: result } = await fetcher.fetchKeys([key]);
         for (const [k, v] of Object.entries(result)) {
           cache.set(k, v, DEFAULT_CACHE_TTL);
           data[k] = v;

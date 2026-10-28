@@ -1,4 +1,4 @@
-import type { ConfigFetcher, GetConfigResponse, HttpTransport } from "../types.js";
+import type { ConfigFetcher, FetchResult, GetConfigResponse, HttpTransport } from "../types.js";
 
 interface VersionResponse {
   version: string;
@@ -7,21 +7,21 @@ interface VersionResponse {
 
 export const createProjectedFetcher = (transport: HttpTransport): ConfigFetcher => {
   let pendingKeys = new Set<string>();
-  let batchPromise: Promise<Record<string, unknown>> | null = null;
+  let batchPromise: Promise<FetchResult> | null = null;
 
   return {
-    async fetchAll(): Promise<Record<string, unknown>> {
+    async fetchAll(): Promise<FetchResult> {
       const response = await transport.request<GetConfigResponse>("v1/config");
-      return response.data;
+      return { data: response.data, version: response.version ?? null };
     },
 
-    async fetchKeys(keys: string[]): Promise<Record<string, unknown>> {
+    async fetchKeys(keys: string[]): Promise<FetchResult> {
       for (const key of keys) {
         pendingKeys.add(key);
       }
 
       if (!batchPromise) {
-        batchPromise = new Promise<Record<string, unknown>>((resolve, reject) => {
+        batchPromise = new Promise<FetchResult>((resolve, reject) => {
           queueMicrotask(async () => {
             const batchedKeys = Array.from(pendingKeys);
             pendingKeys = new Set();
@@ -31,7 +31,7 @@ export const createProjectedFetcher = (transport: HttpTransport): ConfigFetcher 
               const response = await transport.request<GetConfigResponse>("v1/config", {
                 keys: batchedKeys,
               });
-              resolve(response.data);
+              resolve({ data: response.data, version: response.version ?? null });
             } catch (err) {
               reject(err);
             }
@@ -44,11 +44,11 @@ export const createProjectedFetcher = (transport: HttpTransport): ConfigFetcher 
       // Return only the keys this caller requested
       const filtered: Record<string, unknown> = {};
       for (const key of keys) {
-        if (key in result) {
-          filtered[key] = result[key];
+        if (key in result.data) {
+          filtered[key] = result.data[key];
         }
       }
-      return filtered;
+      return { data: filtered, version: result.version };
     },
 
     async checkVersion(): Promise<{ version: string; changedKeys: string[] }> {

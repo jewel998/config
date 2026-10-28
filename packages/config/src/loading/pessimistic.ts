@@ -11,7 +11,7 @@ export const executePessimistic = async (ctx: LoadingContext): Promise<LoadingRe
   });
 
   try {
-    const data = await Promise.race([fetchPromise, timeoutPromise]);
+    const { data } = await Promise.race([fetchPromise, timeoutPromise]);
 
     ctx.cache.set("__all__", data, DEFAULT_CACHE_TTL);
     for (const [key, value] of Object.entries(data)) {

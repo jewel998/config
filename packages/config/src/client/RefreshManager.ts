@@ -78,7 +78,13 @@ export class RefreshManager {
           // If version check fails, proceed with full fetch as fallback
         }
 
-        const result = await withRetry(() => fetcher.fetchAll(), retry);
+        const { data: result, version: responseVersion } = await withRetry(
+          () => fetcher.fetchAll(),
+          retry,
+        );
+        // Sync the version from the config response itself — avoids drifting
+        // from the value learned by the earlier checkVersion() probe.
+        if (responseVersion !== null) this.cachedVersion = responseVersion;
         cache.set("__all__", result, DEFAULT_CACHE_TTL);
         for (const [key, value] of Object.entries(result)) {
           cache.set(key, value, DEFAULT_CACHE_TTL);

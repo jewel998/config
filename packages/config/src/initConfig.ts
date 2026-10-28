@@ -327,11 +327,11 @@ export function initConfig(options: InitConfigOptions): Flags {
               () => tierFetcher.fetchTier(initPrefetch, "prefetch"),
               retry,
             );
-            const fetched = applyResult(result);
-            // Record the version these values correspond to.
-            const v = await fetchRemoteVersion();
-            if (v !== null) persistVersion(v);
-            tierFetcher.notifyWaiters(result);
+            const fetched = applyResult(result.data);
+            // Persist the version delivered alongside these values — no extra
+            // /version round trip needed; the /config response carries it.
+            if (result.version !== null) persistVersion(result.version);
+            tierFetcher.notifyWaiters(result.data);
             emitUpdated(fetched, "prefetch");
           } catch (err) {
             const sdkErr = new SdkError(
@@ -363,10 +363,9 @@ export function initConfig(options: InitConfigOptions): Flags {
           if (remote !== null) cachedVersion = remote;
         }
         const result = await tierFetcher.fetchAll();
-        const fetched = applyResult(result);
-        const v = await fetchRemoteVersion();
-        if (v !== null) persistVersion(v);
-        tierFetcher.notifyWaiters(result);
+        const fetched = applyResult(result.data);
+        if (result.version !== null) persistVersion(result.version);
+        tierFetcher.notifyWaiters(result.data);
         emitUpdated(fetched, "idle");
       } catch {
         // Idle fetch is best-effort — silently ignore
@@ -413,9 +412,10 @@ export function initConfig(options: InitConfigOptions): Flags {
       refetches.push(
         withRetry(() => tierFetcher.refetchKeys(pf), retry)
           .then((r) => {
-            applyResult(r);
-            tierFetcher.notifyWaiters(r);
-            allFetched.push(...Object.keys(r));
+            applyResult(r.data);
+            if (r.version !== null) persistVersion(r.version);
+            tierFetcher.notifyWaiters(r.data);
+            allFetched.push(...Object.keys(r.data));
           })
           .catch(() => {}),
       );
@@ -425,9 +425,10 @@ export function initConfig(options: InitConfigOptions): Flags {
       refetches.push(
         withRetry(() => tierFetcher.refetchKeys(page), retry)
           .then((r) => {
-            applyResult(r);
-            tierFetcher.notifyWaiters(r);
-            allFetched.push(...Object.keys(r));
+            applyResult(r.data);
+            if (r.version !== null) persistVersion(r.version);
+            tierFetcher.notifyWaiters(r.data);
+            allFetched.push(...Object.keys(r.data));
           })
           .catch(() => {}),
       );
@@ -438,9 +439,10 @@ export function initConfig(options: InitConfigOptions): Flags {
         tierFetcher
           .fetchAll()
           .then((r) => {
-            applyResult(r);
-            tierFetcher.notifyWaiters(r);
-            allFetched.push(...Object.keys(r));
+            applyResult(r.data);
+            if (r.version !== null) persistVersion(r.version);
+            tierFetcher.notifyWaiters(r.data);
+            allFetched.push(...Object.keys(r.data));
           })
           .catch(() => {}),
       );
@@ -463,8 +465,9 @@ export function initConfig(options: InitConfigOptions): Flags {
       void (async () => {
         try {
           const result = await withRetry(() => tierFetcher.fetchTier(keys, "page"), retry);
-          const fetched = applyResult(result);
-          tierFetcher.notifyWaiters(result);
+          const fetched = applyResult(result.data);
+          if (result.version !== null) persistVersion(result.version);
+          tierFetcher.notifyWaiters(result.data);
           emitUpdated(fetched, "page");
         } catch (err) {
           const sdkErr = new SdkError(
