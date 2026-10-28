@@ -1,4 +1,4 @@
-import type { ConfigFetcher } from "../types.js";
+import type { ConfigFetcher, FetchResult } from "../types.js";
 
 export type FetchTier = "prefetch" | "page" | "idle";
 
@@ -45,12 +45,12 @@ export class TierFetcher {
    * Fetch a specific set of keys under a given tier.
    * Keys already tracked under any tier are skipped (deduplication).
    */
-  async fetchTier(keys: string[], tier: FetchTier): Promise<Record<string, unknown>> {
+  async fetchTier(keys: string[], tier: FetchTier): Promise<FetchResult> {
     const toFetch = keys.filter((k) => !this.allFetched.has(k));
-    if (toFetch.length === 0) return {};
+    if (toFetch.length === 0) return { data: {}, version: null };
 
     const result = await this.fetcher.fetchKeys(toFetch);
-    this.recordKeys(Object.keys(result), tier);
+    this.recordKeys(Object.keys(result.data), tier);
     return result;
   }
 
@@ -58,10 +58,10 @@ export class TierFetcher {
    * Fetch all remaining keys (idle tier).
    * Only keys not already tracked are added to the idle set.
    */
-  async fetchAll(): Promise<Record<string, unknown>> {
+  async fetchAll(): Promise<FetchResult> {
     const result = await this.fetcher.fetchAll();
 
-    for (const key of Object.keys(result)) {
+    for (const key of Object.keys(result.data)) {
       if (!this.allFetched.has(key)) {
         this.fetchedKeys.get("idle")!.add(key);
         this.allFetched.add(key);
@@ -81,7 +81,7 @@ export class TierFetcher {
    * Used by doRefresh() — we're intentionally re-fetching already-fetched keys
    * with a new context, so the allFetched deduplication should be bypassed.
    */
-  async refetchKeys(keys: string[]): Promise<Record<string, unknown>> {
+  async refetchKeys(keys: string[]): Promise<FetchResult> {
     return this.fetcher.fetchKeys(keys);
   }
 

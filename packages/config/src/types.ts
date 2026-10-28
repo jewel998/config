@@ -208,12 +208,24 @@ export interface LoadingStrategyHandler {
 // Internal Interfaces (Fetch)
 // ═══════════════════════════════════════════════════════════════
 
+/**
+ * Result of a config fetch — the resolved values plus the config version
+ * they correspond to. The version comes from the same `/config` response
+ * that delivered the data, so the SDK can persist it without a second
+ * `/version` round trip.
+ */
+export interface FetchResult {
+  data: Record<string, unknown>;
+  /** Config version from the response, or null if the response omitted it. */
+  version: string | null;
+}
+
 export interface ConfigFetcher {
   /** Fetch all configs for the bound project+environment */
-  fetchAll(): Promise<Record<string, unknown>>;
+  fetchAll(): Promise<FetchResult>;
 
   /** Fetch specific keys only */
-  fetchKeys(keys: string[]): Promise<Record<string, unknown>>;
+  fetchKeys(keys: string[]): Promise<FetchResult>;
 
   /** Check current config version (lightweight — single Firestore read) */
   checkVersion(): Promise<{ version: string; changedKeys: string[] }>;

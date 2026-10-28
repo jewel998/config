@@ -29,7 +29,7 @@ flowchart TD
     C -->|No| E[ready resolves instantly]
 
     D --> F{Fetch succeeds?}
-    F -->|Yes| G[Store in cache + memory\nEmit 'updated' per key]
+    F -->|Yes| G[Store in cache + memory\nPersist config version from response\nEmit 'updated' per key]
     F -->|No| H[Call onError handler\nFall back to defaults]
 
     G --> I[ready resolves]
@@ -37,7 +37,7 @@ flowchart TD
 
     I --> J[Schedule idle fetch\nrequestIdleCallback\nfallback: setTimeout 200ms]
     J --> K[Tier 3: fetchAll\nall remaining keys]
-    K --> L[Store in cache + memory\nEmit 'updated' per key]
+    K --> L[Store in cache + memory\nPersist config version from response\nEmit 'updated' per key]
 ```
 
 ---
@@ -124,6 +124,13 @@ flowchart TD
     F --> G[Re-fetch fetched keys\nin tier order]
     G --> H[Emit 'updated' per key]
 ```
+
+> The version compared here is persisted from the `/config` response itself —
+> every config fetch returns the current `version`, which the SDK stores next to
+> the values (and context fingerprint). On the next load the SDK checks
+> `/v1/version` first; when it matches the persisted version and the context is
+> unchanged, the `/config` fetch is skipped entirely and values are served from
+> storage. No separate version call is made after a config fetch.
 
 ---
 

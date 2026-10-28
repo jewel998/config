@@ -17,7 +17,11 @@ function makeInternals(overrides: Partial<ConfigClientInternals> = {}): ConfigCl
   return {
     data: {},
     cache: memoryStorage(),
-    fetcher: { fetchAll: vi.fn(async () => ({})), fetchKeys: vi.fn(async () => ({})) },
+    fetcher: {
+      fetchAll: vi.fn(async () => ({ data: {}, version: null })),
+      fetchKeys: vi.fn(async () => ({ data: {}, version: null })),
+      checkVersion: vi.fn(async () => ({ version: "1", changedKeys: [] })),
+    },
     events: {
       on: vi.fn(),
       off: vi.fn(),

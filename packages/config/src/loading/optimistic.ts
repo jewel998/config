@@ -5,7 +5,7 @@ import { DEFAULT_CACHE_TTL } from "../types.js";
 const scheduleBackgroundFetch = (ctx: LoadingContext): void => {
   const doFetch = async () => {
     try {
-      const data = await withRetry(() => ctx.fetcher.fetchAll(), ctx.retry);
+      const { data } = await withRetry(() => ctx.fetcher.fetchAll(), ctx.retry);
 
       ctx.cache.set("__all__", data, DEFAULT_CACHE_TTL);
       for (const [key, value] of Object.entries(data)) {

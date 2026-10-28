@@ -88,12 +88,12 @@ Fixed order (`src/plugins/types.ts` `PIPELINE_ORDER`): `archived → prerequisit
 
 ### 2.6 Resilience
 
-| Feature               | Behavior                                                                                                                           | Source                                               |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| Circuit breaker       | Opens for 5 min on fatal 400/401/403; HALF_OPEN probe on cooldown.                                                                 | `src/transport/CircuitBreaker.ts`                    |
-| Retry engine          | Up to `maxRetries` (default 3); 429 honors `Retry-After`.                                                                          | `src/retry/RetryEngine.ts`                           |
-| Version-gated refresh | `/v1/version` (ETag/304) before full config fetch.                                                                                 | `src/initConfig.ts`, `src/fetch/projectedFetcher.ts` |
-| Error taxonomy        | `SdkError.type`: TIMEOUT \| FETCH_FAILED \| KEY_NOT_FOUND \| AUTH \| RATE_LIMITED. `ConfigErrorCode`: HTTP-mapped (retry/circuit). | `src/errors/index.ts`                                |
+| Feature               | Behavior                                                                                                                                              | Source                                                                           |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Circuit breaker       | Opens for 5 min on fatal 400/401/403; HALF_OPEN probe on cooldown.                                                                                    | `src/transport/CircuitBreaker.ts`                                                |
+| Retry engine          | Up to `maxRetries` (default 3); 429 honors `Retry-After`.                                                                                             | `src/retry/RetryEngine.ts`                                                       |
+| Version-gated refresh | `/v1/version` (ETag/304) before full config fetch; config version is persisted from the `/config` response and reused to skip fetches when unchanged. | `src/initConfig.ts`, `src/fetch/projectedFetcher.ts`, `src/fetch/TierFetcher.ts` |
+| Error taxonomy        | `SdkError.type`: TIMEOUT \| FETCH_FAILED \| KEY_NOT_FOUND \| AUTH \| RATE_LIMITED. `ConfigErrorCode`: HTTP-mapped (retry/circuit).                    | `src/errors/index.ts`                                                            |
 
 ### 2.7 SDK test status
 
