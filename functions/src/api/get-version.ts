@@ -47,6 +47,16 @@ class GetVersionHandler extends RequestHandler {
     ctx.res.set("ETag", `"${version}"`);
 
     if (ctx.req.headers["if-none-match"] === `"${version}"`) {
+      // A 304 is sent directly via res.end(), which bypasses Firebase's
+      // `cors: true` wrapper — so the Access-Control-Allow-Origin header it
+      // normally injects is absent, and the CDN strips non-conditional headers
+      // on a 304. A cross-origin caller then fails CORS on every revalidation.
+      // Reflect the request origin explicitly so the 304 carries ACAO itself.
+      const origin = ctx.req.headers.origin;
+      if (origin) {
+        ctx.res.set("Access-Control-Allow-Origin", origin);
+        ctx.res.set("Vary", "Origin");
+      }
       ctx.res.status(304).end();
       return;
     }
