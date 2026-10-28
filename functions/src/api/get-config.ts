@@ -10,6 +10,7 @@ import type { RequestContext, HandlerResponse } from "@jewel998/api";
 import { onRequest } from "firebase-functions/v2/https";
 
 import { MAX_INSTANCES, MIN_INSTANCES, API_REGION } from "../utils/constants";
+import { handleCors } from "../utils/cors";
 import { getDb } from "../utils/firestore";
 import {
   ExtractClientIdMiddleware,
@@ -85,15 +86,19 @@ class GetConfigHandler extends RequestHandler {
 
 // ── Export ────────────────────────────────────────────────────
 
+const getConfigHandler = createHandler(GetConfigHandler, {
+  createContext: (req, res) => ({ req, res, db: getDb() }),
+});
+
 export const getConfig = onRequest(
   {
-    cors: true,
     maxInstances: MAX_INSTANCES,
     minInstances: MIN_INSTANCES,
     region: API_REGION,
     memory: "256MiB",
   },
-  createHandler(GetConfigHandler, {
-    createContext: (req, res) => ({ req, res, db: getDb() }),
-  }),
+  async (req, res) => {
+    if (await handleCors(req, res, getDb())) return;
+    return getConfigHandler(req, res);
+  },
 );

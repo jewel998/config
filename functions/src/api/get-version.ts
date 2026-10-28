@@ -16,16 +16,9 @@ import {
   VERSION_CACHE_SECONDS,
   VERSION_BROWSER_CACHE_SECONDS,
 } from "../utils/constants";
+import { handleCors } from "../utils/cors";
 import { getDb } from "../utils/firestore";
 import { ExtractClientIdMiddleware, RateLimitMiddleware, AuthenticateGuard } from "./guards/index";
-
-function setCorsHeaders(res: { set: (field: string, value: string) => unknown }): void {
-  res.set("Access-Control-Allow-Origin", "*");
-  res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.set("Access-Control-Allow-Headers", "Content-Type, Authorization, If-None-Match");
-  res.set("Access-Control-Expose-Headers", "ETag");
-  res.set("Access-Control-Max-Age", "86400");
-}
 
 function matchesEtag(ifNoneMatch: string | string[] | undefined, etag: string): boolean {
   if (!ifNoneMatch) return false;
@@ -57,9 +50,9 @@ class GetVersionHandler extends RequestHandler {
     const version = envData.configVersion ?? "0";
     const changedKeys: string[] = envData.lastChangedKeys ?? [];
 
-    // CDN caches the version for VERSION_CACHE_SECONDS (deploy-time env var,
-    // default 5 min) — this is the change-propagation latency. The ETag lets
-    // the browser revalidate cheaply (304) within that window.
+    // Cache the version at Firebase Hosting's shared CDN. The SDK bypasses
+    // browser conditional caching, so the CDN serves a cached 200 with the
+    // validated CORS headers instead of generating a CORS-less 304.
     ctx.res.set(
       "Cache-Control",
       `public, max-age=${VERSION_BROWSER_CACHE_SECONDS}, s-maxage=${VERSION_CACHE_SECONDS}`,
@@ -88,15 +81,8 @@ export const getVersion = onRequest(
     region: API_REGION,
     memory: "256MiB",
   },
-  (req, res) => {
-    // Set these before the handler can return a 304. Firebase Hosting/CDN must
-    // receive CORS headers on both 200 and conditional 304 responses.
-    setCorsHeaders(res);
-
-    if (req.method === "OPTIONS") {
-      res.status(204).end();
-      return;
-    }
+  async (req, res) => {
+    if (await handleCors(req, res, getDb())) return;
 
     return getVersionHandler(req, res);
   },

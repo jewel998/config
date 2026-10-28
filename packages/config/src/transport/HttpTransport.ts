@@ -68,6 +68,7 @@ export const createHttpTransport = (config: TransportConfig): HttpTransport => {
       const cachedVersion = isVersionRequest ? versionCache : undefined;
 
       let response: Response;
+      const postUrl = `${url}?clientId=${encodeURIComponent(config.clientId)}`;
 
       try {
         if (isServerKey) {
@@ -79,19 +80,15 @@ export const createHttpTransport = (config: TransportConfig): HttpTransport => {
           response = await fetch(`${url}?${params.toString()}`, {
             method: "GET",
             cache: "no-store",
-            headers: {
-              Accept: HTTP_CONSTANTS.jsonAccept,
-              "Cache-Control": "no-cache",
-            },
+            headers: { Accept: HTTP_CONSTANTS.jsonAccept },
           });
         } else {
           // POST request — full body with context
-          response = await fetch(url, {
+          response = await fetch(postUrl, {
             method: "POST",
             cache: "no-store",
             headers: {
               "Content-Type": HTTP_CONSTANTS.jsonContentType,
-              "Cache-Control": "no-cache",
             },
             body: JSON.stringify({ data: requestData }),
           });
