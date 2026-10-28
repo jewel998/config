@@ -19,6 +19,26 @@ import {
 import { getDb } from "../utils/firestore";
 import { ExtractClientIdMiddleware, RateLimitMiddleware, AuthenticateGuard } from "./guards/index";
 
+function setCorsHeaders(res: { set: (field: string, value: string) => unknown }): void {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.set("Access-Control-Allow-Headers", "Content-Type, Authorization, If-None-Match");
+  res.set("Access-Control-Expose-Headers", "ETag");
+  res.set("Access-Control-Max-Age", "86400");
+}
+
+function matchesEtag(ifNoneMatch: string | string[] | undefined, etag: string): boolean {
+  if (!ifNoneMatch) return false;
+
+  const values = Array.isArray(ifNoneMatch) ? ifNoneMatch : [ifNoneMatch];
+  return values.some((value) =>
+    value.split(",").some((candidate) => {
+      const normalized = candidate.trim();
+      return normalized === "*" || normalized.replace(/^W\//, "") === etag;
+    }),
+  );
+}
+
 // ── Handler ──────────────────────────────────────────────────
 
 @Methods("GET", "POST")
@@ -46,17 +66,7 @@ class GetVersionHandler extends RequestHandler {
     );
     ctx.res.set("ETag", `"${version}"`);
 
-    if (ctx.req.headers["if-none-match"] === `"${version}"`) {
-      // A 304 is sent directly via res.end(), which bypasses Firebase's
-      // `cors: true` wrapper — so the Access-Control-Allow-Origin header it
-      // normally injects is absent, and the CDN strips non-conditional headers
-      // on a 304. A cross-origin caller then fails CORS on every revalidation.
-      // Reflect the request origin explicitly so the 304 carries ACAO itself.
-      const origin = ctx.req.headers.origin;
-      if (origin) {
-        ctx.res.set("Access-Control-Allow-Origin", origin);
-        ctx.res.set("Vary", "Origin");
-      }
+    if (matchesEtag(ctx.req.headers["if-none-match"], `"${version}"`)) {
       ctx.res.status(304).end();
       return;
     }
@@ -67,15 +77,27 @@ class GetVersionHandler extends RequestHandler {
 
 // ── Export ────────────────────────────────────────────────────
 
+const getVersionHandler = createHandler(GetVersionHandler, {
+  createContext: (req, res) => ({ req, res, db: getDb() }),
+});
+
 export const getVersion = onRequest(
   {
-    cors: true,
     maxInstances: MAX_INSTANCES,
     minInstances: MIN_INSTANCES,
     region: API_REGION,
     memory: "256MiB",
   },
-  createHandler(GetVersionHandler, {
-    createContext: (req, res) => ({ req, res, db: getDb() }),
-  }),
+  (req, res) => {
+    // Set these before the handler can return a 304. Firebase Hosting/CDN must
+    // receive CORS headers on both 200 and conditional 304 responses.
+    setCorsHeaders(res);
+
+    if (req.method === "OPTIONS") {
+      res.status(204).end();
+      return;
+    }
+
+    return getVersionHandler(req, res);
+  },
 );

@@ -28,12 +28,14 @@
 // ═══════════════════════════════════════════════════════════════
 
 import { browserStorage } from "./cache/browserStorage.js";
+import { API_ENDPOINTS } from "./constants.js";
 import { SdkError, ConfigError } from "./errors/index.js";
 import { TypedEventEmitter } from "./events/EventEmitter.js";
 import { createProjectedFetcher } from "./fetch/projectedFetcher.js";
 import { TierFetcher } from "./fetch/TierFetcher.js";
 import type { EvaluationContext } from "./plugins/types.js";
 import { withRetry } from "./retry/RetryEngine.js";
+import { warnForFetchFailure, warnIfCspBlocksUrl } from "./transport/browserDiagnostics.js";
 import { createHttpTransport } from "./transport/HttpTransport.js";
 import type { CacheStorage, ConfigEventCallback, ConfigEventType } from "./types.js";
 import { DEFAULT_CACHE_TTL, DEFAULT_RETRY } from "./types.js";
@@ -209,6 +211,7 @@ export function initConfig(options: InitConfigOptions): Flags {
   const defaults = options.defaults ?? {};
   const pollInterval = options.pollInterval ?? 300_000;
   const baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
+  warnIfCspBlocksUrl(baseUrl);
   const storage = options.storage ?? browserStorage();
   const retry = { ...DEFAULT_RETRY };
   const timeoutMs = options.timeout ?? DEFAULT_TIMEOUT_MS;
@@ -273,7 +276,7 @@ export function initConfig(options: InitConfigOptions): Flags {
   // ── Remote version check (shared by boot gate + polling) ─────
   async function fetchRemoteVersion(): Promise<string | null> {
     try {
-      const res = await fetch(`${baseUrl}/v1/version?clientId=${options.clientId}`, {
+      const res = await fetch(`${baseUrl}/${API_ENDPOINTS.version}?clientId=${options.clientId}`, {
         headers: cachedVersion ? { "If-None-Match": `"${cachedVersion}"` } : {},
       });
       // 304 => unchanged from the version we sent in If-None-Match.
@@ -281,7 +284,8 @@ export function initConfig(options: InitConfigOptions): Flags {
       if (!res.ok) return null;
       const { version } = (await res.json()) as { version: string };
       return version ?? null;
-    } catch {
+    } catch (error) {
+      warnForFetchFailure(`${baseUrl}/${API_ENDPOINTS.version}`, error);
       return null;
     }
   }

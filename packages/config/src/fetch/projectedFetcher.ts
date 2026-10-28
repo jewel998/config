@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from "../constants.js";
 import type { ConfigFetcher, FetchResult, GetConfigResponse, HttpTransport } from "../types.js";
 
 interface VersionResponse {
@@ -11,7 +12,7 @@ export const createProjectedFetcher = (transport: HttpTransport): ConfigFetcher 
 
   return {
     async fetchAll(): Promise<FetchResult> {
-      const response = await transport.request<GetConfigResponse>("v1/config");
+      const response = await transport.request<GetConfigResponse>(API_ENDPOINTS.config);
       return { data: response.data, version: response.version ?? null };
     },
 
@@ -28,7 +29,7 @@ export const createProjectedFetcher = (transport: HttpTransport): ConfigFetcher 
             batchPromise = null;
 
             try {
-              const response = await transport.request<GetConfigResponse>("v1/config", {
+              const response = await transport.request<GetConfigResponse>(API_ENDPOINTS.config, {
                 keys: batchedKeys,
               });
               resolve({ data: response.data, version: response.version ?? null });
@@ -52,7 +53,7 @@ export const createProjectedFetcher = (transport: HttpTransport): ConfigFetcher 
     },
 
     async checkVersion(): Promise<{ version: string; changedKeys: string[] }> {
-      const response = await transport.request<VersionResponse>("v1/version");
+      const response = await transport.request<VersionResponse>(API_ENDPOINTS.version);
       return {
         version: String(response.version),
         changedKeys: response.changedKeys ?? [],

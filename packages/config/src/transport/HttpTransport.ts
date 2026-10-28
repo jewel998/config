@@ -1,8 +1,10 @@
 /// <reference lib="dom" />
 
+import { API_ENDPOINTS, HTTP_CONSTANTS } from "../constants.js";
 import { AuthenticationError, ConfigError, RateLimitError } from "../errors/index.js";
 import type { EvaluationContext } from "../plugins/types.js";
 import type { HttpTransport } from "../types.js";
+import { warnForFetchFailure, warnIfCspBlocksUrl } from "./browserDiagnostics.js";
 import { CircuitBreaker } from "./CircuitBreaker.js";
 
 export interface TransportConfig {
@@ -20,10 +22,13 @@ const FATAL_STATUS_CODES = new Set([400, 401, 403]);
 const CIRCUIT_COOLDOWN_MS = 5 * 60 * 1000;
 
 export const createHttpTransport = (config: TransportConfig): HttpTransport => {
+  warnIfCspBlocksUrl(config.baseUrl);
+
   const circuitBreaker = new CircuitBreaker({
     fatalCodes: FATAL_STATUS_CODES,
     cooldownMs: CIRCUIT_COOLDOWN_MS,
   });
+  let versionCache: { etag: string; body: unknown } | undefined;
 
   return {
     async request<T>(endpoint: string, body?: Record<string, unknown>): Promise<T> {
@@ -59,26 +64,55 @@ export const createHttpTransport = (config: TransportConfig): HttpTransport => {
       // Client keys (cid_) use POST with body (server-side evaluation needs context).
       // Server keys (svr_) use GET with query params (fetches full flag data).
       const isServerKey = config.clientId.startsWith("svr_");
+      const isVersionRequest = endpoint === API_ENDPOINTS.version;
+      const cachedVersion = isVersionRequest ? versionCache : undefined;
+      const conditionalHeaders: Record<string, string> = cachedVersion
+        ? { [HTTP_CONSTANTS.ifNoneMatchHeader]: cachedVersion.etag }
+        : {};
 
       let response: Response;
 
-      if (isServerKey) {
-        // GET request — clientId as query param
-        const params = new URLSearchParams({ clientId: config.clientId });
-        if (body?.keys && Array.isArray(body.keys)) {
-          params.set("keys", (body.keys as string[]).join(","));
+      try {
+        if (isServerKey) {
+          // GET request — clientId as query param
+          const params = new URLSearchParams({ clientId: config.clientId });
+          if (body?.keys && Array.isArray(body.keys)) {
+            params.set("keys", (body.keys as string[]).join(","));
+          }
+          response = await fetch(`${url}?${params.toString()}`, {
+            method: "GET",
+            headers: { Accept: HTTP_CONSTANTS.jsonAccept, ...conditionalHeaders },
+          });
+        } else {
+          // POST request — full body with context
+          response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": HTTP_CONSTANTS.jsonContentType,
+              ...conditionalHeaders,
+            },
+            body: JSON.stringify({ data: requestData }),
+          });
         }
-        response = await fetch(`${url}?${params.toString()}`, {
-          method: "GET",
-          headers: { Accept: "application/json" },
-        });
-      } else {
-        // POST request — full body with context
-        response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: requestData }),
-        });
+      } catch (error) {
+        warnForFetchFailure(url, error);
+        throw error;
+      }
+
+      // A conditional version request has no response body on 304. Reuse the
+      // last successful body so callers never attempt to parse an empty body.
+      if (response.status === 304 && cachedVersion) {
+        circuitBreaker.recordSuccess();
+        return cachedVersion.body as T;
+      }
+
+      if (response.status === 304) {
+        const error = new ConfigError(
+          "Version endpoint returned 304 but no cached response is available",
+          "NETWORK_ERROR",
+        );
+        circuitBreaker.recordFailure(response.status, error);
+        throw error;
       }
 
       if (!response.ok) {
@@ -140,7 +174,13 @@ export const createHttpTransport = (config: TransportConfig): HttpTransport => {
       // Success: record in circuit breaker (closes if HALF_OPEN)
       circuitBreaker.recordSuccess();
 
-      return (await response.json()) as T;
+      const responseBody = (await response.json()) as T;
+      if (isVersionRequest) {
+        const etag = response.headers.get(HTTP_CONSTANTS.etagHeader);
+        if (etag) versionCache = { etag, body: responseBody };
+      }
+
+      return responseBody;
     },
   };
 };
