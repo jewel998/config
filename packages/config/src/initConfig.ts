@@ -277,9 +277,12 @@ export function initConfig(options: InitConfigOptions): Flags {
   async function fetchRemoteVersion(): Promise<string | null> {
     try {
       const res = await fetch(`${baseUrl}/${API_ENDPOINTS.version}?clientId=${options.clientId}`, {
-        headers: cachedVersion ? { "If-None-Match": `"${cachedVersion}"` } : {},
+        // Firebase Hosting can generate a CORS-less 304 for conditional
+        // requests. Do not initiate that path from the browser SDK.
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" },
       });
-      // 304 => unchanged from the version we sent in If-None-Match.
+      // Keep this defensive for intermediaries that still return 304.
       if (res.status === 304) return cachedVersion;
       if (!res.ok) return null;
       const { version } = (await res.json()) as { version: string };

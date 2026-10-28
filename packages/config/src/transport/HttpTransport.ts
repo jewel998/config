@@ -66,9 +66,6 @@ export const createHttpTransport = (config: TransportConfig): HttpTransport => {
       const isServerKey = config.clientId.startsWith("svr_");
       const isVersionRequest = endpoint === API_ENDPOINTS.version;
       const cachedVersion = isVersionRequest ? versionCache : undefined;
-      const conditionalHeaders: Record<string, string> = cachedVersion
-        ? { [HTTP_CONSTANTS.ifNoneMatchHeader]: cachedVersion.etag }
-        : {};
 
       let response: Response;
 
@@ -81,15 +78,20 @@ export const createHttpTransport = (config: TransportConfig): HttpTransport => {
           }
           response = await fetch(`${url}?${params.toString()}`, {
             method: "GET",
-            headers: { Accept: HTTP_CONSTANTS.jsonAccept, ...conditionalHeaders },
+            cache: "no-store",
+            headers: {
+              Accept: HTTP_CONSTANTS.jsonAccept,
+              "Cache-Control": "no-cache",
+            },
           });
         } else {
           // POST request — full body with context
           response = await fetch(url, {
             method: "POST",
+            cache: "no-store",
             headers: {
               "Content-Type": HTTP_CONSTANTS.jsonContentType,
-              ...conditionalHeaders,
+              "Cache-Control": "no-cache",
             },
             body: JSON.stringify({ data: requestData }),
           });

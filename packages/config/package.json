@@ -1,6 +1,6 @@
 {
   "name": "@jewel998/config",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "private": false,
   "description": "Free, self-hosted feature flags and remote configuration SDK",
   "keywords": [

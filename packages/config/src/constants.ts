@@ -9,5 +9,4 @@ export const HTTP_CONSTANTS = {
   jsonContentType: "application/json",
   jsonAccept: "application/json",
   etagHeader: "ETag",
-  ifNoneMatchHeader: "If-None-Match",
 } as const;
