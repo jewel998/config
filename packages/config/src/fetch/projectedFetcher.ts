@@ -57,7 +57,7 @@ export const createProjectedFetcher = (transport: HttpTransport): ConfigFetcher 
     },
 
     async checkVersion(): Promise<{ version: string; changedKeys: string[] }> {
-      const response = await transport.request<VersionResponse>(API_ENDPOINTS.version);
+      const response = await transport.requestVersion<VersionResponse>();
       const version = response.data?.version ?? response.version;
       return {
         version: String(version),

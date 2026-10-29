@@ -239,7 +239,7 @@ export function initConfig(options: InitConfigOptions): Flags {
   // reload can skip the config fetch when the version is unchanged.
   const storedVersion = storage.get<string | number>(VERSION_STORAGE_KEY);
   let cachedVersion: string | null = storedVersion == null ? null : String(storedVersion);
-  const currentFingerprint = contextFingerprint(currentContext);
+  let currentFingerprint = contextFingerprint(currentContext);
 
   // If the persisted context fingerprint differs from this init's context, any
   // persisted per-user values are stale — drop the persisted version so the
@@ -277,20 +277,10 @@ export function initConfig(options: InitConfigOptions): Flags {
   // ── Remote version check (shared by boot gate + polling) ─────
   async function fetchRemoteVersion(): Promise<string | null> {
     try {
-      const res = await fetch(`${baseUrl}/${API_ENDPOINTS.version}?clientId=${options.clientId}`, {
-        // Let the shared CDN cache the response, but do not let the browser
-        // create a conditional request that can become a CORS-less 304.
-        cache: "no-store",
-      });
-      // 304 => unchanged; reuse the locally persisted version.
-      if (res.status === 304) return cachedVersion;
-      if (!res.ok) return null;
-      const body = (await res.json()) as {
+      const body = await transport.requestVersion<{
         data?: { version?: string | number };
         version?: string | number;
-      };
-      // HTTP handlers wrap their payload in `data`; accept the legacy
-      // top-level shape as well so older deployments remain compatible.
+      }>();
       const version = body.data?.version ?? body.version;
       return version == null ? null : String(version);
     } catch (error) {
@@ -402,10 +392,6 @@ export function initConfig(options: InitConfigOptions): Flags {
   }
 
   if (pollInterval > 0 && typeof window !== "undefined") {
-    // The Tier 1 boot gate already checks the remote version when prefetch
-    // keys are configured. Running another check immediately after `ready()`
-    // only duplicates the /version request on every page load.
-    if (initPrefetch.length === 0) readyPromise.then(() => void checkVersion());
     setInterval(checkVersion, pollInterval);
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") void checkVersion();
@@ -553,6 +539,7 @@ export function initConfig(options: InitConfigOptions): Flags {
 
     setContext(context: EvaluationContext): void {
       currentContext = { ...context };
+      currentFingerprint = contextFingerprint(currentContext);
       if (contextDebounce) clearTimeout(contextDebounce);
       contextDebounce = setTimeout(() => {
         contextDebounce = null;

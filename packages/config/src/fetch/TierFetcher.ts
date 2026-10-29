@@ -37,6 +37,11 @@ export class TierFetcher {
     }>
   >();
 
+  // A full idle fetch can overlap with another idle fetch when multiple
+  // components request data during startup. Keep one shared promise so the
+  // SDK never sends duplicate full-config requests for the same instance.
+  private inflightAll: Promise<FetchResult> | null = null;
+
   constructor(private readonly fetcher: ConfigFetcher) {}
 
   // ─── Fetch methods ───────────────────────────────────────────
@@ -59,16 +64,26 @@ export class TierFetcher {
    * Only keys not already tracked are added to the idle set.
    */
   async fetchAll(): Promise<FetchResult> {
-    const result = await this.fetcher.fetchAll();
+    if (this.inflightAll) return this.inflightAll;
 
-    for (const key of Object.keys(result.data)) {
-      if (!this.allFetched.has(key)) {
-        this.fetchedKeys.get("idle")!.add(key);
-        this.allFetched.add(key);
+    this.inflightAll = (async () => {
+      const result = await this.fetcher.fetchAll();
+
+      for (const key of Object.keys(result.data)) {
+        if (!this.allFetched.has(key)) {
+          this.fetchedKeys.get("idle")!.add(key);
+          this.allFetched.add(key);
+        }
       }
-    }
 
-    return result;
+      return result;
+    })();
+
+    try {
+      return await this.inflightAll;
+    } finally {
+      this.inflightAll = null;
+    }
   }
 
   /** Check the remote version (passthrough). */

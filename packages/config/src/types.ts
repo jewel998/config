@@ -237,6 +237,8 @@ export interface ConfigFetcher {
 
 export interface HttpTransport {
   request<T>(endpoint: string, body?: Record<string, unknown>): Promise<T>;
+  /** Fetch the version endpoint with in-flight request deduplication. */
+  requestVersion<T>(): Promise<T>;
 }
 
 // ═══════════════════════════════════════════════════════════════

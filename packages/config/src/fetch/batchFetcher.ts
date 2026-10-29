@@ -2,8 +2,12 @@ import { API_ENDPOINTS } from "../constants.js";
 import type { ConfigFetcher, FetchResult, GetConfigResponse, HttpTransport } from "../types.js";
 
 interface VersionResponse {
-  version: string;
-  changedKeys: string[];
+  data?: {
+    version?: string | number;
+    changedKeys?: string[];
+  };
+  version?: string | number;
+  changedKeys?: string[];
 }
 
 export const createBatchFetcher = (transport: HttpTransport): ConfigFetcher => ({
@@ -19,10 +23,11 @@ export const createBatchFetcher = (transport: HttpTransport): ConfigFetcher => (
   },
 
   async checkVersion(): Promise<{ version: string; changedKeys: string[] }> {
-    const response = await transport.request<VersionResponse>(API_ENDPOINTS.version);
+    const response = await transport.requestVersion<VersionResponse>();
+    const version = response.data?.version ?? response.version;
     return {
-      version: String(response.version),
-      changedKeys: response.changedKeys ?? [],
+      version: String(version),
+      changedKeys: response.data?.changedKeys ?? response.changedKeys ?? [],
     };
   },
 });

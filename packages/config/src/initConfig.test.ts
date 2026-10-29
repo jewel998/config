@@ -58,4 +58,42 @@ describe("initConfig version gating", () => {
     expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/v1/version");
     expect(await flags.get("app.jobs")).toBe("cached");
   });
+
+  it("deduplicates an idle version check and initial visibility check", async () => {
+    const localStorage = makeLocalStorage({
+      "@jewel998/config:__version__": cacheEntry("17"),
+      "@jewel998/config:__ctx__": cacheEntry("{}"),
+      "@jewel998/config:__all__": cacheEntry({ "app.jobs": "cached" }),
+    });
+    const idleCallbacks: Array<() => void> = [];
+    let visibilityHandler: (() => void) | undefined;
+
+    vi.stubGlobal("window", {
+      localStorage,
+      requestIdleCallback: (callback: () => void) => idleCallbacks.push(callback),
+    });
+    vi.stubGlobal("document", {
+      visibilityState: "visible",
+      addEventListener: (_event: string, callback: () => void) => {
+        visibilityHandler = callback;
+      },
+    });
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(JSON.stringify({ data: { version: 17, changedKeys: [] } }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    initConfig({ clientId: "cid_test", pollInterval: 1_000 });
+    await Promise.resolve();
+    idleCallbacks[0]?.();
+    visibilityHandler?.();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/v1/version");
+  });
 });
