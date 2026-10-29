@@ -284,8 +284,14 @@ export function initConfig(options: InitConfigOptions): Flags {
       // 304 => unchanged; reuse the locally persisted version.
       if (res.status === 304) return cachedVersion;
       if (!res.ok) return null;
-      const { version } = (await res.json()) as { version: string };
-      return version ?? null;
+      const body = (await res.json()) as {
+        data?: { version?: string | number };
+        version?: string | number;
+      };
+      // HTTP handlers wrap their payload in `data`; accept the legacy
+      // top-level shape as well so older deployments remain compatible.
+      const version = body.data?.version ?? body.version;
+      return version == null ? null : String(version);
     } catch (error) {
       warnForFetchFailure(`${baseUrl}/${API_ENDPOINTS.version}`, error);
       return null;
@@ -395,7 +401,10 @@ export function initConfig(options: InitConfigOptions): Flags {
   }
 
   if (pollInterval > 0 && typeof window !== "undefined") {
-    readyPromise.then(() => void checkVersion());
+    // The Tier 1 boot gate already checks the remote version when prefetch
+    // keys are configured. Running another check immediately after `ready()`
+    // only duplicates the /version request on every page load.
+    if (initPrefetch.length === 0) readyPromise.then(() => void checkVersion());
     setInterval(checkVersion, pollInterval);
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") void checkVersion();
