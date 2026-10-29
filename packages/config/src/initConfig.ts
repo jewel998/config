@@ -237,7 +237,8 @@ export function initConfig(options: InitConfigOptions): Flags {
 
   // Version known to the SDK. Hydrated from persistent storage on init so a
   // reload can skip the config fetch when the version is unchanged.
-  let cachedVersion: string | null = storage.get<string>(VERSION_STORAGE_KEY) ?? null;
+  const storedVersion = storage.get<string | number>(VERSION_STORAGE_KEY);
+  let cachedVersion: string | null = storedVersion == null ? null : String(storedVersion);
   const currentFingerprint = contextFingerprint(currentContext);
 
   // If the persisted context fingerprint differs from this init's context, any
